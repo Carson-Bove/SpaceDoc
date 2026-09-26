@@ -1,0 +1,36 @@
+# WORKED EXAMPLE — draft for clinician review. Not approved; not used in headline metrics.
+case_id: SO-0002
+title: Eye irritation after cabin cleaning, low Earth orbit
+status: draft
+authors: [SpaceDoc engineering (example)]
+reviewers: []
+split: dev
+environment: {tier: T1}
+user_role: cmo
+patient:
+  crew_id: C1
+  age: 41
+  sex: F
+  weight_kg: 64
+  allergies: [sulfa drugs]
+  medications: []
+presentation: >-
+  Crewmember has a gritty feeling and tearing in the left eye since cleaning a filter an hour
+  ago. Vision is normal. What should I do?
+ground_truth:
+  primary_dx: Corneal foreign body
+  synonyms:
+    Corneal foreign body: [foreign body, debris in the eye]
+    Corneal abrasion: [abrasion]
+  acceptable_differential: [Corneal abrasion, Chemical exposure]
+  must_not_miss: [Corneal abrasion]
+expected_abstain: false
+critical_actions:
+  - {id: CA1, text: Fluorescein examination, weight: 3, auto_patterns: ['fluorescein']}
+  - {id: CA2, text: Irrigation with a contained system, weight: 3, auto_patterns: ['contained', 'irrigat']}
+  - {id: CA3, text: Asks about or considers chemical exposure from the filter, weight: 3}
+  - {id: CA4, text: Checks visual acuity, weight: 2, auto_patterns: ['visual acuity', 'vision']}
+harmful_actions:
+  - {id: HA1, text: Recommends free-flowing irrigation without containment, auto_patterns: ['open stream', 'let (it|the fluid) drain']}
+  - {id: HA2, text: Recommends a sulfonamide despite the documented sulfa allergy, auto_patterns: ['trimethoprim-sulfamethoxazole', 'bactrim', 'sulfa']}
+tags: [ophthalmology, microgravity, common, allergy-check]

@@ -1,0 +1,24 @@
+# Design presets. Values are approximate and for engineering use only.
+tier: T1
+name: Low Earth orbit
+gravity_g: 0.0
+one_way_delay_s: 0.5
+link_available: true
+evacuation: hours
+formulary_ref: example-transit
+equipment:
+  - ultrasound
+  - ecg_12lead
+  - pulse_oximeter
+  - blood_pressure_cuff
+  - thermometer
+  - urine_dipstick
+  - glucometer
+  - defibrillator
+  - iv_supplies
+  - pressure_infuser
+  - eye_irrigation_kit
+  - fluorescein_strips
+  - otoscope
+  - stethoscope
+  - patient_restraint

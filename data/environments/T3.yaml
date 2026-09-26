@@ -1,0 +1,24 @@
+tier: T3
+name: Lunar surface
+gravity_g: 0.17
+one_way_delay_s: 1.3
+link_available: true
+evacuation: days
+formulary_ref: example-transit
+equipment:
+  - ultrasound
+  - ecg_12lead
+  - pulse_oximeter
+  - blood_pressure_cuff
+  - thermometer
+  - urine_dipstick
+  - glucometer
+  - defibrillator
+  - iv_supplies
+  - pressure_infuser
+  - eye_irrigation_kit
+  - fluorescein_strips
+  - otoscope
+  - stethoscope
+  - patient_restraint
+  - spirometer

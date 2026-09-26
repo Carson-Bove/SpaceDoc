@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SpaceDoc</title>
+<style>
+  :root {
+    --bg: #EDF1F4; --surface: #F9FBFC; --ink: #122030; --muted: #536473; --rule: #C5CFD8;
+    --accent: #1D5C96; --accent-soft: #DCE8F3; --caution: #A85800; --caution-bg: #FBEBD3;
+    --ok: #2E7D4F; --ok-bg: #DFF1E6; --bad: #B3261E; --bad-bg: #FBE3E1;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0E151C; --surface: #16212B; --ink: #E3EAF0; --muted: #94A4B2; --rule: #2C3B49;
+      --accent: #74AEE3; --accent-soft: #1B3147; --caution: #F2A745; --caution-bg: #3A2A13;
+      --ok: #6FCF97; --ok-bg: #173325; --bad: #F2867E; --bad-bg: #3B1B19;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); }
+  header {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+    padding: 10px 20px; border-bottom: 1px solid var(--rule); background: var(--surface);
+  }
+  header h1 { font-size: 20px; margin: 0; letter-spacing: 0.01em; }
+  .chip { font: 12px var(--mono); padding: 2px 8px; border: 1px solid var(--rule); border-radius: 3px; color: var(--muted); }
+  .chip.caution { color: var(--caution); border-color: var(--caution); background: var(--caution-bg); }
+  .layout { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 0; min-height: calc(100% - 50px); }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+  aside.controls { padding: 18px 20px; border-right: 1px solid var(--rule); display: grid; gap: 16px; align-content: start; }
+  label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+  select, textarea, button { font: inherit; color: var(--ink); }
+  select, textarea { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 7px 9px; }
+  textarea { resize: vertical; }
+  #patient { font: 12px/1.4 var(--mono); min-height: 150px; }
+  #question { min-height: 96px; }
+  .env-summary { font-size: 12.5px; color: var(--muted); }
+  button.primary { background: var(--ink); color: var(--bg); border: 0; border-radius: 4px; padding: 10px 14px; font-weight: 600; cursor: pointer; }
+  button.primary:disabled { opacity: .5; cursor: progress; }
+  button.link { background: none; border: 0; color: var(--accent); padding: 0; cursor: pointer; font-size: 13px; text-align: left; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  main { padding: 18px 20px 40px; display: grid; gap: 16px; align-content: start; max-width: 980px; }
+  .empty { color: var(--muted); max-width: 60ch; }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px; display: grid; gap: 10px; }
+  .card h2 { font-size: 13px; font-family: var(--mono); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0; }
+  .banner { border-radius: 4px; padding: 10px 14px; font-weight: 500; }
+  .banner.abstain { background: var(--caution-bg); color: var(--caution); border: 1px solid var(--caution); }
+  .summary { font-size: 17px; }
+  ul.claims, ul.actions, ul.plain { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .claim { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; }
+  .badge { width: 20px; height: 20px; border-radius: 3px; display: grid; place-items: center; font: 600 12px var(--mono); }
+  .badge.supported { background: var(--ok-bg); color: var(--ok); }
+  .badge.reasoning { background: var(--accent-soft); color: var(--accent); }
+  .badge.removed, .badge.unsupported, .badge.contradicted { background: var(--bad-bg); color: var(--bad); }
+  .cite { font: 12px var(--mono); background: var(--accent-soft); color: var(--accent); border: 0; border-radius: 3px; padding: 1px 6px; margin-left: 4px; cursor: pointer; }
+  .meta { font-size: 12.5px; color: var(--muted); }
+  .action { border-left: 3px solid var(--rule); padding: 6px 0 6px 10px; display: grid; gap: 3px; }
+  .action.ok { border-color: var(--ok); }
+  .action.requires_confirmation { border-color: var(--caution); }
+  .action.blocked { border-color: var(--bad); }
+  .action.blocked .atext { text-decoration: line-through; color: var(--muted); }
+  .pill { font: 11px var(--mono); padding: 1px 6px; border-radius: 3px; margin-right: 6px; vertical-align: 1px; }
+  .pill.ok { background: var(--ok-bg); color: var(--ok); }
+  .pill.requires_confirmation { background: var(--caution-bg); color: var(--caution); }
+  .pill.blocked { background: var(--bad-bg); color: var(--bad); }
+  .calc { font: 12.5px var(--mono); }
+  .reasons { margin: 0; padding-left: 18px; font-size: 13px; color: var(--muted); }
+  .dx { display: flex; flex-wrap: wrap; gap: 8px; }
+  .dx span { border: 1px solid var(--rule); border-radius: 3px; padding: 3px 8px; font-size: 14px; }
+  .dx em { font-style: normal; color: var(--muted); font-size: 12px; margin-left: 4px; }
+  details { border-top: 1px solid var(--rule); padding-top: 8px; }
+  details summary { cursor: pointer; font-size: 13.5px; color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  td, th { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font: 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  .scroll { overflow-x: auto; }
+  dialog { max-width: min(720px, 92vw); border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); padding: 18px 20px; }
+  dialog::backdrop { background: rgba(0,0,0,.35); }
+  dialog pre { white-space: pre-wrap; font: 13.5px/1.55 var(--sans); max-height: 60vh; overflow: auto; }
+  .error { color: var(--bad); }
+</style>
+</head>
+<body>
+<header>
+  <h1>SpaceDoc</h1>
+  <span class="chip" id="mode-chip">loading…</span>
+  <span class="chip caution">Research prototype · not for clinical use</span>
+</header>
+
+<div class="layout">
+  <aside class="controls">
+    <label for="tier">Environment
+      <select id="tier"></select>
+    </label>
+    <div class="env-summary" id="env-summary"></div>
+    <label for="role">Who is asking
+      <select id="role">
+        <option value="cmo">Crew Medical Officer</option>
+        <option value="crew">Crewmember / patient</option>
+        <option value="physician">Physician-astronaut</option>
+      </select>
+    </label>
+    <label for="patient">Patient record (JSON, optional)
+      <textarea id="patient" spellcheck="false" placeholder='{"crew_id": "C3", "weight_kg": 78}'></textarea>
+    </label>
+    <label for="question">Question
+      <textarea id="question" placeholder="Describe the symptoms or ask a question"></textarea>
+    </label>
+    <button class="primary" id="ask" type="button">Ask SpaceDoc</button>
+    <div class="meta" id="kb-status"></div>
+  </aside>
+
+  <main id="out">
+    <p class="empty">Answers appear here. Each claim shows whether the verifier found it in its cited
+      source; blocked or unconfirmed actions are marked; and "Why this answer" shows the retrieved
+      passages, calculator results and every rule that fired.</p>
+  </main>
+</div>
+
+<dialog id="source-dialog">
+  <div class="meta" id="src-meta"></div>
+  <pre id="src-text"></pre>
+  <form method="dialog"><button class="primary" type="submit">Close</button></form>
+</dialog>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let tiers = [];
+let lastPassages = {};
+
+async function init() {
+  const [status, envs] = await Promise.all([fetch("/api/status").then(r => r.json()), fetch("/api/env").then(r => r.json())]);
+  tiers = envs;
+  $("mode-chip").textContent = status.demo ? "DEMO · scripted, no model" : `model ${status.model} · checker ${status.checker}`;
+  $("kb-status").textContent = `Knowledge base: ${status.chunks} passages from ${status.sources.length} source(s)` +
+    (status.demo ? " (synthetic demo texts)" : "");
+  for (const e of envs) {
+    const o = document.createElement("option");
+    o.value = e.tier; o.textContent = `${e.tier} · ${e.name}`;
+    if (e.tier === status.default_tier) o.selected = true;
+    $("tier").appendChild(o);
+  }
+  showEnv();
+  if (status.demo) {
+    const p = await fetch("/api/demo-patient").then(r => r.json());
+    $("patient").value = JSON.stringify(p, null, 2);
+    $("question").value = "Sharp right flank pain since this morning that comes in waves and moves toward my groin. I think I pulled a muscle.";
+  }
+}
+function showEnv() {
+  const e = tiers.find(t => t.tier === $("tier").value);
+  $("env-summary").textContent = e ? e.summary : "";
+}
+$("tier").addEventListener("change", showEnv);
+
+async function ask() {
+  let patient = null;
+  const raw = $("patient").value.trim();
+  if (raw) {
+    try { patient = JSON.parse(raw); }
+    catch (e) { $("out").innerHTML = `<p class="error">The patient record is not valid JSON: ${esc(e.message)}</p>`; return; }
+  }
+  $("ask").disabled = true; $("ask").textContent = "Thinking…";
+  $("out").innerHTML = `<p class="empty">Retrieving sources, drafting, running calculators and verifying…</p>`;
+  try {
+    const r = await fetch("/api/ask", {method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({question: $("question").value, tier: $("tier").value, role: $("role").value, patient})});
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || r.statusText);
+    render(data);
+  } catch (e) {
+    $("out").innerHTML = `<p class="error">SpaceDoc could not answer: ${esc(e.message)}. Is Ollama running?</p>`;
+  } finally {
+    $("ask").disabled = false; $("ask").textContent = "Ask SpaceDoc";
+  }
+}
+$("ask").addEventListener("click", ask);
+$("question").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) ask(); });
+
+const BADGE = {supported: "✓", reasoning: "~", unsupported: "✗", removed: "✗", contradicted: "✗"};
+const ASTATUS = {ok: "OK", requires_confirmation: "CONFIRM", blocked: "BLOCKED"};
+
+function cites(list) {
+  return (list || []).map(c => `<button class="cite" type="button" data-cid="${esc(c)}">${esc(c)}</button>`).join("");
+}
+
+function render(v) {
+  lastPassages = Object.fromEntries(v.passages.map(p => [p.cid, p]));
+  const shown = v.claims.filter(c => c.shown);
+  const removed = v.claims.filter(c => !c.shown);
+  let h = "";
+  if (v.abstained) {
+    h += `<div class="banner abstain">SpaceDoc cannot give a reliable answer: ${esc(v.abstain_reason)}</div>`;
+  }
+  h += `<div class="card"><div class="summary">${esc(v.summary)}</div>
+        <div class="meta">Uncertainty: ${esc(v.uncertainty)} · ${esc(v.environment)}</div>`;
+  if (v.missing_info.length) h += `<div class="meta">Would help: ${v.missing_info.map(esc).join("; ")}</div>`;
+  h += `</div>`;
+
+  if (shown.length) {
+    h += `<div class="card"><h2>Findings</h2><ul class="claims">` + shown.map(c => `
+      <li class="claim"><span class="badge ${c.status}" title="${esc(c.status)}">${BADGE[c.status]}</span>
+        <span>${esc(c.claim.text)}${cites(c.claim.citations)}
+        ${c.status === "reasoning" ? '<div class="meta">Model reasoning, not from a source</div>' : ""}
+        ${c.claim.kind === "patient" ? '<div class="meta">From the patient record</div>' : ""}</span></li>`).join("") + `</ul></div>`;
+  }
+  if (v.differential.length && !v.abstained) {
+    h += `<div class="card"><h2>Differential</h2><div class="dx">` +
+      v.differential.map(d => `<span>${esc(d.condition)}<em>${esc(d.likelihood)}</em>${cites(d.citations)}</span>`).join("") + `</div></div>`;
+  }
+  if (v.actions.length) {
+    h += `<div class="card"><h2>Actions</h2><ul class="actions">` + v.actions.map(a => `
+      <li class="action ${a.status}">
+        <div><span class="pill ${a.status}">${ASTATUS[a.status]}</span><span class="atext">${esc(a.action.text)}</span>
+          <span class="meta"> · ${esc(a.action.risk_tier)}</span></div>
+        ${a.calc_text ? `<div class="calc">Calculator: ${esc(a.calc_text)}</div>` : ""}
+        ${a.reasons.length ? `<ul class="reasons">${a.reasons.map(r => `<li>${esc(r)}</li>`).join("")}</ul>` : ""}
+      </li>`).join("") + `</ul></div>`;
+  }
+  if (removed.length) {
+    h += `<div class="card"><h2>Removed by verification</h2><ul class="claims">` + removed.map(c => `
+      <li class="claim"><span class="badge ${c.status}">✗</span>
+        <span><s>${esc(c.claim.text)}</s>${cites(c.claim.citations)}<div class="meta">${esc(c.detail)}</div></span></li>`).join("") + `</ul></div>`;
+  }
+
+  h += `<div class="card"><details><summary>Why this answer: sources, calculators and rules</summary>
+    <h2 style="margin-top:12px">Retrieved passages</h2><div class="scroll"><table><thead><tr><th>ID</th><th>Source</th><th>Tier</th><th>Score</th></tr></thead><tbody>` +
+    (v.passages.map(p => `<tr><td>${cites([p.cid])}</td><td>${esc(p.title)}${p.page ? `, p.${p.page}` : ""}</td><td>${esc(p.tier)}</td><td>${p.score}</td></tr>`).join("") || `<tr><td colspan="4">None</td></tr>`) +
+    `</tbody></table></div>
+    <h2 style="margin-top:12px">Calculator results</h2><div class="scroll"><table><tbody>` +
+    (v.calc_results.map(c => `<tr><td class="calc">${esc(c.calc_id)}</td><td>${esc(c.text)}${c.warnings.length ? `<div class="meta">${c.warnings.map(esc).join("; ")}</div>` : ""}</td></tr>`).join("") || `<tr><td>None</td></tr>`) +
+    `</tbody></table></div>
+    <h2 style="margin-top:12px">Rules and checks that fired</h2><div class="scroll"><table><thead><tr><th>Rule</th><th>Severity</th><th>Target</th><th>Message</th></tr></thead><tbody>` +
+    (v.findings.map(f => `<tr><td class="calc">${esc(f.rule_id)}</td><td>${esc(f.severity)}</td><td>${esc(f.target)}</td><td>${esc(f.message)}</td></tr>`).join("") || `<tr><td colspan="4">None</td></tr>`) +
+    `</tbody></table></div>
+    <p class="meta">Timings: ${Object.entries(v.timings).map(([k, x]) => `${esc(k)} ${x}`).join(" · ")}${v.audit_id ? ` · audit entry ${esc(v.audit_id)}` : ""}</p>
+  </details></div>`;
+  $("out").innerHTML = h;
+}
+
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest(".cite");
+  if (!b) return;
+  const p = lastPassages[b.dataset.cid];
+  if (!p) { $("src-meta").textContent = `${b.dataset.cid}: this passage does not exist (invalid citation)`; $("src-text").textContent = ""; }
+  else {
+    $("src-meta").textContent = `${p.cid} · ${p.title}${p.page ? ", p." + p.page : ""} · tier ${p.tier}${p.url ? " · " + p.url : ""}`;
+    $("src-text").textContent = p.text;
+  }
+  $("source-dialog").showModal();
+});
+
+init().catch(e => { $("mode-chip").textContent = "server unreachable"; });
+</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+"""Command-line interface: `spacedoc --help`."""
+
+from __future__ import annotations
+
+import json
+from datetime import datetime
+from pathlib import Path
+
+import typer
+
+from spacedoc.config import load_settings
+
+app = typer.Typer(
+    help="SpaceDoc Phase 1 (research prototype, not for clinical use).", no_args_is_help=True
+)
+eval_app = typer.Typer(help="SpaceOSCE evaluation.", no_args_is_help=True)
+corpus_app = typer.Typer(help="Knowledge-base corpus.", no_args_is_help=True)
+audit_app = typer.Typer(help="Audit log.", no_args_is_help=True)
+app.add_typer(eval_app, name="eval")
+app.add_typer(corpus_app, name="corpus")
+app.add_typer(audit_app, name="audit")
+
+ConfigOpt = typer.Option(None, "--config", "-c", help="Path to spacedoc.toml")
+
+
+@corpus_app.command("fetch")
+def corpus_fetch(config: Path = ConfigOpt) -> None:
+    """Download the files listed in corpus/manifest.yaml into corpus/files/."""
+    from spacedoc.kb.fetch import fetch_corpus
+
+    s = load_settings(config)
+    for line in fetch_corpus(s.corpus_dir / "manifest.yaml", s.corpus_dir / "files"):
+        typer.echo(line)
+
+
+@corpus_app.command("ingest")
+def corpus_ingest(config: Path = ConfigOpt) -> None:
+    """Chunk and embed every source in the manifest into the knowledge store."""
+    from spacedoc.kb.store import KnowledgeStore
+    from spacedoc.llm.client import OpenAICompatLLM
+    from spacedoc.system import ingest_manifest
+
+    s = load_settings(config)
+    store = KnowledgeStore(s.db_path)
+    embedder = OpenAICompatLLM(s.llm_base_url, s.chat_model, s.embed_model, s.request_timeout_s)
+    n = ingest_manifest(
+        store, embedder, s.corpus_dir / "manifest.yaml", s.corpus_dir / "files", s.embed_model
+    )
+    typer.echo(f"Ingested {n} chunks. Store now holds {store.count()} chunks:")
+    for source_id, title, count in store.sources():
+        typer.echo(f"  {source_id:<32} {count:>5}  {title}")
+
+
+@app.command()
+def ask(
+    question: str,
+    tier: str = typer.Option(None, help="Environment tier T1-T5"),
+    patient: Path = typer.Option(None, help="YAML/JSON file with the patient record"),
+    role: str = "cmo",
+    demo: bool = typer.Option(False, help="Scripted demo mode (no model needed)"),
+    as_json: bool = typer.Option(False, "--json", help="Print the full verified answer as JSON"),
+    config: Path = ConfigOpt,
+) -> None:
+    """Ask a question and print the verified answer."""
+    import yaml
+
+    from spacedoc.render.text import render_text
+    from spacedoc.system import build_system
+
+    system = build_system(load_settings(config), demo=demo)
+    record = yaml.safe_load(patient.read_text()) if patient else None
+    if demo and record is None:
+        from spacedoc.demo import DEMO_PATIENT
+
+        record = DEMO_PATIENT
+    v = system.orchestrator.ask(question, system.environment(tier), record, role)
+    typer.echo(v.model_dump_json(indent=2) if as_json else render_text(v))
+
+
+@app.command()
+def serve(
+    host: str = "127.0.0.1",
+    port: int = 8765,
+    demo: bool = typer.Option(False, help="Scripted demo mode (no model needed)"),
+    config: Path = ConfigOpt,
+) -> None:
+    """Start the local GUI at http://127.0.0.1:8765."""
+    import uvicorn
+
+    from spacedoc.system import build_system
+    from spacedoc.web.app import create_app
+
+    system = build_system(load_settings(config), demo=demo)
+    typer.echo(f"SpaceDoc {'DEMO ' if demo else ''}GUI on http://{host}:{port}")
+    uvicorn.run(create_app(system), host=host, port=port, log_level="warning")
+
+
+@eval_app.command("run")
+def eval_run(
+    cases_dir: Path = typer.Option(Path("cases"), help="Directory of case YAML files"),
+    repeats: int = 1,
+    demo: bool = False,
+    config: Path = ConfigOpt,
+) -> None:
+    """Run SpaceDoc over the case bank and write eval_runs/<timestamp>/report.md."""
+    from spacedoc.eval.cases import load_cases
+    from spacedoc.eval.runner import run_cases, write_report
+    from spacedoc.system import build_system
+
+    s = load_settings(config)
+    system = build_system(s, demo=demo)
+    cases = load_cases(cases_dir)
+    rows = run_cases(system, cases, repeats)
+    label = "demo" if demo else s.chat_model
+    out = (
+        Path("eval_runs")
+        / f"{datetime.now():%Y%m%d-%H%M%S}-{label.replace(':', '_').replace(' ', '_')}"
+    )
+    path = write_report(rows, out, label)
+    typer.echo(path.read_text())
+    typer.echo(f"Full results: {out / 'results.json'}")
+
+
+@app.command()
+def bench(
+    models: list[str] = typer.Argument(..., help="Ollama model tags to compare"),
+    cases_dir: Path = typer.Option(Path("cases"), help="Directory of case YAML files"),
+    repeats: int = 1,
+    config: Path = ConfigOpt,
+) -> None:
+    """Compare candidate orchestrator models on the same cases."""
+    from spacedoc.eval.bench import bench_markdown, bench_models
+    from spacedoc.eval.cases import load_cases
+
+    table = bench_models(load_settings(config), models, load_cases(cases_dir), repeats)
+    typer.echo(bench_markdown(table))
+
+
+@app.command("env")
+def env_show(config: Path = ConfigOpt) -> None:
+    """List the environment tier presets."""
+    from spacedoc.env.context import list_tiers
+
+    for e in list_tiers(load_settings(config).data_dir):
+        typer.echo(e.summary())
+
+
+@audit_app.command("verify")
+def audit_verify(path: Path = typer.Option(None), config: Path = ConfigOpt) -> None:
+    """Check the audit log's hash chain for tampering."""
+    from spacedoc.audit.log import AuditLog
+
+    ok, bad = AuditLog(path or load_settings(config).audit_path).verify()
+    typer.echo("Audit chain intact." if ok else f"Audit chain BROKEN at entry {bad}.")
+    raise typer.Exit(0 if ok else 1)
+
+
+@app.command()
+def calc(
+    name: str,
+    args_json: str = "{}",
+    weight_kg: float = typer.Option(None),
+    config: Path = ConfigOpt,
+) -> None:
+    """Run a calculator directly, e.g. spacedoc calc weight_based_dose '{"drug":"ibuprofen"}' --weight-kg 70"""
+    from spacedoc.tools.calculators import run_calculator
+    from spacedoc.tools.formulary import Formulary
+
+    s = load_settings(config)
+    r = run_calculator(
+        name,
+        json.loads(args_json),
+        Formulary.load("example-transit", s.data_dir),
+        {"weight_kg": weight_kg} if weight_kg else None,
+    )
+    typer.echo(r.model_dump_json(indent=2))
+
+
+if __name__ == "__main__":
+    app()

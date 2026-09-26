@@ -1,0 +1,142 @@
+# Environment feasibility rules (hallucination layer L6).
+#
+# DRAFT ENGINEERING RULES — every rule needs review and sign-off by the clinical team
+# before it is relied on. They encode "what cannot be done (as written) in this
+# environment", so SpaceDoc flags terrestrial advice that doesn't transfer.
+#
+# Fields: patterns are case-insensitive regexes matched against action and claim text.
+# max_gravity_g / min_gravity_g / tiers / requires_tags restrict where the rule applies.
+# A rule's severity applies to actions; on claims a match is downgraded to a warning.
+
+rules:
+  - id: ENV-ORTHOSTATIC
+    description: Orthostatic vital signs rely on gravitational blood pooling
+    patterns: ['orthostatic (vital|vitals|blood pressure|bp|measurement)', 'tilt[- ]table', 'lying[- ]to[- ]standing']
+    max_gravity_g: 0.05
+    severity: block
+    message: Orthostatic vital signs are not meaningful in microgravity (no gravitational pooling).
+    alternative: Trend resting heart rate and blood pressure; consider fluid status by ultrasound.
+
+  - id: ENV-TRENDELENBURG
+    description: Head-down positioning has no hydrostatic effect in 0 g
+    patterns: ['trendelenburg', 'head[- ]down (tilt|position)', 'elevate (the )?(legs|feet)', 'passive leg rais']
+    max_gravity_g: 0.05
+    severity: block
+    message: Positional maneuvers that rely on gravity have no hydrostatic effect in microgravity.
+    alternative: Restrain the patient; treat hypotension with fluids or medications per protocol.
+
+  - id: ENV-TRENDELENBURG-PARTIAL
+    description: Gravity-dependent positioning is weaker in partial gravity
+    patterns: ['trendelenburg', 'head[- ]down (tilt|position)', 'elevate (the )?(legs|feet)', 'passive leg rais']
+    min_gravity_g: 0.05
+    max_gravity_g: 0.5
+    severity: warn
+    message: Gravity-dependent positioning has a reduced and untested effect in partial gravity.
+
+  - id: ENV-CPR-MICROG
+    description: Standard CPR positioning needs a floor and body weight
+    patterns: ['\bcpr\b', 'chest compressions?', 'cardiopulmonary resuscitation']
+    max_gravity_g: 0.05
+    severity: warn
+    message: Standard CPR technique does not work as written in microgravity; use the microgravity protocol.
+    alternative: Microgravity CPR per the emergency protocol (e.g. Evetts-Russomano for immediate BLS; handstand with the patient restrained for ALS).
+
+  - id: ENV-RECOVERY-POSITION
+    description: Recovery position relies on gravity to drain the airway
+    patterns: ['recovery position', 'lateral decubitus to drain', 'roll (him|her|them|the patient) onto (their|his|her) side']
+    max_gravity_g: 0.05
+    severity: block
+    message: The recovery position does not drain the airway in microgravity.
+    alternative: Restrain the patient, suction the airway, and manage per airway protocol.
+
+  - id: ENV-GRAVITY-DRIP
+    description: Gravity-fed IV infusions do not flow in 0 g
+    patterns: ['gravity[- ](fed|drip|infusion)', 'hang (the )?(iv )?bag', 'drip chamber']
+    max_gravity_g: 0.05
+    severity: block
+    message: Gravity-fed IV infusion does not work in microgravity; air bubbles also do not separate.
+    alternative: Use the pressure infuser and an in-line air-elimination set.
+
+  - id: ENV-ROMBERG
+    description: Balance tests rely on gravity
+    patterns: ['romberg', 'tandem gait', 'heel[- ]to[- ]toe walk', 'have (him|her|them|the patient) walk', 'gait (exam|test|assessment)']
+    max_gravity_g: 0.05
+    severity: block
+    message: Standing balance and gait tests cannot be performed in microgravity.
+    alternative: Use cerebellar tests that don't need standing (finger-nose, rapid alternating movements).
+
+  - id: ENV-ROMBERG-PARTIAL
+    description: Balance tests are altered in partial gravity
+    patterns: ['romberg', 'tandem gait', 'gait (exam|test|assessment)']
+    min_gravity_g: 0.05
+    max_gravity_g: 0.5
+    severity: warn
+    message: Balance and gait findings in partial gravity differ from Earth norms; compare to the crewmember's own baseline.
+
+  - id: ENV-OTOLITH-MANEUVER
+    description: Canalith repositioning and positional vertigo tests rely on gravity
+    patterns: ['dix[- ]hallpike', 'epley', 'canalith repositioning', 'semont']
+    max_gravity_g: 0.05
+    severity: block
+    message: Positional vertigo tests and repositioning maneuvers rely on gravity and do not apply in microgravity.
+
+  - id: ENV-SHIFTING-DULLNESS
+    description: Exam signs that depend on fluid settling
+    patterns: ['shifting dullness', 'fluid wave', 'air[- ]fluid level', 'dependent (edema|regions?)']
+    max_gravity_g: 0.05
+    severity: warn
+    message: Exam and imaging signs that rely on fluid settling under gravity behave differently in microgravity.
+
+  - id: ENV-UPRIGHT-XRAY
+    description: Upright radiographs need an X-ray unit and gravity
+    patterns: ['upright (chest )?x[- ]?ray', 'upright (chest )?radiograph', 'ct scan', 'mri']
+    severity: block
+    requires_tags: [no-evacuation]
+    message: Radiography, CT and MRI are not available aboard.
+    alternative: Point-of-care ultrasound.
+
+  - id: ENV-RINSE-SPIT
+    description: Liquids and droplets float
+    patterns: ['rinse and spit', 'gargle', 'spit (it )?out', 'let (it|the fluid) drain', 'irrigate .* (freely|open stream)']
+    max_gravity_g: 0.05
+    severity: warn
+    message: Free liquids and droplets float in microgravity; use a contained method (absorbent, suction, or closed irrigation).
+
+  - id: ENV-EVACUATE
+    description: No evacuation to definitive care on deep-space missions
+    patterns: ['evacuat', 'transfer (to|the patient to) (a |the )?hospital', 'emergency (room|department)', 'call (an )?ambulance', '\b911\b', 'go to (the |a )?(hospital|er|clinic)']
+    requires_tags: [no-evacuation]
+    severity: block
+    message: Evacuation to definitive care is not possible on this mission.
+    alternative: Treat aboard; prepare an SBAR packet for Earth support.
+
+  - id: ENV-REALTIME-CONSULT
+    description: Real-time consultation is not possible with long delays
+    patterns: ['call (the |your )?(doctor|physician|flight surgeon)', 'real[- ]time consult', 'speak (to|with) (a|the) (doctor|physician|flight surgeon) (now|immediately)']
+    requires_tags: [delayed-comm]
+    severity: warn
+    message: Real-time consultation is not possible at this communication delay.
+    alternative: Send an SBAR packet; expect a reply after the round-trip delay.
+
+  - id: ENV-LAB-SEND-OUT
+    description: No send-out laboratory testing
+    patterns: ['send (a |the )?(sample|specimen|culture) to (the )?lab', 'blood culture', 'urine culture', 'pathology']
+    requires_tags: [no-evacuation]
+    severity: block
+    message: Send-out laboratory tests and cultures are not available aboard.
+    alternative: Use onboard point-of-care tests (e.g. urine dipstick, glucometer) and clinical criteria.
+
+  - id: ENV-SURGERY
+    description: No surgical capability
+    patterns: ['surgical (consult|evaluation|referral)', 'refer (him|her|them|the patient) to (a )?surgeon', 'urolog(y|ist) (consult|referral)', 'lithotripsy', 'ureteroscopy']
+    requires_tags: [no-evacuation]
+    severity: block
+    message: Specialist and surgical referral is not available on this mission.
+    alternative: Manage aboard per protocol and consult Earth support asynchronously.
+
+  - id: ENV-SURFACE-DUST
+    description: Surface dust exposure changes respiratory differentials
+    patterns: ['dust (exposure|inhalation)']
+    tiers: [T3, T5]
+    severity: info
+    message: On planetary surfaces, consider habitat dust exposure (lunar dust irritation; Martian perchlorates).

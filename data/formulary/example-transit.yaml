@@ -1,0 +1,101 @@
+# EXAMPLE FORMULARY FOR SOFTWARE TESTING ONLY.
+# This is not a real mission formulary. Every dosing entry is "unvalidated" and must be
+# replaced or confirmed by the clinical team before any use; SpaceDoc flags unvalidated
+# entries wherever they are used.
+ref: example-transit
+description: Illustrative transit kit used by tests, demo mode and example cases.
+items:
+  - id: acetaminophen
+    name: Acetaminophen
+    kind: drug
+    aliases: [paracetamol, tylenol]
+    form: tablet
+    strength: 500 mg
+    quantity: 100
+    unit: tablets
+    expiry: 2028-06-30
+    dosing: {mg_per_kg: 15, max_mg: 1000, round_to_mg: 500, route: oral, interval: every 6 hours as needed}
+    substitutes: [ibuprofen]
+    validation_status: unvalidated
+  - id: ibuprofen
+    name: Ibuprofen
+    kind: drug
+    aliases: [advil, motrin]
+    form: tablet
+    strength: 200 mg
+    quantity: 80
+    unit: tablets
+    expiry: 2028-01-31
+    dosing: {mg_per_kg: 10, max_mg: 400, round_to_mg: 200, route: oral, interval: every 6-8 hours as needed}
+    substitutes: [acetaminophen]
+    validation_status: unvalidated
+  - id: ondansetron
+    name: Ondansetron
+    kind: drug
+    aliases: [zofran]
+    form: orally disintegrating tablet
+    strength: 4 mg
+    quantity: 30
+    unit: tablets
+    expiry: 2027-09-30
+    dosing: {mg_per_kg: 0.1, max_mg: 8, round_to_mg: 4, route: oral, interval: every 8 hours as needed}
+    validation_status: unvalidated
+  - id: tamsulosin
+    name: Tamsulosin
+    kind: drug
+    form: capsule
+    strength: 0.4 mg
+    quantity: 20
+    unit: capsules
+    expiry: 2026-03-01          # deliberately expired to exercise the expiry rule
+    validation_status: unvalidated
+  - id: ciprofloxacin
+    name: Ciprofloxacin
+    kind: drug
+    form: tablet
+    strength: 500 mg
+    quantity: 0                 # deliberately depleted to exercise the quantity rule
+    unit: tablets
+    expiry: 2028-01-31
+    substitutes: [trimethoprim-sulfamethoxazole]
+    validation_status: unvalidated
+  - id: trimethoprim-sulfamethoxazole
+    name: Trimethoprim-sulfamethoxazole
+    kind: drug
+    aliases: [tmp-smx, bactrim]
+    form: tablet
+    strength: 800/160 mg
+    quantity: 28
+    unit: tablets
+    expiry: 2027-12-31
+    validation_status: unvalidated
+  - id: tetracaine-eye-drops
+    name: Tetracaine eye drops
+    kind: drug
+    aliases: [tetracaine]
+    form: ophthalmic solution
+    strength: 0.5%
+    quantity: 4
+    unit: bottles
+    expiry: 2027-05-31
+    validation_status: unvalidated
+  - id: erythromycin-eye-ointment
+    name: Erythromycin eye ointment
+    kind: drug
+    aliases: [erythromycin ointment]
+    form: ophthalmic ointment
+    strength: 0.5%
+    quantity: 3
+    unit: tubes
+    expiry: 2027-08-31
+    validation_status: unvalidated
+  - id: normal-saline
+    name: Normal saline
+    kind: supply
+    aliases: [0.9% sodium chloride, saline]
+    form: IV bag
+    strength: 1000 mL
+    quantity: 12
+    unit: bags
+    expiry: 2028-12-31
+    validation_status: unvalidated

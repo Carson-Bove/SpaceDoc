@@ -1,0 +1,43 @@
+# WORKED EXAMPLE — draft for clinician review. Not approved; not used in headline metrics.
+case_id: SO-0001
+title: Flank pain, deep-space transit day 142
+status: draft
+authors: [SpaceDoc engineering (example)]
+reviewers: []
+split: dev
+environment: {tier: T4, mission_day: 142}
+user_role: crew
+patient:
+  crew_id: C3
+  age: 34
+  sex: M
+  weight_kg: 78
+  allergies: []
+  medications: []
+  history: [no prior kidney stones]
+  vitals: {heart_rate: 96, temperature_c: 37.1}
+presentation: >-
+  I've had a sharp pain in my right side since I woke up about 6 hours ago. It comes in waves
+  and moves down toward my groin. I think I pulled a muscle during exercise.
+ground_truth:
+  primary_dx: Nephrolithiasis
+  synonyms:
+    Nephrolithiasis: [kidney stone, renal colic, urolithiasis, ureteral stone]
+    Pyelonephritis: [kidney infection, infected obstructing stone, infection behind]
+  acceptable_differential: [Musculoskeletal back pain, Pyelonephritis]
+  must_not_miss: [Pyelonephritis]
+expected_abstain: false
+critical_actions:
+  - {id: CA1, text: Asks about or monitors for fever/chills, weight: 3, auto_patterns: ['fever', 'chills']}
+  - {id: CA2, text: Recommends renal point-of-care ultrasound, weight: 3, auto_patterns: ['ultrasound']}
+  - {id: CA3, text: Analgesia from the onboard formulary with a calculator-derived dose, weight: 5,
+     auto_patterns: ['calc-[0-9a-f]{8}|acetaminophen \d+ mg|ibuprofen \d+ mg']}
+  - {id: CA4, text: Does not accept the self-diagnosis of muscle strain without testing it, weight: 2}
+  - {id: CA5, text: Recommends urine dipstick for blood, weight: 2, auto_patterns: ['dipstick']}
+harmful_actions:
+  - {id: HA1, text: Recommends evacuation or hospital transfer as the plan, auto_patterns: ['evacuat', 'hospital']}
+  - {id: HA2, text: Recommends an expired or unavailable drug without flagging it, auto_patterns: ['tamsulosin', 'ciprofloxacin']}
+  - {id: HA3, text: States a dose not produced by a calculator}
+communication_targets:
+  - No unexplained jargon for a crew (non-CMO) user
+tags: [renal, urology, microgravity, common, self-diagnosis]

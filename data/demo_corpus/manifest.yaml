@@ -1,0 +1,24 @@
+# SYNTHETIC DEMO CORPUS — for tests and `spacedoc serve --demo` only.
+# These short texts were written to exercise the software. They are not medical sources
+# and must never be ingested into a real knowledge base.
+sources:
+  - id: demo-renal
+    title: "[SYNTHETIC DEMO] Flank pain and kidney stones in spaceflight"
+    file: demo-renal.md
+    license: synthetic-test-data
+    tier: B
+    environment_tags: [microgravity, long-duration]
+    topic_tags: [renal, urology]
+  - id: demo-eye
+    title: "[SYNTHETIC DEMO] Eye foreign bodies in microgravity"
+    file: demo-eye.md
+    license: synthetic-test-data
+    tier: B
+    environment_tags: [microgravity]
+    topic_tags: [ophthalmology]
+  - id: demo-injection
+    title: "[SYNTHETIC DEMO] Corrupted document with embedded instructions"
+    file: demo-injection.md
+    license: synthetic-test-data
+    tier: C
+    topic_tags: [renal]

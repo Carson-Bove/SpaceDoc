@@ -1,0 +1,24 @@
+tier: T4
+name: Deep-space transit
+gravity_g: 0.0
+one_way_delay_s: 840
+link_available: true
+evacuation: none
+mission_day: 142
+formulary_ref: example-transit
+equipment:
+  - ultrasound
+  - ecg_12lead
+  - pulse_oximeter
+  - blood_pressure_cuff
+  - thermometer
+  - urine_dipstick
+  - glucometer
+  - defibrillator
+  - iv_supplies
+  - pressure_infuser
+  - eye_irrigation_kit
+  - fluorescein_strips
+  - otoscope
+  - stethoscope
+  - patient_restraint

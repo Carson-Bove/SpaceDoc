@@ -1,0 +1,14 @@
+# SpaceDoc Phase 1 configuration. Paths are relative to this file.
+
+llm_base_url = "http://localhost:11434/v1"   # Ollama's OpenAI-compatible API
+chat_model = "qwen3:8b"                      # orchestrator; compare candidates with `spacedoc bench`
+embed_model = "qwen3-embedding:0.6b"         # retrieval embeddings
+checker_model = "bespoke-minicheck"          # claim-vs-source grounding checker
+
+db_path = "spacedoc.db"
+audit_path = "audit/audit.jsonl"
+
+top_k = 6
+min_support_fraction = 0.5
+consistency_samples = 1
+default_tier = "T4"

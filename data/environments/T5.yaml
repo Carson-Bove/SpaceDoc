@@ -1,0 +1,25 @@
+tier: T5
+name: Mars surface
+gravity_g: 0.38
+one_way_delay_s: 720
+link_available: true
+evacuation: none
+formulary_ref: example-transit
+equipment:
+  - ultrasound
+  - ecg_12lead
+  - pulse_oximeter
+  - blood_pressure_cuff
+  - thermometer
+  - urine_dipstick
+  - glucometer
+  - defibrillator
+  - iv_supplies
+  - pressure_infuser
+  - eye_irrigation_kit
+  - fluorescein_strips
+  - otoscope
+  - stethoscope
+  - patient_restraint
+  - spirometer
+notes: Communication blackout of about two weeks near solar conjunction.
