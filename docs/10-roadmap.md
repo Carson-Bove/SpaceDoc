@@ -5,7 +5,14 @@ Phases are gated by **exit criteria**, not dates. Each phase is also a learning 
 ## Phase 0 — Design & research ✅ (this repo)
 Architecture, requirements, research, validation design.
 
-## Phase 1 — Thin vertical slice on the MacBook
+## Phase 1 — Thin vertical slice on the MacBook (in progress)
+
+**Status:** the code is built and tested in demo mode. See [phase1-getting-started.md](phase1-getting-started.md).
+
+| Done | Waiting on |
+|---|---|
+| Two-pass orchestrator, hybrid retrieval, verification pipeline, calculators, example formulary, 17 draft feasibility rules, audit log, GUI, CLI, SpaceOSCE schema + 3 draft cases, model bench, 54 tests + CI | Real-model runs on the Mac (`spacedoc bench`); open-access corpus (network access); clinician review of rules, formulary and cases; ~30 approved cases |
+
 **Goal:** one question type (general medical Q&A plus a simple differential) working end-to-end, *with* the verification layer, measured by a first harness.
 
 | Work item | Components |

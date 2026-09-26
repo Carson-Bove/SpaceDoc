@@ -4,7 +4,7 @@
 
 SpaceDoc supports the Crew Medical Officer (CMO) and the rest of the crew on long-duration and non-terran missions (lunar surface, deep-space transit, Mars), where communication delay and the lack of evacuation options make Earth-based medical support slow or unavailable.
 
-> **Status:** Phase 0: design and research. There is no code yet.
+> **Status:** Phase 1 in progress. There is a working prototype you can run locally (demo mode needs no model); see [Getting started](docs/phase1-getting-started.md).
 >
 > **Not for clinical use.** SpaceDoc is a research prototype. Nothing in this repository has been validated for diagnosing or treating anyone.
 
@@ -37,7 +37,9 @@ SpaceDoc supports the Crew Medical Officer (CMO) and the rest of the crew on lon
 | 08 | [Validation framework](docs/08-validation-framework.md) | How to *quantify* performance: SpaceOSCE, rubrics, rater reliability |
 | 09 | [Safety & regulatory](docs/09-safety-and-regulatory.md) | Hazard analysis, FDA/IEC/NASA standards, analog missions, funding |
 | 10 | [Roadmap](docs/10-roadmap.md) | Phased plan and open questions |
-| — | [Glossary](docs/glossary.md) · [References](docs/references.md) | Terms and sources |
+| — | [Getting started (Phase 1)](docs/phase1-getting-started.md) | Install, demo mode, real models, bench |
+| — | [SpaceOSCE authoring guide](docs/spaceosce-authoring-guide.md) | For clinicians writing evaluation cases |
+| — | [Glossary](docs/glossary.md) · [References](docs/references.md) · [Research backlog](docs/research-backlog.md) | Terms, sources, and sources awaiting full-text review |
 
 Each document ends with a **"How this works in AI systems"** section. These explain the underlying AI or ML concept for an engineer who is new to machine learning.
 
@@ -49,3 +51,12 @@ Each document ends with a **"How this works in AI systems"** section. These expl
 4. **Environment is a first-class input.** A correct answer on Earth can be wrong on Mars.
 5. **Same facts, different words.** How much a user understands changes the presentation, never the medical content.
 6. **Runs offline, on modest hardware.**
+
+## Quick start
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+spacedoc serve --demo      # http://127.0.0.1:8765, scripted demo, no model needed
+pytest -q
+```

@@ -1,0 +1,23 @@
+# SpaceDoc knowledge-base manifest.
+#
+# Each entry describes one source document. `spacedoc corpus fetch` downloads `url` into
+# corpus/files/<file>; `spacedoc corpus ingest` chunks and embeds it. Record sha256 after the
+# first download so later fetches detect changed files.
+#
+# Only add sources that were read and whose license permits this use.
+# Tiers: A mission-authoritative, B space-medicine evidence, C general clinical, D textbook.
+#
+# Example entry:
+#   - id: nasa-std-3001-v1
+#     title: NASA-STD-3001 Volume 1, Crew Health
+#     file: nasa-std-3001-vol1.pdf
+#     url: https://...
+#     sha256: null
+#     license: NASA public release
+#     tier: B
+#     environment_tags: [microgravity, partial-gravity, long-duration]
+#     topic_tags: [standards, levels-of-care]
+#     published: "2023"
+#
+# Empty until network access to the source hosts is available; see docs/research-backlog.md.
+sources: []
