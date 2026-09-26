@@ -1,0 +1,146 @@
+# 04 — Knowledge, Training Data & the Aerospace Context Model
+
+## 1. RAG first, fine-tune second
+
+There are two ways to "teach" an LLM aerospace medicine:
+
+| | Retrieval-augmented generation (RAG) | Fine-tuning |
+|---|---|---|
+| What it changes | What the model **reads** at answer time | The model's **weights** (how it behaves) |
+| Analogy | Open-book exam with a curated reference shelf | Changing how the student thinks and writes |
+| Citable? | Yes, every claim points to a passage | No, knowledge is diffused into weights |
+| Updatable? | Swap a document and the change takes effect immediately | Requires retraining and re-validation |
+| Hallucination effect | Reduces it (grounding) | Can *increase* confident errors if used to inject facts |
+
+**SpaceDoc decision:**
+- **Knowledge comes through RAG.** This is required for SR-01 traceability and for the Earth-uplink update model (NFR-04).
+- **Fine-tuning (LoRA) is reserved for behavior**, and only if base models fall short in evaluation:
+  - reliably using the canonical JSON and tools
+  - applying the environment context when reasoning
+  - abstaining appropriately
+  - role-register style
+
+## 2. Knowledge base design
+
+### 2.1 Source tiers
+
+| Tier | Content | Examples | Licensing notes |
+|---|---|---|---|
+| **A: Mission-authoritative** | What this mission actually has and does | Mission formulary, equipment list, onboard procedures and checklists, crew baselines | Provided by the mission. Highest priority in retrieval |
+| **B: Space-medicine evidence** | Spaceflight-specific risks and standards | NASA-STD-3001 Vol 1 & 2; NASA HRP Evidence Reports (e.g. SANS, medical conditions risk); exploration medical condition lists (IMM / SMEMCL); ExMC publications | NASA public-release documents: generally usable, confirm per document |
+| **C: General clinical references** | Terrestrial medicine | Open clinical guidelines; PubMed Central Open Access subset; NCBI Bookshelf titles; WHO guidance | Per-article/per-title licenses vary (CC BY vs CC BY-NC-ND). Track license in metadata |
+| **D: Textbooks** | Deep reference | *Principles of Clinical Medicine for Space Flight*; *Fundamentals of Aerospace Medicine*; wilderness/austere medicine texts | Copyrighted. Needs a license or a publisher agreement before ingestion |
+
+### 2.2 Chunk metadata (every passage carries this)
+
+```yaml
+source_id: nasa-hrp-sans-2017
+title: "Evidence Report: Risk of SANS"
+tier: B
+authority: NASA HRP
+published: 2017-11
+version_hash: 9f3c…
+license: public-release
+environment_tags: [microgravity, long-duration]   # used to filter/boost
+topic_tags: [ophthalmology, neuro, SANS]
+evidence_level: review                            # e.g. guideline / RCT / review / expert
+supersedes: null
+```
+
+### 2.3 Retrieval pipeline
+
+1. **Query rewrite:** the LLM expands the question, adding synonyms and spaceflight-specific terms.
+2. **Hybrid search:** keyword search (BM25, which is strong on drug names and acronyms) plus dense vector search (strong on paraphrase).
+3. **Filter and boost:** by environment tags that match the current tier, tier A over B/C, and recency.
+4. **Rerank:** a cross-encoder reranker picks the top ~5–8 passages.
+5. **Pass with IDs:** passages go to the orchestrator with citation IDs.
+
+**Retrieval quality is measured separately** with recall@k on a labeled question→passage set. When the right passage never reaches the model, even perfect verification can only abstain.
+
+## 3. Datasets for evaluation and tuning (not knowledge)
+
+| Use | Candidates | Access |
+|---|---|---|
+| Medical QA sanity baselines | MedQA, PubMedQA, MedHallu (hallucination detection) | Open |
+| Clinical-conversation evaluation | HealthBench (rubric-based) | Open |
+| OSCE-style evaluation | SpaceOSCE, our own clinician-written cases ([08](08-validation-framework.md)) | Created with your clinicians |
+| Vitals/EHR trends | MIMIC-IV, eICU (credentialed); open waveform sets | After CITI + PhysioNet credentialing |
+| Device signals | See [05](05-spacedoc-minis.md) | Mostly open |
+
+## 4. The aerospace context model
+
+Every reasoning step, rule check and retrieval receives an **Environment Context** object (component C-12):
+
+```yaml
+mission_tier: T4            # LEO / cislunar / lunar surface / transit / Mars surface
+gravity_g: 0.0
+comm:
+  one_way_delay_s: 840
+  link_available: true
+  next_blackout: 2027-01-14
+mission_day: 142
+habitat:
+  cabin_pressure_kPa: …     # affects DCS risk, O2 delivery
+  o2_fraction: …
+  co2_mmHg: …               # elevated CO2 → headaches, overlaps SANS discussion
+eva_schedule: [...]
+radiation:
+  cumulative_mSv_by_crew: {...}
+evacuation: none
+formulary_ref: inv-2026-09-01
+equipment_ref: eq-2026-09-01
+```
+
+### 4.1 Environment-specific clinical knowledge (starter list for clinician review)
+
+**Physical exam and procedures**
+
+| Topic | Microgravity (T1, T2, T4) | Partial gravity (T3 0.17 g, T5 0.38 g) |
+|---|---|---|
+| Orthostatic vital signs / tilt | Not meaningful as on Earth (no gravitational pooling) | Reduced effect; interpret against partial-g baseline |
+| Patient positioning (e.g. Trendelenburg, recovery position) | No "head-down" by posture; the patient must be restrained (e.g. Crew Medical Restraint System) | Partially effective; untested |
+| CPR | Special techniques are needed. The ESAM/DGLRM guideline recommends **Evetts-Russomano** for immediate BLS and the **handstand** method with the patient restrained for ALS | Terrestrial technique degraded (less rescuer body weight); an active research area |
+| Fluids and IVs | Air bubbles do not rise and separate; bags need pressure infusion | Partial separation |
+| Fluid levels on imaging | Free fluid does not layer dependently the same way | Altered |
+| Vomiting / airway | Emesis and droplets float; aspiration and contamination risk for cabin and crew | Reduced but present |
+| Wound irrigation, bleeding | Fluids form floating globules; containment needed | Altered |
+
+**Conditions with elevated or unique risk in spaceflight** (seed topics for the knowledge base and the differential engine's priors):
+- **Space adaptation:** space motion sickness, headache, nasal congestion (fluid shift), back pain (spinal elongation), sleep disruption
+- **SANS** (Spaceflight Associated Neuro-ocular Syndrome): optic disc edema, globe flattening, choroidal folds, hyperopic shift. Most long-duration crew show one or more signs, and severity increases with mission duration.
+- **Musculoskeletal:** bone mineral loss, muscle atrophy, deconditioning. Injury risk on return to gravity and during partial-g EVA.
+- **Renal stones:** increased risk from bone demineralization and hydration changes. A classic "flank pain in space" differential.
+- **EVA-related:** decompression sickness, suit-related abrasions and fingernail injuries, hypothermia/hyperthermia
+- **Cardiovascular:** orthostatic intolerance after gravity transitions; arrhythmia monitoring
+- **Radiation:** cumulative exposure, acute events from solar particle events
+- **Immune:** latent viral reactivation, altered infection risk
+- **Eye:** foreign bodies (floating debris), corneal abrasions
+- **Behavioral health:** isolation, confinement, sleep (flagged for specialist design)
+- **Pharmacology:**
+  - The ISS formulary holds ~106 medications, of which roughly half have terrestrial shelf lives ≤ 36 months when stored in original packaging.
+  - Flight-stored medications show modestly faster loss of active ingredient, and repackaging is a major factor.
+  - Absorption and metabolism may change in flight.
+  - The formulary tool (C-07) must track expiry, and the rules engine must down-weight near-expiry items.
+
+**Planetary dust**
+- **Lunar dust:** Apollo crews reported transient "lunar hay fever": sneezing, watery eyes, sore throat. The concern is that fine, jagged, electrostatically charged particles are re-aerosolized in the habitat. Long-term, a silicosis-like pneumoconiosis is the hypothesized risk. The evidence is still evolving: a 2025 study found lunar simulant dust caused *less* pulmonary toxicity than some Earth dusts. SpaceDoc should present this as an area of uncertainty.
+  - *Terminology note:* there is no standard condition called "volcanosis". The relevant terms are **lunar dust toxicity**, **lunar hay fever** (acute), and **pneumoconiosis/silicosis-like disease** (chronic, by analogy to volcanic ash and silica exposure on Earth).
+- **Mars dust:** very fine (~µm) particles plus **perchlorates** (~0.5–1% of soil), which can inhibit thyroid iodide uptake. Also silica and iron oxides. Plausible endpoints include respiratory irritation, thyroid dysfunction and, speculatively, hematologic effects. Monitoring thyroid function becomes relevant on Mars-surface missions.
+
+This content goes into the knowledge base as tagged passages. The **feasibility subset** (what cannot be done where) is also encoded as deterministic rules in the verification layer ([03](03-hallucination-prevention.md) L6).
+
+## 5. Fine-tuning plan (if and when needed)
+
+1. **Baseline first:** measure base models plus RAG on the Phase 1 harness.
+2. **Collect failures:** turn them into training examples, written or checked by clinicians. Synthetic data is allowed only with human review.
+3. **Train:** LoRA on the desktop GPU (8B models at 4-bit with QLoRA fit in 8 GB VRAM for small batches; verify in practice).
+4. **Re-evaluate on held-out cases:** never on the cases used for training.
+5. **Ship as a versioned adapter:** small, swappable and roll-back-able (NFR-04).
+
+---
+
+## How this works in AI systems: embeddings, and what LoRA does
+
+**Embeddings.** An embedding model turns a passage of text into a vector, a list of ~1,000 numbers. It is trained so that passages with similar *meaning* end up near each other. "Renal calculus" and "kidney stone" land close together even though they share no words. Retrieval is then a nearest-neighbor search using cosine similarity (the angle between vectors). Keyword search complements it: the vector search can blur "metoprolol" and "metformin", but keyword search won't.
+
+**LoRA (Low-Rank Adaptation).** Full fine-tuning updates all 8 billion weights. LoRA freezes them and learns a small correction for selected weight matrices: ΔW = A·B, where A and B are thin matrices (rank ~8–64). Think of it as adding a low-order correction term to a large validated model instead of redesigning it. It is cheap to train, tiny to store (tens of MB), and can be removed to recover the original behavior.
