@@ -32,7 +32,7 @@ class GenParams:
     top_k: int | None = None
     seed: int | None = None
     max_tokens: int | None = None
-    num_ctx: int | None = None  # context window; honoured by the Ollama backend only
+    num_ctx: int | None = None  # context window; honored by the Ollama backend only
     think: bool | None = None  # thinking mode for models that support it; None = model default
     logprobs: int = 0  # >0: also return the top-N alternatives for the first output token
 
@@ -176,7 +176,7 @@ class OllamaLLM:
             "options": {k: v for k, v in options.items() if v is not None},
             # Fail instead of silently dropping text that does not fit the context window:
             # truncate=false for the prompt, shift=false during generation. Recent Ollama
-            # versions honour both; older ones ignore them, and the prompt-token check below
+            # versions honor both; older ones ignore them, and the prompt-token check below
             # still catches a shortened prompt.
             "truncate": False,
             "shift": False,
@@ -271,7 +271,7 @@ class OpenAICompatLLM:
             if value is not None:
                 body[key] = value
         if p.top_k is not None:
-            body["top_k"] = p.top_k  # extension: llama.cpp and LM Studio honour it
+            body["top_k"] = p.top_k  # extension: llama.cpp and LM Studio honor it
         if p.think is not None:
             # Ollama and OpenAI read reasoning_effort; llama.cpp reads chat_template_kwargs.
             body["reasoning_effort"] = "medium" if p.think else "none"

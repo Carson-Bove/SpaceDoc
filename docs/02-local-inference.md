@@ -37,6 +37,12 @@ total    ≈ weights + KV cache + runtime overhead (~0.5–1 GB)
 
 A 12–14B orchestrator at 4-bit (~7–8.5 GB; the Gemma 4 report lists 7.65 GB of weights for its 12B model at Q4_0 [[R27](references.md#r27)]) fits on its own but leaves no room for the verifier stack. On this machine, **one 8B model plus small specialist models beats one bigger model with no verification.**
 
+**The Phase 1 configuration is heavier than this budget.** Two differences:
+- **Checker.** Phase 1 uses the 7B Bespoke-MiniCheck (4.7 GB in Ollama), not the 0.77B MiniCheck, so the orchestrator and checker do not fit in memory together. Ollama swaps them, which adds load time to each answer.
+- **Context window.** Qwen3-8B has 36 layers and 8 KV heads ([model card](https://huggingface.co/Qwen/Qwen3-8B)); with head_dim 128, its KV cache is 2 × 36 × 8 × 128 × 2 bytes ≈ 147 kB per token, so the Phase 1 window of 12,288 tokens needs about 1.8 GB. Ollama's default window is only 4,096 tokens on machines with under 24 GiB of VRAM, which is too small for SpaceDoc's prompts ([Phase 1 guide](phase1-getting-started.md#context-window-and-thinking)).
+
+Moving to the 0.77B checker is the main way to bring Phase 1 back inside the budget; measure its accuracy on the SpaceOSCE cases first.
+
 **Speed.** Generating each new token requires reading every weight from memory once. Decode speed is therefore bounded by `memory bandwidth ÷ model size` ≈ 120 GB/s ÷ 5 GB ≈ **~24 tokens/s upper bound** on the M4. Expect roughly 15–25 tokens/s in practice, and less when thermally throttled. Reading the prompt ("prefill") is compute-bound and much faster per token. Measure both in Phase 1.
 
 **The desktop.** An 8B 4-bit model fits entirely in 8 GB VRAM, which is fast (GPU bandwidth is typically 250–450 GB/s). A 27–32B model at 4-bit (~16–19 GB) must run mostly on CPU RAM. DDR4 dual-channel gives ~40–50 GB/s, so that is only a few tokens/s. That is too slow for chat but fine for **overnight batch evaluation** with a stronger judge model.
@@ -52,6 +58,8 @@ A 12–14B orchestrator at 4-bit (~7–8.5 GB; the Gemma 4 report lists 7.65 GB 
 
 **Recommendation.** Put every model behind an **OpenAI-compatible local HTTP API**, so SpaceDoc code never depends on a specific runtime. Start with **llama.cpp** (identical GGUF files on both machines, mature constrained decoding). Benchmark **MLX** on the Mac as the optimization path. Revisit container-based deployment for the analog-deployment phase.
 
+**Phase 1 exception: Ollama's native API.** Phase 1 talks to Ollama through its native `/api/chat` endpoint by default. Ollama's OpenAI-compatible endpoint cannot set the context window or `top_k` per request, and the context window matters (see §2). The client still supports any OpenAI-compatible server (`llm_backend = "openai"`), so the runtime can change later.
+
 The runtime comparison in [[R28](references.md#r28)] used a Mac Studio (M2 Ultra, 192 GB) and one model family, so its numbers will not carry over directly to a 16 GB M4. Treat it as a ranking to re-check, not as a speed estimate.
 
 ## 4. Candidate models (as of Sept 2026; re-check at Phase 1)
@@ -64,7 +72,7 @@ The runtime comparison in [[R28](references.md#r28)] used a Mac Studio (M2 Ultra
 | **Phi-4** | 14B | Check the model card | Comparison point; tight on 16 GB (see §2). Technical report not yet read |
 | **Llama 3.x** | 8B | Check the model card | Widely supported baseline. Technical report not yet read |
 | **Qwen3-Embedding / Reranker** | 0.6B, 4B, 8B | Apache 2.0 | Strong MTEB results in [[R24](references.md#r24)]; the 0.6B fits easily |
-| **MiniCheck** | 0.77B (Flan-T5) [[R17](references.md#r17)]; 7B (Bespoke-MiniCheck, the Phase 1 default; check the model card) | Check the model cards | Purpose-built "is this sentence supported by this document?" checker |
+| **MiniCheck** | 0.77B (Flan-T5) [[R17](references.md#r17)]; 7B (Bespoke-MiniCheck, the Phase 1 default, fine-tuned from InternLM2.5-7B-chat per its [model card](https://huggingface.co/bespokelabs/Bespoke-MiniCheck-7B)) | 0.77B: check the model card. Bespoke-MiniCheck-7B: **CC BY-NC 4.0** (non-commercial; commercial licenses from Bespoke Labs) per its model card | Purpose-built "is this sentence supported by this document?" checker |
 
 **Do not pick a model because it has "Med" in its name.** The MedHallu benchmark found that when relevant knowledge is supplied (which is exactly what RAG does), general-purpose LLMs can outperform medically fine-tuned ones at spotting hallucinations [[R18](references.md#r18)]. SpaceDoc selects models **empirically**. Shortlist 3–4 and score them on the Phase 1 harness ([08](08-validation-framework.md)) on:
 1. tool-call and JSON-schema reliability
@@ -72,7 +80,9 @@ The runtime comparison in [[R28](references.md#r28)] used a Mac Studio (M2 Ultra
 3. abstention when sources are missing
 4. latency on the M4
 
-For Qwen3, score both thinking and non-thinking modes. The Qwen3 report found that thinking mode slightly lowered long-context retrieval scores (RULER), and it recommends different sampling settings for each mode [[R23](references.md#r23)].
+For Qwen3, score both thinking and non-thinking modes (`spacedoc bench --thinking both`). The Qwen3 report found that thinking mode slightly lowered long-context retrieval scores (RULER), and it recommends different sampling settings for each mode [[R23](references.md#r23)]. The Qwen3-8B model card also warns against greedy decoding with thinking on, because it can cause endless repetition. Phase 1 uses the card's settings for each mode.
+
+**License check before any non-research use.** The Phase 1 grounding checker (Bespoke-MiniCheck-7B) is licensed for non-commercial use only. That fits a research prototype, but a product would need a commercial license or a different checker.
 
 ## 5. Toward flight hardware
 

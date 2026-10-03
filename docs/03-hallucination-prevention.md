@@ -65,6 +65,14 @@ For each claim–citation pair, a separate **entailment model** asks: *"Does pas
 
 Outcome per claim: `supported` / `unsupported` / `contradicted`. A contradicted claim triggers a revision. An unsupported high-risk claim is removed, and the answer states the gap.
 
+**How Phase 1 applies the checker** (Bespoke-MiniCheck-7B):
+- **One sentence at a time.** The checker's model card says multi-sentence claims should be split into sentences first ([model card](https://huggingface.co/bespokelabs/Bespoke-MiniCheck-7B)). Every sentence of a claim must be supported, or the claim is hidden.
+- **Combined sources.** A sentence that no single cited passage supports is checked once more against up to three cited passages together, so a claim that joins two sources is not wrongly hidden.
+- **Patient claims (H5).** Claims of kind `patient` are checked against the patient record, not only for numbers. Without a record they are hidden.
+- **The summary.** The summary at the top of the answer is checked against what is shown below it: shown claims, the differential, actions that are not blocked, and the patient record. Its numbers must appear there too. Unsupported sentences are removed and logged (`SUMMARY-TRIMMED`, `SUMMARY-REPLACED`). This is a partial form of the L8 check, applied before rendering.
+- **Confidence.** When Ollama returns token probabilities, the verdict carries P(yes). Phase 1 only records it; a threshold should be set from SpaceDoc-specific labeled data (§3).
+- **Failures.** If a check cannot run (model error, context too small), the claim counts as unsupported and the answer notes `CHECK-ERROR`.
+
 ### L5 — Uncertainty estimation
 
 Even supported answers can be fragile. Techniques, in order of cost:
@@ -104,6 +112,8 @@ After verification, the canonical answer is rendered for the user's role ([07](0
 ### L9 — Audit trail
 
 Every retrieval, tool call, model version, verifier verdict and final output is logged (SR-08). This supports after-action review, debugging, and the evidence a safety case needs.
+
+When the orchestrator model "thinks" before answering, its notes are logged with the answer for clinical review, together with any summary made of them ([Phase 1 guide](phase1-getting-started.md#reviewing-the-models-reasoning)). The notes are unverified: they are the model's own account and may not reflect how the answer was produced. They are never shown to the crew and never count as evidence for a claim.
 
 ## 3. Measuring the layer itself
 

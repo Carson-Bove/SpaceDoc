@@ -144,7 +144,7 @@ The laptop runs the system. The desktop trains minis and runs large overnight ev
 | Concern | Proposal | Rationale |
 |---|---|---|
 | Language | Python | Dominant ML ecosystem |
-| LLM serving | `mlx-lm` or llama.cpp / Ollama (OpenAI-compatible local API) | Mature on Apple Silicon; swappable backend |
+| LLM serving | `mlx-lm` or llama.cpp / Ollama (OpenAI-compatible local API; Phase 1 uses Ollama's native API for per-request context size) | Mature on Apple Silicon; swappable backend |
 | Agent loop | A small hand-written loop plus structured outputs, before any framework | Easier to learn, audit and verify; add a framework only if needed |
 | Structured output | JSON schema-constrained decoding (llama.cpp grammars, MLX / Outlines-style) | Guarantees parseable canonical answers |
 | Retrieval | SQLite FTS5 (keyword) + vector index + local reranker | Hybrid beats either alone on medical terminology |
