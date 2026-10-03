@@ -1,7 +1,7 @@
 """The verification pipeline (component C-11): turns a draft into a verified answer.
 
-Order: citation validity -> grounding (L4) -> numbers (L3/L6) -> formulary, equipment and
-environment rules (L6) -> risk gating (L7) -> abstention decision.
+Order: citation validity -> numbers (L3/L6) -> grounding (L4) -> formulary, equipment and
+environment rules (L6) -> risk gating (L7) -> abstention decision -> summary check.
 """
 
 from __future__ import annotations
@@ -23,6 +23,12 @@ from spacedoc.tools.calculators import CalcResult
 from spacedoc.tools.formulary import Formulary
 from spacedoc.verify import rules
 from spacedoc.verify.grounding import GroundingChecker, GroundingVerdict, split_sentences
+
+# Shown in place of a model summary that failed its check.
+SUMMARY_REMOVED = (
+    "The model's summary was removed because it could not be checked against the answer below."
+)
+SUMMARY_ABSTAINED = "SpaceDoc cannot answer this reliably."
 
 
 class Verifier:
@@ -57,38 +63,79 @@ class Verifier:
             return GroundingVerdict(False, f"{label}: check failed")
 
     def _ground(
-        self,
-        claim: str,
-        cites: list[str],
-        by_cid: dict[str, Passage],
-        findings: list[Finding],
+        self, claim: str, docs: dict[str, str], findings: list[Finding]
     ) -> tuple[bool, str]:
-        """Is every sentence of the claim supported by its cited passages?
+        """Is every sentence of the claim supported by one of `docs` (label -> text)?
 
         MiniCheck checks one sentence at a time, so multi-sentence claims are split. Each
-        sentence is checked against each cited passage; if none supports it alone and the claim
-        cites several passages, it is checked against up to three of them together (a claim may
-        combine facts from two passages).
+        sentence is checked against each document; if none supports it alone and there are
+        several, it is checked against up to three of them together (a claim may combine facts
+        from two passages).
         """
         notes = []
         for sentence in split_sentences(claim) or [claim]:
             ok = False
-            for cid in cites:
-                v = self._check(sentence, by_cid[cid].text, cid, findings)
-                notes.append(f"{cid}: {v.raw}")
+            for label, doc in docs.items():
+                v = self._check(sentence, doc, label, findings)
+                notes.append(f"{label}: {v.raw}")
                 if v.supported:
                     ok = True
                     break
-            if not ok and len(cites) >= 2:
-                group = cites[:3]
-                doc = "\n\n".join(by_cid[c].text for c in group)
+            if not ok and len(docs) >= 2:
+                group = list(docs)[:3]
                 label = "+".join(group)
-                v = self._check(sentence, doc, label, findings)
+                v = self._check(sentence, "\n\n".join(docs[g] for g in group), label, findings)
                 notes.append(f"{label} together: {v.raw}")
                 ok = v.supported
             if not ok:
                 return False, "; ".join(notes)
         return True, "; ".join(notes)
+
+    def _check_summary(
+        self,
+        summary: str,
+        evidence: str,
+        abstained: bool,
+        findings: list[Finding],
+    ) -> str:
+        """The summary is read first, so it must not say more than the checked answer below it.
+
+        Each sentence needs its numbers in `evidence` and must be supported by it. Unsupported
+        sentences are dropped; if none remain, a neutral sentence replaces the summary.
+        """
+        allowed = rules.numbers_in(evidence)
+        kept, dropped = [], []
+        for sentence in split_sentences(summary) or [summary]:
+            untraced = rules.numbers_in(sentence) - allowed
+            if untraced:
+                dropped.append(f'"{sentence}" (number(s) {", ".join(sorted(untraced))} untraced)')
+            elif not evidence.strip():
+                dropped.append(f'"{sentence}" (nothing checked to support it)')
+            elif self._check(sentence, evidence, "summary", findings).supported:
+                kept.append(sentence)
+            else:
+                dropped.append(f'"{sentence}" (not supported by the checked answer)')
+        if not dropped:
+            return summary
+        if kept:
+            findings.append(
+                Finding(
+                    rule_id="SUMMARY-TRIMMED",
+                    severity="warn",
+                    target="answer",
+                    message="Removed from the summary: " + "; ".join(dropped),
+                )
+            )
+            return " ".join(kept)
+        findings.append(
+            Finding(
+                rule_id="SUMMARY-REPLACED",
+                severity="warn",
+                target="answer",
+                message="The model's summary was not shown: " + "; ".join(dropped),
+            )
+        )
+        return SUMMARY_ABSTAINED if abstained else SUMMARY_REMOVED
 
     def verify(
         self,
@@ -99,10 +146,13 @@ class Verifier:
         env: EnvironmentContext,
         patient: dict[str, Any] | None = None,
         extra_findings: list[Finding] | None = None,
+        check_summary: bool = True,
     ) -> VerifiedAnswer:
+        """`check_summary=False` is for summaries SpaceDoc writes itself (failure messages)."""
         by_cid = {p.cid: p for p in passages}
         calcs = {c.calc_id: c for c in calc_results}
         ptext = rules.patient_text(patient)
+        precord = rules.patient_document(patient)
         findings: list[Finding] = list(extra_findings or [])
         verdicts: list[ClaimVerdict] = []
 
@@ -137,12 +187,17 @@ class Verifier:
                     )
                 )
             elif claim.kind == "patient":
+                if patient:
+                    supported, detail = self._ground(claim.text, {"record": precord}, findings)
+                    detail = f"Checked against the patient record: {detail}"
+                else:
+                    supported, detail = False, "No patient record was provided"
                 verdicts.append(
                     ClaimVerdict(
                         claim=claim,
-                        status="supported",
-                        shown=True,
-                        detail="From the patient record (numbers checked)",
+                        status="supported" if supported else "unsupported",
+                        shown=supported,
+                        detail=detail,
                     )
                 )
             elif not valid_cites:
@@ -155,7 +210,8 @@ class Verifier:
                     )
                 )
             else:
-                supported, detail = self._ground(claim.text, valid_cites, by_cid, findings)
+                docs = {cid: by_cid[cid].text for cid in valid_cites}
+                supported, detail = self._ground(claim.text, docs, findings)
                 verdicts.append(
                     ClaimVerdict(
                         claim=claim,
@@ -247,10 +303,24 @@ class Verifier:
         if failure:
             abstained, reason = True, failure.message
 
+        summary = draft.summary
+        if check_summary:
+            # What the crew sees below the summary: shown claims, the differential (hidden when
+            # abstaining), actions that are not blocked, and the patient record.
+            evidence = [v.claim.text for v in verdicts if v.shown]
+            if not abstained:
+                evidence += [
+                    f"{d.condition}: {d.likelihood} likelihood." for d in draft.differential
+                ]
+            evidence += [a.action.text for a in action_verdicts if a.status != "blocked"]
+            if patient:
+                evidence.append(f"Patient record:\n{precord}")
+            summary = self._check_summary(summary, "\n".join(evidence), abstained, findings)
+
         return VerifiedAnswer(
             question=question,
             environment=env.summary(),
-            summary=draft.summary,
+            summary=summary,
             claims=verdicts,
             differential=draft.differential,
             actions=action_verdicts,

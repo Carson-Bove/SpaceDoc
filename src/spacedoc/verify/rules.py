@@ -237,3 +237,21 @@ def screen_passage(passage: Passage) -> Finding | None:
 
 def patient_text(patient: dict[str, Any] | None) -> str:
     return yaml.safe_dump(patient or {}, sort_keys=True)
+
+
+def patient_document(patient: dict[str, Any] | None) -> str:
+    """The record as plain "field: value" lines, which suit the grounding checker better
+    than YAML. Nested fields are joined ("vitals heart rate: 96"); empty lists read "none"."""
+    lines: list[str] = []
+
+    def walk(prefix: str, value: Any) -> None:
+        if isinstance(value, dict):
+            for k, v in value.items():
+                walk(f"{prefix} {k}".strip(), v)
+            return
+        if isinstance(value, list):
+            value = ", ".join(str(v) for v in value) if value else "none"
+        lines.append(f"{prefix.replace('_', ' ')}: {value}")
+
+    walk("", patient or {})
+    return "\n".join(lines)

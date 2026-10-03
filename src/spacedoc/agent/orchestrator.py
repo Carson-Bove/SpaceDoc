@@ -30,6 +30,13 @@ from spacedoc.tools.formulary import Formulary
 from spacedoc.verify.pipeline import Verifier
 from spacedoc.verify.rules import screen_passage
 
+# Summaries SpaceDoc writes itself when it cannot answer. They are not model output, so the
+# verifier does not check them against the answer.
+NO_SEARCH = "SpaceDoc could not search its sources, so it cannot answer."
+NO_MODEL = "SpaceDoc could not get an answer from the language model."
+NO_ANSWER = "SpaceDoc could not produce a well-formed answer."
+SYSTEM_SUMMARIES = {NO_SEARCH, NO_MODEL, NO_ANSWER}
+
 
 @dataclass(frozen=True)
 class GenerationPlan:
@@ -209,7 +216,7 @@ class Orchestrator:
         if passages is None:
             passages = []
             draft = DraftAnswer(
-                summary="SpaceDoc could not search its sources, so it cannot answer.",
+                summary=NO_SEARCH,
                 uncertainty="high",
                 abstain=True,
                 missing_info=["The knowledge-base search failed (see findings)"],
@@ -237,7 +244,7 @@ class Orchestrator:
                     )
                 )
                 draft = DraftAnswer(
-                    summary="SpaceDoc could not get an answer from the language model.",
+                    summary=NO_MODEL,
                     uncertainty="high",
                     abstain=True,
                     missing_info=["The language model failed (see findings)"],
@@ -245,7 +252,14 @@ class Orchestrator:
 
         t3 = time.perf_counter()
         verified = self.verifier.verify(
-            question, draft, passages, calc_results, env, patient, extra
+            question,
+            draft,
+            passages,
+            calc_results,
+            env,
+            patient,
+            extra,
+            check_summary=draft.summary not in SYSTEM_SUMMARIES,
         )
         timings["verify_s"] = time.perf_counter() - t3
         timings["total_s"] = time.perf_counter() - t0
@@ -304,7 +318,7 @@ class Orchestrator:
 
         if draft is None:
             draft = DraftAnswer(
-                summary="SpaceDoc could not produce a well-formed answer.",
+                summary=NO_ANSWER,
                 uncertainty="high",
                 abstain=True,
                 missing_info=["The language model returned invalid output twice"],

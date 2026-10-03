@@ -1,8 +1,8 @@
 """Demo mode: a scripted stand-in for the LLM so the GUI and tests run without Ollama.
 
 The scripted drafts deliberately include mistakes a real model makes (an unsupported claim,
-an invented statistic, an expired drug, an evacuation that isn't possible) so you can watch
-the verification layer catch them.
+an invented statistic, an expired drug, an evacuation that isn't possible, a summary that says
+more than the checked answer) so you can watch the verification layer catch them.
 """
 
 from __future__ import annotations
@@ -83,7 +83,13 @@ def _flank(messages, calc_id: str | None) -> DraftAnswer:
             },
         )
     return DraftAnswer(
-        summary="The presentation is most consistent with a kidney stone; infection must be excluded.",
+        # The second sentence repeats the evacuation that is not possible on this mission; the
+        # summary check removes it because the action behind it is blocked.
+        summary=(
+            "Colicky flank pain radiating to the groin points to a kidney stone; fever with flank "
+            "pain may indicate infection behind an obstructing stone. Arrange evacuation to a "
+            "hospital if fever develops."
+        ),
         claims=[
             {
                 "id": "C1",
