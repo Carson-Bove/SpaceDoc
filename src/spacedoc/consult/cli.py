@@ -111,6 +111,15 @@ def run_consult(
         f"{COMMANDS}\n"
     )
 
+    try:
+        _loop(system, consult)
+    except KeyboardInterrupt:
+        typer.echo("\nStopped (Ctrl+C).")
+    finish(system, consult)
+    return consult
+
+
+def _loop(system: System, consult: Consult) -> None:
     text = ask("Describe the problem")
     while True:
         if text == "/quit":
@@ -159,9 +168,6 @@ def run_consult(
             text = ask("Add new information to continue, or /quit")
             continue
         text = expand_quick_reply(ask(answer_prompt(turn)), turn)
-
-    finish(system, consult)
-    return consult
 
 
 def assess(system: System, consult: Consult) -> None:
