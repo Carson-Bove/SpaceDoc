@@ -91,6 +91,12 @@ def _looks_truncated(messages: list[dict[str, str]], prompt_tokens: int) -> bool
     return prompt_tokens < chars / 6
 
 
+def _is_context_error(message: str) -> bool:
+    """The server refused a prompt or answer that does not fit its context window."""
+    m = message.lower()
+    return "context" in m and ("exceed" in m or "longer than" in m)
+
+
 class LLM(Protocol):
     def chat(
         self,
@@ -168,6 +174,12 @@ class OllamaLLM:
             "messages": messages,
             "stream": False,
             "options": {k: v for k, v in options.items() if v is not None},
+            # Fail instead of silently dropping text that does not fit the context window:
+            # truncate=false for the prompt, shift=false during generation. Recent Ollama
+            # versions honour both; older ones ignore them, and the prompt-token check below
+            # still catches a shortened prompt.
+            "truncate": False,
+            "shift": False,
         }
         if schema is not None:
             body["format"] = schema  # constrained decoding; applied after any thinking block
@@ -186,6 +198,11 @@ class OllamaLLM:
                 self._cannot_think = True
                 body.pop("think")
                 data = self._client.post("/api/chat", body, self.chat_model)
+            elif _is_context_error(str(e)):
+                raise ContextOverflow(
+                    f"{e}. Raise the context size (chat_num_ctx or checker_num_ctx) in "
+                    "spacedoc.toml."
+                ) from e
             else:
                 raise
         msg = data.get("message") or {}

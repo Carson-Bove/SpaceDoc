@@ -60,6 +60,7 @@ def test_ollama_native_request_carries_context_thinking_and_sampling():
     assert req.url.path == "/api/chat"  # "/v1" is stripped: the native API is used
     body = json.loads(req.content)
     assert body["think"] is True and body["stream"] is False
+    assert body["truncate"] is False and body["shift"] is False  # fail rather than cut text
     assert body["format"] == {"type": "object"}
     assert body["options"] == {
         "temperature": 0.6,
@@ -97,6 +98,14 @@ def test_server_side_prompt_truncation_is_detected():
     fake_server(llm, lambda r: ollama_reply(prompt_eval_count=900, prompt_eval_cached_count=0))
     with pytest.raises(ContextOverflow):
         llm.chat(long)
+
+
+def test_server_refusing_a_long_prompt_is_a_context_overflow():
+    llm = OllamaLLM("http://localhost:11434", "qwen3:8b")
+    error = {"error": "the request exceeds the available context size, try increasing it"}
+    fake_server(llm, lambda r: httpx.Response(400, json=error))
+    with pytest.raises(ContextOverflow, match="chat_num_ctx"):
+        llm.chat(MESSAGES)
 
 
 def test_cached_tokens_count_towards_the_prompt():
