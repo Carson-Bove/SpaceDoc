@@ -54,6 +54,38 @@ def ingest_manifest(
     return total
 
 
+@dataclass
+class ModelCheck:
+    reachable: bool
+    missing: list[str]
+    error: str | None = None
+
+    def problems(self) -> list[str]:
+        """Plain-language lines for the user; empty when everything is in place."""
+        if not self.reachable:
+            return [f"Cannot reach the model server: {self.error}"]
+        return [f"Model {m} is not installed. Run: ollama pull {m}" for m in self.missing]
+
+
+def check_models(settings: Settings) -> ModelCheck:
+    """Are the configured models installed on the model server? (Cheap; no model loads.)"""
+    from spacedoc.llm.client import LLMError
+
+    client = connect(settings.llm_backend, settings.llm_base_url, settings.chat_model, None, 10.0)
+    try:
+        installed = set(client.installed_models())
+    except LLMError as e:
+        return ModelCheck(reachable=False, missing=[], error=str(e))
+    wanted = [settings.chat_model, settings.embed_model, settings.checker_model]
+    if settings.consult_model:
+        wanted.append(settings.consult_model)
+
+    def have(name: str) -> bool:
+        return name in installed or (":" not in name and f"{name}:latest" in installed)
+
+    return ModelCheck(reachable=True, missing=[m for m in dict.fromkeys(wanted) if not have(m)])
+
+
 def generation_plan(settings: Settings) -> GenerationPlan:
     """Per-pass generation settings from spacedoc.toml (Qwen3's recommended sampling)."""
 

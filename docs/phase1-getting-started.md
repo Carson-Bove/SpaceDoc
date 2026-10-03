@@ -22,7 +22,7 @@ spacedoc serve --demo          # open http://127.0.0.1:8765 and press "Ask Space
 spacedoc ask --demo "Sharp right flank pain that moves toward my groin"
 spacedoc eval run --demo       # runs the 3 example cases, writes eval_runs/<time>/report.md
 spacedoc consult --demo        # a scripted consult: questions, then a checked assessment
-pytest -q                      # 125 tests
+pytest -q                      # 145 tests
 ```
 
 In the demo flank-pain answer, the verification layer should:
@@ -31,6 +31,7 @@ In the demo flank-pain answer, the verification layer should:
 |---|---|
 | Invented statistic ("95% of cases") | `NUM-UNTRACED`: the number is not in the cited source |
 | Claim the source doesn't make ("definitive cure") | The grounding check |
+| Model writes its own dose ("650 mg") | `DOSE-REPLACED`: the calculator's dose is shown instead |
 | Expired drug (tamsulosin) | `FORM-EXPIRED` |
 | Evacuation on a deep-space mission | `ENV-EVACUATE` |
 | Summary repeats the evacuation | `SUMMARY-TRIMMED`: the summary may only say what the checked answer below it says |
@@ -64,16 +65,16 @@ Ollama tags do change. If a `pull` fails, search the Ollama library for the mode
 
 SpaceDoc talks to Ollama through its native API (`llm_backend = "ollama"`), not the OpenAI-compatible `/v1` endpoint. Only the native API lets each request set the context window and `top_k`. For llama.cpp or LM Studio, set `llm_backend = "openai"` and put `/v1` in `llm_base_url`.
 
-**Context window.** Ollama's default context window is 4,096 tokens on machines with less than 24 GiB of VRAM ([Ollama docs: context length](https://github.com/ollama/ollama/blob/main/docs/context-length.mdx)). SpaceDoc's first pass (system prompt, formulary, six passages, patient record) measured about 3,300 tokens before the model writes anything, and the second pass about 4,000, so the default is too small. When a prompt does not fit, Ollama normally drops text from it without an error. SpaceDoc guards against this in three ways:
+**Context window.** Ollama's default context window is 4,096 tokens on machines with less than 24 GiB of VRAM ([Ollama docs: context length](https://github.com/ollama/ollama/blob/main/docs/context-length.mdx)). SpaceDoc's model pass (system prompt, formulary, six passages, patient record) measured about 3,300 tokens before the model writes anything, so the default is too small. When a prompt does not fit, Ollama normally drops text from it without an error. SpaceDoc guards against this in three ways:
 - It sets `num_ctx` on every request: `chat_num_ctx = 12288` for the orchestrator, `checker_num_ctx = 4096` for the grounding checker.
-- Before each call it estimates the tokens needed (prompt + maximum answer). If six passages do not fit, it drops the lowest-ranked ones and records `CONTEXT-TRIM`. If the second pass does not fit, it keeps the first-pass answer without calculator references and records `FINALIZE-SKIPPED`.
+- Before each call it estimates the tokens needed (prompt + maximum answer). If six passages do not fit, it drops the lowest-ranked ones and records `CONTEXT-TRIM`.
 - It asks Ollama to refuse an over-long prompt instead of shortening it (`truncate: false`, `shift: false`). Older Ollama versions ignore these fields, so SpaceDoc also compares the prompt tokens Ollama reports with the prompt's length. A refusal or a shortened prompt becomes a `MODEL-ERROR` abstention, never a silent answer from half a prompt.
 
 `chat_num_ctx` must be larger than the prompt plus `draft_max_tokens`. If you lower it (for example to save memory), lower `draft_max_tokens` too, or SpaceDoc will drop passages to make room.
 
-**Thinking.** Qwen3 can write private reasoning notes ("thinking") before its answer. SpaceDoc turns thinking on for the first pass (`think_draft = true`), where the model weighs the findings and the sources. It turns thinking off for the second pass (`think_finalize = false`), which only inserts calculator results. Qwen3's model card recommends different sampling for each mode and warns against greedy (temperature 0) decoding with thinking, which can cause endless repetition ([Qwen3-8B model card](https://huggingface.co/Qwen/Qwen3-8B)). `sampling_thinking` and `sampling_plain` in `spacedoc.toml` hold those settings. `seed = 42` makes runs more repeatable, though not exactly: GPU arithmetic and Ollama updates can still change the output.
+**Thinking.** Qwen3 can write private reasoning notes ("thinking") before its answer. SpaceDoc turns thinking on for the assessment (`think_draft = true`), where the model weighs the findings and the sources, and off for consult question turns, which must be fast. There is one model pass per assessment: doses are worked out afterwards by SpaceDoc's calculator, in code (see below). Qwen3's model card recommends different sampling for each mode and warns against greedy (temperature 0) decoding with thinking, which can cause endless repetition ([Qwen3-8B model card](https://huggingface.co/Qwen/Qwen3-8B)). `sampling_thinking` and `sampling_plain` in `spacedoc.toml` hold those settings. `seed = 42` makes runs more repeatable, though not exactly: GPU arithmetic and Ollama updates can still change the output.
 
-Thinking costs time: `draft_max_tokens = 6144` leaves room for the notes plus the JSON answer. At 15–25 tokens/s on the MacBook Air, a long first pass can take 4–7 minutes, so `request_timeout_s = 900` allows each model call up to 15 minutes. If the model hits that limit, SpaceDoc records `OUTPUT-LIMIT` and retries once without the cut-off reply. The notes are never shown to the crew. They are saved in the audit log for clinical review (below).
+Thinking costs time: `draft_max_tokens = 6144` leaves room for the notes plus the JSON answer. At 8–25 tokens/s on the MacBook Air, a long pass can take 4–12 minutes, so `request_timeout_s = 900` allows each model call up to 15 minutes. If the model hits that limit, SpaceDoc records `OUTPUT-LIMIT` and retries once without the cut-off reply. The notes are never shown to the crew. They are saved in the audit log for clinical review (below).
 
 **Search queries.** Qwen3-Embedding expects each search query to start with a one-sentence task instruction (passages are embedded without one). Its model card reports a 1–5% gain from instructions ([Qwen3-Embedding-0.6B model card](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B)). The instruction is `embed_query_instruction` in `spacedoc.toml`. Changing it does not require re-ingesting the corpus.
 
@@ -104,8 +105,11 @@ spacedoc audit verify                           # check the audit log hasn't bee
 A consult is a short conversation: SpaceDoc asks one or two questions at a time to build a differential diagnosis, then gives the full checked assessment. The design is in [consult-mode-design.md](consult-mode-design.md).
 
 **In the browser:** `spacedoc serve`, then choose the **Consult** tab. Pick who is using SpaceDoc and who the patient is, real or practice, and press **Start consult**.
-- The **working list** on the left updates every turn and marks what is new or changed. It is labelled *not yet checked*, and everyone sees it.
-- Yes/no questions have **Yes / No / Not sure** buttons, and exams have a **Result** box. Both fill in the answer box; nothing is sent until you press **Send** (or Cmd+Enter), so you can add detail first.
+- The page shows the **patient record in use** (from the synthetic roster). If a model is missing, a red banner says which one and how to install it.
+- Each turn starts with **SpaceDoc's reply**: it acknowledges what you said and answers your question, labelled *not checked*. It does not give step-by-step equipment instructions; reviewed equipment guides are a later step.
+- The **working list** on the left updates every turn and marks what is new or changed. It is labelled *not yet checked*, and everyone sees it. Conditions added back by the must-not-miss list (below) are marked *added by SpaceDoc*.
+- After your first message comes an **exposure check**: spacewalks, radiation alerts, cabin atmosphere, payloads and lab animals, new medication, others affected.
+- Yes/no questions and the exposure check have **Yes / No / Not sure** buttons; exams have a **Result** box. Everything you select or fill in is sent together with anything you type when you press **Send** (or Cmd+Enter).
 - A **red-flag card** pauses the consult. Choose **Checked assessment now**, or **Continue questions** if it is not an emergency.
 - **Assess now**, **Consult record** (view or download the record) and **End consult** (saves the record to `audit/consults/`) are on the left.
 
@@ -120,11 +124,20 @@ spacedoc consult --deep-log ...             # thinking on every turn (slower), s
 - **Who's who.** The crew roster in `data/crew/roster.yaml` is **synthetic** (C1 is the CMO). Pick yourself and the patient by number or crew ID; `s` means you are the patient, `u` someone not on the roster. When you are not the patient, SpaceDoc phrases questions for you to ask them, and you type their answers.
 - **Each turn** shows SpaceDoc's working list (labelled *not yet checked*), up to two questions with the reason for each, and any exams. Exams that need equipment not aboard, or that don't work in the environment, are marked ✗.
 - **Quick answers.** When every question is yes/no, type `y`, `n` or `?` (one per question, e.g. `y n`).
-- **Red flags.** Your words are checked against a draft list of urgent signs (`data/rules/red_flags.yaml`, **not yet clinician-reviewed**). A match pauses the consult and shows immediate steps; choose an immediate checked assessment or continue if it is not an emergency.
+- **Red flags and vital signs.** Your words are checked against a draft list of urgent signs (`data/rules/red_flags.yaml`), and any vital signs you type (oxygen saturation, blood pressure, heart rate, breathing rate, temperature; e.g. `SpO2 85%`, `BP 70/50`) against draft thresholds (`data/rules/vital_signs.yaml`). A match pauses the consult before the model is asked and shows immediate steps; choose an immediate checked assessment or continue. A reversed blood pressure like `40/60` is flagged for a recheck. **Neither list is clinician-reviewed yet.**
+- **Spaceflight must-not-miss conditions.** A draft list (`data/rules/must_not_miss.yaml`) matches what has been said, for example nausea and vomiting plus hair loss or skin changes → acute radiation syndrome. A matched condition is sent to the model with the question to ask, put back on the working list if the model leaves it out, and passed to the assessment to address.
 - **Commands:** `/assess` (assess now), `/record` (show the consult record so far), `/quit`. SpaceDoc also assesses on its own when it has enough, or after 8 rounds (`consult_max_rounds`).
 - **Timing.** Each turn ends with a line like `⏱ 11.8 s (reading 1.2 s; writing 10.3 s, 182 tokens)`. When you quit, SpaceDoc prints the median turn time. The target is 10–15 s per turn; the first turn is slower while the model loads.
 - **Deep log** (`--deep-log`) turns thinking on for every turn, so the record has full thinking notes. Turns get slower, so each one also shows `about N s without deep log (estimated)`: the writing time minus the share spent on the notes. Measure the real number with a normal run.
+- **Comparing models for question turns.** `spacedoc consult --model qwen3:4b` (or `spacedoc serve --consult-model qwen3:4b`, or `consult_model` in `spacedoc.toml`) uses another model for question turns; the assessment still uses `chat_model`. Pull it first: `ollama pull qwen3:4b`. Compare turn times and question quality on the same scenario.
 - **The consult record** is saved to `audit/consults/<consult id>.md` when you quit. It lists every turn, the working list as it changed, the reason for each question, red flags, exam checks, thinking notes (deep log), the assessment and the timings. Every turn is also in the audit log.
+
+### Reading the assessment
+
+- **What to do now** comes right after the summary and is always there, even when SpaceDoc cannot give a full answer. It is built by code from checked content: urgent steps raised during a consult, whether to contact the ground team, what information would help.
+- **Doses come from SpaceDoc's calculator,** with the weight from the patient record, and are shown under each medication ("Calculator: Ondansetron 4 mg oral, every 8 hours as needed"). If the model wrote a dose itself, it is removed from the action and the calculator's shown instead. A medication with no calculator result (no dosing data, or no recorded weight) is marked not ready to give.
+- **Every medication is checked** for availability and expiry, against the patient's allergies (by drug name and class), and for a calculated dose. Numbers taken from the patient record, such as "64 kg", are allowed and shown as such.
+- **Every flag explains itself** in plain language: what was wrong, where the number came from, and what to do. If the grounding checker is not installed, the answer says so and how to install it.
 
 ### Reviewing the model's reasoning
 
@@ -150,7 +163,7 @@ Run these once after pulling the models and building the knowledge base. Write d
 5. **Ask one real question.** `spacedoc ask "Sharp right flank pain that moves toward my groin" --tier T4`. The first run is slow while the models load.
 6. **Context in use.** Straight after the answer, run `ollama ps`. The `CONTEXT` column should read 12288 for `qwen3:8b` (and 4096 for `bespoke-minicheck:7b` if it is still loaded). `PROCESSOR` should read `100% GPU`. A CPU share means the model did not fit in GPU memory; lower `chat_num_ctx` and `draft_max_tokens` together.
 7. **No new truncation.** Repeat step 4. The count should not have gone up.
-8. **No context findings.** The answer should have no `MODEL-ERROR`, `CONTEXT-TRIM`, `OUTPUT-LIMIT` or `FINALIZE-SKIPPED` notes. If it does, the note says which setting to change.
+8. **No context findings.** The answer should have no `MODEL-ERROR`, `CONTEXT-TRIM`, or `OUTPUT-LIMIT` notes. If it does, the note says which setting to change.
 9. **Notes saved.** `spacedoc serve`, ask the same question, open **Model reasoning (for clinical review)** and press **Show full notes**. Notes should be there. If the panel says thinking was off, check step 3 and `think_draft`.
 10. **Audit chain.** `spacedoc audit verify` should print `Audit chain intact.`
 
@@ -188,14 +201,15 @@ Both depend on the model *and* the corpus, so re-run the bench after changing ei
 question ─► kb/retrieve.py      hybrid search: keyword (FTS5/BM25) + vector (cosine), fused by RRF;
                                 the query gets the embedding model's task instruction
          ─► verify/rules.py     screen passages for injected instructions; renumber S1..Sn
-         ─► agent/orchestrator  fit passages to the context window; pass 1 (thinking on): model
-                                drafts a DraftAnswer (JSON schema) + calculator requests
-         ─► tools/calculators   deterministic doses/scores; weight always from the record
-         ─► agent/orchestrator  pass 2 (thinking off): model finalizes, referencing calc_ids
+         ─► agent/orchestrator  fit passages to the context window; one model pass (thinking on):
+                                a DraftAnswer (JSON schema) + calculator requests
+         ─► tools/calculators   doses and rates in code, linked to each action; weight always
+                                from the record
          ─► verify/pipeline.py  cite-or-drop → numbers → grounding, one sentence at a time
                                 (sources, or the patient record for patient claims) →
-                                formulary/equipment/environment rules → risk gating →
-                                abstain decision → summary check
+                                doses (number and unit), formulary, allergies, equipment and
+                                environment rules → risk gating → abstain decision → summary
+                                check → "What to do now"
          ─► audit/log.py        hash-chained record of everything above, plus the thinking notes
          ─► web/ or render/     display with badges, citations and "why this answer"
          ─► review/summary.py   on request: reasoning summary for clinical review
@@ -207,7 +221,7 @@ question ─► kb/retrieve.py      hybrid search: keyword (FTS5/BM25) + vector 
 
 - **Structured output.** Ollama receives the answer's JSON schema and constrains generation to match it. SpaceDoc still validates the reply with Pydantic and retries once, because small models occasionally produce schema-valid JSON with the wrong meaning. `schema_adherence` in the bench measures how often the first try parses.
 - **Reciprocal-rank fusion (RRF).** Keyword search scores (BM25) and vector scores (cosine) are on different scales, so adding them is meaningless. RRF ignores the scores and only uses each result's *rank*: every list contributes `1/(60 + rank)`. A passage ranked well by both methods rises to the top. The constant 60 damps the influence of any single list.
-- **Why two passes?** Letting the model call tools mid-sentence (native tool calling) is flexible but hard to audit. Phase 1 uses a fixed loop instead: draft, run the requested calculators in code, then finalize. It's less clever, but every step is deterministic and logged, which is what a safety case needs.
+- **Why calculators in code?** Letting the model call tools mid-sentence (native tool calling) is flexible but hard to audit. Phase 1 uses a fixed loop instead: the model drafts once and names each medication's formulary item without a dose; SpaceDoc then runs the calculator (weight from the record) and links the result to the action. A dose the model writes anyway is removed and the calculator's shown instead. It's less clever, but every step is deterministic and logged, which is what a safety case needs. It also saves a full model pass.
 - **Grounding checker.** Bespoke-MiniCheck's training details are on its model card; the original MiniCheck models it is named after are described in [R17](references.md#r17). It does one job: given a document and a sentence, answer whether the document supports the sentence. It is a different model from the orchestrator, which gives the independence that makes a second check worth having. Its model card says to split multi-sentence claims into sentences first, so SpaceDoc checks each sentence separately. A sentence that no single cited passage supports is checked once more against up to three cited passages together, because a claim may combine two sources. When Ollama returns token probabilities, the claim's detail shows P(yes), the checker's confidence.
 - **Checking the summary.** The one- or two-sentence summary is read first, so it is checked last: each sentence must be supported by what is shown below it (shown claims, the differential, actions that are not blocked, the patient record), and its numbers must appear there. Unsupported sentences are removed (`SUMMARY-TRIMMED`). If nothing is left, a neutral sentence replaces the summary (`SUMMARY-REPLACED`).
 - **Thinking.** A thinking model writes free-form notes before its answer, then the answer itself. Ollama returns them in separate fields, so the JSON schema constrains only the answer. Thinking usually helps multi-step reasoning, but it adds latency and tokens, and the notes are not a faithful record of the computation. SpaceDoc keeps them for review and never treats them as evidence.

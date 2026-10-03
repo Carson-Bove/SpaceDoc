@@ -237,3 +237,31 @@ def test_generation_plan_uses_qwen_thinking_settings():
     assert (d.think, d.temperature, d.top_p, d.top_k) == (True, 0.6, 0.95, 20)
     assert d.num_ctx == 12288 and d.seed == 42
     assert d.temperature > 0  # Qwen3: no greedy decoding in thinking mode
+
+
+def test_model_check_names_missing_models(monkeypatch):
+    import spacedoc.system as system_mod
+
+    llm = OllamaLLM("http://localhost:11434", "qwen3:8b")
+    tags = {"models": [{"name": "qwen3:8b"}, {"name": "qwen3-embedding:0.6b"}]}
+    fake_server(llm, lambda r: httpx.Response(200, json=tags))
+    monkeypatch.setattr(system_mod, "connect", lambda *a, **k: llm)
+    check = system_mod.check_models(Settings(consult_model="qwen3:4b"))
+    assert check.reachable and check.missing == ["bespoke-minicheck:7b", "qwen3:4b"]
+    assert check.problems()[0] == (
+        "Model bespoke-minicheck:7b is not installed. Run: ollama pull bespoke-minicheck:7b"
+    )
+
+
+def test_model_check_reports_an_unreachable_server(monkeypatch):
+    import spacedoc.system as system_mod
+
+    llm = OllamaLLM("http://localhost:11434", "qwen3:8b")
+
+    def refuse(request):
+        raise httpx.ConnectError("refused")
+
+    fake_server(llm, refuse)
+    monkeypatch.setattr(system_mod, "connect", lambda *a, **k: llm)
+    check = system_mod.check_models(Settings())
+    assert not check.reachable and "Is Ollama running?" in check.problems()[0]

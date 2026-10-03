@@ -124,9 +124,15 @@ class _HTTPClient:
         self.timeout_s = timeout_s
         self._http = httpx.Client(timeout=timeout_s)
 
-    def post(self, path: str, body: dict[str, Any], model: str) -> dict[str, Any]:
+    def get(self, path: str, label: str = "model list") -> dict[str, Any]:
+        return self.post(path, None, label)
+
+    def post(self, path: str, body: dict[str, Any] | None, model: str) -> dict[str, Any]:
         try:
-            resp = self._http.post(f"{self.root}{path}", json=body)
+            if body is None:
+                resp = self._http.get(f"{self.root}{path}", timeout=min(self.timeout_s, 10.0))
+            else:
+                resp = self._http.post(f"{self.root}{path}", json=body)
         except httpx.ConnectError as e:
             raise LLMError(
                 f"Cannot reach the model server at {self.root}. Is Ollama running?"
@@ -253,6 +259,10 @@ class OllamaLLM:
             gen_s=_ns_to_s(data.get("eval_duration")),
         )
 
+    def installed_models(self) -> list[str]:
+        """Names of the models this Ollama server has, e.g. ["qwen3:8b", ...]."""
+        return [m["name"] for m in self._client.get("/api/tags").get("models", [])]
+
     def embed(self, texts: list[str]) -> list[list[float]]:
         if not self.embed_model:
             raise LLMError("No embedding model configured")
@@ -322,6 +332,9 @@ class OpenAICompatLLM:
             done_reason=choice.get("finish_reason"),
             top_logprobs=top,
         )
+
+    def installed_models(self) -> list[str]:
+        return [m["id"] for m in self._client.get("/models").get("data", [])]
 
     def embed(self, texts: list[str]) -> list[list[float]]:
         if not self.embed_model:

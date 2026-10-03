@@ -1,6 +1,6 @@
 # Consult Mode — Design Proposal
 
-> **Status: approved. M1 (terminal consult with turn timing) and M2 (consult in the web page) are built; next is measuring turn times on the Mac.** Decision for M2: the working list is shown to every user, including a crewmember who is the patient. Decisions marked ✅ were agreed in discussion; the answers to the design's open questions are in [§11](#11-decisions-on-the-open-questions).
+> **Status: approved. M1 (terminal consult) and M2 (web page) are built, plus the changes from the first practice consult (§12). Next: equipment knowledge from the ISS inventory, and speed on the laptop.** Decision for M2: the working list is shown to every user, including a crewmember who is the patient. Decisions marked ✅ were agreed in discussion; the answers to the design's open questions are in [§11](#11-decisions-on-the-open-questions).
 
 Phase 1 built a **one-shot** SpaceDoc: one message in, one checked answer out. That is not how a consult works. A clinician asks questions, narrows the possibilities, examines, and only then gives an assessment.
 
@@ -235,3 +235,22 @@ Each milestone ends with tests, docs, a push, and something you can try on the M
 | 6 | Who types | ✅ One person per consult. When the user is not the patient, SpaceDoc phrases questions for them to ask the patient ("Ask C3 whether…") and they type the patient's answers |
 
 **How the deep-log estimate works.** Ollama reports how long it spent loading the model, reading the prompt and writing the reply. With thinking on, the reply includes the thinking notes. The estimate removes the share of writing time spent on the notes (by their share of the reply's characters). It is labelled as an estimate; turns run without deep log show measured times.
+
+## 12. After the first practice consult
+
+A NASA-run practice scenario of acute radiation syndrome (prodrome, latent phase, then GI bleeding, skin changes and hair loss, deep-space transit) showed:
+
+| Finding | Change |
+|---|---|
+| The model never considered radiation; it chose hemorrhagic fever and asked about "recent travel" | Consult prompt c2.0 puts spaceflight causes first and rules out travel and outside contacts. A draft **spaceflight must-not-miss list** (`data/rules/must_not_miss.yaml`) is matched in code against what has been said; matched conditions are sent to the model, added back to the working list if it leaves them out, and passed to the assessment. An **exposure check** (spacewalk, radiation alert, atmosphere, payloads and animals, medication, others affected) follows the first message |
+| Oxygen saturation 85% → 75% and systolic blood pressure 70 → 60 did not stop routine questions | **Vital-sign alerts** (`data/rules/vital_signs.yaml`, draft thresholds) read measurements from what is typed and pause the consult before the model is asked. Reversed readings such as 40/60 are flagged for recheck |
+| "How do I use this urine dipstick" was ignored | Each turn starts with a **reply** to the user (labelled not checked) that acknowledges and answers. Equipment instructions come only from reviewed guides (Step 3) |
+| Turns took 80–105 s: 600–770 tokens at about 8.4 tokens/s | The turn no longer copies the user's message into a facts list; lengths and counts are capped in the schema; **consult_model** allows a smaller model for question turns (e.g. `qwen3:4b`) to compare; the checker unloads a minute after use to free memory |
+| The grounding checker was not installed, so every claim failed and the report gave no answer | A **startup model check** names any missing model and how to install it (Terminal warning, red banner on the page); an abstention caused by the checker says so |
+| Five actions blocked over the patient's recorded weight (64 kg), with no explanation of where 64 kg came from | **Doses are calculated in code** (no second model pass) with the weight from the record; doses are checked as number plus unit; recorded values such as "64 kg" are allowed; the model's own dose is replaced by the calculator's; medications are checked against **allergies**; every flag is explained in plain language; the **patient record in use** is shown; every answer has **What to do now** |
+
+### Next steps (agreed)
+
+- **Step 3: equipment knowledge.** The ISS medical equipment inventory, compiled by the NASA team, replaces the generic T1 equipment list. A workflow adds each device's documents (manuals, procedures, checklists) to the knowledge base, tagged with the device, so **Show me how** can show checked steps from those documents. LEO scenarios first.
+- **Step 4: speed on the laptop only.** SpaceDoc must work without Earth or any other computer. Compare `qwen3:8b` and `qwen3:4b` for question turns on the same scenarios, then tune the assessment (thinking budget, number of checks).
+- **Knowledge gaps.** The knowledge base has no acute radiation syndrome source yet, so the assessment cannot support that diagnosis from sources. Candidate NASA documents go through the corpus workflow like any other.

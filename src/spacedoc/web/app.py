@@ -45,9 +45,14 @@ def create_app(system: System) -> FastAPI:
 
     @app.get("/api/status")
     def status() -> dict[str, Any]:
+        from spacedoc.system import check_models
+
         orch = system.orchestrator
+        problems = [] if system.demo else check_models(system.settings).problems()
         return {
             "demo": system.demo,
+            "model_problems": problems,
+            "consult_model": system.consult.model_name if system.consult else None,
             "model": orch.model_name,
             "checker": getattr(orch.verifier.checker, "name", "?"),
             "chunks": system.store.count(),
@@ -169,6 +174,8 @@ def create_app(system: System) -> FastAPI:
             if reply and reply.urgent.flag
             else [],
             "assess_reason": engine.should_assess(consult) if reply else None,
+            "screen": [i.model_dump() for i in turn.screen],
+            "must_not_miss_added": turn.must_not_miss_added,
         }
 
     @app.get("/api/roster")
@@ -195,6 +202,7 @@ def create_app(system: System) -> FastAPI:
         consults[c.consult_id] = c
         return {
             "consult_id": c.consult_id,
+            "patient_summary": c.patient_summary,
             "user": c.user.label(),
             "patient": "the user" if c.patient_is_user else c.patient_label,
             "patient_is_user": c.patient_is_user,

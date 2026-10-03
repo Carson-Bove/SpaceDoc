@@ -23,6 +23,14 @@ app.add_typer(audit_app, name="audit")
 ConfigOpt = typer.Option(None, "--config", "-c", help="Path to spacedoc.toml")
 
 
+def warn_about_models(settings) -> None:
+    """Say up front if a model is missing, instead of failing deep inside an answer."""
+    from spacedoc.system import check_models
+
+    for line in check_models(settings).problems():
+        typer.secho(f"WARNING: {line}", fg=typer.colors.RED, err=True)
+
+
 @corpus_app.command("fetch")
 def corpus_fetch(config: Path = ConfigOpt) -> None:
     """Download the files listed in corpus/manifest.yaml into corpus/files/."""
@@ -73,7 +81,10 @@ def ask(
     from spacedoc.render.text import render_text
     from spacedoc.system import build_system
 
-    system = build_system(load_settings(config), demo=demo)
+    settings = load_settings(config)
+    if not demo:
+        warn_about_models(settings)
+    system = build_system(settings, demo=demo)
     record = yaml.safe_load(patient.read_text()) if patient else None
     if demo and record is None:
         from spacedoc.demo import DEMO_PATIENT
@@ -88,6 +99,9 @@ def serve(
     host: str = "127.0.0.1",
     port: int = 8765,
     demo: bool = typer.Option(False, help="Scripted demo mode (no model needed)"),
+    consult_model: str = typer.Option(
+        None, help="Model for consult question turns, e.g. qwen3:4b (default from spacedoc.toml)"
+    ),
     config: Path = ConfigOpt,
 ) -> None:
     """Start the local GUI at http://127.0.0.1:8765."""
@@ -96,7 +110,12 @@ def serve(
     from spacedoc.system import build_system
     from spacedoc.web.app import create_app
 
-    system = build_system(load_settings(config), demo=demo)
+    settings = load_settings(config)
+    if consult_model:
+        settings.consult_model = consult_model
+    if not demo:
+        warn_about_models(settings)
+    system = build_system(settings, demo=demo)
     typer.echo(f"SpaceDoc {'DEMO ' if demo else ''}GUI on http://{host}:{port}")
     uvicorn.run(create_app(system), host=host, port=port, log_level="warning")
 
@@ -115,6 +134,9 @@ def consult(
     deep_log: bool = typer.Option(
         False, help="Thinking on every turn (slower); each turn also shows the time without it"
     ),
+    model: str = typer.Option(
+        None, help="Model for question turns, e.g. qwen3:4b (default: consult_model or chat_model)"
+    ),
     demo: bool = typer.Option(False, help="Scripted demo mode (no model needed)"),
     config: Path = ConfigOpt,
 ) -> None:
@@ -122,7 +144,12 @@ def consult(
     from spacedoc.consult.cli import run_consult
     from spacedoc.system import build_system
 
-    system = build_system(load_settings(config), demo=demo)
+    settings = load_settings(config)
+    if model:
+        settings.consult_model = model
+    if not demo:
+        warn_about_models(settings)
+    system = build_system(settings, demo=demo)
     run_consult(system, user, patient, tier, practice, scenario, deep_log)
 
 
