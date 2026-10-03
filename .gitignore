@@ -4,6 +4,6 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 spacedoc.db
-audit/
+/audit/
 eval_runs/
 corpus/files/
