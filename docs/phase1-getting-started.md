@@ -10,6 +10,8 @@ Phase 1 is a thin, working slice of SpaceDoc:
 
 ## 1. Try it without a model (demo mode)
 
+> **Copying commands on a Mac:** paste only the lines inside the grey command boxes. The Mac's Terminal (zsh) does not treat `#` as a comment when you paste, so the boxes contain no comments; explanations are below each box.
+
 Demo mode replaces the language model with a scripted stand-in and uses three short **synthetic** texts as the knowledge base. The scripted answers contain deliberate mistakes, so you can watch the verification layer catch them.
 
 ```bash
@@ -18,12 +20,21 @@ git checkout claude/upbeat-dijkstra-629dkj
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 
-spacedoc serve --demo          # open http://127.0.0.1:8765 and press "Ask SpaceDoc"
-spacedoc ask --demo "Sharp right flank pain that moves toward my groin"
-spacedoc eval run --demo       # runs the 3 example cases, writes eval_runs/<time>/report.md
-spacedoc consult --demo        # a scripted consult: questions, then a checked assessment
-pytest -q                      # 145 tests
+spacedoc serve --demo
 ```
+
+Open http://127.0.0.1:8765 and press **Ask SpaceDoc**, or choose the **Consult** tab. Stop the server with Ctrl+C. Other demo commands:
+
+```bash
+spacedoc ask --demo "Sharp right flank pain that moves toward my groin"
+spacedoc eval run --demo
+spacedoc consult --demo
+pytest -q
+```
+
+- `eval run` runs the 3 example cases and writes `eval_runs/<time>/report.md`.
+- `consult` runs a scripted consult in Terminal: questions, then a checked assessment.
+- `pytest -q` runs the 145 tests.
 
 In the demo flank-pain answer, the verification layer should:
 
@@ -48,10 +59,18 @@ The flank-pain answer also has scripted thinking notes. Open **Model reasoning (
 If Ollama is not installed yet, install the macOS app from ollama.com. Then pull these models:
 
 ```bash
-ollama pull qwen3:8b               # orchestrator: 8.2B, Q4_K_M, 5.2 GB
-ollama pull qwen3-embedding:0.6b   # embeddings for retrieval: 639 MB
-ollama pull bespoke-minicheck:7b   # grounding checker: 7.7B, Q4_K_M, 4.7 GB (Ollama swaps it in/out)
+ollama pull qwen3:8b
+ollama pull qwen3-embedding:0.6b
+ollama pull bespoke-minicheck:7b
 ```
+
+| Model | Role | Size |
+|---|---|---|
+| `qwen3:8b` | Orchestrator | 8.2B, Q4_K_M, 5.2 GB |
+| `qwen3-embedding:0.6b` | Embeddings for retrieval | 639 MB |
+| `bespoke-minicheck:7b` | Grounding checker | 7.7B, Q4_K_M, 4.7 GB (Ollama swaps it in and out) |
+
+For the consult speed comparison, also run `ollama pull qwen3:4b`.
 
 **Tags checked on ollama.com in Sept 2026.** All three tags exist, and these are the values in `spacedoc.toml`. Two details:
 - Always pull `qwen3-embedding:0.6b` by its size tag. The bare `qwen3-embedding` (`latest`) is the 8B model (4.7 GB).
@@ -83,9 +102,11 @@ Thinking costs time: `draft_max_tokens = 6144` leaves room for the notes plus th
 The corpus manifest (`corpus/manifest.yaml`) lists open-access sources with URLs, licenses and hashes. Then:
 
 ```bash
-spacedoc corpus fetch    # downloads into corpus/files/ (not committed to git)
-spacedoc corpus ingest   # chunks + embeds into spacedoc.db
+spacedoc corpus fetch
+spacedoc corpus ingest
 ```
+
+`fetch` downloads the files into `corpus/files/` (not committed to git) and prints one line per file when it has finished them all. `ingest` splits them into passages and embeds them into `spacedoc.db`.
 
 The manifest holds only sources that were read in full and whose license allows this use (US Government public domain or CC BY). Candidates that are still unread, or whose license is non-commercial or no-derivatives, are listed in [research-backlog.md](research-backlog.md). You can also add your own PDFs:
 1. Put the file in `corpus/files/`.
@@ -95,10 +116,17 @@ The manifest holds only sources that were read in full and whose license allows 
 ### Use it
 
 ```bash
-spacedoc serve                                  # GUI on http://127.0.0.1:8765
-spacedoc ask "..." --tier T4 --patient me.yaml  # CLI
-spacedoc audit verify                           # check the audit log hasn't been altered
+spacedoc serve
 ```
+
+Then open http://127.0.0.1:8765. From Terminal instead:
+
+```bash
+spacedoc ask "Sharp right flank pain" --tier T4 --patient me.yaml
+spacedoc audit verify
+```
+
+`audit verify` checks that the audit log hasn't been altered.
 
 ### Run a consult
 
@@ -116,9 +144,13 @@ A consult is a short conversation: SpaceDoc asks one or two questions at a time 
 **In Terminal:**
 
 ```bash
-spacedoc consult --tier T1                  # asks who you are, who the patient is, real or practice
+spacedoc consult --tier T1
+```
+
+It asks who you are, who the patient is, and whether this is a real or practice session. You can give those up front instead, and add `--deep-log` for thinking on every turn (slower; see below):
+
+```bash
 spacedoc consult --user C1 --patient C3 --practice --scenario SO-0104 --tier T1
-spacedoc consult --deep-log ...             # thinking on every turn (slower), see below
 ```
 
 - **Who's who.** The crew roster in `data/crew/roster.yaml` is **synthetic** (C1 is the CMO). Pick yourself and the patient by number or crew ID; `s` means you are the patient, `u` someone not on the roster. When you are not the patient, SpaceDoc phrases questions for you to ask them, and you type their answers.
@@ -172,10 +204,12 @@ Run these once after pulling the models and building the knowledge base. Write d
 `spacedoc bench` runs the same cases through several models and prints a comparison table:
 
 ```bash
-ollama pull gemma4:e4b    # example candidate: Q4_K_M, 9.6 GB
-ollama pull medgemma:4b   # example candidate: MedGemma 1 (not 1.5), 4.3B, Q4_K_M, 3.3 GB
+ollama pull gemma4:e4b
+ollama pull medgemma:4b
 spacedoc bench qwen3:8b gemma4:e4b medgemma:4b --repeats 3
 ```
+
+The two example candidates: `gemma4:e4b` (Q4_K_M, 9.6 GB) and `medgemma:4b` (MedGemma 1, not 1.5; 4.3B, Q4_K_M, 3.3 GB).
 
 Both tags were confirmed on ollama.com in Sept 2026. `--thinking` controls the first pass: `config` (default, uses `think_draft`), `on`, `off`, or `both`, which runs each model twice so you can compare the modes. The Qwen3 report found that thinking slightly lowered some long-context scores [[R23](references.md#r23)], so measure it on SpaceDoc's cases rather than assume. Models that cannot think (such as `medgemma:4b`) are asked once with thinking, refuse, and are then run without it.
 

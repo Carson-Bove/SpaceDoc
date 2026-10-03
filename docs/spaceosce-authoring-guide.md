@@ -71,5 +71,7 @@ tags: [renal, microgravity, common]
 ## Checking a case file
 
 ```bash
-spacedoc eval run --demo --cases-dir cases   # a schema error names the file and field
+spacedoc eval run --demo --cases-dir cases
 ```
+
+A schema error names the file and the field.

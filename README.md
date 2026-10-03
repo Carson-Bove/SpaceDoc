@@ -57,6 +57,7 @@ Each document ends with a **"How this works in AI systems"** section. These expl
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
-spacedoc serve --demo      # http://127.0.0.1:8765, scripted demo, no model needed
-pytest -q
+spacedoc serve --demo
 ```
+
+Then open http://127.0.0.1:8765: a scripted demo that needs no model. Run the tests with `pytest -q`.
