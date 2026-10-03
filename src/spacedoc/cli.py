@@ -106,6 +106,9 @@ def eval_run(
     cases_dir: Path = typer.Option(Path("cases"), help="Directory of case YAML files"),
     repeats: int = 1,
     demo: bool = False,
+    summaries: bool = typer.Option(
+        True, help="Add reasoning summaries for clinical review (one extra model call per answer)"
+    ),
     config: Path = ConfigOpt,
 ) -> None:
     """Run SpaceDoc over the case bank and write eval_runs/<timestamp>/report.md."""
@@ -116,7 +119,7 @@ def eval_run(
     s = load_settings(config)
     system = build_system(s, demo=demo)
     cases = load_cases(cases_dir)
-    rows = run_cases(system, cases, repeats)
+    rows = run_cases(system, cases, repeats, summaries=summaries)
     label = "demo" if demo else s.chat_model
     out = (
         Path("eval_runs")

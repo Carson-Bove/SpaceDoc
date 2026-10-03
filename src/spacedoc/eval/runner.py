@@ -9,10 +9,16 @@ from typing import Any
 
 from spacedoc.eval.cases import Case
 from spacedoc.eval.metrics import aggregate, score_case
+from spacedoc.llm.client import LLMError
+from spacedoc.review.summary import LABEL, NoReasoning, StoredSummary, summary_markdown
 from spacedoc.system import System
 
 
-def run_cases(system: System, cases: list[Case], repeats: int = 1) -> list[dict[str, Any]]:
+def run_cases(
+    system: System, cases: list[Case], repeats: int = 1, summaries: bool = True
+) -> list[dict[str, Any]]:
+    """Run every case. With `summaries`, also make a reasoning summary for clinical review
+    whenever the model produced thinking notes (one extra model call per answer)."""
     rows = []
     for case in cases:
         if case.status == "retired":
@@ -28,6 +34,12 @@ def run_cases(system: System, cases: list[Case], repeats: int = 1) -> list[dict[
             row["repeat"] = r
             row["audit_id"] = v.audit_id
             row["answer"] = v.model_dump(mode="json", exclude={"draft"})
+            if summaries and system.reviewer and v.reasoning_available and v.audit_id:
+                try:
+                    stored = system.reviewer.summarize(v.audit_id)
+                    row["reasoning_summary"] = stored.model_dump()
+                except (LLMError, NoReasoning) as e:
+                    row["reasoning_summary_error"] = str(e)
             rows.append(row)
     return rows
 
@@ -81,6 +93,28 @@ def write_report(rows: list[dict[str, Any]], out_dir: Path, label: str) -> Path:
             f"| {r['case_id']} | {r['status']} | {_fmt(r.get('dx_top3'))} | {_fmt(r['harmful'])} | "
             f"{_fmt(r['abstention_correct'])} | {_fmt(r.get('claim_support_rate'))} | {_fmt(r.get('latency_s'))} |"
         )
+    reviewed = [r for r in rows if r.get("reasoning_summary") or r.get("reasoning_summary_error")]
+    if reviewed:
+        lines += [
+            "",
+            "## Reasoning summaries (for clinical review)",
+            "",
+            f"_{LABEL}_",
+        ]
+        for r in reviewed:
+            answer = r["answer"]
+            lines += [
+                "",
+                f"### {r['case_id']} (repeat {r['repeat']}, {r.get('audit_id')})",
+                "",
+                f"**Answer summary:** {answer.get('summary')}",
+                "",
+            ]
+            if r.get("reasoning_summary"):
+                stored = StoredSummary.model_validate(r["reasoning_summary"])
+                lines += summary_markdown(stored)[2:]  # the label is printed once above
+            else:
+                lines.append(f"Summary not available: {r['reasoning_summary_error']}")
     path = out_dir / "report.md"
     path.write_text("\n".join(lines) + "\n")
     return path

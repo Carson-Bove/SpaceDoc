@@ -116,6 +116,9 @@ class VerifiedAnswer(BaseModel):
     draft: DraftAnswer | None = None
     audit_id: str | None = None
     timings: dict[str, float] = {}
+    # True when the model produced thinking notes, which are kept in the audit log for
+    # clinical review (never shown to the crew as part of the answer).
+    reasoning_available: bool = False
 
     @property
     def shown_claims(self) -> list[ClaimVerdict]:

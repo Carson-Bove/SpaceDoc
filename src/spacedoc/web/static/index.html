@@ -84,6 +84,15 @@
   dialog::backdrop { background: rgba(0,0,0,.35); }
   dialog pre { white-space: pre-wrap; font: 13.5px/1.55 var(--sans); max-height: 60vh; overflow: auto; }
   .error { color: var(--bad); }
+  button.secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: 4px; padding: 7px 12px; cursor: pointer; font-size: 13.5px; }
+  button.secondary:disabled { opacity: .6; cursor: progress; }
+  .review-label { font-size: 12.5px; color: var(--caution); background: var(--caution-bg); border-radius: 3px; padding: 6px 9px; }
+  .review dl { margin: 0; display: grid; gap: 8px; }
+  .review dt { font: 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .review dd { margin: 0; }
+  .review dd ul { margin: 2px 0 0; padding-left: 18px; }
+  .review .flag dd { color: var(--caution); }
+  #notes-text { white-space: pre-wrap; font: 12.5px/1.5 var(--mono); max-height: 40vh; overflow: auto; background: var(--bg); padding: 8px 10px; border-radius: 4px; }
 </style>
 </head>
 <body>
@@ -242,7 +251,76 @@ function render(v) {
     `</tbody></table></div>
     <p class="meta">Timings: ${Object.entries(v.timings).map(([k, x]) => `${esc(k)} ${x}`).join(" · ")}${v.audit_id ? ` · audit entry ${esc(v.audit_id)}` : ""}</p>
   </details></div>`;
+  if (v.reasoning_available && v.audit_id) {
+    h += `<div class="card review"><details id="review-details" data-audit="${esc(v.audit_id)}">
+      <summary>Model reasoning (for clinical review)</summary>
+      <div id="review-body" style="display:grid; gap:10px; margin-top:10px"><p class="meta">Loading…</p></div>
+    </details></div>`;
+  }
   $("out").innerHTML = h;
+  const rd = $("review-details");
+  if (rd) rd.addEventListener("toggle", () => { if (rd.open && !rd.dataset.loaded) loadReview(rd.dataset.audit); });
+}
+
+function list(items) {
+  return items.length ? `<ul>${items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : `<span class="meta">none listed</span>`;
+}
+
+function renderSummary(stored) {
+  const s = stored.summary;
+  const dx = s.diagnoses_considered.map(d => `${d.condition} — ${d.stance}: ${d.why}`);
+  return `<dl>
+    <div><dt>Findings weighed</dt><dd>${list(s.findings_weighed)}</dd></div>
+    <div><dt>Diagnoses considered</dt><dd>${list(dx)}</dd></div>
+    <div><dt>Sources relied on</dt><dd>${list(s.sources_relied_on)}</dd></div>
+    <div><dt>Assumptions</dt><dd>${list(s.assumptions)}</dd></div>
+    <div><dt>Uncertainties</dt><dd>${list(s.uncertainties)}</dd></div>
+    <div class="flag"><dt>Points for the reviewer</dt><dd>${list(s.points_for_reviewer)}</dd></div>
+  </dl>
+  <p class="meta">Summarized by ${esc(stored.model)} at ${esc(stored.created_at)} · saved as ${esc(stored.summary_audit_id)}${stored.notes_shortened ? " · notes were too long, middle omitted" : ""}</p>`;
+}
+
+async function loadReview(auditId) {
+  const body = $("review-body");
+  try {
+    const r = await fetch(`/api/review/${encodeURIComponent(auditId)}`);
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || r.statusText);
+    $("review-details").dataset.loaded = "1";
+    body.innerHTML = `<p class="review-label">${esc(data.label)}</p>
+      <div id="review-summary">${data.summary ? renderSummary(data.summary)
+        : `<button class="secondary" type="button" id="review-btn">Summarize reasoning</button>
+           <span class="meta"> Uses the model; can take a minute on a laptop.</span>`}</div>
+      <div><button class="link" type="button" id="notes-btn">Show full notes (${data.passes.length} pass${data.passes.length === 1 ? "" : "es"})</button>
+      <pre id="notes-text" hidden></pre></div>`;
+    const btn = $("review-btn");
+    if (btn) btn.addEventListener("click", () => summarize(auditId, btn));
+    $("notes-btn").addEventListener("click", () => showNotes(auditId));
+  } catch (e) {
+    body.innerHTML = `<p class="error">Reasoning review unavailable: ${esc(e.message)}</p>`;
+  }
+}
+
+async function summarize(auditId, btn) {
+  btn.disabled = true; btn.textContent = "Summarizing…";
+  try {
+    const r = await fetch(`/api/review/${encodeURIComponent(auditId)}/summarize`, {method: "POST"});
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || r.statusText);
+    $("review-summary").innerHTML = renderSummary(data);
+  } catch (e) {
+    btn.disabled = false; btn.textContent = "Summarize reasoning";
+    $("review-summary").insertAdjacentHTML("beforeend", `<p class="error">${esc(e.message)}</p>`);
+  }
+}
+
+async function showNotes(auditId) {
+  const pre = $("notes-text");
+  if (!pre.hidden) { pre.hidden = true; return; }
+  const r = await fetch(`/api/review/${encodeURIComponent(auditId)}/notes`);
+  const data = await r.json();
+  pre.textContent = r.ok ? data.notes.map(n => `[${n.pass}, attempt ${n.attempt}]\n${n.thinking}`).join("\n\n") : (data.detail || r.statusText);
+  pre.hidden = false;
 }
 
 document.addEventListener("click", async (e) => {

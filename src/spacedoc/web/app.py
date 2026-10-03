@@ -64,6 +64,51 @@ def create_app(system: System) -> FastAPI:
         v = system.orchestrator.ask(req.question, env, req.patient, req.role)
         return v.model_dump(mode="json")
 
+    @app.get("/api/review/{audit_id}")
+    def review(audit_id: str) -> dict[str, Any]:
+        """The saved reasoning summary for an answer (null if not made yet)."""
+        from spacedoc.review.summary import LABEL, NoReasoning
+
+        reviewer = _reviewer()
+        try:
+            notes = reviewer.notes(audit_id)
+        except NoReasoning as e:
+            raise HTTPException(404, str(e)) from e
+        saved = reviewer.get(audit_id)
+        return {
+            "label": LABEL,
+            "passes": [t["pass"] for t in notes],
+            "summary": saved.model_dump() if saved else None,
+        }
+
+    @app.post("/api/review/{audit_id}/summarize")
+    def summarize(audit_id: str) -> dict[str, Any]:
+        """Create (or return the saved) reasoning summary. Runs the model; may take a while."""
+        from spacedoc.llm.client import LLMError
+        from spacedoc.review.summary import NoReasoning
+
+        try:
+            return _reviewer().summarize(audit_id).model_dump()
+        except NoReasoning as e:
+            raise HTTPException(404, str(e)) from e
+        except LLMError as e:
+            raise HTTPException(503, f"The model could not summarize the notes: {e}") from e
+
+    @app.get("/api/review/{audit_id}/notes")
+    def notes(audit_id: str) -> dict[str, Any]:
+        """The full thinking notes, for reviewers who want the original."""
+        from spacedoc.review.summary import LABEL, NoReasoning
+
+        try:
+            return {"label": LABEL, "notes": _reviewer().notes(audit_id)}
+        except NoReasoning as e:
+            raise HTTPException(404, str(e)) from e
+
+    def _reviewer():
+        if system.reviewer is None:
+            raise HTTPException(404, "Reasoning review is not available")
+        return system.reviewer
+
     @app.get("/api/chunk/{chunk_id:path}")
     def chunk(chunk_id: str) -> dict[str, Any]:
         c = system.store.get(chunk_id)

@@ -11,6 +11,7 @@ import json
 import re
 
 from spacedoc.answer.schema import DraftAnswer
+from spacedoc.llm.client import ChatResult
 
 DEMO_PATIENT = {
     "crew_id": "C3",
@@ -189,7 +190,42 @@ def _eye(messages) -> DraftAnswer:
     )
 
 
-def demo_responder(messages, schema) -> str:
+DEMO_NOTES = (
+    "[SCRIPTED DEMO NOTES] Pain is colicky, in the right flank and moves toward the groin. "
+    "That pattern points to a kidney stone more than a muscle strain, even though the crewmember "
+    "suspects a pulled muscle. S1 describes the colicky pain and S2 links stones to bone loss in "
+    "spaceflight. Fever would change things: an infected obstructed stone is the must-not-miss "
+    "diagnosis, so ask about fever and chills. Ultrasound can look for hydronephrosis. For pain, "
+    "request the weight-based acetaminophen calculator rather than writing a dose. Evacuation is "
+    "not possible on this mission, so I should not suggest it. I assume the record is complete."
+)
+
+DEMO_SUMMARY = {
+    "findings_weighed": [
+        "Colicky right flank pain radiating to the groin",
+        "Crewmember suspects a pulled muscle",
+    ],
+    "diagnoses_considered": [
+        {"condition": "Kidney stone", "stance": "favored", "why": "colicky pain pattern"},
+        {
+            "condition": "Infected obstructed stone",
+            "stance": "considered",
+            "why": "must-not-miss if fever develops",
+        },
+        {"condition": "Muscle strain", "stance": "ruled out", "why": "pattern fits a stone better"},
+    ],
+    "sources_relied_on": ["S1: colicky pain pattern", "S2: stone risk from bone loss"],
+    "assumptions": ["The patient record is complete"],
+    "uncertainties": ["No temperature trend yet"],
+    "points_for_reviewer": [
+        "The notes say evacuation is not possible, but the draft answer still proposed it",
+    ],
+}
+
+
+def demo_responder(messages, schema) -> str | ChatResult:
+    if messages and messages[0]["content"].startswith("You summarize the private reasoning"):
+        return json.dumps(DEMO_SUMMARY)
     text = " ".join(m["content"] for m in messages).lower()
     question = (
         messages[1]["content"].split("Question from the crew:")[-1].lower()
@@ -203,6 +239,8 @@ def demo_responder(messages, schema) -> str:
     )
     if any(w in question for w in ("flank", "kidney", "side", "groin")):
         draft = _flank(messages, calc.group(1) if calc else None)
+        if not calc:  # the first (reasoning) pass "thinks"; the finalize pass does not
+            return ChatResult(text=json.dumps(draft.model_dump()), seconds=0.0, thinking=DEMO_NOTES)
     elif "eye" in question:
         draft = _eye(messages)
     else:

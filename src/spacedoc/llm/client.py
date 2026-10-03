@@ -309,13 +309,14 @@ def connect(
     raise ValueError(f"Unknown llm_backend {backend!r}; use 'ollama' or 'openai'")
 
 
-Responder = Callable[[list[dict[str, str]], dict[str, Any] | None], str]
+Responder = Callable[[list[dict[str, str]], dict[str, Any] | None], "str | ChatResult"]
 
 
 class FakeLLM:
     """Deterministic stand-in for tests and demo mode. Not a model.
 
-    `responder` receives the messages (and schema) and returns the reply text.
+    `responder` receives the messages (and schema) and returns the reply text, or a full
+    ChatResult (e.g. to include thinking notes).
     Embeddings are hashed bag-of-words vectors: crude, but deterministic and
     good enough to exercise the retrieval code without a model.
     """
@@ -333,7 +334,8 @@ class FakeLLM:
     def chat(self, messages, schema=None, params=None) -> ChatResult:
         self.calls.append(messages)
         self.params.append(params)
-        return ChatResult(text=self.responder(messages, schema), seconds=0.0)
+        reply = self.responder(messages, schema)
+        return reply if isinstance(reply, ChatResult) else ChatResult(text=reply, seconds=0.0)
 
     def embed(self, texts: list[str]) -> list[list[float]]:
         out = []

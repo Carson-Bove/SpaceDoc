@@ -13,6 +13,7 @@ from spacedoc.kb.ingest import chunk_source, load_manifest
 from spacedoc.kb.retrieve import Retriever
 from spacedoc.kb.store import KnowledgeStore
 from spacedoc.llm.client import FakeLLM, GenParams, connect
+from spacedoc.review.summary import ReasoningReviewer
 from spacedoc.tools.formulary import Formulary
 from spacedoc.verify.grounding import LexicalOverlapChecker, MiniCheckChecker
 from spacedoc.verify.pipeline import Verifier
@@ -25,6 +26,7 @@ class System:
     orchestrator: Orchestrator
     store: KnowledgeStore
     demo: bool
+    reviewer: ReasoningReviewer | None = None
 
     def environment(self, tier: str | None = None, **overrides) -> EnvironmentContext:
         return load_environment(
@@ -114,4 +116,18 @@ def build_system(settings: Settings, demo: bool = False) -> System:
         model_name=model_name,
         generation=None if demo else generation_plan(settings),
     )
-    return System(settings=settings, orchestrator=orch, store=store, demo=demo)
+    reviewer = ReasoningReviewer(
+        llm,
+        audit,
+        GenParams()
+        if demo
+        else GenParams.from_profile(
+            settings.sampling_plain,
+            seed=settings.seed,
+            max_tokens=settings.review_max_tokens,
+            num_ctx=settings.chat_num_ctx,
+            think=False,
+        ),
+        model_name,
+    )
+    return System(settings=settings, orchestrator=orch, store=store, demo=demo, reviewer=reviewer)

@@ -31,6 +31,7 @@ class Settings:
     draft_max_tokens: int = 6144  # thinking + JSON answer
     finalize_max_tokens: int = 2048
     seed: int = 42  # fixed so sampled runs are repeatable
+    review_max_tokens: int = 1024  # reasoning summaries for clinical review
     # Qwen3's recommended settings. Its model card warns against greedy decoding
     # (temperature 0) in thinking mode, which can cause endless repetition.
     sampling_thinking: dict = field(

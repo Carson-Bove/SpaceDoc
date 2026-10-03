@@ -62,6 +62,28 @@ class AuditLog:
                 f.write(json.dumps(entry, ensure_ascii=False, default=str) + "\n")
             return f"audit-{entry['seq']:06d}"
 
+    def entries(self) -> list[dict[str, Any]]:
+        if not self.path.exists():
+            return []
+        with self.path.open(encoding="utf-8") as f:
+            return [json.loads(line) for line in f if line.strip()]
+
+    def get(self, audit_id: str) -> dict[str, Any] | None:
+        """The entry with this ID (e.g. "audit-000012"), or None."""
+        try:
+            seq = int(audit_id.removeprefix("audit-"))
+        except ValueError:
+            return None
+        return next((e for e in self.entries() if e.get("seq") == seq), None)
+
+    def latest_for(self, event: str, audit_id: str) -> dict[str, Any] | None:
+        """The newest entry of type `event` whose payload refers to `audit_id`."""
+        found = None
+        for e in self.entries():
+            if e.get("event") == event and (e.get("payload") or {}).get("for") == audit_id:
+                found = e
+        return found
+
     def verify(self) -> tuple[bool, int | None]:
         """Check the whole chain.
 

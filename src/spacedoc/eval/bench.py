@@ -36,7 +36,7 @@ def bench_models(
             s = dataclasses.replace(s, think_draft=think)
         label = model if think is None else f"{model} (thinking {'on' if think else 'off'})"
         system = build_system(s)
-        rows = run_cases(system, cases, repeats)
+        rows = run_cases(system, cases, repeats, summaries=False)
         calls = sum(r["answer"]["timings"].get("llm_calls", 0) for r in rows)
         fails = sum(r["answer"]["timings"].get("parse_failures", 0) for r in rows)
         tps = [r["answer"]["timings"].get("tokens_per_s") for r in rows]

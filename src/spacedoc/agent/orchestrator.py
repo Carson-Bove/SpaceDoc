@@ -67,6 +67,7 @@ class Orchestrator:
         self.schema = draft_json_schema()
         self._stats: dict[str, float] = {}
         self._findings: list[Finding] = []
+        self._traces: list[dict[str, Any]] = []
 
     def _messages(
         self,
@@ -132,6 +133,10 @@ class Orchestrator:
             self._stats["llm_s"] += result.seconds
             self._stats["completion_tokens"] += result.completion_tokens or 0
             self._stats["prompt_tokens"] += result.prompt_tokens or 0
+            if result.thinking:
+                self._traces.append(
+                    {"pass": label, "attempt": attempt + 1, "thinking": result.thinking}
+                )
             cut_off = result.done_reason == "length"
             if cut_off:
                 self._findings.append(
@@ -182,6 +187,7 @@ class Orchestrator:
             "parse_failures": 0,
         }
         self._findings = []
+        self._traces = []
         timings: dict[str, float] = {}
         extra = self._findings
         calc_results: list[CalcResult] = []
@@ -249,6 +255,7 @@ class Orchestrator:
         verified.timings = {k: round(v, 3) for k, v in timings.items()}
         if any(f.rule_id == "CONSISTENCY-LOW" for f in extra):
             verified.uncertainty = "high"
+        verified.reasoning_available = bool(self._traces) and self.audit is not None
 
         if self.audit:
             verified.audit_id = self.audit.append(
@@ -277,6 +284,8 @@ class Orchestrator:
                     "findings": [f.model_dump() for f in verified.findings],
                     "abstained": verified.abstained,
                     "timings": verified.timings,
+                    # The model's private notes, kept for clinical review. Unverified.
+                    "thinking": self._traces,
                 },
             )
         return verified
