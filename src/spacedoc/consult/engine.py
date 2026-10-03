@@ -16,7 +16,7 @@ from typing import Any
 from pydantic import ValidationError
 
 from spacedoc.agent.orchestrator import Orchestrator
-from spacedoc.answer.schema import VerifiedAnswer
+from spacedoc.answer.schema import VerifiedAnswer, require_all
 from spacedoc.audit.log import AuditLog
 from spacedoc.consult import prompts
 from spacedoc.consult.redflags import RedFlagHit, RedFlags, format_delay
@@ -134,7 +134,7 @@ class ConsultEngine:
         self.model_name = model_name
         self.max_rounds = max_rounds
         self.max_questions = max_questions
-        self.schema = TurnReply.model_json_schema()
+        self.schema = require_all(TurnReply.model_json_schema())
 
     # ---- start -----------------------------------------------------------------------
 

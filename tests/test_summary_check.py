@@ -134,3 +134,15 @@ def test_demo_flank_summary_loses_the_evacuation_sentence(demo_system, env_t4):
     assert "SUMMARY-TRIMMED" in rule_ids(v)
     patient = next(c for c in v.claims if c.claim.kind == "patient")
     assert patient.shown
+
+
+def test_summary_is_generated_after_the_claims_it_restates():
+    from spacedoc.agent.prompts import SYSTEM
+    from spacedoc.answer.schema import draft_json_schema
+
+    schema = draft_json_schema()
+    order = list(schema["properties"])
+    assert order.index("summary") > order.index("claims")
+    assert order.index("summary") > order.index("actions")
+    assert schema["required"] == order  # required-first decoders keep the declared order
+    assert "must not add any fact" in SYSTEM

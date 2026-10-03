@@ -26,7 +26,8 @@ from spacedoc.verify.grounding import GroundingChecker, GroundingVerdict, split_
 
 # Shown in place of a model summary that failed its check.
 SUMMARY_REMOVED = (
-    "The model's summary was removed because it could not be checked against the answer below."
+    "The model's summary is not shown: the checker could not confirm it against the answer "
+    'below (details under "Why this answer").'
 )
 SUMMARY_ABSTAINED = "SpaceDoc cannot answer this reliably."
 

@@ -45,18 +45,33 @@ class CalcRequest(BaseModel):
 
 
 class DraftAnswer(BaseModel):
-    summary: str = Field(description="One or two sentences, no numbers")
+    # Field order is generation order under constrained decoding: the summary comes after the
+    # claims and actions so that it can restate them.
     claims: list[Claim] = []
     differential: list[DxItem] = []
     actions: list[Action] = []
     calc_requests: list[CalcRequest] = []
+    summary: str = Field(
+        description="One or two sentences restating the main claims and actions; no new facts"
+    )
     uncertainty: Literal["low", "moderate", "high"]
     abstain: bool = False
     missing_info: list[str] = []
 
 
+def require_all(schema: dict[str, Any]) -> dict[str, Any]:
+    """Mark every top-level property required.
+
+    Constrained decoders (llama.cpp's schema-to-grammar, used by Ollama) write required
+    properties before optional ones. With every property required, the model writes them in
+    the declared order (e.g. the summary after the claims it restates) and never skips one.
+    Parsing still accepts the defaults.
+    """
+    return {**schema, "required": list(schema.get("properties", {}))}
+
+
 def draft_json_schema() -> dict[str, Any]:
-    return DraftAnswer.model_json_schema()
+    return require_all(DraftAnswer.model_json_schema())
 
 
 # ---- Verification results -------------------------------------------------------------
