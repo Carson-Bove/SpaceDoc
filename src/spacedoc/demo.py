@@ -1,8 +1,8 @@
 """Demo mode: a scripted stand-in for the LLM so the GUI and tests run without Ollama.
 
 The scripted drafts deliberately include mistakes a real model makes (an unsupported claim,
-an invented statistic, an expired drug, an evacuation that isn't possible, a summary that says
-more than the checked answer) so you can watch the verification layer catch them.
+an invented statistic, a dose written by the model, an expired drug, an evacuation that isn't
+possible, a summary that says more than the checked answer) so you can watch the verification layer catch them.
 """
 
 from __future__ import annotations
@@ -36,7 +36,7 @@ def _cid(messages, needle: str) -> str:
     return "S99"  # deliberately invalid -> the verifier reports a bad citation
 
 
-def _flank(messages, calc_id: str | None) -> DraftAnswer:
+def _flank(messages) -> DraftAnswer:
     s_colic = _cid(messages, "colicky flank pain")
     s_space = _cid(messages, "bone demineralization")
     s_us = _cid(messages, "hydronephrosis")
@@ -47,6 +47,14 @@ def _flank(messages, calc_id: str | None) -> DraftAnswer:
             "text": "Renal point-of-care ultrasound to look for hydronephrosis",
             "kind": "test",
             "equipment": ["ultrasound"],
+            "risk_tier": "R2",
+        },
+        {
+            "id": "A3",
+            # The model writes its own dose; SpaceDoc replaces it with the calculator's.
+            "text": "Acetaminophen 650 mg oral for pain",
+            "kind": "medication",
+            "item": "acetaminophen",
             "risk_tier": "R2",
         },
         {
@@ -70,18 +78,6 @@ def _flank(messages, calc_id: str | None) -> DraftAnswer:
             "risk_tier": "R1",
         },
     ]
-    if calc_id:
-        actions.insert(
-            1,
-            {
-                "id": "A3",
-                "text": "Acetaminophen 1000 mg oral for pain",
-                "kind": "medication",
-                "item": "acetaminophen",
-                "calc_ref": calc_id,
-                "risk_tier": "R2",
-            },
-        )
     return DraftAnswer(
         # The second sentence repeats the evacuation that is not possible on this mission; the
         # summary check removes it because the action behind it is blocked.
@@ -138,9 +134,6 @@ def _flank(messages, calc_id: str | None) -> DraftAnswer:
             {"condition": "Musculoskeletal back pain", "likelihood": "low"},
         ],
         actions=actions,
-        calc_requests=[]
-        if calc_id
-        else [{"calculator": "weight_based_dose", "args": {"drug": "acetaminophen"}}],
         uncertainty="moderate",
         missing_info=["Urine dipstick result", "Temperature trend"],
     )
@@ -311,15 +304,9 @@ def demo_responder(messages, schema) -> str | ChatResult:
         if len(messages) > 1
         else ""
     )
-    calc = (
-        re.search(r"- (calc-[0-9a-f]{8}):", messages[-1]["content"])
-        if "Calculator results" in messages[-1]["content"]
-        else None
-    )
     if any(w in question for w in ("flank", "kidney", "side", "groin")):
-        draft = _flank(messages, calc.group(1) if calc else None)
-        if not calc:  # the first (reasoning) pass "thinks"; the finalize pass does not
-            return ChatResult(text=json.dumps(draft.model_dump()), seconds=0.0, thinking=DEMO_NOTES)
+        draft = _flank(messages)
+        return ChatResult(text=json.dumps(draft.model_dump()), seconds=0.0, thinking=DEMO_NOTES)
     elif "eye" in question:
         draft = _eye(messages)
     else:

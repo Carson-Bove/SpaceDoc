@@ -28,6 +28,7 @@ items:
     expiry: 2028-01-31
     dosing: {mg_per_kg: 10, max_mg: 400, round_to_mg: 200, route: oral, interval: every 6-8 hours as needed}
     substitutes: [acetaminophen]
+    allergy_classes: [nsaids, non-steroidal anti-inflammatory drugs]
     validation_status: unvalidated
   - id: ondansetron
     name: Ondansetron
@@ -58,11 +59,13 @@ items:
     unit: tablets
     expiry: 2028-01-31
     substitutes: [trimethoprim-sulfamethoxazole]
+    allergy_classes: [fluoroquinolones, quinolones]
     validation_status: unvalidated
   - id: trimethoprim-sulfamethoxazole
     name: Trimethoprim-sulfamethoxazole
     kind: drug
     aliases: [tmp-smx, bactrim]
+    allergy_classes: [sulfonamide antibiotics, sulfonamides, sulfa drugs, sulfa]
     form: tablet
     strength: 800/160 mg
     quantity: 28
@@ -73,6 +76,7 @@ items:
     name: Tetracaine eye drops
     kind: drug
     aliases: [tetracaine]
+    allergy_classes: [ester local anesthetics]
     form: ophthalmic solution
     strength: 0.5%
     quantity: 4
@@ -83,6 +87,7 @@ items:
     name: Erythromycin eye ointment
     kind: drug
     aliases: [erythromycin ointment]
+    allergy_classes: [macrolides]
     form: ophthalmic ointment
     strength: 0.5%
     quantity: 3

@@ -28,9 +28,7 @@ class Settings:
     chat_num_ctx: int = 12288
     checker_num_ctx: int = 4096
     think_draft: bool = True  # thinking for the first (reasoning) pass
-    think_finalize: bool = False  # the second pass only inserts calculator results
     draft_max_tokens: int = 6144  # thinking + JSON answer
-    finalize_max_tokens: int = 2048
     seed: int = 42  # fixed so sampled runs are repeatable
     review_max_tokens: int = 1024  # reasoning summaries for clinical review
     # Qwen3's recommended settings. Its model card warns against greedy decoding

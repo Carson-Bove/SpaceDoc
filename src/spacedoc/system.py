@@ -66,10 +66,7 @@ def generation_plan(settings: Settings) -> GenerationPlan:
             think=think,
         )
 
-    return GenerationPlan(
-        draft=params(settings.think_draft, settings.draft_max_tokens),
-        finalize=params(settings.think_finalize, settings.finalize_max_tokens),
-    )
+    return GenerationPlan(draft=params(settings.think_draft, settings.draft_max_tokens))
 
 
 def build_system(settings: Settings, demo: bool = False) -> System:

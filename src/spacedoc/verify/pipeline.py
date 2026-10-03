@@ -6,10 +6,12 @@ environment rules (L6) -> risk gating (L7) -> abstention decision -> summary che
 
 from __future__ import annotations
 
+import re
 from datetime import date
 from typing import Any
 
 from spacedoc.answer.schema import (
+    Action,
     ActionVerdict,
     ClaimVerdict,
     DraftAnswer,
@@ -30,6 +32,50 @@ SUMMARY_REMOVED = (
     'below (details under "Why this answer").'
 )
 SUMMARY_ABSTAINED = "SpaceDoc cannot answer this reliably."
+
+
+def _verdict_note(label: str, v: GroundingVerdict) -> str:
+    if v.raw == "could not be checked":
+        return f"{label} could not be checked"
+    return f"{label} {'supports' if v.supported else 'does not support'} this (checker: {v.raw})"
+
+
+def _check_error_message(e: Exception) -> str:
+    msg = f"The source checker could not run ({e}), so statements that needed checking are hidden."
+    if m := re.search(r"model '([^']+)' not found", str(e)):
+        msg += f" The checker model is not installed. Install it with: ollama pull {m.group(1)}"
+    return msg
+
+
+def _next_steps(
+    env: EnvironmentContext,
+    abstained: bool,
+    reason: str | None,
+    draft: DraftAnswer,
+    actions: list[ActionVerdict],
+) -> list[str]:
+    """What to do now. Built by code from checked content, so it is present even when SpaceDoc
+    cannot give a full answer."""
+    steps = []
+    if abstained:
+        steps.append(
+            f"SpaceDoc could not give a full, checked answer ({reason}). Treat what is shown as "
+            "incomplete and rely on the CMO's judgement and onboard procedures."
+        )
+    if env.link_available and (
+        abstained or any(a.action.risk_tier in {"R3", "R4"} for a in actions)
+    ):
+        steps.append(f"Contact the ground medical team (one-way delay {env.delay_text()}).")
+    ready = [a for a in actions if a.status != "blocked"]
+    if ready:
+        steps.append(
+            "Actions that passed SpaceDoc's checks are listed under Actions; those marked CONFIRM "
+            "need the CMO's confirmation first."
+        )
+    if draft.missing_info:
+        steps.append("Find out: " + "; ".join(draft.missing_info) + ".")
+    steps.append("Recheck vital signs and symptoms, and ask SpaceDoc again if anything changes.")
+    return steps
 
 
 class Verifier:
@@ -58,10 +104,33 @@ class Verifier:
                         rule_id="CHECK-ERROR",
                         severity="warn",
                         target="answer",
-                        message=f"Grounding check failed, so affected claims are hidden: {e}",
+                        message=_check_error_message(e),
                     )
                 )
-            return GroundingVerdict(False, f"{label}: check failed")
+            return GroundingVerdict(False, "could not be checked")
+
+    def _check_dose(self, action: Action, calcs: dict[str, CalcResult]) -> list[Finding]:
+        """A medication must carry a checked dose: a calculator result for a dosed formulary
+        item, or a clinician's dose for items the formulary has no dosing data for."""
+        if action.kind != "medication" or not action.item or action.calc_ref in calcs:
+            return []
+        item = self.formulary.find(action.item)
+        if item is None:
+            return []  # FORM-UNLINKED covers it
+        why = (
+            "SpaceDoc could not calculate a dose (see the CALC-ERROR note)"
+            if item.dosing
+            else f"the formulary has no dosing data for {item.name}"
+        )
+        return [
+            Finding(
+                rule_id="NO-DOSE",
+                severity="block",
+                target=action.id,
+                message=f"No checked dose: {why}. Not ready to give until a clinician sets "
+                "the dose.",
+            )
+        ]
 
     def _ground(
         self, claim: str, docs: dict[str, str], findings: list[Finding]
@@ -78,7 +147,7 @@ class Verifier:
             ok = False
             for label, doc in docs.items():
                 v = self._check(sentence, doc, label, findings)
-                notes.append(f"{label}: {v.raw}")
+                notes.append(_verdict_note(label, v))
                 if v.supported:
                     ok = True
                     break
@@ -86,7 +155,7 @@ class Verifier:
                 group = list(docs)[:3]
                 label = "+".join(group)
                 v = self._check(sentence, "\n\n".join(docs[g] for g in group), label, findings)
-                notes.append(f"{label} together: {v.raw}")
+                notes.append(_verdict_note(f"{label} together", v))
                 ok = v.supported
             if not ok:
                 return False, "; ".join(notes)
@@ -190,7 +259,7 @@ class Verifier:
             elif claim.kind == "patient":
                 if patient:
                     supported, detail = self._ground(claim.text, {"record": precord}, findings)
-                    detail = f"Checked against the patient record: {detail}"
+                    detail = f"Checked against the patient record and what was reported: {detail}"
                 else:
                     supported, detail = False, "No patient record was provided"
                 verdicts.append(
@@ -207,7 +276,9 @@ class Verifier:
                         claim=claim,
                         status="unsupported",
                         shown=False,
-                        detail="No valid citation (cite-or-drop)",
+                        detail="The model did not name a source for this statement, so it is "
+                        "not shown. SpaceDoc only shows statements it can check against a "
+                        "source.",
                     )
                 )
             else:
@@ -231,15 +302,19 @@ class Verifier:
         action_verdicts: list[ActionVerdict] = []
         for action in draft.actions:
             act_findings: list[Finding] = []
-            if n := rules.check_action_numbers(action, calcs, self.formulary):
+            if n := rules.check_action_numbers(action, calcs, self.formulary, patient):
                 act_findings.append(n)
+            act_findings += self._check_dose(action, calcs)
+            act_findings += rules.check_allergies(action, self.formulary, patient)
             if action.calc_ref and action.calc_ref not in calcs:
                 act_findings.append(
                     Finding(
                         rule_id="CALC-MISSING",
                         severity="block",
                         target=action.id,
-                        message=f"Referenced calculator result {action.calc_ref} does not exist",
+                        message=f"This action refers to a calculator result "
+                        f"({action.calc_ref}) that does not exist, so its numbers cannot be "
+                        "trusted.",
                     )
                 )
             act_findings += rules.check_formulary(action, self.formulary, self.today)
@@ -280,6 +355,7 @@ class Verifier:
                     status=status,
                     reasons=reasons,
                     calc_text=calc.text if calc else None,
+                    display_text=rules.action_display_text(action, calcs, self.formulary, patient),
                 )
             )
 
@@ -303,6 +379,9 @@ class Verifier:
         )
         if failure:
             abstained, reason = True, failure.message
+        check_error = next((f for f in findings if f.rule_id == "CHECK-ERROR"), None)
+        if abstained and check_error and sourced and not supported:
+            reason = "SpaceDoc's source checker could not run, so no statement could be confirmed"
 
         summary = draft.summary
         if check_summary:
@@ -318,6 +397,7 @@ class Verifier:
                 evidence.append(f"Patient record:\n{precord}")
             summary = self._check_summary(summary, "\n".join(evidence), abstained, findings)
 
+        next_steps = _next_steps(env, abstained, reason, draft, action_verdicts)
         return VerifiedAnswer(
             question=question,
             environment=env.summary(),
@@ -328,9 +408,12 @@ class Verifier:
             calc_results=[c.model_dump() for c in calc_results],
             findings=findings,
             passages=passages,
-            uncertainty=draft.uncertainty,
+            # An answer SpaceDoc could not give reliably is never "low" uncertainty.
+            uncertainty="high" if abstained else draft.uncertainty,
             abstained=abstained,
             abstain_reason=reason,
             missing_info=draft.missing_info,
             draft=draft,
+            next_steps=next_steps,
+            patient_summary=rules.record_summary(patient),
         )

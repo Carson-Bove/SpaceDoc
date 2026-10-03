@@ -33,6 +33,8 @@ class FormularyItem(BaseModel):
     expiry: date | None = None
     dosing: Dosing | None = None
     substitutes: list[str] = []
+    # Drug classes for the allergy check, e.g. [sulfonamide antibiotics, sulfonamides].
+    allergy_classes: list[str] = []
     validation_status: Literal["unvalidated", "clinician-validated"] = "unvalidated"
 
     def names(self) -> list[str]:

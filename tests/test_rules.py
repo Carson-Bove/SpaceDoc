@@ -68,8 +68,12 @@ def test_action_numbers_must_trace_to_calculator(formulary):
     )
     calcs = {calc.calc_id: calc}
     assert rules.check_action_numbers(good, calcs, formulary) is None
-    assert rules.check_action_numbers(bad, calcs, formulary).rule_id == "NUM-ACTION"
-    assert "no calculator" in rules.check_action_numbers(none, calcs, formulary).message
+    # With a calculator result linked, the model's own dose is replaced, not trusted.
+    replaced = rules.check_action_numbers(bad, calcs, formulary)
+    assert replaced.rule_id == "DOSE-REPLACED" and '"800 mg"' in replaced.message
+    assert rules.action_display_text(bad, calcs, formulary) == "Ibuprofen oral"
+    blocked = rules.check_action_numbers(none, calcs, formulary)
+    assert blocked.rule_id == "NUM-ACTION" and "no calculator result" in blocked.message
 
 
 def test_claim_numbers_must_appear_in_source():

@@ -60,14 +60,22 @@ class DraftAnswer(BaseModel):
 
 
 def require_all(schema: dict[str, Any]) -> dict[str, Any]:
-    """Mark every top-level property required.
+    """Mark every property required, at the top level and in nested definitions.
 
     Constrained decoders (llama.cpp's schema-to-grammar, used by Ollama) write required
-    properties before optional ones. With every property required, the model writes them in
-    the declared order (e.g. the summary after the claims it restates) and never skips one.
+    properties before optional ones and may skip optional ones entirely. With every property
+    required, the model writes them in the declared order (e.g. the summary after the claims
+    it restates) and never leaves out, say, a claim's citations or an action's formulary item.
     Parsing still accepts the defaults.
     """
-    return {**schema, "required": list(schema.get("properties", {}))}
+
+    def fix(node: dict[str, Any]) -> dict[str, Any]:
+        return {**node, "required": list(node["properties"])} if "properties" in node else node
+
+    out = fix(schema)
+    if "$defs" in out:
+        out["$defs"] = {k: fix(v) for k, v in out["$defs"].items()}
+    return out
 
 
 def draft_json_schema() -> dict[str, Any]:
@@ -100,6 +108,8 @@ class ActionVerdict(BaseModel):
     status: ActionStatus
     reasons: list[str] = []
     calc_text: str | None = None
+    # The action as shown: the model's text with any number SpaceDoc could not trace removed.
+    display_text: str | None = None
 
 
 class Passage(BaseModel):
@@ -134,6 +144,10 @@ class VerifiedAnswer(BaseModel):
     # True when the model produced thinking notes, which are kept in the audit log for
     # clinical review (never shown to the crew as part of the answer).
     reasoning_available: bool = False
+    # Always present, even when SpaceDoc abstains: what to do now. Built by code, not the model.
+    next_steps: list[str] = []
+    # The patient record SpaceDoc used, in one line (or "none").
+    patient_summary: str = "none"
 
     @property
     def shown_claims(self) -> list[ClaimVerdict]:

@@ -31,6 +31,11 @@ def numbers_in(text: str) -> set[str]:
     return out
 
 
+def _plural(nums: set[str]) -> str:
+    items = ", ".join(sorted(nums))
+    return f"number {items} is" if len(nums) == 1 else f"numbers {items} are"
+
+
 def check_claim_numbers(
     claim: Claim, passages: dict[str, Passage], patient_text: str
 ) -> Finding | None:
@@ -43,49 +48,158 @@ def check_claim_numbers(
             rule_id="NUM-REASONING",
             severity="block",
             target=claim.id,
-            message="Numbers are not allowed in unsourced reasoning",
+            message="The model's own reasoning may not contain numbers (only statements taken "
+            "from a source can), so this statement is hidden.",
         )
     if claim.kind == "patient":
         allowed = numbers_in(patient_text)
+        where = "the patient record or what was reported"
     else:
         allowed = set().union(
             *(numbers_in(passages[c].text) for c in claim.citations if c in passages)
         )
+        cited = ", ".join(c for c in claim.citations if c in passages)
+        where = f"the cited source ({cited})" if cited else "any cited source"
     missing = nums - allowed
     if missing:
         return Finding(
             rule_id="NUM-UNTRACED",
             severity="block",
             target=claim.id,
-            message=f"Number(s) {', '.join(sorted(missing))} not found in the cited source or record",
+            message=f"The {_plural(missing)} not in {where}, so this statement is hidden.",
         )
     return None
+
+
+# Record fields that may be quoted in an action with their unit (e.g. "64 kg").
+_RECORD_UNITS = {"weight_kg": "kg", "height_cm": "cm"}
+
+# A number with a dose, rate or weight unit, e.g. "500 mg", "4 tablets", "100 mL/h".
+_QTY = re.compile(
+    r"(?<![A-Za-z0-9.])(\d+(?:[.,]\d+)?)\s*"
+    r"(mg/kg|mcg/kg|ml/kg|ml/h|ml/hr|mg|mcg|µg|kg|g|ml|l|units?|iu|tablets?|tabs?|capsules?"
+    r"|caps?|drops?|cm)(?![A-Za-z])",
+    re.I,
+)
+_UNIT_ALIASES = {"µg": "mcg", "ml/hr": "ml/h", "tab": "tablet", "cap": "capsule"}
+
+
+def _norm_number(n: str) -> str:
+    n = n.replace(",", "")
+    return n.rstrip("0").rstrip(".") if "." in n else n
+
+
+def _norm_unit(u: str) -> str:
+    u = u.lower()
+    u = u[:-1] if u.endswith("s") and u not in {"tabs", "caps"} else u
+    u = {"tabs": "tablet", "caps": "capsule"}.get(u, u)
+    return _UNIT_ALIASES.get(u, u)
+
+
+def quantities_in(text: str) -> set[tuple[str, str]]:
+    return {(_norm_number(m.group(1)), _norm_unit(m.group(2))) for m in _QTY.finditer(text or "")}
+
+
+def _record_quantities(patient: dict[str, Any] | None) -> set[tuple[str, str]]:
+    out = set()
+    for key, unit in _RECORD_UNITS.items():
+        value = (patient or {}).get(key)
+        if isinstance(value, int | float):
+            out.add((_norm_number(f"{value:g}"), unit))
+    return out
+
+
+def _untraced_spans(
+    action: Action,
+    calcs: dict[str, CalcResult],
+    formulary: Formulary,
+    patient: dict[str, Any] | None,
+) -> list[tuple[int, int, str]]:
+    """Where the action states a number that SpaceDoc cannot trace.
+
+    A number with a unit (a dose, rate or weight) must match, number and unit together, the
+    linked calculator result, the product strength, or a record value (weight in kg). A bare
+    number must appear in the calculator result or product strength (e.g. "every 6 hours").
+    """
+    text = action.text
+    calc = calcs.get(action.calc_ref or "")
+    item = formulary.find(action.item) if action.item else None
+    allowed_q = _record_quantities(patient)
+    allowed_n: set[str] = set()
+    for source in ([calc.text, f"{calc.value:g} {calc.unit}"] if calc else []) + (
+        [item.strength] if item and item.strength else []
+    ):
+        allowed_q |= quantities_in(source)
+        allowed_n |= numbers_in(source)
+    spans, covered = [], []
+    for m in _QTY.finditer(text):
+        covered.append((m.start(), m.end()))
+        if (_norm_number(m.group(1)), _norm_unit(m.group(2))) not in allowed_q:
+            spans.append((m.start(), m.end(), m.group(0)))
+    for m in _NUM.finditer(text):
+        if any(a <= m.start() < b for a, b in covered):
+            continue
+        if _norm_number(m.group(0)) not in allowed_n:
+            spans.append((m.start(), m.end(), m.group(0)))
+    return sorted(spans)
+
+
+def untraced_action_numbers(
+    action: Action,
+    calcs: dict[str, CalcResult],
+    formulary: Formulary,
+    patient: dict[str, Any] | None = None,
+) -> list[str]:
+    return [t for _, _, t in _untraced_spans(action, calcs, formulary, patient)]
+
+
+def action_display_text(
+    action: Action,
+    calcs: dict[str, CalcResult],
+    formulary: Formulary,
+    patient: dict[str, Any] | None = None,
+) -> str | None:
+    """The action text with untraced numbers removed, or None if nothing was removed."""
+    spans = _untraced_spans(action, calcs, formulary, patient)
+    if not spans:
+        return None
+    text = action.text
+    for start, end, _ in reversed(spans):
+        text = text[:start] + text[end:]
+    return re.sub(r"\s{2,}", " ", text).replace(" ,", ",").replace("( )", "").strip()
 
 
 def check_action_numbers(
-    action: Action, calcs: dict[str, CalcResult], formulary: Formulary
+    action: Action,
+    calcs: dict[str, CalcResult],
+    formulary: Formulary,
+    patient: dict[str, Any] | None = None,
 ) -> Finding | None:
-    """SR-02 for actions: every number must come from the referenced calculator result
-    (or be the product strength printed in the formulary)."""
-    nums = numbers_in(action.text)
-    if not nums:
+    """SR-02 for actions: a dose or rate must come from SpaceDoc's calculator.
+
+    With a calculator result linked, numbers the model wrote are removed and the calculated
+    value is shown instead (a warning). Without one, the action cannot be given as written.
+    """
+    missing = untraced_action_numbers(action, calcs, formulary, patient)
+    if not missing:
         return None
-    allowed: set[str] = set()
-    calc = calcs.get(action.calc_ref or "")
-    if calc:
-        allowed |= numbers_in(calc.text) | numbers_in(str(calc.value))
-    if action.item and (item := formulary.find(action.item)) and item.strength:
-        allowed |= numbers_in(item.strength)
-    missing = nums - allowed
-    if missing:
-        why = "no calculator result referenced" if not calc else "not in the calculator result"
+    wrote = ", ".join(f'"{m}"' for m in missing)
+    if action.calc_ref in calcs:
         return Finding(
-            rule_id="NUM-ACTION",
-            severity="block",
+            rule_id="DOSE-REPLACED",
+            severity="warn",
             target=action.id,
-            message=f"Number(s) {', '.join(sorted(missing))} in this action are untraced ({why})",
+            message=f"The model wrote {wrote} itself. SpaceDoc removed it; use the calculator "
+            "result shown with this action.",
         )
-    return None
+    return Finding(
+        rule_id="NUM-ACTION",
+        severity="block",
+        target=action.id,
+        message=f"The model wrote {wrote} itself and SpaceDoc has no calculator result for "
+        "it, so it is not shown. Doses and rates must come from SpaceDoc's calculator or a "
+        "clinician.",
+    )
 
 
 # ---- formulary and equipment -----------------------------------------------------------
@@ -102,7 +216,8 @@ def check_formulary(
                 rule_id="FORM-UNLINKED",
                 severity="block",
                 target=action.id,
-                message="Medication action is not linked to a formulary item",
+                message="This medication is not matched to an item in the onboard formulary, "
+                "so SpaceDoc cannot check its availability, expiry, allergies or dose.",
             )
         ]
     avail = formulary.availability(action.item, today)
@@ -138,6 +253,35 @@ def check_formulary(
                 message=f"{avail.item.name}: formulary entry is not clinician-validated",
             )
         )
+    return findings
+
+
+def check_allergies(
+    action: Action, formulary: Formulary, patient: dict[str, Any] | None
+) -> list[Finding]:
+    """A medication must not match an allergy in the patient record (by name or drug class)."""
+    allergies = [str(a) for a in (patient or {}).get("allergies") or []]
+    if action.kind != "medication" or not action.item or not allergies:
+        return []
+    item = formulary.find(action.item)
+    if item is None:
+        return []
+    terms = {t.lower().rstrip("s") for t in item.names() + item.allergy_classes if t}
+    findings = []
+    for allergy in allergies:
+        text = allergy.lower()
+        words = {w.rstrip("s") for w in re.findall(r"[a-z][a-z-]+", text)}
+        if any(t in text for t in terms) or words & terms:
+            findings.append(
+                Finding(
+                    rule_id="ALLERGY",
+                    severity="block",
+                    target=action.id,
+                    message=f"The patient's record lists an allergy: {allergy}. {item.name} "
+                    "matches it by name or drug class. Do not give it without a clinician's "
+                    "decision.",
+                )
+            )
     return findings
 
 
@@ -233,6 +377,26 @@ def screen_passage(passage: Passage) -> Finding | None:
                 message=f"Passage from {passage.source_id} contains instruction-like text and was excluded",
             )
     return None
+
+
+def record_summary(patient: dict[str, Any] | None) -> str:
+    """One line describing the record SpaceDoc used, e.g. "C1 · 46 F · 64 kg · allergies: none"."""
+    if not patient:
+        return "none"
+    p = patient
+    parts = [str(p["crew_id"])] if p.get("crew_id") else []
+    if p.get("age") is not None or p.get("sex"):
+        parts.append(" ".join(str(x) for x in (p.get("age"), p.get("sex")) if x is not None))
+    if p.get("weight_kg") is not None:
+        parts.append(
+            f"{p['weight_kg']:g} kg"
+            if isinstance(p["weight_kg"], int | float)
+            else str(p["weight_kg"])
+        )
+    for key in ("allergies", "medications"):
+        if key in p:
+            parts.append(f"{key}: {', '.join(map(str, p[key])) or 'none'}")
+    return " · ".join(parts) or "record without the usual fields"
 
 
 def patient_text(patient: dict[str, Any] | None) -> str:

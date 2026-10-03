@@ -232,10 +232,8 @@ def test_openai_backend_maps_thinking_and_reads_reasoning():
     assert result.thinking == "Let me think." and result.done_reason == "length"
 
 
-def test_generation_plan_uses_qwen_settings_per_pass():
-    plan = generation_plan(Settings())
-    d, f = plan.draft, plan.finalize
+def test_generation_plan_uses_qwen_thinking_settings():
+    d = generation_plan(Settings()).draft
     assert (d.think, d.temperature, d.top_p, d.top_k) == (True, 0.6, 0.95, 20)
-    assert (f.think, f.temperature, f.top_p, f.top_k) == (False, 0.7, 0.8, 20)
-    assert d.num_ctx == f.num_ctx == 12288 and d.seed == 42
+    assert d.num_ctx == 12288 and d.seed == 42
     assert d.temperature > 0  # Qwen3: no greedy decoding in thinking mode

@@ -23,13 +23,23 @@ def test_demo_flank_end_to_end(demo_system, env_t4):
     actions = by_id(v.actions, "action")
     assert actions["A1"].status == "requires_confirmation"
     assert actions["A2"].status == "blocked"  # expired tamsulosin
+    # The model wrote 650 mg; SpaceDoc linked the calculator (15 mg/kg x 78 kg, capped at
+    # 1000 mg) and removed the model's number.
     assert actions["A3"].status == "requires_confirmation"
-    assert actions["A3"].calc_text.startswith("Acetaminophen 1000 mg")  # dose from calculator
+    assert actions["A3"].calc_text.startswith("Acetaminophen 1000 mg")
+    assert actions["A3"].display_text == "Acetaminophen oral for pain"
     assert actions["A4"].status == "blocked"  # evacuation impossible in T4
     assert actions["A5"].status == "ok"
 
     rule_ids = {f.rule_id for f in v.findings}
-    assert {"INJECTION", "NUM-UNTRACED", "FORM-EXPIRED", "ENV-EVACUATE"} <= rule_ids
+    assert {
+        "INJECTION",
+        "NUM-UNTRACED",
+        "DOSE-REPLACED",
+        "FORM-EXPIRED",
+        "ENV-EVACUATE",
+    } <= rule_ids
+    assert v.next_steps and v.patient_summary.startswith("C3 · 34 M · 78 kg")
     assert all(p.source_id != "demo-injection" for p in v.passages)
     assert [p.cid for p in v.passages] == [f"S{i + 1}" for i in range(len(v.passages))]
     assert not v.abstained
@@ -39,11 +49,11 @@ def test_demo_flank_end_to_end(demo_system, env_t4):
 def test_calculator_weight_comes_from_record(demo_system, env_t4):
     patient = {**DEMO_PATIENT, "weight_kg": 50}
     v = demo_system.orchestrator.ask(QUESTION, env_t4, patient)
-    # 15 mg/kg x 50 kg = 750 mg, rounded down to one 500 mg tablet. The scripted draft still
-    # says 1000 mg, which no longer matches the calculator, so the action is blocked.
+    # 15 mg/kg x 50 kg = 750 mg, rounded down to one 500 mg tablet. The model's own "650 mg"
+    # is removed and the calculated dose shown instead.
     [a3] = [a for a in v.actions if a.action.id == "A3"]
     assert a3.calc_text.startswith("Acetaminophen 500 mg")
-    assert a3.status == "blocked"
+    assert a3.status == "requires_confirmation" and "650" not in a3.display_text
 
 
 def test_out_of_scope_question_abstains(demo_system, env_t4):

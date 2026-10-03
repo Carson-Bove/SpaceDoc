@@ -139,6 +139,8 @@
   .lk.must { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
   .changed { font: 11px var(--mono); color: var(--caution); margin-left: 6px; }
   .working .label { font-size: 12px; color: var(--caution); }
+  .next { border-left: 3px solid var(--accent); }
+  ul.steps { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
   #c-status { min-height: 1.5em; }
 </style>
 </head>
@@ -357,7 +359,10 @@ function renderAnswer(v) {
         ${summaryCheck ? `<div class="meta">Part of the model's summary was removed: the checker could not confirm it against the answer below (details under "Why this answer").</div>` : ""}
         <div class="meta">Uncertainty: ${esc(v.uncertainty)} · ${esc(v.environment)}</div>`;
   if (v.missing_info.length) h += `<div class="meta">Would help: ${v.missing_info.map(esc).join("; ")}</div>`;
-  h += `</div>`;
+  h += `<div class="meta">Patient record used: ${esc(v.patient_summary)}</div></div>`;
+  if (v.next_steps && v.next_steps.length) {
+    h += `<div class="card next"><h2>What to do now</h2><ul class="steps">${v.next_steps.map(s => `<li>${esc(s)}</li>`).join("")}</ul></div>`;
+  }
 
   if (shown.length) {
     h += `<div class="card"><h2>Findings</h2><ul class="claims">` + shown.map(c => `
@@ -373,7 +378,7 @@ function renderAnswer(v) {
   if (v.actions.length) {
     h += `<div class="card"><h2>Actions</h2><ul class="actions">` + v.actions.map(a => `
       <li class="action ${a.status}">
-        <div><span class="pill ${a.status}">${ASTATUS[a.status]}</span><span class="atext">${esc(a.action.text)}</span>
+        <div><span class="pill ${a.status}">${ASTATUS[a.status]}</span><span class="atext">${esc(a.display_text || a.action.text)}</span>
           <span class="meta"> · ${esc(a.action.risk_tier)}</span></div>
         ${a.calc_text ? `<div class="calc">Calculator: ${esc(a.calc_text)}</div>` : ""}
         ${a.reasons.length ? `<ul class="reasons">${a.reasons.map(r => `<li>${esc(r)}</li>`).join("")}</ul>` : ""}

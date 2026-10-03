@@ -20,6 +20,13 @@ class EnvironmentContext(BaseModel):
     equipment: list[str] = []
     notes: str = ""
 
+    def delay_text(self) -> str:
+        """The one-way communication delay in words, e.g. "14 min" (or "no link")."""
+        if not self.link_available:
+            return "no link"
+        s = self.one_way_delay_s
+        return f"{s:.0f} s" if s < 60 else f"{s / 60:.0f} min"
+
     @property
     def tags(self) -> set[str]:
         """Tags used to filter and boost retrieval and to select rules."""

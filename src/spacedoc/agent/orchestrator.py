@@ -1,7 +1,8 @@
-"""The orchestrator (component C-02): retrieve -> draft -> calculators -> finalize -> verify.
+"""The orchestrator (component C-02): retrieve -> draft -> calculators -> verify.
 
-Phase 1 uses a fixed two-pass loop with structured fields instead of free-form native tool
-calling. It is less flexible, but every step is deterministic, logged and checkable.
+Phase 1 uses one model pass with structured fields instead of free-form native tool calling;
+calculators run in code and their results are linked to the actions. It is less flexible, but
+every step is deterministic, logged and checkable.
 """
 
 from __future__ import annotations
@@ -46,7 +47,6 @@ class GenerationPlan:
     """
 
     draft: GenParams = field(default_factory=GenParams)
-    finalize: GenParams = field(default_factory=GenParams)
 
 
 class Orchestrator:
@@ -281,10 +281,7 @@ class Orchestrator:
                     "model": self.model_name,
                     "checker": getattr(self.verifier.checker, "name", "?"),
                     "prompt_version": prompts.PROMPT_VERSION,
-                    "generation": {
-                        "draft": asdict(self.generation.draft),
-                        "finalize": asdict(self.generation.finalize),
-                    },
+                    "generation": {"draft": asdict(self.generation.draft)},
                     "passages": [p.chunk_id for p in passages],
                     "draft": draft.model_dump(),
                     "calc_results": [c.model_dump() for c in calc_results],
@@ -310,7 +307,11 @@ class Orchestrator:
         patient: dict[str, Any] | None,
         timings: dict[str, float],
     ) -> tuple[DraftAnswer, list[CalcResult]]:
-        """Draft, run requested calculators, finalize, and (optionally) resample."""
+        """Draft, run calculators in code, and (optionally) resample.
+
+        There is no second model pass: doses are linked to calculator results in code, which is
+        faster and keeps every number out of the model's hands.
+        """
         extra = self._findings
         t1 = time.perf_counter()
         draft = self._draft(messages, self.generation.draft, "draft")
@@ -325,50 +326,74 @@ class Orchestrator:
             )
 
         calc_results: list[CalcResult] = []
-        if draft.calc_requests and not draft.abstain:
-            lines = []
+        if not draft.abstain:
             for req in draft.calc_requests:
-                try:
-                    r = run_calculator(req.calculator, req.args, self.formulary, patient)
-                    calc_results.append(r)
-                    warn = f" (warnings: {'; '.join(r.warnings)})" if r.warnings else ""
-                    lines.append(f"- {r.calc_id}: {r.text}{warn}")
-                except (CalcError, TypeError) as e:
-                    lines.append(f"- {req.calculator} FAILED: {e}")
-                    extra.append(
-                        Finding(
-                            rule_id="CALC-ERROR",
-                            severity="warn",
-                            target="answer",
-                            message=f"{req.calculator}: {e}",
-                        )
-                    )
-            finalize_messages = messages + [
-                {"role": "assistant", "content": draft.model_dump_json()},
-                {"role": "user", "content": prompts.FINALIZE.format(results="\n".join(lines))},
-            ]
-            p = self.generation.finalize
-            if p.num_ctx and estimate_tokens(finalize_messages) + (p.max_tokens or 0) > p.num_ctx:
-                extra.append(
-                    Finding(
-                        rule_id="FINALIZE-SKIPPED",
-                        severity="warn",
-                        target="answer",
-                        message="The second pass would not fit the context window, so the "
-                        "draft was kept without calculator references",
-                    )
-                )
-            else:
-                t2 = time.perf_counter()
-                final = self._draft(finalize_messages, p, "finalize")
-                timings["finalize_s"] = time.perf_counter() - t2
-                if final is not None:
-                    final.calc_requests = []
-                    draft = final
+                self._run_calc(req.calculator, req.args, patient, calc_results)
+            self._link_doses(draft, patient, calc_results)
 
         if self.consistency_samples > 1 and not draft.abstain and draft.differential:
             extra += self._consistency(messages, draft)
         return draft, calc_results
+
+    def _run_calc(
+        self,
+        name: str,
+        args: dict[str, Any],
+        patient: dict[str, Any] | None,
+        results: list[CalcResult],
+    ) -> CalcResult | None:
+        try:
+            r = run_calculator(name, args, self.formulary, patient)
+        except (CalcError, TypeError) as e:
+            what = f"a dose of {args['drug']}" if "drug" in args else name.replace("_", " ")
+            self._findings.append(
+                Finding(
+                    rule_id="CALC-ERROR",
+                    severity="warn",
+                    target="answer",
+                    message=f"SpaceDoc could not calculate {what}: {e}",
+                )
+            )
+            return None
+        if r.calc_id not in {c.calc_id for c in results}:
+            results.append(r)
+        return r
+
+    def _link_doses(
+        self, draft: DraftAnswer, patient: dict[str, Any] | None, results: list[CalcResult]
+    ) -> None:
+        """Give every dosed action a calculator result (weight always from the record).
+
+        A medication action naming a formulary item with dosing data gets the weight-based
+        dose; a maintenance-fluid action gets the maintenance-fluid rate. The verifier then
+        checks every number in the action against the linked result.
+        """
+        known = {c.calc_id for c in results}
+        for action in draft.actions:
+            if action.calc_ref in known:
+                continue
+            action.calc_ref = None
+            if "maintenance fluid" in action.text.lower():
+                calc = next(
+                    (c for c in results if c.calculator == "maintenance_fluids_421"), None
+                ) or self._run_calc("maintenance_fluids_421", {}, patient, results)
+            elif action.kind == "medication" and action.item:
+                item = self.formulary.find(action.item)
+                if item is None or item.dosing is None:
+                    continue
+                calc = next(
+                    (
+                        c
+                        for c in results
+                        if c.calculator == "weight_based_dose" and c.inputs.get("drug") == item.id
+                    ),
+                    None,
+                ) or self._run_calc("weight_based_dose", {"drug": item.id}, patient, results)
+            else:
+                continue
+            if calc:
+                action.calc_ref = calc.calc_id
+                known.add(calc.calc_id)
 
     def _consistency(self, messages, draft: DraftAnswer) -> list[Finding]:
         """Self-consistency (layer L5): resample and check the leading diagnosis agrees."""

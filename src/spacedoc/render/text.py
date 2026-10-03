@@ -22,6 +22,11 @@ def render_text(v: VerifiedAnswer, show_removed: bool = True) -> str:
             out += ["What would help:"] + [f"  - {m}" for m in v.missing_info]
         out.append("")
     out += [v.summary, ""]
+    if v.next_steps:
+        out.append("What to do now:")
+        out += [f"  - {s}" for s in v.next_steps]
+        out.append("")
+    out += [f"Patient record used: {v.patient_summary}", ""]
     shown = v.shown_claims
     if shown:
         out.append("Findings (✓ supported by the cited source, ~ model reasoning):")
@@ -37,7 +42,8 @@ def render_text(v: VerifiedAnswer, show_removed: bool = True) -> str:
     if v.actions:
         out.append("Actions:")
         for a in v.actions:
-            out.append(f"  [{_ACTION[a.status]}] {a.action.text} ({a.action.risk_tier})")
+            text = a.display_text or a.action.text
+            out.append(f"  [{_ACTION[a.status]}] {text} ({a.action.risk_tier})")
             if a.calc_text:
                 out.append(f"      calculator: {a.calc_text}")
             for r in a.reasons:
