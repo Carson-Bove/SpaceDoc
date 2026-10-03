@@ -22,7 +22,7 @@ from spacedoc.llm.client import LLMError
 from spacedoc.tools.calculators import CalcResult
 from spacedoc.tools.formulary import Formulary
 from spacedoc.verify import rules
-from spacedoc.verify.grounding import GroundingChecker
+from spacedoc.verify.grounding import GroundingChecker, GroundingVerdict, split_sentences
 
 
 class Verifier:
@@ -39,6 +39,56 @@ class Verifier:
         self.feasibility = feasibility
         self.min_support_fraction = min_support_fraction
         self.today = today
+
+    def _check(self, text: str, doc: str, label: str, findings: list[Finding]) -> GroundingVerdict:
+        """One grounding check; a failed call counts as unsupported (never shown)."""
+        try:
+            return self.checker.check(text, doc)
+        except LLMError as e:
+            if not any(f.rule_id == "CHECK-ERROR" for f in findings):
+                findings.append(
+                    Finding(
+                        rule_id="CHECK-ERROR",
+                        severity="warn",
+                        target="answer",
+                        message=f"Grounding check failed, so affected claims are hidden: {e}",
+                    )
+                )
+            return GroundingVerdict(False, f"{label}: check failed")
+
+    def _ground(
+        self,
+        claim: str,
+        cites: list[str],
+        by_cid: dict[str, Passage],
+        findings: list[Finding],
+    ) -> tuple[bool, str]:
+        """Is every sentence of the claim supported by its cited passages?
+
+        MiniCheck checks one sentence at a time, so multi-sentence claims are split. Each
+        sentence is checked against each cited passage; if none supports it alone and the claim
+        cites several passages, it is checked against up to three of them together (a claim may
+        combine facts from two passages).
+        """
+        notes = []
+        for sentence in split_sentences(claim) or [claim]:
+            ok = False
+            for cid in cites:
+                v = self._check(sentence, by_cid[cid].text, cid, findings)
+                notes.append(f"{cid}: {v.raw}")
+                if v.supported:
+                    ok = True
+                    break
+            if not ok and len(cites) >= 2:
+                group = cites[:3]
+                doc = "\n\n".join(by_cid[c].text for c in group)
+                label = "+".join(group)
+                v = self._check(sentence, doc, label, findings)
+                notes.append(f"{label} together: {v.raw}")
+                ok = v.supported
+            if not ok:
+                return False, "; ".join(notes)
+        return True, "; ".join(notes)
 
     def verify(
         self,
@@ -105,35 +155,13 @@ class Verifier:
                     )
                 )
             else:
-                raws = []
-                supported = False
-                for cid in valid_cites:
-                    try:
-                        v = self.checker.check(claim.text, by_cid[cid].text)
-                    except LLMError as e:
-                        # Unchecked claims are hidden, never shown as supported.
-                        raws.append(f"{cid}: check failed")
-                        if not any(f.rule_id == "CHECK-ERROR" for f in findings):
-                            findings.append(
-                                Finding(
-                                    rule_id="CHECK-ERROR",
-                                    severity="warn",
-                                    target="answer",
-                                    message=f"Grounding check failed, so affected claims are "
-                                    f"hidden: {e}",
-                                )
-                            )
-                        continue
-                    raws.append(f"{cid}: {v.raw}")
-                    if v.supported:
-                        supported = True
-                        break
+                supported, detail = self._ground(claim.text, valid_cites, by_cid, findings)
                 verdicts.append(
                     ClaimVerdict(
                         claim=claim,
                         status="supported" if supported else "unsupported",
                         shown=supported,
-                        detail="; ".join(raws),
+                        detail=detail,
                         checked_against=valid_cites,
                     )
                 )
