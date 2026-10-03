@@ -47,3 +47,20 @@ def test_reingest_replaces_source():
     d = DATA / "demo_corpus"
     ingest_manifest(store, llm, d / "manifest.yaml", d, "fake")
     assert store.count() == n
+
+
+def test_query_gets_the_embedding_instruction_but_documents_do_not():
+    from spacedoc.kb.retrieve import query_text
+
+    store, llm = _store()
+    seen = []
+
+    class Recorder(FakeLLM):
+        def embed(self, texts):
+            seen.extend(texts)
+            return llm.embed(texts)
+
+    r = Retriever(store, Recorder(), query_instruction="Retrieve passages that answer it")
+    r.search("kidney stone pain")
+    assert seen == ["Instruct: Retrieve passages that answer it\nQuery:kidney stone pain"]
+    assert query_text("q", "") == "q"  # no instruction configured: query unchanged

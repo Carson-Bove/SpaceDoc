@@ -22,6 +22,7 @@ db_path = "spacedoc.db"
 audit_path = "audit/audit.jsonl"
 
 top_k = 6
+embed_query_instruction = "Given a medical question from a spacecraft crew member, retrieve reference passages that answer it"
 min_support_fraction = 0.5
 consistency_samples = 1
 default_tier = "T4"

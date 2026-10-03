@@ -22,17 +22,24 @@ def fts_query(text: str) -> str:
     return " OR ".join(f'"{w}"' for w in dict.fromkeys(words))
 
 
+def query_text(query: str, instruction: str) -> str:
+    """Qwen3-Embedding's query format. Documents are embedded without an instruction."""
+    return f"Instruct: {instruction}\nQuery:{query}" if instruction else query
+
+
 class Retriever:
-    def __init__(self, store: KnowledgeStore, embedder: LLM) -> None:
+    def __init__(self, store: KnowledgeStore, embedder: LLM, query_instruction: str = "") -> None:
         self.store = store
         self.embedder = embedder
+        self.query_instruction = query_instruction
 
     def search(
         self, query: str, env: EnvironmentContext | None = None, k: int = 6
     ) -> list[Passage]:
         pool = max(k * 4, 20)
         keyword = self.store.keyword_search(fts_query(query), pool)
-        vector = self.store.vector_search(self.embedder.embed([query])[0], pool)
+        query_vec = self.embedder.embed([query_text(query, self.query_instruction)])[0]
+        vector = self.store.vector_search(query_vec, pool)
 
         # Reciprocal rank fusion: each list votes 1/(K + rank). Robust to the two
         # scorers having incomparable scales (BM25 vs cosine).

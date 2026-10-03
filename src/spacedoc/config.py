@@ -48,6 +48,12 @@ class Settings:
 
     # Retrieval
     top_k: int = 6
+    # Qwen3-Embedding expects an instruction on queries (not documents); its model card
+    # reports 1-5% worse retrieval without one. Set to "" for embedders that don't use one.
+    embed_query_instruction: str = (
+        "Given a medical question from a spacecraft crew member, retrieve reference "
+        "passages that answer it"
+    )
 
     # Verification
     min_support_fraction: float = 0.5  # below this share of supported claims, abstain
