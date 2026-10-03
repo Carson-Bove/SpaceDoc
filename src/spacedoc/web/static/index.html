@@ -22,6 +22,7 @@
     }
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html, body { height: 100%; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); }
   header {
@@ -29,14 +30,23 @@
     padding: 10px 20px; border-bottom: 1px solid var(--rule); background: var(--surface);
   }
   header h1 { font-size: 20px; margin: 0; letter-spacing: 0.01em; }
+  .tabs { display: flex; gap: 2px; background: var(--bg); border: 1px solid var(--rule); border-radius: 5px; padding: 2px; }
+  .tabs button { border: 0; background: none; color: var(--muted); padding: 5px 12px; border-radius: 3px; cursor: pointer; font-size: 14px; }
+  .tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 0 0 1px var(--rule); }
   .chip { font: 12px var(--mono); padding: 2px 8px; border: 1px solid var(--rule); border-radius: 3px; color: var(--muted); }
   .chip.caution { color: var(--caution); border-color: var(--caution); background: var(--caution-bg); }
   .layout { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 0; min-height: calc(100% - 50px); }
   @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
   aside.controls { padding: 18px 20px; border-right: 1px solid var(--rule); display: grid; gap: 16px; align-content: start; }
+  .stack { display: grid; gap: 14px; align-content: start; }
   label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
-  select, textarea, button { font: inherit; color: var(--ink); }
-  select, textarea { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 7px 9px; }
+  label.check { display: flex; gap: 8px; align-items: flex-start; color: var(--ink); font-size: 13.5px; }
+  label.check input { margin-top: 3px; }
+  fieldset { border: 0; padding: 0; margin: 0; display: flex; gap: 14px; flex-wrap: wrap; }
+  fieldset legend { font-size: 13px; color: var(--muted); padding: 0; margin-bottom: 4px; width: 100%; }
+  fieldset label { display: flex; gap: 6px; align-items: center; color: var(--ink); font-size: 14px; }
+  select, textarea, button, input { font: inherit; color: var(--ink); }
+  select, textarea, input[type="text"] { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 7px 9px; }
   textarea { resize: vertical; }
   #patient { font: 12px/1.4 var(--mono); min-height: 150px; }
   #question { min-height: 96px; }
@@ -45,9 +55,9 @@
   button.primary:disabled { opacity: .5; cursor: progress; }
   button.link { background: none; border: 0; color: var(--accent); padding: 0; cursor: pointer; font-size: 13px; text-align: left; }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  main { padding: 18px 20px 40px; display: grid; gap: 16px; align-content: start; max-width: 980px; }
+  main { padding: 18px 20px 40px; display: grid; gap: 16px; align-content: start; max-width: 980px; min-width: 0; }
   .empty { color: var(--muted); max-width: 60ch; }
-  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px; display: grid; gap: 10px; }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
   .card h2 { font-size: 13px; font-family: var(--mono); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0; }
   .banner { border-radius: 4px; padding: 10px 14px; font-weight: 500; }
   .banner.abstain { background: var(--caution-bg); color: var(--caution); border: 1px solid var(--caution); }
@@ -80,9 +90,11 @@
   td, th { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--rule); vertical-align: top; }
   th { font: 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
   .scroll { overflow-x: auto; }
-  dialog { max-width: min(720px, 92vw); border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); padding: 18px 20px; }
+  dialog { max-width: min(760px, 92vw); border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); padding: 18px 20px; }
   dialog::backdrop { background: rgba(0,0,0,.35); }
   dialog pre { white-space: pre-wrap; font: 13.5px/1.55 var(--sans); max-height: 60vh; overflow: auto; }
+  #record-text { font: 12.5px/1.5 var(--mono); }
+  .dialog-buttons { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
   .error { color: var(--bad); }
   button.secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: 4px; padding: 7px 12px; cursor: pointer; font-size: 13.5px; }
   button.secondary:disabled { opacity: .6; cursor: progress; }
@@ -92,12 +104,51 @@
   .review dd { margin: 0; }
   .review dd ul { margin: 2px 0 0; padding-left: 18px; }
   .review .flag dd { color: var(--caution); }
-  #notes-text { white-space: pre-wrap; font: 12.5px/1.5 var(--mono); max-height: 40vh; overflow: auto; background: var(--bg); padding: 8px 10px; border-radius: 4px; }
+  .notes-text, .thinking { white-space: pre-wrap; font: 12.5px/1.5 var(--mono); max-height: 40vh; overflow: auto; background: var(--bg); padding: 8px 10px; border-radius: 4px; margin: 6px 0 0; }
+
+  /* consult */
+  .chat { display: grid; gap: 12px; }
+  .bubble { justify-self: end; max-width: min(620px, 90%); background: var(--accent-soft); border-radius: 8px 8px 2px 8px; padding: 8px 12px; white-space: pre-wrap; }
+  .bubble .who { display: block; font: 11px var(--mono); color: var(--accent); margin-bottom: 2px; }
+  .note { font-size: 13px; color: var(--muted); text-align: center; }
+  .turn { border-left: 3px solid var(--accent); }
+  .question { display: grid; gap: 4px; }
+  .question .q { font-size: 16px; font-weight: 500; }
+  .why { font-size: 12.5px; color: var(--muted); }
+  .quick { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+  .quick button { border: 1px solid var(--rule); background: var(--surface); border-radius: 14px; padding: 3px 12px; cursor: pointer; font-size: 13.5px; }
+  .quick button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .exam { border: 1px dashed var(--rule); border-radius: 4px; padding: 8px 10px; display: grid; gap: 6px; }
+  .exam.bad { border-color: var(--bad); }
+  .exam .eq { font: 12px var(--mono); color: var(--muted); }
+  .exam .eq b { color: var(--bad); font-weight: 600; }
+  .exam-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .exam-row input { flex: 1 1 160px; min-width: 0; }
+  .urgent { border: 2px solid var(--bad); background: var(--bad-bg); }
+  .urgent h2 { color: var(--bad); }
+  .urgent ol { margin: 0; padding-left: 20px; }
+  .urgent .draft { font: 11px var(--mono); color: var(--bad); letter-spacing: .04em; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .composer { position: sticky; bottom: 0; background: var(--bg); padding: 10px 0 4px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; }
+  .composer textarea { min-height: 64px; }
+  .working ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .working li { display: grid; gap: 1px; }
+  .working .cond { font-weight: 500; }
+  .lk { white-space: nowrap; font: 11px var(--mono); padding: 1px 6px; border-radius: 3px; margin-left: 6px; background: var(--bg); color: var(--muted); border: 1px solid var(--rule); }
+  .lk.high { color: var(--ink); border-color: var(--ink); }
+  .lk.must { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+  .changed { font: 11px var(--mono); color: var(--caution); margin-left: 6px; }
+  .working .label { font-size: 12px; color: var(--caution); }
+  #c-status { min-height: 1.5em; }
 </style>
 </head>
 <body>
 <header>
   <h1>SpaceDoc</h1>
+  <nav class="tabs" role="tablist" aria-label="Mode">
+    <button type="button" role="tab" id="tab-quick" aria-selected="true">Quick question</button>
+    <button type="button" role="tab" id="tab-consult" aria-selected="false">Consult</button>
+  </nav>
   <span class="chip" id="mode-chip">loading…</span>
   <span class="chip caution">Research prototype · not for clinical use</span>
 </header>
@@ -108,20 +159,58 @@
       <select id="tier"></select>
     </label>
     <div class="env-summary" id="env-summary"></div>
-    <label for="role">Who is asking
-      <select id="role">
-        <option value="cmo">Crew Medical Officer</option>
-        <option value="crew">Crewmember / patient</option>
-        <option value="physician">Physician-astronaut</option>
-      </select>
-    </label>
-    <label for="patient">Patient record (JSON, optional)
-      <textarea id="patient" spellcheck="false" placeholder='{"crew_id": "C3", "weight_kg": 78}'></textarea>
-    </label>
-    <label for="question">Question
-      <textarea id="question" placeholder="Describe the symptoms or ask a question"></textarea>
-    </label>
-    <button class="primary" id="ask" type="button">Ask SpaceDoc</button>
+
+    <div id="quick-controls" class="stack">
+      <label for="role">Who is asking
+        <select id="role">
+          <option value="cmo">Crew Medical Officer</option>
+          <option value="crew">Crewmember / patient</option>
+          <option value="physician">Physician-astronaut</option>
+        </select>
+      </label>
+      <label for="patient">Patient record (JSON, optional)
+        <textarea id="patient" spellcheck="false" placeholder='{"crew_id": "C3", "weight_kg": 78}'></textarea>
+      </label>
+      <label for="question">Question
+        <textarea id="question" placeholder="Describe the symptoms or ask a question"></textarea>
+      </label>
+      <button class="primary" id="ask" type="button">Ask SpaceDoc</button>
+    </div>
+
+    <div id="consult-controls" class="stack" hidden>
+      <div id="consult-setup" class="stack">
+        <label for="c-user">Who is using SpaceDoc?
+          <select id="c-user"></select>
+        </label>
+        <label for="c-patient">Who is the patient?
+          <select id="c-patient"></select>
+        </label>
+        <fieldset>
+          <legend>Session</legend>
+          <label><input type="radio" name="c-kind" value="real"> Real</label>
+          <label><input type="radio" name="c-kind" value="practice" checked> Practice</label>
+        </fieldset>
+        <label for="c-scenario" id="c-scenario-label">Scenario ID (optional)
+          <input type="text" id="c-scenario" placeholder="e.g. SO-0104">
+        </label>
+        <label class="check"><input type="checkbox" id="c-deep">
+          <span>Deep log: thinking on every turn. Slower; each turn also shows the estimated time without it.</span></label>
+        <button class="primary" id="c-start" type="button">Start consult</button>
+        <p class="meta">The crew roster is synthetic. Every turn is saved in the audit log.</p>
+      </div>
+      <div id="consult-side" class="stack" hidden>
+        <div class="meta" id="c-info"></div>
+        <section class="card working" aria-live="polite">
+          <h2>Working list</h2>
+          <span class="label">Not yet checked: SpaceDoc's current hypotheses</span>
+          <ul id="c-ddx"><li class="meta">Appears after the first answer.</li></ul>
+        </section>
+        <button class="secondary" id="c-assess" type="button">Assess now</button>
+        <button class="secondary" id="c-record" type="button">Consult record</button>
+        <button class="secondary" id="c-end" type="button">End consult</button>
+        <button class="secondary" id="c-new" type="button" hidden>New consult</button>
+      </div>
+    </div>
     <div class="meta" id="kb-status"></div>
   </aside>
 
@@ -129,6 +218,19 @@
     <p class="empty">Answers appear here. Each claim shows whether the verifier found it in its cited
       source; blocked or unconfirmed actions are marked; and "Why this answer" shows the retrieved
       passages, calculator results and every rule that fired.</p>
+  </main>
+
+  <main id="consult-out" hidden>
+    <div id="c-chat" class="chat">
+      <p class="empty">A consult is a short conversation. SpaceDoc asks one or two questions at a time to
+        build a differential diagnosis, then gives a fully checked assessment. Choose who is using
+        SpaceDoc and who the patient is, then press Start consult.</p>
+    </div>
+    <div id="c-status" class="meta" role="status"></div>
+    <div class="composer" id="c-composer" hidden>
+      <textarea id="c-input" aria-label="Your message" placeholder="Describe the problem"></textarea>
+      <button class="primary" id="c-send" type="button">Send</button>
+    </div>
   </main>
 </div>
 
@@ -138,15 +240,40 @@
   <form method="dialog"><button class="primary" type="submit">Close</button></form>
 </dialog>
 
+<dialog id="record-dialog">
+  <div class="meta" id="record-meta"></div>
+  <pre id="record-text"></pre>
+  <div class="dialog-buttons">
+    <button class="secondary" type="button" id="record-download">Download .md</button>
+    <form method="dialog"><button class="primary" type="submit">Close</button></form>
+  </div>
+</dialog>
+
 <script>
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let tiers = [];
-let lastPassages = {};
+let demo = false;
+const passagesByAnswer = {};
+
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+};
+
+async function api(path, options = {}) {
+  const r = await fetch(path, options.body ? {method: "POST", headers: {"Content-Type": "application/json"}, ...options}
+                                           : options);
+  let data = null;
+  try { data = await r.json(); } catch { data = null; }
+  if (!r.ok) throw new Error((data && data.detail) || r.statusText);
+  return data;
+}
 
 async function init() {
-  const [status, envs] = await Promise.all([fetch("/api/status").then(r => r.json()), fetch("/api/env").then(r => r.json())]);
+  const [status, envs, roster] = await Promise.all([api("/api/status"), api("/api/env"), api("/api/roster").catch(() => [])]);
   tiers = envs;
+  demo = status.demo;
   $("mode-chip").textContent = status.demo ? "DEMO · scripted, no model" : `model ${status.model} · checker ${status.checker}`;
   $("kb-status").textContent = `Knowledge base: ${status.chunks} passages from ${status.sources.length} source(s)` +
     (status.demo ? " (synthetic demo texts)" : "");
@@ -157,17 +284,34 @@ async function init() {
     $("tier").appendChild(o);
   }
   showEnv();
+  fillRoster(roster);
   if (status.demo) {
-    const p = await fetch("/api/demo-patient").then(r => r.json());
+    const p = await api("/api/demo-patient");
     $("patient").value = JSON.stringify(p, null, 2);
     $("question").value = "Sharp right flank pain since this morning that comes in waves and moves toward my groin. I think I pulled a muscle.";
   }
+  setMode(store.get("spacedoc-mode") === "consult" ? "consult" : "quick");
 }
 function showEnv() {
   const e = tiers.find(t => t.tier === $("tier").value);
   $("env-summary").textContent = e ? e.summary : "";
 }
 $("tier").addEventListener("change", showEnv);
+
+function setMode(mode) {
+  const consult = mode === "consult";
+  $("tab-quick").setAttribute("aria-selected", String(!consult));
+  $("tab-consult").setAttribute("aria-selected", String(consult));
+  $("quick-controls").hidden = consult;
+  $("consult-controls").hidden = !consult;
+  $("out").hidden = consult;
+  $("consult-out").hidden = !consult;
+  store.set("spacedoc-mode", mode);
+}
+$("tab-quick").addEventListener("click", () => setMode("quick"));
+$("tab-consult").addEventListener("click", () => setMode("consult"));
+
+// ---- quick question --------------------------------------------------------------------
 
 async function ask() {
   let patient = null;
@@ -179,11 +323,9 @@ async function ask() {
   $("ask").disabled = true; $("ask").textContent = "Thinking…";
   $("out").innerHTML = `<p class="empty">Retrieving sources, drafting, running calculators and verifying…</p>`;
   try {
-    const r = await fetch("/api/ask", {method: "POST", headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({question: $("question").value, tier: $("tier").value, role: $("role").value, patient})});
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.detail || r.statusText);
-    render(data);
+    const data = await api("/api/ask", {body: JSON.stringify({question: $("question").value, tier: $("tier").value, role: $("role").value, patient})});
+    $("out").innerHTML = renderAnswer(data);
+    attachReview($("out"));
   } catch (e) {
     $("out").innerHTML = `<p class="error">SpaceDoc could not answer: ${esc(e.message)}. Is Ollama running?</p>`;
   } finally {
@@ -196,12 +338,13 @@ $("question").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.m
 const BADGE = {supported: "✓", reasoning: "~", unsupported: "✗", removed: "✗", contradicted: "✗"};
 const ASTATUS = {ok: "OK", requires_confirmation: "CONFIRM", blocked: "BLOCKED"};
 
-function cites(list) {
-  return (list || []).map(c => `<button class="cite" type="button" data-cid="${esc(c)}">${esc(c)}</button>`).join("");
+function cites(list, key) {
+  return (list || []).map(c => `<button class="cite" type="button" data-answer="${esc(key)}" data-cid="${esc(c)}">${esc(c)}</button>`).join("");
 }
 
-function render(v) {
-  lastPassages = Object.fromEntries(v.passages.map(p => [p.cid, p]));
+function renderAnswer(v) {
+  const key = v.audit_id || `answer-${Object.keys(passagesByAnswer).length + 1}`;
+  passagesByAnswer[key] = Object.fromEntries(v.passages.map(p => [p.cid, p]));
   const shown = v.claims.filter(c => c.shown);
   const removed = v.claims.filter(c => !c.shown);
   let h = "";
@@ -219,13 +362,13 @@ function render(v) {
   if (shown.length) {
     h += `<div class="card"><h2>Findings</h2><ul class="claims">` + shown.map(c => `
       <li class="claim"><span class="badge ${c.status}" title="${esc(c.status)}">${BADGE[c.status]}</span>
-        <span>${esc(c.claim.text)}${cites(c.claim.citations)}
+        <span>${esc(c.claim.text)}${cites(c.claim.citations, key)}
         ${c.status === "reasoning" ? '<div class="meta">Model reasoning, not from a source</div>' : ""}
-        ${c.claim.kind === "patient" ? '<div class="meta">From the patient record</div>' : ""}</span></li>`).join("") + `</ul></div>`;
+        ${c.claim.kind === "patient" ? '<div class="meta">From the patient record or what was reported</div>' : ""}</span></li>`).join("") + `</ul></div>`;
   }
   if (v.differential.length && !v.abstained) {
     h += `<div class="card"><h2>Differential</h2><div class="dx">` +
-      v.differential.map(d => `<span>${esc(d.condition)}<em>${esc(d.likelihood)}</em>${cites(d.citations)}</span>`).join("") + `</div></div>`;
+      v.differential.map(d => `<span>${esc(d.condition)}<em>${esc(d.likelihood)}</em>${cites(d.citations, key)}</span>`).join("") + `</div></div>`;
   }
   if (v.actions.length) {
     h += `<div class="card"><h2>Actions</h2><ul class="actions">` + v.actions.map(a => `
@@ -239,12 +382,12 @@ function render(v) {
   if (removed.length) {
     h += `<div class="card"><h2>Removed by verification</h2><ul class="claims">` + removed.map(c => `
       <li class="claim"><span class="badge ${c.status}">✗</span>
-        <span><s>${esc(c.claim.text)}</s>${cites(c.claim.citations)}<div class="meta">${esc(c.detail)}</div></span></li>`).join("") + `</ul></div>`;
+        <span><s>${esc(c.claim.text)}</s>${cites(c.claim.citations, key)}<div class="meta">${esc(c.detail)}</div></span></li>`).join("") + `</ul></div>`;
   }
 
   h += `<div class="card"><details><summary>Why this answer: sources, calculators and rules</summary>
     <h2 style="margin-top:12px">Retrieved passages</h2><div class="scroll"><table><thead><tr><th>ID</th><th>Source</th><th>Tier</th><th>Score</th></tr></thead><tbody>` +
-    (v.passages.map(p => `<tr><td>${cites([p.cid])}</td><td>${esc(p.title)}${p.page ? `, p.${p.page}` : ""}</td><td>${esc(p.tier)}</td><td>${p.score}</td></tr>`).join("") || `<tr><td colspan="4">None</td></tr>`) +
+    (v.passages.map(p => `<tr><td>${cites([p.cid], key)}</td><td>${esc(p.title)}${p.page ? `, p.${p.page}` : ""}</td><td>${esc(p.tier)}</td><td>${p.score}</td></tr>`).join("") || `<tr><td colspan="4">None</td></tr>`) +
     `</tbody></table></div>
     <h2 style="margin-top:12px">Calculator results</h2><div class="scroll"><table><tbody>` +
     (v.calc_results.map(c => `<tr><td class="calc">${esc(c.calc_id)}</td><td>${esc(c.text)}${c.warnings.length ? `<div class="meta">${c.warnings.map(esc).join("; ")}</div>` : ""}</td></tr>`).join("") || `<tr><td>None</td></tr>`) +
@@ -255,14 +398,19 @@ function render(v) {
     <p class="meta">Timings: ${Object.entries(v.timings).map(([k, x]) => `${esc(k)} ${x}`).join(" · ")}${v.audit_id ? ` · audit entry ${esc(v.audit_id)}` : ""}</p>
   </details></div>`;
   if (v.reasoning_available && v.audit_id) {
-    h += `<div class="card review"><details id="review-details" data-audit="${esc(v.audit_id)}">
+    h += `<div class="card review"><details class="review-details" data-audit="${esc(v.audit_id)}">
       <summary>Model reasoning (for clinical review)</summary>
-      <div id="review-body" style="display:grid; gap:10px; margin-top:10px"><p class="meta">Loading…</p></div>
+      <div class="review-body" style="display:grid; gap:10px; margin-top:10px"><p class="meta">Loading…</p></div>
     </details></div>`;
   }
-  $("out").innerHTML = h;
-  const rd = $("review-details");
-  if (rd) rd.addEventListener("toggle", () => { if (rd.open && !rd.dataset.loaded) loadReview(rd.dataset.audit); });
+  return h;
+}
+
+function attachReview(container) {
+  for (const d of container.querySelectorAll("details.review-details:not([data-bound])")) {
+    d.dataset.bound = "1";
+    d.addEventListener("toggle", () => { if (d.open && !d.dataset.loaded) loadReview(d); });
+  }
 }
 
 function list(items) {
@@ -283,59 +431,317 @@ function renderSummary(stored) {
   <p class="meta">Summarized by ${esc(stored.model)} at ${esc(stored.created_at)} · saved as ${esc(stored.summary_audit_id)}${stored.notes_shortened ? " · notes were too long, middle omitted" : ""}</p>`;
 }
 
-async function loadReview(auditId) {
-  const body = $("review-body");
+async function loadReview(details) {
+  const auditId = details.dataset.audit;
+  const body = details.querySelector(".review-body");
   try {
-    const r = await fetch(`/api/review/${encodeURIComponent(auditId)}`);
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.detail || r.statusText);
-    $("review-details").dataset.loaded = "1";
+    const data = await api(`/api/review/${encodeURIComponent(auditId)}`);
+    details.dataset.loaded = "1";
     body.innerHTML = `<p class="review-label">${esc(data.label)}</p>
-      <div id="review-summary">${data.summary ? renderSummary(data.summary)
-        : `<button class="secondary" type="button" id="review-btn">Summarize reasoning</button>
+      <div class="review-summary">${data.summary ? renderSummary(data.summary)
+        : `<button class="secondary review-btn" type="button">Summarize reasoning</button>
            <span class="meta"> Uses the model; can take a minute on a laptop.</span>`}</div>
-      <div><button class="link" type="button" id="notes-btn">Show full notes (${data.passes.length} pass${data.passes.length === 1 ? "" : "es"})</button>
-      <pre id="notes-text" hidden></pre></div>`;
-    const btn = $("review-btn");
-    if (btn) btn.addEventListener("click", () => summarize(auditId, btn));
-    $("notes-btn").addEventListener("click", () => showNotes(auditId));
+      <div><button class="link notes-btn" type="button">Show full notes (${data.passes.length} pass${data.passes.length === 1 ? "" : "es"})</button>
+      <pre class="notes-text" hidden></pre></div>`;
+    const btn = body.querySelector(".review-btn");
+    if (btn) btn.addEventListener("click", () => summarize(auditId, btn, body.querySelector(".review-summary")));
+    body.querySelector(".notes-btn").addEventListener("click", () => showNotes(auditId, body.querySelector(".notes-text")));
   } catch (e) {
     body.innerHTML = `<p class="error">Reasoning review unavailable: ${esc(e.message)}</p>`;
   }
 }
 
-async function summarize(auditId, btn) {
+async function summarize(auditId, btn, target) {
   btn.disabled = true; btn.textContent = "Summarizing…";
   try {
-    const r = await fetch(`/api/review/${encodeURIComponent(auditId)}/summarize`, {method: "POST"});
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.detail || r.statusText);
-    $("review-summary").innerHTML = renderSummary(data);
+    target.innerHTML = renderSummary(await api(`/api/review/${encodeURIComponent(auditId)}/summarize`, {method: "POST"}));
   } catch (e) {
     btn.disabled = false; btn.textContent = "Summarize reasoning";
-    $("review-summary").insertAdjacentHTML("beforeend", `<p class="error">${esc(e.message)}</p>`);
+    target.insertAdjacentHTML("beforeend", `<p class="error">${esc(e.message)}</p>`);
   }
 }
 
-async function showNotes(auditId) {
-  const pre = $("notes-text");
+async function showNotes(auditId, pre) {
   if (!pre.hidden) { pre.hidden = true; return; }
-  const r = await fetch(`/api/review/${encodeURIComponent(auditId)}/notes`);
-  const data = await r.json();
-  pre.textContent = r.ok ? data.notes.map(n => `[${n.pass}, attempt ${n.attempt}]\n${n.thinking}`).join("\n\n") : (data.detail || r.statusText);
+  try {
+    const data = await api(`/api/review/${encodeURIComponent(auditId)}/notes`);
+    pre.textContent = data.notes.map(n => `[${n.pass}, attempt ${n.attempt}]\n${n.thinking}`).join("\n\n");
+  } catch (e) { pre.textContent = e.message; }
   pre.hidden = false;
 }
 
-document.addEventListener("click", async (e) => {
+document.addEventListener("click", (e) => {
   const b = e.target.closest(".cite");
   if (!b) return;
-  const p = lastPassages[b.dataset.cid];
+  const p = (passagesByAnswer[b.dataset.answer] || {})[b.dataset.cid];
   if (!p) { $("src-meta").textContent = `${b.dataset.cid}: this passage does not exist (invalid citation)`; $("src-text").textContent = ""; }
   else {
     $("src-meta").textContent = `${p.cid} · ${p.title}${p.page ? ", p." + p.page : ""} · tier ${p.tier}${p.url ? " · " + p.url : ""}`;
     $("src-text").textContent = p.text;
   }
   $("source-dialog").showModal();
+});
+
+// ---- consult ------------------------------------------------------------------------------
+
+let consult = null;      // the open consult (from /api/consult)
+let lastTurn = null;     // the latest turn with a reply
+let prevDdx = [];        // working list before the latest turn, to mark changes
+let busy = false;
+let timer = null;
+
+function fillRoster(roster) {
+  const user = $("c-user"), patient = $("c-patient");
+  for (const m of roster) user.insertAdjacentHTML("beforeend", `<option value="${esc(m.crew_id)}">${esc(m.label)}</option>`);
+  patient.insertAdjacentHTML("beforeend", `<option value="self">Myself</option>`);
+  for (const m of roster) patient.insertAdjacentHTML("beforeend", `<option value="${esc(m.crew_id)}">${esc(m.label)}</option>`);
+  patient.insertAdjacentHTML("beforeend", `<option value="unlisted">Someone not on the roster</option>`);
+  if (demo) patient.value = "C3";
+}
+for (const r of document.querySelectorAll('input[name="c-kind"]')) {
+  r.addEventListener("change", () => { $("c-scenario-label").hidden = !practice(); });
+}
+const practice = () => document.querySelector('input[name="c-kind"]:checked').value === "practice";
+
+function chat(html) {
+  $("c-chat").insertAdjacentHTML("beforeend", html);
+  const last = $("c-chat").lastElementChild;
+  last.scrollIntoView({block: "nearest", behavior: "smooth"});
+  return last;
+}
+
+function setBusy(on, message = "") {
+  busy = on;
+  for (const id of ["c-send", "c-assess", "c-record", "c-end"]) $(id).disabled = on;
+  clearInterval(timer);
+  if (!on) { $("c-status").textContent = message; return; }
+  const start = Date.now();
+  const tick = () => { $("c-status").textContent = `${message} ${Math.round((Date.now() - start) / 1000)} s`; };
+  tick();
+  timer = setInterval(tick, 1000);
+}
+
+async function startConsult() {
+  $("c-start").disabled = true;
+  try {
+    consult = await api("/api/consult", {body: JSON.stringify({
+      user: $("c-user").value, patient: $("c-patient").value, tier: $("tier").value,
+      practice: practice(), scenario_id: $("c-scenario").value.trim() || null, deep_log: $("c-deep").checked,
+    })});
+  } catch (e) {
+    $("c-start").disabled = false;
+    $("c-chat").innerHTML = `<p class="error">Could not start the consult: ${esc(e.message)}</p>`;
+    return;
+  }
+  lastTurn = null; prevDdx = [];
+  $("consult-setup").hidden = true; $("consult-side").hidden = false; $("c-new").hidden = true;
+  $("c-composer").hidden = false; $("c-input").disabled = false; $("tier").disabled = true;
+  $("c-ddx").innerHTML = `<li class="meta">Appears after the first answer.</li>`;
+  $("c-info").innerHTML = `<b>${consult.practice ? "PRACTICE" : "REAL"}</b> consult ${esc(consult.consult_id)}` +
+    (consult.scenario_id ? ` · scenario ${esc(consult.scenario_id)}` : "") +
+    `<br>User: ${esc(consult.user)}<br>Patient: ${esc(consult.patient)}` +
+    (consult.deep_log ? "<br>Deep log on" : "");
+  const relay = consult.patient_is_user ? "" : " SpaceDoc will word its questions for you to ask the patient; type their answers.";
+  $("c-chat").innerHTML = `<p class="note">${consult.practice ? "Practice" : "Real"} consult started · ${esc(consult.environment)}${relay}</p>`;
+  $("c-input").placeholder = "Describe the problem";
+  $("c-input").focus();
+}
+$("c-start").addEventListener("click", startConsult);
+
+async function send() {
+  const text = $("c-input").value.trim();
+  if (!text || busy || !consult) return;
+  $("c-input").value = "";
+  chat(`<div class="bubble"><span class="who">${esc(consult.user.split(" · ")[0])}</span>${esc(text)}</div>`);
+  setBusy(true, consult.deep_log ? "SpaceDoc is thinking (deep log on)…" : "SpaceDoc is working…");
+  try {
+    handleTurn(await api(`/api/consult/${encodeURIComponent(consult.consult_id)}/turn`, {body: JSON.stringify({text})}));
+  } catch (e) {
+    setBusy(false);
+    chat(`<p class="error">SpaceDoc could not continue: ${esc(e.message)}</p>`);
+  }
+}
+$("c-send").addEventListener("click", send);
+$("c-input").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) send(); });
+
+function urgentCard(title, reasons, steps, continueLabel) {
+  const el = chat(`<div class="card urgent" role="alert"><h2>⚠ ${esc(title)}</h2>
+    <ul class="plain">${reasons.map(r => `<li>${esc(r)}</li>`).join("")}</ul>
+    <div><span class="draft">IMMEDIATE STEPS · DRAFT, NOT YET CLINICIAN-REVIEWED</span>
+      <ol>${steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol></div>
+    <div class="row"><button class="primary" type="button" data-act="assess">Checked assessment now</button>
+      <button class="secondary" type="button" data-act="continue">${esc(continueLabel)}</button></div></div>`);
+  return new Promise((resolve) => {
+    el.addEventListener("click", (e) => {
+      const b = e.target.closest("button[data-act]");
+      if (!b) return;
+      for (const x of el.querySelectorAll("button")) x.disabled = true;
+      resolve(b.dataset.act);
+    });
+  });
+}
+
+async function handleTurn(t) {
+  setBusy(false);
+  if (t.paused) {
+    const steps = [...new Set(t.red_flags.flatMap(h => h.steps))];
+    const reasons = t.red_flags.map(h => `${h.message} (you wrote "${h.matched}")`);
+    $("c-input").disabled = true;
+    const act = await urgentCard("Possible urgent problem (red-flag rules)", reasons, steps, "Continue questions: not an emergency");
+    $("c-input").disabled = false;
+    if (act === "assess") return assess();
+    setBusy(true, "SpaceDoc is working…");
+    try { return handleTurn(await api(`/api/consult/${encodeURIComponent(consult.consult_id)}/resume`, {method: "POST"})); }
+    catch (e) { setBusy(false); chat(`<p class="error">${esc(e.message)}</p>`); return; }
+  }
+  if (!t.reply) {
+    chat(`<p class="error">SpaceDoc could not continue: ${esc(t.error)} Try sending again.</p>`);
+    return;
+  }
+  lastTurn = t;
+  if (t.reply.urgent.flag) {
+    const act = await urgentCard("Possible urgent problem (flagged by the model)", [t.reply.urgent.reason || "No reason given"], t.urgent_steps, "Continue questions");
+    if (act === "assess") return assess();
+  }
+  chat(renderTurn(t));
+  updateWorkingList(t.reply.working_ddx);
+  if (t.assess_reason) {
+    chat(`<p class="note">${esc(t.assess_reason)}</p>`);
+    return assess();
+  }
+  $("c-input").placeholder = "Your answer";
+  $("c-input").focus();
+}
+
+function renderTurn(t) {
+  const r = t.reply;
+  const qs = r.questions.map((q, i) => {
+    let quick = "";
+    if (q.answer_type === "yes_no") quick = ["Yes", "No", "Not sure"];
+    else if (q.answer_type === "choice" && q.choices.length) quick = q.choices;
+    return `<div class="question"><div class="q">${r.questions.length > 1 ? `${i + 1}. ` : ""}${esc(q.text)}</div>
+      <div class="why">Why: ${esc(q.why)}</div>
+      ${quick ? `<div class="quick" data-q="${i}">${quick.map(a => `<button type="button" aria-pressed="false" data-a="${esc(a)}">${esc(a)}</button>`).join("")}</div>` : ""}</div>`;
+  }).join("");
+  const exams = t.exam_checks.map((c, i) => {
+    const eq = c.request.equipment.map(x => c.missing.includes(x) ? `<b>✗ ${esc(x)} not aboard</b>` : `✓ ${esc(x)}`).join(" · ");
+    return `<div class="exam ${c.ok ? "" : "bad"}"><div>Exam: ${esc(c.request.text)}</div>
+      ${c.request.why ? `<div class="why">Why: ${esc(c.request.why)}</div>` : ""}
+      <div class="eq">${eq || "no equipment named"}</div>
+      ${c.findings.map(f => `<div class="error">✗ ${esc(f)}</div>`).join("")}
+      ${c.ok ? `<div class="exam-row"><input type="text" placeholder="Result" aria-label="Exam result" data-exam="${i}">
+        <button class="secondary" type="button" data-exam-add="${i}">Add to answer</button></div>`
+        : `<div class="meta">Skip this, or use equipment that is aboard.</div>`}</div>`;
+  }).join("");
+  return `<div class="card turn" data-turn="${t.n}">
+    ${qs || `<div class="meta">No further questions.</div>`}${exams}
+    ${t.thinking ? `<details><summary>Thinking notes (deep log, unverified)</summary><pre class="thinking">${esc(t.thinking)}</pre></details>` : ""}
+    <div class="meta">${esc(t.timing_line)}</div></div>`;
+}
+
+// Quick replies and exam results compose the answer in the text box; nothing is sent until Send.
+$("c-chat").addEventListener("click", (e) => {
+  const qb = e.target.closest(".quick button");
+  if (qb) {
+    const card = qb.closest(".turn");
+    if (!lastTurn || Number(card.dataset.turn) !== lastTurn.n) return;
+    for (const b of qb.parentElement.querySelectorAll("button")) b.setAttribute("aria-pressed", String(b === qb));
+    composeAnswer(card);
+    return;
+  }
+  const add = e.target.closest("button[data-exam-add]");
+  if (add) {
+    const i = add.dataset.examAdd;
+    const input = add.closest(".exam").querySelector(`input[data-exam="${i}"]`);
+    if (!input.value.trim() || !lastTurn) return;
+    const line = `Exam (${lastTurn.exam_checks[i].request.text}): ${input.value.trim()}`;
+    $("c-input").value = ($("c-input").value.trim() ? $("c-input").value.trim() + "\n" : "") + line;
+    input.value = "";
+    $("c-input").focus();
+  }
+});
+
+function composeAnswer(card) {
+  const qs = lastTurn.reply.questions;
+  const parts = [];
+  for (const group of card.querySelectorAll(".quick")) {
+    const chosen = group.querySelector('button[aria-pressed="true"]');
+    if (!chosen) continue;
+    const i = Number(group.dataset.q);
+    parts.push(qs.length === 1 ? chosen.dataset.a : `${i + 1}. ${qs[i].text} ${chosen.dataset.a}.`);
+  }
+  $("c-input").value = parts.join(" ");
+  $("c-input").focus();
+}
+
+function updateWorkingList(ddx) {
+  const before = Object.fromEntries(prevDdx.map(d => [d.condition.toLowerCase(), d.likelihood]));
+  $("c-ddx").innerHTML = ddx.length ? ddx.map(d => {
+    const was = before[d.condition.toLowerCase()];
+    const mark = prevDdx.length && was === undefined ? `<span class="changed">new</span>`
+      : was && was !== d.likelihood ? `<span class="changed">was ${esc(was)}</span>` : "";
+    const cls = d.likelihood === "must not miss" ? "must" : d.likelihood;
+    return `<li><span><span class="cond">${esc(d.condition)}</span><span class="lk ${esc(cls)}">${esc(d.likelihood)}</span>${mark}</span>
+      <span class="why">${esc(d.why)}</span></li>`;
+  }).join("") : `<li class="meta">Empty</li>`;
+  prevDdx = ddx;
+}
+
+async function assess() {
+  if (!consult || busy) return;
+  setBusy(true, "Preparing the checked assessment (sources, calculators and checks; this can take minutes)…");
+  try {
+    const v = await api(`/api/consult/${encodeURIComponent(consult.consult_id)}/assess`, {method: "POST"});
+    setBusy(false);
+    const el = chat(`<div class="stack"><p class="note">Checked assessment</p>${renderAnswer(v)}</div>`);
+    attachReview(el);
+    $("c-input").placeholder = "Add new information to continue, or end the consult";
+  } catch (e) {
+    setBusy(false);
+    chat(`<p class="error">The assessment failed: ${esc(e.message)}</p>`);
+  }
+}
+$("c-assess").addEventListener("click", assess);
+
+let recordName = "consult.md";
+async function showRecord() {
+  if (!consult) return;
+  try {
+    const data = await api(`/api/consult/${encodeURIComponent(consult.consult_id)}/record`);
+    openRecord(data.markdown, data.timing);
+  } catch (e) { chat(`<p class="error">${esc(e.message)}</p>`); }
+}
+function openRecord(markdown, timing) {
+  recordName = `${consult.consult_id}.md`;
+  $("record-meta").textContent = timing || "No timed turns yet.";
+  $("record-text").textContent = markdown;
+  $("record-dialog").showModal();
+}
+$("c-record").addEventListener("click", showRecord);
+$("record-download").addEventListener("click", () => {
+  const blob = new Blob([$("record-text").textContent], {type: "text/markdown"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = recordName; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+
+async function endConsult() {
+  if (!consult || busy) return;
+  try {
+    const data = await api(`/api/consult/${encodeURIComponent(consult.consult_id)}/end`, {method: "POST"});
+    chat(`<p class="note">Consult ended. ${esc(data.timing)} Record saved to ${esc(data.path)}.</p>`);
+    $("c-composer").hidden = true;
+    for (const id of ["c-assess", "c-end"]) $(id).disabled = true;
+    $("c-new").hidden = false;
+    $("tier").disabled = false;
+  } catch (e) { chat(`<p class="error">${esc(e.message)}</p>`); }
+}
+$("c-end").addEventListener("click", endConsult);
+$("c-new").addEventListener("click", () => {
+  consult = null;
+  $("consult-setup").hidden = false; $("consult-side").hidden = true;
+  for (const id of ["c-assess", "c-end"]) $(id).disabled = false;
+  $("c-start").disabled = false;
 });
 
 init().catch(e => { $("mode-chip").textContent = "server unreachable"; });

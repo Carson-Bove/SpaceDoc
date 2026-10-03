@@ -10,6 +10,7 @@ from spacedoc.consult.render import (
     record_markdown,
     red_flag_card,
     render_turn,
+    save_record,
     timing_summary,
     urgent_card,
 )
@@ -178,10 +179,7 @@ def assess(system: System, consult: Consult) -> None:
 
 
 def finish(system: System, consult: Consult) -> None:
-    folder = system.settings.audit_path.parent / "consults"
-    folder.mkdir(parents=True, exist_ok=True)
-    path = folder / f"{consult.consult_id}.md"
-    path.write_text(record_markdown(consult))
+    path = save_record(consult, system.settings.audit_path.parent / "consults")
     summary = timing_summary(consult)
     if summary:
         typer.echo(summary)

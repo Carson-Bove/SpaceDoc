@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,19 @@ class AskRequest(BaseModel):
     tier: str | None = None
     role: str = "cmo"
     patient: dict[str, Any] | None = None
+
+
+class ConsultStart(BaseModel):
+    user: str
+    patient: str  # a crew ID, "self" or "unlisted"
+    tier: str | None = None
+    practice: bool = False
+    scenario_id: str | None = None
+    deep_log: bool = False
+
+
+class ConsultMessage(BaseModel):
+    text: str
 
 
 def create_app(system: System) -> FastAPI:
@@ -108,6 +122,126 @@ def create_app(system: System) -> FastAPI:
         if system.reviewer is None:
             raise HTTPException(404, "Reasoning review is not available")
         return system.reviewer
+
+    # ---- consult mode (docs/consult-mode-design.md) ------------------------------------
+    # Open consults live in this server's memory; every turn is also in the audit log.
+    consults: dict[str, Any] = {}
+
+    def _engine():
+        if system.consult is None:
+            raise HTTPException(404, "Consult mode is not available")
+        return system.consult
+
+    def _consult(consult_id: str):
+        c = consults.get(consult_id)
+        if c is None:
+            raise HTTPException(
+                404, "This consult is not open (the server may have restarted). Start a new one."
+            )
+        return c
+
+    def _turn_json(consult, turn) -> dict[str, Any]:
+        from spacedoc.consult.render import timing_line
+
+        engine = _engine()
+        reply = turn.reply
+        return {
+            "n": turn.n,
+            "user_text": turn.user_text,
+            "paused": turn.paused,
+            "red_flags": [h.model_dump() for h in turn.red_flags],
+            "red_flags_dismissed": turn.red_flags_dismissed,
+            "reply": reply.model_dump() if reply else None,
+            "exam_checks": [
+                {
+                    "request": c.request.model_dump(),
+                    "missing": c.missing,
+                    "findings": c.findings,
+                    "ok": c.ok,
+                }
+                for c in turn.exam_checks
+            ],
+            "timing": asdict(turn.timing) if turn.timing else None,
+            "timing_line": timing_line(turn.timing),
+            "thinking": turn.thinking,
+            "error": turn.error,
+            "urgent_steps": engine.red_flags.steps(delay=consult.delay())
+            if reply and reply.urgent.flag
+            else [],
+            "assess_reason": engine.should_assess(consult) if reply else None,
+        }
+
+    @app.get("/api/roster")
+    def roster() -> list[dict[str, Any]]:
+        return [
+            {
+                "crew_id": m.crew_id,
+                "role": m.role,
+                "medical_role": m.medical_role,
+                "label": m.label(),
+            }
+            for m in _engine().roster.values()
+        ]
+
+    @app.post("/api/consult")
+    def consult_start(req: ConsultStart) -> dict[str, Any]:
+        try:
+            env = system.environment(req.tier)
+            c = _engine().start(
+                req.user, req.patient, env, req.practice, req.scenario_id, req.deep_log
+            )
+        except (ValueError, FileNotFoundError) as e:
+            raise HTTPException(400, str(e)) from e
+        consults[c.consult_id] = c
+        return {
+            "consult_id": c.consult_id,
+            "user": c.user.label(),
+            "patient": "the user" if c.patient_is_user else c.patient_label,
+            "patient_is_user": c.patient_is_user,
+            "practice": c.practice,
+            "scenario_id": c.scenario_id,
+            "deep_log": c.deep_log,
+            "environment": env.summary(),
+        }
+
+    @app.post("/api/consult/{consult_id}/turn")
+    def consult_turn(consult_id: str, msg: ConsultMessage) -> dict[str, Any]:
+        c = _consult(consult_id)
+        if not msg.text.strip():
+            raise HTTPException(400, "Type something first.")
+        if c.turns and c.turns[-1].paused:
+            raise HTTPException(409, "Answer the urgent-sign card first.")
+        return _turn_json(c, _engine().turn(c, msg.text))
+
+    @app.post("/api/consult/{consult_id}/resume")
+    def consult_resume(consult_id: str) -> dict[str, Any]:
+        c = _consult(consult_id)
+        try:
+            return _turn_json(c, _engine().resume(c))
+        except ValueError as e:
+            raise HTTPException(409, str(e)) from e
+
+    @app.post("/api/consult/{consult_id}/assess")
+    def consult_assess(consult_id: str) -> dict[str, Any]:
+        c = _consult(consult_id)
+        if not c.turns:
+            raise HTTPException(400, "Describe the problem first.")
+        return _engine().assess(c).model_dump(mode="json")
+
+    @app.get("/api/consult/{consult_id}/record")
+    def consult_record(consult_id: str) -> dict[str, Any]:
+        from spacedoc.consult.render import record_markdown, timing_summary
+
+        c = _consult(consult_id)
+        return {"markdown": record_markdown(c), "timing": timing_summary(c)}
+
+    @app.post("/api/consult/{consult_id}/end")
+    def consult_end(consult_id: str) -> dict[str, Any]:
+        from spacedoc.consult.render import record_markdown, save_record, timing_summary
+
+        c = _consult(consult_id)
+        path = save_record(c, system.settings.audit_path.parent / "consults")
+        return {"path": str(path), "timing": timing_summary(c), "markdown": record_markdown(c)}
 
     @app.get("/api/chunk/{chunk_id:path}")
     def chunk(chunk_id: str) -> dict[str, Any]:

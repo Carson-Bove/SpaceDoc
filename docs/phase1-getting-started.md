@@ -22,7 +22,7 @@ spacedoc serve --demo          # open http://127.0.0.1:8765 and press "Ask Space
 spacedoc ask --demo "Sharp right flank pain that moves toward my groin"
 spacedoc eval run --demo       # runs the 3 example cases, writes eval_runs/<time>/report.md
 spacedoc consult --demo        # a scripted consult: questions, then a checked assessment
-pytest -q                      # 123 tests
+pytest -q                      # 125 tests
 ```
 
 In the demo flank-pain answer, the verification layer should:
@@ -102,6 +102,14 @@ spacedoc audit verify                           # check the audit log hasn't bee
 ### Run a consult
 
 A consult is a short conversation: SpaceDoc asks one or two questions at a time to build a differential diagnosis, then gives the full checked assessment. The design is in [consult-mode-design.md](consult-mode-design.md).
+
+**In the browser:** `spacedoc serve`, then choose the **Consult** tab. Pick who is using SpaceDoc and who the patient is, real or practice, and press **Start consult**.
+- The **working list** on the left updates every turn and marks what is new or changed. It is labelled *not yet checked*, and everyone sees it.
+- Yes/no questions have **Yes / No / Not sure** buttons, and exams have a **Result** box. Both fill in the answer box; nothing is sent until you press **Send** (or Cmd+Enter), so you can add detail first.
+- A **red-flag card** pauses the consult. Choose **Checked assessment now**, or **Continue questions** if it is not an emergency.
+- **Assess now**, **Consult record** (view or download the record) and **End consult** (saves the record to `audit/consults/`) are on the left.
+
+**In Terminal:**
 
 ```bash
 spacedoc consult --tier T1                  # asks who you are, who the patient is, real or practice

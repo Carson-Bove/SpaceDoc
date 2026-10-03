@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import statistics
+from pathlib import Path
 
 from spacedoc.consult.engine import Consult, Turn, TurnTiming
 from spacedoc.consult.redflags import RedFlagHit
@@ -97,6 +98,14 @@ def timing_summary(consult: Consult) -> str:
                 "(an estimate; run without --deep-log to measure)."
             )
     return " ".join(lines)
+
+
+def save_record(consult: Consult, folder: Path) -> Path:
+    """Write the consult record to <folder>/<consult id>.md."""
+    folder.mkdir(parents=True, exist_ok=True)
+    path = folder / f"{consult.consult_id}.md"
+    path.write_text(record_markdown(consult))
+    return path
 
 
 def record_markdown(consult: Consult) -> str:
