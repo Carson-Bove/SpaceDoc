@@ -33,7 +33,9 @@ class ConsultStart(BaseModel):
 
 
 class ConsultMessage(BaseModel):
-    text: str
+    text: str = ""
+    answers: list[dict[str, Any]] = []  # {kind, question, answer, screen_id}
+    exams: list[dict[str, Any]] = []  # {request, result}
 
 
 def create_app(system: System) -> FastAPI:
@@ -215,11 +217,18 @@ def create_app(system: System) -> FastAPI:
     @app.post("/api/consult/{consult_id}/turn")
     def consult_turn(consult_id: str, msg: ConsultMessage) -> dict[str, Any]:
         c = _consult(consult_id)
-        if not msg.text.strip():
+        from spacedoc.consult.engine import Answer, ExamResult
+
+        try:
+            answers = [Answer(**a) for a in msg.answers]
+            exams = [ExamResult(**e) for e in msg.exams if str(e.get("result", "")).strip()]
+        except (TypeError, ValueError) as e:
+            raise HTTPException(400, f"Malformed answer: {e}") from e
+        if not msg.text.strip() and not answers and not exams:
             raise HTTPException(400, "Type something first.")
         if c.turns and c.turns[-1].paused:
             raise HTTPException(409, "Answer the urgent-sign card first.")
-        return _turn_json(c, _engine().turn(c, msg.text))
+        return _turn_json(c, _engine().turn(c, msg.text, answers, exams))
 
     @app.post("/api/consult/{consult_id}/resume")
     def consult_resume(consult_id: str) -> dict[str, Any]:

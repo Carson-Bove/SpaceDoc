@@ -23,7 +23,7 @@ rules:
   - id: MNM-CO2
     condition: Carbon dioxide toxicity
     aliases: [hypercapnia, co2 toxicity, carbon dioxide]
-    patterns: ['headache', 'dizz', 'short(ness)? of breath|breathless', 'confus|disorient', 'drows|letharg|sleepy', '\bco2\b|carbon dioxide']
+    patterns: ['headache', 'dizz', 'short(ness)? of breath|breathless', 'confus|disorient', 'drows|letharg|sleepy', '\bco2\b|carbon dioxide', 'others aboard have similar|others affected']
     min_matches: 2
     why: Raised CO2 in the cabin causes headache, breathlessness and poor concentration, often in more than one crewmember.
     ask: Are the cabin CO2 readings normal, and does anyone else have similar symptoms?
@@ -39,7 +39,7 @@ rules:
   - id: MNM-TOXIC
     condition: Toxic exposure (cabin atmosphere or payload chemical)
     aliases: [toxic exposure, chemical exposure, ammonia, smoke inhalation, toxic inhalation]
-    patterns: ['ammonia|fumes|smell|odou?r|chemical|toxic|smoke', 'eye (irritation|burning|sting)|burning eyes', 'cough', 'throat (irritation|burning)', 'payload|experiment']
+    patterns: ['ammonia|fumes|smell|odou?r|chemical|toxic|smoke', 'eye (irritation|burning|sting)|burning eyes', 'cough', 'throat (irritation|burning)', 'payload|experiment', 'others aboard have similar|others affected']
     min_matches: 2
     why: A release from a payload, a coolant leak or smoke can affect the eyes, airway and lungs.
     ask: Has there been an unusual smell, an atmosphere alarm, or exposure while handling a payload or experiment?

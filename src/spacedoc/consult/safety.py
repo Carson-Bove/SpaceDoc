@@ -166,10 +166,14 @@ class MustNotMiss(BaseModel):
 class ScreenItem(BaseModel):
     id: str
     question: str
+    if_yes: str = ""  # what a "Yes" adds to the must-not-miss matching
 
 
 class ExposureScreen(BaseModel):
     items: list[ScreenItem]
+
+    def if_yes(self, item_id: str | None) -> str:
+        return next((i.if_yes for i in self.items if i.id == item_id), "")
 
     @classmethod
     def load(cls, data_dir: Path) -> ExposureScreen:

@@ -11,9 +11,9 @@ import time
 import uuid
 from dataclasses import asdict, dataclass, field, replace
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, Literal
 
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 
 from spacedoc.agent.orchestrator import Orchestrator
 from spacedoc.answer.schema import VerifiedAnswer, require_all
@@ -29,6 +29,37 @@ from spacedoc.verify.rules import FeasibilityRule, check_feasibility, record_sum
 
 SELF = "self"
 UNLISTED = "unlisted"
+YES = {"yes", "y"}
+
+
+class Answer(BaseModel):
+    """A button answer: to one of SpaceDoc's questions, or to the exposure check."""
+
+    kind: Literal["question", "screen"] = "question"
+    question: str
+    answer: str
+    screen_id: str | None = None
+
+    @property
+    def yes(self) -> bool:
+        return self.answer.strip().lower() in YES
+
+
+class ExamResult(BaseModel):
+    request: str
+    result: str
+
+
+def compose(text: str, answers: list[Answer], exams: list[ExamResult]) -> str:
+    """The message as the model and the transcript see it: answers, exams, then free text."""
+    lines = [f"{a.question} {a.answer}." for a in answers if a.kind == "question"]
+    screen = [f"{a.question} {a.answer}." for a in answers if a.kind == "screen"]
+    if screen:
+        lines.append("Exposure check: " + " ".join(screen))
+    lines += [f"Exam ({e.request}): {e.result}" for e in exams]
+    if text.strip():
+        lines.append(text.strip())
+    return "\n".join(lines)
 
 
 @dataclass
@@ -59,6 +90,11 @@ class ExamCheck:
 class Turn:
     n: int
     user_text: str
+    # What the deterministic checks read: only the user's own words. SpaceDoc's question text
+    # counts only when the user answered "Yes" to it, so a "No" to "Any smoke?" never trips
+    # the fire rule.
+    check_text: str = ""
+    mnm_text: str = ""
     red_flags: list[RedFlagHit] = field(default_factory=list)
     red_flags_dismissed: bool = False
     reply: TurnReply | None = None
@@ -214,12 +250,37 @@ class ConsultEngine:
 
     # ---- question turns ----------------------------------------------------------------
 
-    def turn(self, consult: Consult, text: str) -> Turn:
-        """Screen the message for red flags, then (if none) ask the model for the next step."""
-        turn = Turn(n=len(consult.turns) + 1, user_text=text.strip())
-        turn.red_flags = self.red_flags.screen(turn.user_text, consult.delay())
+    def turn(
+        self,
+        consult: Consult,
+        text: str,
+        answers: list[Answer] | None = None,
+        exams: list[ExamResult] | None = None,
+    ) -> Turn:
+        """Screen the message for red flags, then (if none) ask the model for the next step.
+
+        `answers` and `exams` come from the buttons and result boxes; `text` is typed.
+        """
+        answers, exams = answers or [], exams or []
+        turn = Turn(n=len(consult.turns) + 1, user_text=compose(text, answers, exams))
+        affirmed = [a.question for a in answers if a.kind == "question" and a.yes]
+        turn.check_text = "\n".join(
+            p for p in [text.strip(), *(e.result for e in exams), *affirmed] if p
+        )
+        screen_yes = (
+            [self.screen.if_yes(a.screen_id) for a in answers if a.kind == "screen" and a.yes]
+            if self.screen
+            else []
+        )
+        turn.mnm_text = "\n".join([turn.check_text, *screen_yes])
+        turn.red_flags = self.red_flags.screen(turn.check_text, consult.delay())
         if self.vitals:
-            turn.red_flags += self.vitals.alerts(turn.user_text, consult.delay())
+            # Exam requests name the device ("pulse oximeter"), which tells the parser what a
+            # bare "85%" is; they are SpaceDoc's words but carry no symptoms.
+            vitals_text = "\n".join(
+                [text.strip(), *(f"Exam ({e.request}): {e.result}" for e in exams)]
+            )
+            turn.red_flags += self.vitals.alerts(vitals_text, consult.delay())
         consult.turns.append(turn)
         self._update_must_not_miss(consult)
         if turn.paused:
@@ -239,7 +300,7 @@ class ConsultEngine:
     def _update_must_not_miss(self, consult: Consult) -> None:
         if not self.mnm:
             return
-        said = "\n".join([t.user_text for t in consult.turns] + [h.message for h in consult.alerts])
+        said = "\n".join([t.mnm_text for t in consult.turns] + [h.message for h in consult.alerts])
         for rule in self.mnm.match(said):
             if rule.id not in consult.must_not_miss:
                 consult.must_not_miss.append(rule.id)
@@ -418,6 +479,7 @@ class ConsultEngine:
                 "consult_id": consult.consult_id,
                 "n": turn.n,
                 "user_text": turn.user_text,
+                "check_text": turn.check_text,
                 "red_flags": [h.model_dump() for h in turn.red_flags],
                 "red_flags_dismissed": turn.red_flags_dismissed,
                 "reply": turn.reply.model_dump() if turn.reply else None,

@@ -4,6 +4,7 @@ model never considered, and critical vital signs that did not stop routine quest
 import json
 
 from spacedoc.config import Settings
+from spacedoc.consult.engine import Answer, ExamResult
 from spacedoc.consult.render import record_markdown, render_turn
 from spacedoc.llm.client import FakeLLM
 from spacedoc.system import build_system
@@ -146,3 +147,62 @@ def test_consult_model_can_differ_from_the_main_model(tmp_path):
     assert system.consult.llm.chat_model == "qwen3:4b"
     assert system.orchestrator.llm.chat_model == "qwen3:8b"
     assert system.orchestrator.verifier.checker.llm.keep_alive == "1m"
+
+
+def screen(item_id, answer, demo_system):
+    item = next(i for i in demo_system.consult.screen.items if i.id == item_id)
+    return Answer(kind="screen", question=item.question, answer=answer, screen_id=item_id)
+
+
+def test_spacedocs_own_question_wording_is_never_screened(demo_system, env_t4):
+    """Replays a practice turn where answering "No" to the atmosphere question (which mentions
+    smoke) raised a fire alarm."""
+    engine = engine_with(demo_system)
+    c = engine.start("C2", "self", env_t4)
+    engine.turn(c, "Deep cut on my hand from a panel edge")
+    answers = [
+        Answer(
+            question="Can you tell me if there is any numbness, tingling, or pain in the fingers?",
+            answer="Yes",
+        ),
+        screen("EXP-EVA", "Yes", demo_system),
+        screen("EXP-RAD", "No", demo_system),
+        screen("EXP-ATMOS", "No", demo_system),
+        screen("EXP-PAYLOAD", "Yes", demo_system),
+        screen("EXP-MEDS", "No", demo_system),
+        screen("EXP-OTHERS", "No", demo_system),
+    ]
+    exams = [
+        ExamResult(request="ultrasound", result="not trained on ultrasound"),
+        ExamResult(
+            request="stethoscope", result="since bandage on hand cannot get stethoscope to listen"
+        ),
+    ]
+    text = (
+        "pain near the cut, deep and radiating. not much numbness except for close to finger tips"
+    )
+    turn = engine.turn(c, text, answers, exams)
+    assert not turn.paused and turn.red_flags == []
+    assert "smoke" in turn.user_text and "smoke" not in turn.check_text
+    # A spacewalk plus numbness and tingling does call for decompression sickness.
+    assert "MNM-DCS" in c.must_not_miss
+    assert "MNM-TOXIC" not in c.must_not_miss  # payload work alone is not enough
+
+
+def test_a_yes_to_a_question_counts_as_the_users_words(demo_system, env_t4):
+    engine = engine_with(demo_system)
+    c = engine.start("C1", "C3", env_t4)
+    engine.turn(c, "feeling unwell")
+    no = engine.turn(c, "", [Answer(question="Any chest pain?", answer="No")])
+    assert not no.paused
+    yes = engine.turn(c, "", [Answer(question="Any chest pain?", answer="Yes")])
+    assert yes.paused and yes.red_flags[0].rule_id == "RF-CHEST-PAIN"
+
+
+def test_exam_results_are_still_read_for_vital_signs(demo_system, env_t4):
+    engine = engine_with(demo_system)
+    c = engine.start("C1", "C3", env_t4)
+    engine.turn(c, "feeling unwell")
+    exams = [ExamResult(request="Use the pulse oximeter to check for hypoxia.", result="85%")]
+    turn = engine.turn(c, "", None, exams)
+    assert turn.paused and turn.red_flags[0].rule_id == "VS-SPO2"

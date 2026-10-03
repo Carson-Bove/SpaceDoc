@@ -568,38 +568,44 @@ async function startConsult() {
 }
 $("c-start").addEventListener("click", startConsult);
 
-// What will be sent: quick answers, exposure check, exam results, then free text.
+// What will be sent: button answers and exam results as structured data (SpaceDoc's safety
+// checks read only the user's own words), plus typed text. `display` is how it reads.
 function gatherAnswer() {
-  const parts = [];
+  const answers = [], exams = [];
   const card = lastTurn ? $("c-chat").querySelector(`.turn[data-turn="${lastTurn.n}"]`) : null;
   if (card) {
     const qs = lastTurn.reply.questions;
     for (const g of card.querySelectorAll(".quick[data-q]")) {
       const chosen = g.querySelector('button[aria-pressed="true"]');
-      if (chosen) parts.push(qs.length === 1 ? chosen.dataset.a : `${Number(g.dataset.q) + 1}. ${qs[g.dataset.q].text} ${chosen.dataset.a}.`);
+      if (chosen) answers.push({kind: "question", question: qs[g.dataset.q].text, answer: chosen.dataset.a});
     }
-    const screen = [];
     for (const g of card.querySelectorAll(".quick[data-s]")) {
       const chosen = g.querySelector('button[aria-pressed="true"]');
-      if (chosen) screen.push(`${lastTurn.screen[g.dataset.s].question} ${chosen.dataset.a}.`);
+      const item = lastTurn.screen[g.dataset.s];
+      if (chosen) answers.push({kind: "screen", question: item.question, answer: chosen.dataset.a, screen_id: item.id});
     }
-    if (screen.length) parts.push("Exposure check: " + screen.join(" "));
     for (const input of card.querySelectorAll("input[data-exam]")) {
-      if (input.value.trim()) parts.push(`Exam (${lastTurn.exam_checks[input.dataset.exam].request.text}): ${input.value.trim()}`);
+      if (input.value.trim()) exams.push({request: lastTurn.exam_checks[input.dataset.exam].request.text, result: input.value.trim()});
     }
   }
-  if ($("c-input").value.trim()) parts.push($("c-input").value.trim());
-  return parts.join("\n");
+  const text = $("c-input").value.trim();
+  const lines = answers.filter(a => a.kind === "question").map(a => `${a.question} ${a.answer}.`);
+  const screen = answers.filter(a => a.kind === "screen").map(a => `${a.question} ${a.answer}.`);
+  if (screen.length) lines.push("Exposure check: " + screen.join(" "));
+  lines.push(...exams.map(e => `Exam (${e.request}): ${e.result}`));
+  if (text) lines.push(text);
+  return {text, answers, exams, display: lines.join("\n")};
 }
 
 async function send() {
-  const text = gatherAnswer();
-  if (!text || busy || !consult) return;
+  const msg = gatherAnswer();
+  if (!msg.display || busy || !consult) return;
   $("c-input").value = "";
-  chat(`<div class="bubble"><span class="who">${esc(consult.user.split(" · ")[0])}</span>${esc(text)}</div>`);
+  chat(`<div class="bubble"><span class="who">${esc(consult.user.split(" · ")[0])}</span>${esc(msg.display)}</div>`);
   setBusy(true, consult.deep_log ? "SpaceDoc is thinking (deep log on)…" : "SpaceDoc is working…");
   try {
-    handleTurn(await api(`/api/consult/${encodeURIComponent(consult.consult_id)}/turn`, {body: JSON.stringify({text})}));
+    handleTurn(await api(`/api/consult/${encodeURIComponent(consult.consult_id)}/turn`,
+      {body: JSON.stringify({text: msg.text, answers: msg.answers, exams: msg.exams})}));
   } catch (e) {
     setBusy(false);
     chat(`<p class="error">SpaceDoc could not continue: ${esc(e.message)}</p>`);

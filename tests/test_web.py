@@ -61,3 +61,25 @@ def test_consult_api_red_flag_and_errors(demo_system):
     assert client.post("/api/consult", json={"user": "C9", "patient": "self"}).status_code == 400
     assert client.post("/api/consult/audit-999/turn", json={"text": "x"}).status_code == 404
     assert client.post(f"/api/consult/{cid}/turn", json={"text": "  "}).status_code == 400
+
+
+def test_consult_api_takes_structured_answers(demo_system):
+    client = TestClient(create_app(demo_system))
+    cid = client.post("/api/consult", json={"user": "C1", "patient": "C3"}).json()["consult_id"]
+    client.post(f"/api/consult/{cid}/turn", json={"text": "flank pain in waves"})
+    body = {
+        "text": "",
+        "answers": [
+            {
+                "kind": "screen",
+                "question": "Any cabin atmosphere alarm (CO2, ammonia, smoke) or unusual smell?",
+                "answer": "No",
+                "screen_id": "EXP-ATMOS",
+            }
+        ],
+        "exams": [{"request": "Measure temperature", "result": "37.2 C"}],
+    }
+    t = client.post(f"/api/consult/{cid}/turn", json=body).json()
+    assert not t["paused"] and t["reply"]
+    assert t["user_text"].startswith("Exposure check: Any cabin atmosphere alarm")
+    assert client.post(f"/api/consult/{cid}/turn", json={"text": " "}).status_code == 400

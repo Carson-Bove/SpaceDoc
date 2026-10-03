@@ -5,7 +5,7 @@ from __future__ import annotations
 import click
 import typer
 
-from spacedoc.consult.engine import SELF, UNLISTED, Consult, Turn
+from spacedoc.consult.engine import SELF, UNLISTED, Answer, Consult, Turn
 from spacedoc.consult.render import (
     record_markdown,
     red_flag_card,
@@ -45,19 +45,15 @@ def pick_patient(answer: str, roster: list[CrewMember]) -> str:
     return pick_member(answer, roster)
 
 
-def expand_quick_reply(text: str, turn: Turn) -> str:
-    """Turn "y" or "y n" into full answers when every question is yes/no."""
+def quick_answers(text: str, turn: Turn) -> list[Answer] | None:
+    """Turn "y" or "y n" into button answers when every question is yes/no; else None."""
     qs = turn.reply.questions if turn.reply else []
     tokens = text.lower().replace(",", " ").split()
     if not qs or len(tokens) != len(qs) or any(q.answer_type != "yes_no" for q in qs):
-        return text
+        return None
     if not all(t in QUICK for t in tokens):
-        return text
-    if len(qs) == 1:
-        return QUICK[tokens[0]]
-    return " ".join(
-        f"{i}. {q.text} {QUICK[t]}." for i, (q, t) in enumerate(zip(qs, tokens, strict=True), 1)
-    )
+        return None
+    return [Answer(question=q.text, answer=QUICK[t]) for q, t in zip(qs, tokens, strict=True)]
 
 
 def answer_prompt(turn: Turn) -> str:
@@ -123,6 +119,7 @@ def run_consult(
 
 def _loop(system: System, consult: Consult) -> None:
     text = ask("Describe the problem")
+    answers: list[Answer] | None = None
     while True:
         if text == "/quit":
             break
@@ -130,13 +127,14 @@ def _loop(system: System, consult: Consult) -> None:
             typer.echo(record_markdown(consult))
             text = ask("Answer")
             continue
-        if text == "/assess" or not text:
+        if text == "/assess" or (not text and not answers):
             if text == "/assess":
                 assess(system, consult)
             text = ask("Add new information to continue, or /quit")
             continue
 
-        turn = system.consult.turn(consult, text)
+        turn = system.consult.turn(consult, "" if answers else text, answers)
+        answers = None
         if turn.paused:
             typer.echo(red_flag_card(turn.red_flags))
             choice = ask(
@@ -169,7 +167,8 @@ def _loop(system: System, consult: Consult) -> None:
             assess(system, consult)
             text = ask("Add new information to continue, or /quit")
             continue
-        text = expand_quick_reply(ask(answer_prompt(turn)), turn)
+        text = ask(answer_prompt(turn))
+        answers = quick_answers(text, turn)
 
 
 def assess(system: System, consult: Consult) -> None:

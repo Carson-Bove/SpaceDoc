@@ -7,7 +7,7 @@ from typer.testing import CliRunner
 
 from spacedoc.cli import app
 from spacedoc.config import REPO_ROOT
-from spacedoc.consult.cli import expand_quick_reply
+from spacedoc.consult.cli import quick_answers
 from spacedoc.consult.engine import UNLISTED, _timing
 from spacedoc.consult.redflags import RedFlags
 from spacedoc.consult.render import record_markdown, render_turn, timing_line
@@ -239,13 +239,15 @@ def test_assessment_uses_the_whole_consult(demo_system, env_t4):
 # ---- terminal ---------------------------------------------------------------------------------
 
 
-def test_quick_replies_expand_for_yes_no_questions(demo_system, env_t4):
+def test_quick_replies_become_button_answers(demo_system, env_t4):
     turn = demo_system.consult.turn(start(demo_system, env_t4), FLANK)
-    assert expand_quick_reply("y n", turn) == (
-        "1. Any fever or chills? Yes. 2. Any blood in the urine? No."
-    )
-    assert expand_quick_reply("y", turn) == "y"  # two questions, one answer: left as typed
-    assert expand_quick_reply("No fever", turn) == "No fever"
+    answers = quick_answers("y n", turn)
+    assert [(a.question, a.answer) for a in answers] == [
+        ("Any fever or chills?", "Yes"),
+        ("Any blood in the urine?", "No"),
+    ]
+    assert quick_answers("y", turn) is None  # two questions, one answer: left as typed
+    assert quick_answers("No fever", turn) is None
 
 
 def test_cli_consult_runs_end_to_end(tmp_path):

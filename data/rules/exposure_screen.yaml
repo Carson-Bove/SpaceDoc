@@ -3,11 +3,26 @@
 # DRAFT, UNREVIEWED. Written by the engineering team as a starting point; the clinical team
 # must review the questions. They ask about exposures that are specific to spaceflight and
 # easy to miss when a general-purpose model leads the questioning.
+#
+# `if_yes` is what a "Yes" adds to the must-not-miss matching (data/rules/must_not_miss.yaml).
+# The question text itself is never checked: it is SpaceDoc's wording, not the user's.
 
 items:
-  - {id: EXP-EVA, question: "Any spacewalk (EVA), suit run or airlock use in the last few days?"}
-  - {id: EXP-RAD, question: "Any radiation alert, solar particle event or dosimeter alarm recently?"}
-  - {id: EXP-ATMOS, question: "Any cabin atmosphere alarm (CO2, ammonia, smoke) or unusual smell?"}
-  - {id: EXP-PAYLOAD, question: "Any recent work with payloads, experiments, lab animals or chemicals?"}
-  - {id: EXP-MEDS, question: "Any new medication or supplement, or a change in food or water?"}
-  - {id: EXP-OTHERS, question: "Does anyone else aboard have similar symptoms?"}
+  - id: EXP-EVA
+    question: "Any spacewalk (EVA), suit run or airlock use in the last few days?"
+    if_yes: "recent spacewalk (EVA), suit run or airlock use"
+  - id: EXP-RAD
+    question: "Any radiation alert, solar particle event or dosimeter alarm recently?"
+    if_yes: "recent radiation alert or dosimeter alarm"
+  - id: EXP-ATMOS
+    question: "Any cabin atmosphere alarm (CO2, ammonia, smoke) or unusual smell?"
+    if_yes: "cabin atmosphere alarm (CO2, ammonia or smoke) or unusual smell"
+  - id: EXP-PAYLOAD
+    question: "Any recent work with payloads, experiments, lab animals or chemicals?"
+    if_yes: "recent work with payloads or experiments"
+  - id: EXP-MEDS
+    question: "Any new medication or supplement, or a change in food or water?"
+    if_yes: "new medication, supplement, food or water"
+  - id: EXP-OTHERS
+    question: "Does anyone else aboard have similar symptoms?"
+    if_yes: "others aboard have similar symptoms"
