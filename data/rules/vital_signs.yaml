@@ -1,0 +1,22 @@
+# Vital-sign alert thresholds for consults (adults).
+#
+# DRAFT, UNREVIEWED. Engineering placeholders, not clinical guidance. The clinical team must
+# review and sign off every threshold and step before they are relied on.
+#
+# SpaceDoc reads measurements from what the user types (e.g. "SpO2 85%", "BP 70/50",
+# "HR 140", "temp 102 F") and from exam results. A value outside a range pauses the consult
+# and shows the steps below. {delay} is the one-way communication delay.
+
+thresholds:
+  spo2:             {label: Oxygen saturation, unit: "%", low: 90}
+  systolic_bp:      {label: Systolic blood pressure, unit: mmHg, low: 90, high: 180}
+  heart_rate:       {label: Heart rate, unit: per minute, low: 40, high: 130}
+  respiratory_rate: {label: Breathing rate, unit: per minute, low: 8, high: 30}
+  temperature_c:    {label: Temperature, unit: °C, low: 35.0, high: 39.5}
+
+steps:
+  - Stop routine questions and treat the patient now; keep them and the equipment secured.
+  - Check airway and breathing; give oxygen per the onboard procedure if saturation is low.
+  - If blood pressure is low, get IV access and give fluids per the onboard procedure.
+  - Recheck and record vital signs every 5 minutes.
+  - Contact the ground medical team now if the link is up (one-way delay {delay}).

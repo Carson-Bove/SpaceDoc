@@ -107,6 +107,7 @@ def run_consult(
     who = "the user" if consult.patient_is_user else consult.patient_label
     typer.echo(
         f"\n{kind} consult {consult.consult_id} · user {consult.user.label()} · patient {who}\n"
+        f"Patient record used: {consult.patient_summary}\n"
         f"{env.summary()}\n"
         f"Deep log: {'on (slower; each turn also shows the estimated time without it)' if deep_log else 'off'}\n"
         f"{COMMANDS}\n"

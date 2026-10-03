@@ -19,12 +19,13 @@ from spacedoc.agent.orchestrator import Orchestrator
 from spacedoc.answer.schema import VerifiedAnswer, require_all
 from spacedoc.audit.log import AuditLog
 from spacedoc.consult import prompts
-from spacedoc.consult.redflags import RedFlagHit, RedFlags, format_delay
+from spacedoc.consult.redflags import RedFlagHit, RedFlags
 from spacedoc.consult.roster import CrewMember
-from spacedoc.consult.schema import ExamRequest, TurnReply
+from spacedoc.consult.safety import ExposureScreen, MustNotMiss, ScreenItem, VitalRules
+from spacedoc.consult.schema import ExamRequest, TurnReply, WorkingDx
 from spacedoc.env.context import EnvironmentContext
 from spacedoc.llm.client import LLM, ChatResult, GenParams, LLMError
-from spacedoc.verify.rules import FeasibilityRule, check_feasibility
+from spacedoc.verify.rules import FeasibilityRule, check_feasibility, record_summary
 
 SELF = "self"
 UNLISTED = "unlisted"
@@ -66,6 +67,9 @@ class Turn:
     thinking: str = ""
     error: str | None = None
     audit_id: str | None = None
+    screen: list[ScreenItem] = field(default_factory=list)  # exposure screen (turn 1)
+    must_not_miss_added: list[str] = field(default_factory=list)  # put back by SpaceDoc
+    notes: str = ""  # SpaceDoc notes sent to the model with this message
 
     @property
     def paused(self) -> bool:
@@ -87,6 +91,8 @@ class Consult:
     messages: list[dict[str, str]]
     turns: list[Turn] = field(default_factory=list)
     assessments: list[VerifiedAnswer] = field(default_factory=list)
+    patient_summary: str = "none"
+    must_not_miss: list[str] = field(default_factory=list)  # active rule IDs
 
     @property
     def patient_label(self) -> str:
@@ -103,9 +109,12 @@ class Consult:
         return sum(1 for t in self.turns if t.reply)
 
     def delay(self) -> str:
-        if not self.env.link_available:
-            return "no link"
-        return format_delay(self.env.one_way_delay_s)
+        return self.env.delay_text()
+
+    @property
+    def alerts(self) -> list[RedFlagHit]:
+        """Every red flag and vital-sign alert raised so far."""
+        return [h for t in self.turns for h in t.red_flags]
 
 
 class ConsultEngine:
@@ -122,6 +131,9 @@ class ConsultEngine:
         model_name: str,
         max_rounds: int = 8,
         max_questions: int = 2,
+        vitals: VitalRules | None = None,
+        must_not_miss: MustNotMiss | None = None,
+        screen: ExposureScreen | None = None,
     ) -> None:
         self.llm = llm
         self.orchestrator = orchestrator
@@ -134,6 +146,9 @@ class ConsultEngine:
         self.model_name = model_name
         self.max_rounds = max_rounds
         self.max_questions = max_questions
+        self.vitals = vitals
+        self.mnm = must_not_miss
+        self.screen = screen
         self.schema = require_all(TurnReply.model_json_schema())
 
     # ---- start -----------------------------------------------------------------------
@@ -163,6 +178,9 @@ class ConsultEngine:
         else:
             patient, is_user = self.member(patient_id), False
         system = prompts.system_message(user, patient, is_user, env)
+        summary = (
+            record_summary({"crew_id": patient.crew_id, **patient.record}) if patient else "none"
+        )
         payload = {
             "user": user.crew_id,
             "user_role": user.medical_role,
@@ -173,6 +191,7 @@ class ConsultEngine:
             "environment": env.model_dump(),
             "model": self.model_name,
             "prompt_version": prompts.CONSULT_PROMPT_VERSION,
+            "patient_record": summary,
         }
         consult_id = (
             self.audit.append("consult_start", payload)
@@ -190,6 +209,7 @@ class ConsultEngine:
             deep_log=deep_log,
             started_at=datetime.now(UTC).isoformat(timespec="seconds"),
             messages=[{"role": "system", "content": system}],
+            patient_summary=summary,
         )
 
     # ---- question turns ----------------------------------------------------------------
@@ -198,7 +218,10 @@ class ConsultEngine:
         """Screen the message for red flags, then (if none) ask the model for the next step."""
         turn = Turn(n=len(consult.turns) + 1, user_text=text.strip())
         turn.red_flags = self.red_flags.screen(turn.user_text, consult.delay())
+        if self.vitals:
+            turn.red_flags += self.vitals.alerts(turn.user_text, consult.delay())
         consult.turns.append(turn)
+        self._update_must_not_miss(consult)
         if turn.paused:
             turn.timing = TurnTiming(total_s=0.0)
             self._log(consult, turn)
@@ -213,8 +236,30 @@ class ConsultEngine:
         turn.red_flags_dismissed = True
         return self._ask_model(consult, turn)
 
+    def _update_must_not_miss(self, consult: Consult) -> None:
+        if not self.mnm:
+            return
+        said = "\n".join([t.user_text for t in consult.turns] + [h.message for h in consult.alerts])
+        for rule in self.mnm.match(said):
+            if rule.id not in consult.must_not_miss:
+                consult.must_not_miss.append(rule.id)
+
+    def _active_rules(self, consult: Consult):
+        return [r for r in (self.mnm.rules if self.mnm else []) if r.id in consult.must_not_miss]
+
+    def _notes(self, consult: Consult, turn: Turn) -> str:
+        lines = [f"Vital-sign or red-flag alert: {h.message}" for h in turn.red_flags]
+        lines += [
+            f"Must not miss: {r.condition} (ask: {r.ask})" for r in self._active_rules(consult)
+        ]
+        return "\n".join(lines)
+
     def _ask_model(self, consult: Consult, turn: Turn) -> Turn:
-        messages = consult.messages + [{"role": "user", "content": turn.user_text}]
+        turn.notes = self._notes(consult, turn)
+        content = turn.user_text
+        if turn.notes:
+            content += f"\n\n[SpaceDoc notes, not from the user]\n{turn.notes}"
+        messages = consult.messages + [{"role": "user", "content": content}]
         params = self.deep_params if consult.deep_log else self.params
         results: list[ChatResult] = []
         start = time.perf_counter()
@@ -235,7 +280,24 @@ class ConsultEngine:
         if turn.reply is None and turn.error is None:
             turn.error = "The model did not return a valid reply (two attempts)."
         if turn.reply:
-            turn.reply.questions = turn.reply.questions[: self.max_questions]
+            reply = turn.reply
+            reply.questions = reply.questions[: self.max_questions]
+            reply.exam_requests = reply.exam_requests[:2]
+            if reply.urgent.flag and not reply.urgent.reason.strip():
+                reply.urgent.reason = "The model flagged this as urgent without giving a reason."
+            # Spaceflight must-not-miss conditions stay on the list until ruled out.
+            for rule in self._active_rules(consult):
+                if not MustNotMiss.on_list(rule, [d.condition for d in reply.working_ddx]):
+                    reply.working_ddx.append(
+                        WorkingDx(
+                            condition=rule.condition,
+                            likelihood="must not miss",
+                            why="On SpaceDoc's spaceflight must-not-miss list for these symptoms",
+                        )
+                    )
+                    turn.must_not_miss_added.append(rule.condition)
+            if turn.n == 1 and self.screen:
+                turn.screen = list(self.screen.items)
             turn.exam_checks = [self._check_exam(e, consult.env) for e in turn.reply.exam_requests]
             if consult.deep_log:
                 turn.thinking = "\n\n".join(r.thinking for r in results if r.thinking)
@@ -292,9 +354,17 @@ class ConsultEngine:
                 follow.append(f'- Added: "{cur.user_text}"')
         if follow:
             lines += ["Follow-up questions and answers:"] + follow
-        flags = sorted({h.message for t in consult.turns for h in t.red_flags})
+        flags = sorted({h.message for h in consult.alerts})
         if flags:
-            lines.append("Urgent signs noted during the consult: " + "; ".join(flags) + ".")
+            lines.append(
+                "Urgent signs and vital-sign alerts during the consult: " + "; ".join(flags) + "."
+            )
+        rules = self._active_rules(consult)
+        if rules:
+            lines.append(
+                "Spaceflight must-not-miss conditions for these symptoms (SpaceDoc's draft "
+                "clinician list); address each one: " + "; ".join(r.condition for r in rules) + "."
+            )
         reply = consult.last_reply
         if reply and reply.working_ddx:
             items = "; ".join(f"{d.condition} ({d.likelihood})" for d in reply.working_ddx)
@@ -312,6 +382,18 @@ class ConsultEngine:
         # model's extracted facts.
         patient["reported_in_consult"] = [t.user_text for t in consult.turns]
         v = self.orchestrator.ask(summary, consult.env, patient, consult.user.medical_role)
+        urgent: list[str] = []
+        for hit in consult.alerts:
+            urgent += [s for s in hit.steps if s not in urgent]
+        if urgent:
+            v.next_steps = (
+                [
+                    "Urgent signs were raised in this consult. Immediate steps (draft, not yet "
+                    "clinician-reviewed):"
+                ]
+                + urgent
+                + [s for s in v.next_steps if s not in urgent]
+            )
         consult.assessments.append(v)
         if self.audit:
             self.audit.append(
@@ -350,6 +432,9 @@ class ConsultEngine:
                 "timing": asdict(turn.timing) if turn.timing else None,
                 "thinking": turn.thinking,
                 "error": turn.error,
+                "notes": turn.notes,
+                "must_not_miss_added": turn.must_not_miss_added,
+                "screen": [i.model_dump() for i in turn.screen],
             },
         )
 

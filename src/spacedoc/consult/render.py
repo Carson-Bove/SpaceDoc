@@ -58,9 +58,13 @@ def render_turn(turn: Turn) -> str:
     if r is None:
         return f"SpaceDoc could not continue: {turn.error}" if turn.error else ""
     out: list[str] = []
+    if r.message:
+        out += [f"SpaceDoc: {r.message}", "  (conversation reply, not checked against sources)"]
     if r.working_ddx:
         out.append(f"{WORKING_LABEL}:")
         out += [f"  - {d.condition} · {d.likelihood} · {d.why}" for d in r.working_ddx]
+        for added in turn.must_not_miss_added:
+            out.append(f"    ({added} was added back by SpaceDoc's must-not-miss list)")
     if r.questions:
         out.append("Questions:")
         for i, q in enumerate(r.questions, 1):
@@ -76,6 +80,9 @@ def render_turn(turn: Turn) -> str:
             out.append(f"     ✗ NOT ABOARD: {', '.join(c.missing)}. Skip or use what is aboard.")
         for f in c.findings:
             out.append(f"     ✗ {f}")
+    if turn.screen:
+        out.append("Exposure check (please answer each; draft list, not yet clinician-reviewed):")
+        out += [f"  - {item.question}" for item in turn.screen]
     out.append(timing_line(turn.timing))
     return "\n".join(out)
 
@@ -117,6 +124,7 @@ def record_markdown(consult: Consult) -> str:
         "",
         f"- **User:** {consult.user.label()}",
         f"- **Patient:** {'the user' if consult.patient_is_user else consult.patient_label}",
+        f"- **Patient record used:** {consult.patient_summary}",
         f"- **Environment:** {consult.env.summary()}",
         f"- **Started:** {consult.started_at} · deep log {'on' if consult.deep_log else 'off'}",
         "",
@@ -125,29 +133,37 @@ def record_markdown(consult: Consult) -> str:
         lines += [f"## Turn {t.n}", "", f"**{consult.user.crew_id}:** {t.user_text}", ""]
         if t.red_flags:
             state = "continued by the user" if t.red_flags_dismissed else "consult paused"
-            flags = "; ".join(f"{h.rule_id} ({h.matched})" for h in t.red_flags)
-            lines += [f"**Red flags:** {flags} — {state}", ""]
+            flags = "; ".join(f"{h.message} ({h.rule_id})" for h in t.red_flags)
+            lines += [f"**Red flags and vital-sign alerts:** {flags} — {state}", ""]
         r = t.reply
         if r:
             if r.urgent.flag:
                 lines += [f"**Model flagged urgent:** {r.urgent.reason}", ""]
-            if r.facts:
-                lines.append(
-                    "**Facts noted:** " + "; ".join(f"{f.item}: {f.value}" for f in r.facts)
-                )
-                lines.append("")
+            if r.message:
+                lines += [f"**SpaceDoc:** {r.message} _(not checked)_", ""]
             if r.working_ddx:
                 lines.append(f"**{WORKING_LABEL}:**")
                 lines += [f"- {d.condition} · {d.likelihood} · {d.why}" for d in r.working_ddx]
+                lines += [
+                    f"- _{a} was added back by the must-not-miss list_"
+                    for a in t.must_not_miss_added
+                ]
                 lines.append("")
             for q in r.questions:
                 lines.append(f"- **Asked:** {q.text} _(why: {q.why})_")
             for c in t.exam_checks:
                 status = "ok" if c.ok else "; ".join(c.missing + c.findings)
                 lines.append(f"- **Exam:** {c.request.text} _(equipment check: {status})_")
+            if t.screen:
+                lines.append(
+                    "- **Exposure check asked:** " + "; ".join(i.question for i in t.screen)
+                )
             if r.ready_to_assess:
                 lines.append("- **Ready to assess**")
             lines.append("")
+        if t.notes:
+            lines += ["<details><summary>SpaceDoc notes sent to the model</summary>", ""]
+            lines += [t.notes, "", "</details>", ""]
         if t.thinking:
             lines += ["<details><summary>Thinking notes (deep log, unverified)</summary>", ""]
             lines += [t.thinking, "", "</details>", ""]

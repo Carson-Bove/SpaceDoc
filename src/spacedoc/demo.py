@@ -241,7 +241,8 @@ def _consult_turn(messages) -> ChatResult:
     if len(answers) == 1:
         reply = {
             "urgent": {"flag": False, "reason": ""},
-            "facts": [{"item": "presenting problem", "value": first[:120]}],
+            "message": "Thanks. Pain that comes in waves needs a couple of quick checks before "
+            "I can narrow it down.",
             "working_ddx": (
                 [
                     {
@@ -283,7 +284,12 @@ def _consult_turn(messages) -> ChatResult:
         }
     else:
         reply = {
-            "facts": [{"item": "answers", "value": answers[-1][:120]}],
+            "message": (
+                "There is no reviewed guide for that device in SpaceDoc's equipment library yet; "
+                "describe what you can see and I will work with that."
+                if "how do i" in answers[-1]
+                else "Thanks, that helps. I have enough for a checked assessment."
+            ),
             "working_ddx": [
                 {"condition": "Kidney stone", "likelihood": "high", "why": "pattern and answers"}
             ],

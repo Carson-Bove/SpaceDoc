@@ -11,6 +11,7 @@ from spacedoc.config import Settings
 from spacedoc.consult.engine import ConsultEngine
 from spacedoc.consult.redflags import RedFlags
 from spacedoc.consult.roster import load_roster
+from spacedoc.consult.safety import ExposureScreen, MustNotMiss, VitalRules
 from spacedoc.env.context import EnvironmentContext, load_environment
 from spacedoc.kb.ingest import chunk_source, load_manifest
 from spacedoc.kb.retrieve import Retriever
@@ -99,7 +100,7 @@ def build_system(settings: Settings, demo: bool = False) -> System:
                 settings.checker_model,
                 None,
                 settings.request_timeout_s,
-                settings.keep_alive,
+                settings.checker_keep_alive,
             ),
             num_ctx=settings.checker_num_ctx,
         )
@@ -133,8 +134,19 @@ def build_system(settings: Settings, demo: bool = False) -> System:
         ),
         model_name,
     )
+    consult_llm, consult_name = llm, model_name
+    if not demo and settings.consult_model and settings.consult_model != settings.chat_model:
+        consult_llm = connect(
+            settings.llm_backend,
+            settings.llm_base_url,
+            settings.consult_model,
+            None,
+            settings.request_timeout_s,
+            settings.keep_alive,
+        )
+        consult_name = settings.consult_model
     consult = ConsultEngine(
-        llm=llm,
+        llm=consult_llm,
         orchestrator=orch,
         audit=audit,
         roster=load_roster(settings.data_dir),
@@ -142,8 +154,11 @@ def build_system(settings: Settings, demo: bool = False) -> System:
         feasibility=feasibility,
         params=consult_params(settings, deep=False, demo=demo),
         deep_params=consult_params(settings, deep=True, demo=demo),
-        model_name=model_name,
+        model_name=consult_name,
         max_rounds=settings.consult_max_rounds,
+        vitals=VitalRules.load(settings.data_dir),
+        must_not_miss=MustNotMiss.load(settings.data_dir),
+        screen=ExposureScreen.load(settings.data_dir),
     )
     return System(
         settings=settings,

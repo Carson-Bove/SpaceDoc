@@ -154,7 +154,7 @@ def test_red_flag_pauses_before_the_model(demo_system, env_t4):
     assert turn.paused and not engine.llm.calls
     resumed = engine.resume(c)
     assert resumed is turn and turn.red_flags_dismissed and turn.reply.questions
-    assert "Urgent signs noted during the consult: Chest pain" in engine.case_summary(c)
+    assert "vital-sign alerts during the consult: Chest pain" in engine.case_summary(c)
     assert "continued by the user" in record_markdown(c)
 
 

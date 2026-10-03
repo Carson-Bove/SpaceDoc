@@ -1,0 +1,61 @@
+# Spaceflight must-not-miss conditions for consults.
+#
+# DRAFT, UNREVIEWED. Written by the engineering team as a starting point for the clinical
+# team, who must review the conditions, patterns and wording before they are relied on.
+#
+# A rule applies when at least `min_matches` of its patterns appear (not negated) in what the
+# user has said during the consult, or in its vital-sign alerts. While a rule applies:
+#  - the model is told to keep the condition on its working list until it is ruled out, and
+#    to ask `ask`;
+#  - if the model's working list leaves it out anyway, SpaceDoc adds it back as "must not miss";
+#  - the final assessment is told to address it.
+# `aliases` are other names that count as the condition being on the list.
+
+rules:
+  - id: MNM-ARS
+    condition: Acute radiation syndrome
+    aliases: [radiation sickness, radiation syndrome, radiation exposure, radiation injury, ARS]
+    patterns: ['nause', 'vomit', 'diarrh', 'bloody (stool|diarrh)|blood in (the )?stool', 'hair (loss|falling)|losing hair|epilat', 'skin (redden|redness|discolou?r|erythem|burn|blister)', 'fatigue|exhaust', 'fever', 'radiation|solar particle|\bspe\b|dosimeter']
+    min_matches: 2
+    why: After a large radiation dose (e.g. a solar particle event or spacewalk), early nausea and vomiting can be followed by a period of feeling better, then gut, skin, hair and blood effects.
+    ask: Has there been a radiation alert, solar particle event, dosimeter alarm or recent spacewalk?
+
+  - id: MNM-CO2
+    condition: Carbon dioxide toxicity
+    aliases: [hypercapnia, co2 toxicity, carbon dioxide]
+    patterns: ['headache', 'dizz', 'short(ness)? of breath|breathless', 'confus|disorient', 'drows|letharg|sleepy', '\bco2\b|carbon dioxide']
+    min_matches: 2
+    why: Raised CO2 in the cabin causes headache, breathlessness and poor concentration, often in more than one crewmember.
+    ask: Are the cabin CO2 readings normal, and does anyone else have similar symptoms?
+
+  - id: MNM-DCS
+    condition: Decompression sickness
+    aliases: [decompression, the bends, dcs]
+    patterns: ['joint pain|aching joints|bends', 'itch', 'skin (mottl|marbl)', 'numb|tingl', 'spacewalk|\beva\b|suit|airlock|depressuri']
+    min_matches: 2
+    why: After a spacewalk or a cabin pressure change, gas bubbles can cause joint pain and skin and nerve symptoms.
+    ask: Was there a recent spacewalk, suit run or cabin pressure change?
+
+  - id: MNM-TOXIC
+    condition: Toxic exposure (cabin atmosphere or payload chemical)
+    aliases: [toxic exposure, chemical exposure, ammonia, smoke inhalation, toxic inhalation]
+    patterns: ['ammonia|fumes|smell|odou?r|chemical|toxic|smoke', 'eye (irritation|burning|sting)|burning eyes', 'cough', 'throat (irritation|burning)', 'payload|experiment']
+    min_matches: 2
+    why: A release from a payload, a coolant leak or smoke can affect the eyes, airway and lungs.
+    ask: Has there been an unusual smell, an atmosphere alarm, or exposure while handling a payload or experiment?
+
+  - id: MNM-SEPSIS
+    condition: Sepsis
+    aliases: [septic shock, sepsis]
+    patterns: ['fever|chills|rigors|high temperature', 'low blood pressure|hypotens', 'confus', 'fast (heart|pulse)|tachycard|high heart rate', 'breathing fast|rapid breathing|high breathing rate']
+    min_matches: 2
+    why: Infection with failing circulation needs treatment within hours.
+    ask: When did the fever start, and is the patient more confused or drowsy than before?
+
+  - id: MNM-HEAD
+    condition: Head injury or raised pressure inside the skull
+    aliases: [head injury, intracranial, concussion, brain injury]
+    patterns: ['head (injury|bump)|(hit|bumped|struck) (my|his|her|their) head', 'headache', 'vomit', 'confus|drows', 'blurr(ed|y) vision|vision (change|blur)']
+    min_matches: 2
+    why: In a confined cabin, head strikes are common; headache with vomiting or confusion can mean bleeding or swelling.
+    ask: Has the patient hit their head recently?

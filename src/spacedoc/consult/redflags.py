@@ -67,9 +67,3 @@ def _negated(text: str, start: int) -> bool:
     clauses = _CLAUSE_END.split(before)
     words = clauses[-1].split()[-4:]
     return bool(_NEGATION.search(" ".join(words)))
-
-
-def format_delay(seconds: float) -> str:
-    if seconds < 60:
-        return f"{seconds:.0f} s"
-    return f"{seconds / 60:.0f} min"
