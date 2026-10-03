@@ -20,7 +20,7 @@ class Settings:
     chat_model: str = "qwen3:8b"
     embed_model: str = "qwen3-embedding:0.6b"
     checker_model: str = "bespoke-minicheck:7b"
-    request_timeout_s: float = 300.0
+    request_timeout_s: float = 900.0  # a thinking pass can run for minutes on a laptop
 
     # Generation. Ollama's default context (4,096 tokens on machines with < 24 GiB VRAM)
     # is too small: a first-pass prompt is ~3,300 tokens before the model writes anything.

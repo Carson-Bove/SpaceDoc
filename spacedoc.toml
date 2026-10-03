@@ -15,6 +15,7 @@ draft_max_tokens = 6144     # thinking + JSON answer
 finalize_max_tokens = 2048
 review_max_tokens = 1024    # reasoning summaries for clinical review
 seed = 42
+request_timeout_s = 900   # per model call; up to 6,144 tokens at ~15-25 tokens/s is 4-7 min
 # Qwen3's recommended settings for each mode. Set all three keys if you change one.
 sampling_thinking = { temperature = 0.6, top_p = 0.95, top_k = 20 }
 sampling_plain = { temperature = 0.7, top_p = 0.8, top_k = 20 }
