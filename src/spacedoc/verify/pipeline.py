@@ -18,6 +18,7 @@ from spacedoc.answer.schema import (
     VerifiedAnswer,
 )
 from spacedoc.env.context import EnvironmentContext
+from spacedoc.llm.client import LLMError
 from spacedoc.tools.calculators import CalcResult
 from spacedoc.tools.formulary import Formulary
 from spacedoc.verify import rules
@@ -107,7 +108,22 @@ class Verifier:
                 raws = []
                 supported = False
                 for cid in valid_cites:
-                    v = self.checker.check(claim.text, by_cid[cid].text)
+                    try:
+                        v = self.checker.check(claim.text, by_cid[cid].text)
+                    except LLMError as e:
+                        # Unchecked claims are hidden, never shown as supported.
+                        raws.append(f"{cid}: check failed")
+                        if not any(f.rule_id == "CHECK-ERROR" for f in findings):
+                            findings.append(
+                                Finding(
+                                    rule_id="CHECK-ERROR",
+                                    severity="warn",
+                                    target="answer",
+                                    message=f"Grounding check failed, so affected claims are "
+                                    f"hidden: {e}",
+                                )
+                            )
+                        continue
                     raws.append(f"{cid}: {v.raw}")
                     if v.supported:
                         supported = True
@@ -196,6 +212,12 @@ class Verifier:
             )
         if not abstained and not passages:
             abstained, reason = True, "No relevant sources were found in the knowledge base"
+        # A failed model or search call is reported as such, not as a judgement on the sources.
+        failure = next(
+            (f for f in findings if f.rule_id in {"MODEL-ERROR", "RETRIEVAL-ERROR"}), None
+        )
+        if failure:
+            abstained, reason = True, failure.message
 
         return VerifiedAnswer(
             question=question,

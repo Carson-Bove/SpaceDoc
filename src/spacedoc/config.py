@@ -12,12 +12,33 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 @dataclass
 class Settings:
-    # Local model server (Ollama exposes an OpenAI-compatible API under /v1)
-    llm_base_url: str = "http://localhost:11434/v1"
+    # Local model server. "ollama" uses Ollama's native API, which can set the context
+    # window, thinking mode, top_k and seed per request; "openai" works with any
+    # OpenAI-compatible server (llama.cpp, LM Studio) at its own context size.
+    llm_backend: str = "ollama"
+    llm_base_url: str = "http://localhost:11434"
     chat_model: str = "qwen3:8b"
     embed_model: str = "qwen3-embedding:0.6b"
     checker_model: str = "bespoke-minicheck:7b"
     request_timeout_s: float = 300.0
+
+    # Generation. Ollama's default context (4,096 tokens on machines with < 24 GiB VRAM)
+    # is too small: a first-pass prompt is ~3,300 tokens before the model writes anything.
+    chat_num_ctx: int = 12288
+    checker_num_ctx: int = 4096
+    think_draft: bool = True  # thinking for the first (reasoning) pass
+    think_finalize: bool = False  # the second pass only inserts calculator results
+    draft_max_tokens: int = 6144  # thinking + JSON answer
+    finalize_max_tokens: int = 2048
+    seed: int = 42  # fixed so sampled runs are repeatable
+    # Qwen3's recommended settings. Its model card warns against greedy decoding
+    # (temperature 0) in thinking mode, which can cause endless repetition.
+    sampling_thinking: dict = field(
+        default_factory=lambda: {"temperature": 0.6, "top_p": 0.95, "top_k": 20}
+    )
+    sampling_plain: dict = field(
+        default_factory=lambda: {"temperature": 0.7, "top_p": 0.8, "top_k": 20}
+    )
 
     # Storage
     data_dir: Path = field(default_factory=lambda: REPO_ROOT / "data")

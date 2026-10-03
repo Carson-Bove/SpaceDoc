@@ -37,15 +37,21 @@ def corpus_fetch(config: Path = ConfigOpt) -> None:
 def corpus_ingest(config: Path = ConfigOpt) -> None:
     """Chunk and embed every source in the manifest into the knowledge store."""
     from spacedoc.kb.store import KnowledgeStore
-    from spacedoc.llm.client import OpenAICompatLLM
+    from spacedoc.llm.client import LLMError, connect
     from spacedoc.system import ingest_manifest
 
     s = load_settings(config)
     store = KnowledgeStore(s.db_path)
-    embedder = OpenAICompatLLM(s.llm_base_url, s.chat_model, s.embed_model, s.request_timeout_s)
-    n = ingest_manifest(
-        store, embedder, s.corpus_dir / "manifest.yaml", s.corpus_dir / "files", s.embed_model
+    embedder = connect(
+        s.llm_backend, s.llm_base_url, s.chat_model, s.embed_model, s.request_timeout_s
     )
+    try:
+        n = ingest_manifest(
+            store, embedder, s.corpus_dir / "manifest.yaml", s.corpus_dir / "files", s.embed_model
+        )
+    except LLMError as e:
+        typer.echo(f"Embedding failed: {e}", err=True)
+        raise typer.Exit(1) from e
     typer.echo(f"Ingested {n} chunks. Store now holds {store.count()} chunks:")
     for source_id, title, count in store.sources():
         typer.echo(f"  {source_id:<32} {count:>5}  {title}")
@@ -126,13 +132,19 @@ def bench(
     models: list[str] = typer.Argument(..., help="Ollama model tags to compare"),
     cases_dir: Path = typer.Option(Path("cases"), help="Directory of case YAML files"),
     repeats: int = 1,
+    thinking: str = typer.Option(
+        "config",
+        help="Thinking for the first pass: config, on, off, or both (runs each model twice)",
+    ),
     config: Path = ConfigOpt,
 ) -> None:
     """Compare candidate orchestrator models on the same cases."""
     from spacedoc.eval.bench import bench_markdown, bench_models
     from spacedoc.eval.cases import load_cases
 
-    table = bench_models(load_settings(config), models, load_cases(cases_dir), repeats)
+    table = bench_models(
+        load_settings(config), models, load_cases(cases_dir), repeats, thinking=thinking
+    )
     typer.echo(bench_markdown(table))
 
 

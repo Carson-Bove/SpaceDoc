@@ -5,14 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from spacedoc.agent.orchestrator import Orchestrator
+from spacedoc.agent.orchestrator import GenerationPlan, Orchestrator
 from spacedoc.audit.log import AuditLog
 from spacedoc.config import Settings
 from spacedoc.env.context import EnvironmentContext, load_environment
 from spacedoc.kb.ingest import chunk_source, load_manifest
 from spacedoc.kb.retrieve import Retriever
 from spacedoc.kb.store import KnowledgeStore
-from spacedoc.llm.client import FakeLLM, OpenAICompatLLM
+from spacedoc.llm.client import FakeLLM, GenParams, connect
 from spacedoc.tools.formulary import Formulary
 from spacedoc.verify.grounding import LexicalOverlapChecker, MiniCheckChecker
 from spacedoc.verify.pipeline import Verifier
@@ -47,6 +47,25 @@ def ingest_manifest(
     return total
 
 
+def generation_plan(settings: Settings) -> GenerationPlan:
+    """Per-pass generation settings from spacedoc.toml (Qwen3's recommended sampling)."""
+
+    def params(think: bool, max_tokens: int) -> GenParams:
+        profile = settings.sampling_thinking if think else settings.sampling_plain
+        return GenParams.from_profile(
+            profile,
+            seed=settings.seed,
+            max_tokens=max_tokens,
+            num_ctx=settings.chat_num_ctx,
+            think=think,
+        )
+
+    return GenerationPlan(
+        draft=params(settings.think_draft, settings.draft_max_tokens),
+        finalize=params(settings.think_finalize, settings.finalize_max_tokens),
+    )
+
+
 def build_system(settings: Settings, demo: bool = False) -> System:
     formulary = Formulary.load("example-transit", settings.data_dir)
     feasibility = load_feasibility_rules(settings.data_dir)
@@ -62,16 +81,22 @@ def build_system(settings: Settings, demo: bool = False) -> System:
         audit = AuditLog(settings.audit_path.parent / "demo-audit.jsonl")
         model_name = "demo (scripted, no model)"
     else:
-        llm = OpenAICompatLLM(
+        llm = connect(
+            settings.llm_backend,
             settings.llm_base_url,
             settings.chat_model,
             settings.embed_model,
             settings.request_timeout_s,
         )
         checker = MiniCheckChecker(
-            OpenAICompatLLM(
-                settings.llm_base_url, settings.checker_model, None, settings.request_timeout_s
-            )
+            connect(
+                settings.llm_backend,
+                settings.llm_base_url,
+                settings.checker_model,
+                None,
+                settings.request_timeout_s,
+            ),
+            num_ctx=settings.checker_num_ctx,
         )
         store = KnowledgeStore(settings.db_path)
         embedder = llm
@@ -87,5 +112,6 @@ def build_system(settings: Settings, demo: bool = False) -> System:
         top_k=settings.top_k,
         consistency_samples=settings.consistency_samples,
         model_name=model_name,
+        generation=None if demo else generation_plan(settings),
     )
     return System(settings=settings, orchestrator=orch, store=store, demo=demo)

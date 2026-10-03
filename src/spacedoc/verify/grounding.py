@@ -11,7 +11,7 @@ import re
 from dataclasses import dataclass
 from typing import Protocol
 
-from spacedoc.llm.client import LLM
+from spacedoc.llm.client import LLM, GenParams
 
 
 @dataclass
@@ -31,12 +31,15 @@ class MiniCheckChecker:
 
     name = "bespoke-minicheck"
 
-    def __init__(self, llm: LLM) -> None:
+    def __init__(self, llm: LLM, num_ctx: int | None = None) -> None:
         self.llm = llm
+        # The model's own system prompt (in its Ollama Modelfile) asks for "Yes" or "No".
+        self.params = GenParams(temperature=0.0, max_tokens=8, num_ctx=num_ctx)
 
     def check(self, claim: str, passage: str) -> GroundingVerdict:
         prompt = f"Document: {passage}\nClaim: {claim}"
-        raw = self.llm.chat([{"role": "user", "content": prompt}], temperature=0.0).text.strip()
+        raw = self.llm.chat([{"role": "user", "content": prompt}], params=self.params).text
+        raw = raw.strip()
         return GroundingVerdict(supported=raw.lower().startswith("yes"), raw=raw)
 
 

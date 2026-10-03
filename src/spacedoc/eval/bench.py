@@ -11,13 +11,30 @@ from spacedoc.eval.metrics import aggregate
 from spacedoc.eval.runner import run_cases
 from spacedoc.system import build_system
 
+THINKING_MODES = {
+    "config": [None],  # use think_draft from spacedoc.toml
+    "on": [True],
+    "off": [False],
+    "both": [True, False],
+}
+
 
 def bench_models(
-    settings: Settings, models: list[str], cases: list[Case], repeats: int = 1
+    settings: Settings,
+    models: list[str],
+    cases: list[Case],
+    repeats: int = 1,
+    thinking: str = "config",
 ) -> list[dict[str, Any]]:
+    if thinking not in THINKING_MODES:
+        raise ValueError(f"thinking must be one of {', '.join(THINKING_MODES)}")
+    runs = [(m, t) for m in models for t in THINKING_MODES[thinking]]
     table = []
-    for model in models:
+    for model, think in runs:
         s = dataclasses.replace(settings, chat_model=model)
+        if think is not None:
+            s = dataclasses.replace(s, think_draft=think)
+        label = model if think is None else f"{model} (thinking {'on' if think else 'off'})"
         system = build_system(s)
         rows = run_cases(system, cases, repeats)
         calls = sum(r["answer"]["timings"].get("llm_calls", 0) for r in rows)
@@ -27,7 +44,7 @@ def bench_models(
         agg = aggregate(rows)
         table.append(
             {
-                "model": model,
+                "model": label,
                 "schema_adherence": (1 - fails / calls) if calls else None,
                 "claim_support_rate": agg["claim_support_rate"],
                 "dx_top3": agg["dx_top3"],
