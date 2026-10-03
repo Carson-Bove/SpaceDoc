@@ -51,6 +51,11 @@ class ChatResult:
     thinking: str = ""
     done_reason: str | None = None  # "length" means the output hit max_tokens
     top_logprobs: list[tuple[str, float]] | None = None  # first output token's alternatives
+    # Where the time went, as reported by the server (Ollama only): loading the model,
+    # reading the prompt, writing the reply (thinking included).
+    load_s: float | None = None
+    prompt_s: float | None = None
+    gen_s: float | None = None
 
 
 class LLMError(RuntimeError):
@@ -89,6 +94,11 @@ def _looks_truncated(messages: list[dict[str, str]], prompt_tokens: int) -> bool
     """
     chars = sum(len(m.get("content") or "") for m in messages)
     return prompt_tokens < chars / 6
+
+
+def _ns_to_s(value: Any) -> float | None:
+    """Ollama reports durations in nanoseconds."""
+    return value / 1e9 if isinstance(value, int | float) else None
 
 
 def _is_context_error(message: str) -> bool:
@@ -150,12 +160,14 @@ class OllamaLLM:
         chat_model: str,
         embed_model: str | None = None,
         timeout_s: float = 300.0,
+        keep_alive: str | None = None,
     ) -> None:
         root = base_url.rstrip("/")
         root = root.removesuffix("/v1")
         self._client = _HTTPClient(root, timeout_s)
         self.chat_model = chat_model
         self.embed_model = embed_model
+        self.keep_alive = keep_alive  # e.g. "30m"; None = Ollama's default (5 minutes)
         self._cannot_think = False
 
     def chat(self, messages, schema=None, params=None) -> ChatResult:
@@ -181,6 +193,8 @@ class OllamaLLM:
             "truncate": False,
             "shift": False,
         }
+        if self.keep_alive:
+            body["keep_alive"] = self.keep_alive
         if schema is not None:
             body["format"] = schema  # constrained decoding; applied after any thinking block
         if p.think is not None and not (p.think and self._cannot_think):
@@ -234,14 +248,18 @@ class OllamaLLM:
             thinking=msg.get("thinking") or "",
             done_reason=data.get("done_reason"),
             top_logprobs=top,
+            load_s=_ns_to_s(data.get("load_duration")),
+            prompt_s=_ns_to_s(data.get("prompt_eval_duration")),
+            gen_s=_ns_to_s(data.get("eval_duration")),
         )
 
     def embed(self, texts: list[str]) -> list[list[float]]:
         if not self.embed_model:
             raise LLMError("No embedding model configured")
-        data = self._client.post(
-            "/api/embed", {"model": self.embed_model, "input": texts}, self.embed_model
-        )
+        body: dict[str, Any] = {"model": self.embed_model, "input": texts}
+        if self.keep_alive:
+            body["keep_alive"] = self.keep_alive
+        data = self._client.post("/api/embed", body, self.embed_model)
         return data["embeddings"]
 
 
@@ -316,11 +334,16 @@ class OpenAICompatLLM:
 
 
 def connect(
-    backend: str, base_url: str, chat_model: str, embed_model: str | None, timeout_s: float
+    backend: str,
+    base_url: str,
+    chat_model: str,
+    embed_model: str | None,
+    timeout_s: float,
+    keep_alive: str | None = None,
 ) -> OllamaLLM | OpenAICompatLLM:
     """Create a client for the configured backend ("ollama" or "openai")."""
     if backend == "ollama":
-        return OllamaLLM(base_url, chat_model, embed_model, timeout_s)
+        return OllamaLLM(base_url, chat_model, embed_model, timeout_s, keep_alive)
     if backend == "openai":
         return OpenAICompatLLM(base_url, chat_model, embed_model, timeout_s)
     raise ValueError(f"Unknown llm_backend {backend!r}; use 'ollama' or 'openai'")

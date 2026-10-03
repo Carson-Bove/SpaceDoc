@@ -73,6 +73,17 @@ def test_ollama_native_request_carries_context_thinking_and_sampling():
     assert result.text == '{"a": 1}' and result.thinking == "Consider stones."
     assert result.completion_tokens == 120 and result.prompt_tokens == 400
     assert result.done_reason == "stop"
+    assert result.load_s is None  # no durations in this reply
+
+
+def test_ollama_durations_are_reported_in_seconds():
+    llm = OllamaLLM("http://localhost:11434", "qwen3:8b")
+    reply = ollama_reply(
+        load_duration=2_000_000_000, prompt_eval_duration=500_000_000, eval_duration=8_250_000_000
+    )
+    fake_server(llm, lambda r: reply)
+    result = llm.chat(MESSAGES)
+    assert (result.load_s, result.prompt_s, result.gen_s) == (2.0, 0.5, 8.25)
 
 
 def test_thinking_is_dropped_for_models_that_cannot_think():
@@ -98,6 +109,25 @@ def test_server_side_prompt_truncation_is_detected():
     fake_server(llm, lambda r: ollama_reply(prompt_eval_count=900, prompt_eval_cached_count=0))
     with pytest.raises(ContextOverflow):
         llm.chat(long)
+
+
+def test_keep_alive_is_sent_when_set():
+    llm = OllamaLLM("http://localhost:11434", "qwen3:8b", "qwen3-embedding:0.6b", keep_alive="30m")
+    seen = fake_server(
+        llm,
+        lambda r: (
+            ollama_reply()
+            if r.url.path == "/api/chat"
+            else httpx.Response(200, json={"embeddings": [[0.1]]})
+        ),
+    )
+    llm.chat(MESSAGES)
+    llm.embed(["x"])
+    assert [json.loads(r.content)["keep_alive"] for r in seen] == ["30m", "30m"]
+    plain = OllamaLLM("http://localhost:11434", "qwen3:8b")
+    seen = fake_server(plain, lambda r: ollama_reply())
+    plain.chat(MESSAGES)
+    assert "keep_alive" not in json.loads(seen[0].content)
 
 
 def test_server_refusing_a_long_prompt_is_a_context_overflow():

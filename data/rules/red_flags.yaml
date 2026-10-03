@@ -1,0 +1,113 @@
+# Urgent-sign (red flag) rules for consults.
+#
+# DRAFT, UNREVIEWED. Written by the engineering team as a starting point. Every pattern and
+# every step needs review and sign-off by the clinical team before it is relied on.
+#
+# These rules run on the user's own words before the model sees them. A match pauses the
+# consult and shows an urgent card with the steps below. The model also flags urgent signs
+# as a second net (its flag shows `default_steps`).
+#
+# Fields: patterns are case-insensitive regexes. A match is ignored when a negation
+# ("no", "not", "denies", "without", "never", "n't") appears within the four words before
+# it in the same clause, so "no chest pain" does not trigger RF-CHEST-PAIN.
+# {delay} in a step is replaced with the one-way communication delay for the mission tier.
+
+default_steps:
+  - Stay with the patient and keep them secured.
+  - Check responsiveness, airway, breathing and circulation.
+  - Measure heart rate, blood pressure, oxygen saturation and temperature.
+  - Contact the ground medical team now if the link is up (one-way delay {delay}).
+
+rules:
+  - id: RF-UNRESPONSIVE
+    patterns: ['unresponsive', 'not respond(ing)?', 'passed out', 'los(s|t) (of )?consciousness', 'unconscious', 'faint(ed|ing)', 'syncope']
+    message: Loss of consciousness or unresponsiveness
+    steps:
+      - Check responsiveness, airway and breathing now.
+      - If not breathing normally, start the onboard emergency (CPR) procedure.
+      - Contact the ground medical team now if the link is up (one-way delay {delay}).
+
+  - id: RF-BREATHING
+    patterns: ["(can't|cannot|can not|unable to) breathe", '(trouble|difficulty|struggling) breathing', 'short(ness)? of breath', 'choking', 'gasping']
+    message: Difficulty breathing
+    steps:
+      - Measure oxygen saturation and breathing rate.
+      - Give oxygen per the onboard procedure if saturation is low.
+      - Contact the ground medical team now if the link is up (one-way delay {delay}).
+
+  - id: RF-CHEST-PAIN
+    patterns: ['chest (pain|pressure|tightness)', 'crushing pain', 'pain (in|across) (my|his|her|their|the) chest']
+    message: Chest pain or pressure
+    steps:
+      - Keep the patient at rest and secured.
+      - Record a 12-lead ECG and vital signs.
+      - Contact the ground medical team now if the link is up (one-way delay {delay}).
+
+  - id: RF-STROKE
+    patterns: ['fac(e|ial) droop', 'slurred speech', '(trouble|difficulty) (speaking|talking|finding words)', 'weak(ness)? (on|in) one side', 'one[- ]sided (weakness|numbness)', "(can't|cannot) move (my|his|her|their) (arm|leg)"]
+    message: Possible stroke signs (face, arm or speech)
+    steps:
+      - Note the time the signs started.
+      - Check blood glucose and vital signs.
+      - Contact the ground medical team now if the link is up (one-way delay {delay}).
+
+  - id: RF-HEADACHE-SEVERE
+    patterns: ['worst headache', 'sudden(ly)? (severe|terrible|explosive) headache', 'thunderclap']
+    message: Sudden severe headache
+    steps:
+      - Check vital signs and level of consciousness.
+      - Contact the ground medical team now if the link is up (one-way delay {delay}).
+
+  - id: RF-SEIZURE
+    patterns: ['seizure', 'convuls', 'fitting']
+    message: Seizure
+    steps:
+      - Protect the patient from injury and keep them secured; do not restrain the limbs.
+      - Note how long it lasts.
+      - Contact the ground medical team now if the link is up (one-way delay {delay}).
+
+  - id: RF-VISION-LOSS
+    patterns: ['sudden(ly)? (vision loss|loss of vision|blind)', '(lost|losing) (the |all )?(vision|sight)', "(can't|cannot) see (out of|from|with) (one|either|my|his|her|their|the) eye", 'curtain (over|across)']
+    message: Sudden loss of vision
+    steps:
+      - Note which eye and when it started.
+      - Contact the ground medical team now if the link is up (one-way delay {delay}).
+
+  - id: RF-BLEEDING
+    patterns: ['(severe|heavy|uncontrolled|massive) bleeding', "bleeding (heavily|a lot|(that )?won't stop)", "(won't|can't|cannot) stop (the )?bleeding", 'cough(ing|ed)? (up )?blood', 'vomit(ing|ed)? blood']
+    message: Severe or uncontrolled bleeding
+    steps:
+      - Apply direct pressure to any external bleeding.
+      - Measure heart rate and blood pressure.
+      - Contact the ground medical team now if the link is up (one-way delay {delay}).
+
+  - id: RF-ANAPHYLAXIS
+    patterns: ['(throat|tongue|lips?) (is |are )?(swelling|swollen|closing)', 'anaphyla']
+    message: Possible severe allergic reaction
+    steps:
+      - Check breathing and blood pressure.
+      - Follow the onboard anaphylaxis procedure.
+      - Contact the ground medical team now if the link is up (one-way delay {delay}).
+
+  - id: RF-CONFUSION-ACUTE
+    patterns: ['sudden(ly)? (confused|disoriented)', '(increasingly|getting more|more and more) (confused|disoriented)', 'not making sense', "(doesn't|does not|don't|do not) know where (he|she|they|i) (is|are|am)"]
+    message: Sudden or worsening confusion
+    steps:
+      - Check blood glucose, oxygen saturation and vital signs.
+      - Check the cabin atmosphere readings (CO2, O2) for the module.
+      - Contact the ground medical team now if the link is up (one-way delay {delay}).
+
+  - id: RF-SELF-HARM
+    patterns: ['suicid', 'kill (myself|himself|herself|themselves)', 'self[- ]harm', 'end (my|his|her|their) life', 'hurt (myself|himself|herself|themselves)']
+    message: Risk of self-harm
+    steps:
+      - Stay with the crewmember; do not leave them alone.
+      - Contact the ground medical and behavioral health team now if the link is up (one-way delay {delay}).
+
+  - id: RF-ATMOSPHERE
+    patterns: ['smoke', 'fire', 'fumes', 'toxic (gas|release|leak)', 'ammonia', 'co2 (alarm|high|level)', 'chemical (spill|exposure|leak)']
+    message: Possible fire or toxic atmosphere
+    steps:
+      - Follow the vehicle emergency procedure for fire or toxic atmosphere first.
+      - Move the patient to clean air if it is safe.
+      - Contact the ground team now if the link is up (one-way delay {delay}).

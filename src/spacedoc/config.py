@@ -21,6 +21,7 @@ class Settings:
     embed_model: str = "qwen3-embedding:0.6b"
     checker_model: str = "bespoke-minicheck:7b"
     request_timeout_s: float = 900.0  # a thinking pass can run for minutes on a laptop
+    keep_alive: str = "30m"  # how long Ollama keeps a model loaded after a request
 
     # Generation. Ollama's default context (4,096 tokens on machines with < 24 GiB VRAM)
     # is too small: a first-pass prompt is ~3,300 tokens before the model writes anything.
@@ -59,6 +60,11 @@ class Settings:
     # Verification
     min_support_fraction: float = 0.5  # below this share of supported claims, abstain
     consistency_samples: int = 1  # >1 enables self-consistency sampling (slower)
+
+    # Consult mode (docs/consult-mode-design.md)
+    consult_max_tokens: int = 800  # one question turn: short JSON, thinking off
+    consult_deep_max_tokens: int = 4096  # deep log: thinking notes + the JSON
+    consult_max_rounds: int = 8  # assess after this many question rounds
 
     # Default environment tier when none is given
     default_tier: str = "T4"

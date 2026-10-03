@@ -101,6 +101,31 @@ def serve(
     uvicorn.run(create_app(system), host=host, port=port, log_level="warning")
 
 
+@app.command()
+def consult(
+    user: str = typer.Option(None, help="Crew ID of the person typing (asked if omitted)"),
+    patient: str = typer.Option(
+        None, help="Patient: a crew ID, 'self' or 'unlisted' (asked if omitted)"
+    ),
+    tier: str = typer.Option(None, help="Environment tier T1-T5"),
+    practice: bool = typer.Option(
+        None, "--practice/--real", help="Practice or real session (asked if omitted)"
+    ),
+    scenario: str = typer.Option(None, help="Scenario ID, for practice sessions"),
+    deep_log: bool = typer.Option(
+        False, help="Thinking on every turn (slower); each turn also shows the time without it"
+    ),
+    demo: bool = typer.Option(False, help="Scripted demo mode (no model needed)"),
+    config: Path = ConfigOpt,
+) -> None:
+    """Start a consult: SpaceDoc asks questions to build a differential, then assesses."""
+    from spacedoc.consult.cli import run_consult
+    from spacedoc.system import build_system
+
+    system = build_system(load_settings(config), demo=demo)
+    run_consult(system, user, patient, tier, practice, scenario, deep_log)
+
+
 @eval_app.command("run")
 def eval_run(
     cases_dir: Path = typer.Option(Path("cases"), help="Directory of case YAML files"),

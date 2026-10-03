@@ -1,0 +1,59 @@
+# SYNTHETIC CREW for development and practice sessions. These are not real people and the
+# records are invented. Real crew records arrive with the crew health record (Phase 2, C-08).
+#
+# medical_role: cmo (Crew Medical Officer), backup_cmo, or crew. It sets SpaceDoc's wording
+# (clinical for cmo/backup_cmo, plain for crew) and who confirms R2+ actions.
+# record: what SpaceDoc may use about the person when they are the patient.
+
+crew:
+  - crew_id: C1
+    role: Commander
+    medical_role: cmo
+    record:
+      age: 46
+      sex: F
+      weight_kg: 64
+      allergies: []
+      medications: []
+      history: []
+      baselines:
+        vision: corrected with reading glasses for near work before flight
+
+  - crew_id: C2
+    role: Pilot
+    medical_role: backup_cmo
+    record:
+      age: 41
+      sex: M
+      weight_kg: 82
+      allergies: [penicillin (rash)]
+      medications: []
+      history: [mild seasonal allergies]
+      baselines:
+        vision: no correction needed before flight
+
+  - crew_id: C3
+    role: Flight engineer
+    medical_role: crew
+    record:
+      age: 34
+      sex: M
+      weight_kg: 78
+      allergies: []
+      medications: []
+      history: [no prior kidney stones]
+      baselines:
+        vision: no correction needed before flight
+
+  - crew_id: C4
+    role: Mission specialist
+    medical_role: crew
+    record:
+      age: 38
+      sex: F
+      weight_kg: 59
+      allergies: [sulfonamide antibiotics]
+      medications: []
+      history: [migraine without aura, infrequent]
+      baselines:
+        vision: mild myopia, contact lenses before flight

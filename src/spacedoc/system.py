@@ -8,6 +8,9 @@ from pathlib import Path
 from spacedoc.agent.orchestrator import GenerationPlan, Orchestrator
 from spacedoc.audit.log import AuditLog
 from spacedoc.config import Settings
+from spacedoc.consult.engine import ConsultEngine
+from spacedoc.consult.redflags import RedFlags
+from spacedoc.consult.roster import load_roster
 from spacedoc.env.context import EnvironmentContext, load_environment
 from spacedoc.kb.ingest import chunk_source, load_manifest
 from spacedoc.kb.retrieve import Retriever
@@ -27,6 +30,7 @@ class System:
     store: KnowledgeStore
     demo: bool
     reviewer: ReasoningReviewer | None = None
+    consult: ConsultEngine | None = None
 
     def environment(self, tier: str | None = None, **overrides) -> EnvironmentContext:
         return load_environment(
@@ -89,6 +93,7 @@ def build_system(settings: Settings, demo: bool = False) -> System:
             settings.chat_model,
             settings.embed_model,
             settings.request_timeout_s,
+            settings.keep_alive,
         )
         checker = MiniCheckChecker(
             connect(
@@ -97,6 +102,7 @@ def build_system(settings: Settings, demo: bool = False) -> System:
                 settings.checker_model,
                 None,
                 settings.request_timeout_s,
+                settings.keep_alive,
             ),
             num_ctx=settings.checker_num_ctx,
         )
@@ -130,4 +136,36 @@ def build_system(settings: Settings, demo: bool = False) -> System:
         ),
         model_name,
     )
-    return System(settings=settings, orchestrator=orch, store=store, demo=demo, reviewer=reviewer)
+    consult = ConsultEngine(
+        llm=llm,
+        orchestrator=orch,
+        audit=audit,
+        roster=load_roster(settings.data_dir),
+        red_flags=RedFlags.load(settings.data_dir),
+        feasibility=feasibility,
+        params=consult_params(settings, deep=False, demo=demo),
+        deep_params=consult_params(settings, deep=True, demo=demo),
+        model_name=model_name,
+        max_rounds=settings.consult_max_rounds,
+    )
+    return System(
+        settings=settings,
+        orchestrator=orch,
+        store=store,
+        demo=demo,
+        reviewer=reviewer,
+        consult=consult,
+    )
+
+
+def consult_params(settings: Settings, deep: bool, demo: bool = False) -> GenParams:
+    """Question turns: thinking off and a short reply; deep log turns thinking on."""
+    if demo:
+        return GenParams(think=deep)
+    return GenParams.from_profile(
+        settings.sampling_thinking if deep else settings.sampling_plain,
+        seed=settings.seed,
+        max_tokens=settings.consult_deep_max_tokens if deep else settings.consult_max_tokens,
+        num_ctx=settings.chat_num_ctx,
+        think=deep,
+    )

@@ -229,9 +229,82 @@ DEMO_SUMMARY = {
 }
 
 
+CONSULT_NOTES = (
+    "[SCRIPTED DEMO NOTES] Flank pain that comes in waves points to a stone, but fever would "
+    "mean an infected obstructed stone. Ask about fever first, then blood in the urine."
+)
+
+
+def _consult_turn(messages) -> ChatResult:
+    """Scripted consult replies: one round of questions, then ready to assess.
+
+    The first reply also asks for a CT scan, which is not aboard, so the equipment check can
+    be seen catching it. Every reply carries thinking notes; the engine keeps them only when
+    deep log is on.
+    """
+    answers = [m["content"].lower() for m in messages if m["role"] == "user"]
+    first = answers[0] if answers else ""
+    stone = any(w in first for w in ("flank", "kidney", "side", "groin"))
+    if len(answers) == 1:
+        reply = {
+            "urgent": {"flag": False, "reason": ""},
+            "facts": [{"item": "presenting problem", "value": first[:120]}],
+            "working_ddx": (
+                [
+                    {
+                        "condition": "Kidney stone",
+                        "likelihood": "high",
+                        "why": "colicky flank pain",
+                    },
+                    {
+                        "condition": "Infected obstructed stone",
+                        "likelihood": "must not miss",
+                        "why": "needs fever excluded",
+                    },
+                    {
+                        "condition": "Muscle strain",
+                        "likelihood": "low",
+                        "why": "pain comes in waves",
+                    },
+                ]
+                if stone
+                else [{"condition": "Not yet clear", "likelihood": "moderate", "why": "few facts"}]
+            ),
+            "questions": [
+                {
+                    "text": "Any fever or chills?",
+                    "why": "fever changes urgency",
+                    "answer_type": "yes_no",
+                },
+                {
+                    "text": "Any blood in the urine?",
+                    "why": "supports a stone",
+                    "answer_type": "yes_no",
+                },
+            ],
+            "exam_requests": [
+                {"text": "Measure temperature", "equipment": ["thermometer"], "why": "fever"},
+                {"text": "CT scan of the abdomen", "equipment": ["ct_scanner"], "why": "confirm"},
+            ],
+            "ready_to_assess": False,
+        }
+    else:
+        reply = {
+            "facts": [{"item": "answers", "value": answers[-1][:120]}],
+            "working_ddx": [
+                {"condition": "Kidney stone", "likelihood": "high", "why": "pattern and answers"}
+            ],
+            "questions": [],
+            "ready_to_assess": True,
+        }
+    return ChatResult(text=json.dumps(reply), seconds=0.0, thinking=CONSULT_NOTES)
+
+
 def demo_responder(messages, schema) -> str | ChatResult:
     if messages and messages[0]["content"].startswith("You summarize the private reasoning"):
         return json.dumps(DEMO_SUMMARY)
+    if messages and "You are running a consult" in " ".join(messages[0]["content"].split()):
+        return _consult_turn(messages)
     text = " ".join(m["content"] for m in messages).lower()
     question = (
         messages[1]["content"].split("Question from the crew:")[-1].lower()

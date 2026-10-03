@@ -1,6 +1,6 @@
 # Consult Mode — Design Proposal
 
-> **Status: proposed, awaiting approval.** Nothing here is built yet. Decisions marked ✅ were agreed in discussion; items under [Open questions](#11-open-questions) still need an answer.
+> **Status: approved. Milestone M1 (terminal consult with turn timing) is in progress.** Decisions marked ✅ were agreed in discussion; the answers to the design's open questions are in [§11](#11-decisions-on-the-open-questions).
 
 Phase 1 built a **one-shot** SpaceDoc: one message in, one checked answer out. That is not how a consult works. A clinician asks questions, narrows the possibilities, examines, and only then gives an assessment.
 
@@ -62,7 +62,7 @@ At the start of every consult SpaceDoc asks two things:
 1. **Who is using SpaceDoc?** Picked from the crew roster.
 2. **Who is the patient?** "Myself", another crewmember from the roster, or "someone not listed".
 
-**Phase 1 version:** a pick-list from a synthetic crew roster (`data/crew/roster.yaml`: ID, role, medical training level, and a minimal record: allergies, medications, history, preflight baselines). There are no passwords. Real sign-in is a later-phase item.
+**Phase 1 version (✅ agreed):** a pick-list from a synthetic crew roster (`data/crew/roster.yaml`: ID, role, medical training level, and a minimal record: allergies, medications, history, preflight baselines). There are no passwords. Real sign-in is a later-phase item.
 
 **What identification changes:**
 
@@ -223,11 +223,15 @@ Each milestone ends with tests, docs, a push, and something you can try on the M
 - the CLI (`spacedoc consult`);
 - the case format (scenario-card fields).
 
-## 11. Open questions
+## 11. Decisions on the open questions
 
-1. **Identification:** is a roster pick-list with no password acceptable for Phase 1, with a synthetic 4-person crew?
-2. **Reasoning log for question turns:** with thinking off, the log for question turns is the structured reasoning (working list and the "why" of each question), while full thinking notes exist only for the final assessment. Is that enough? An option: a **"deep log" switch for practice sessions** that turns thinking on for every turn. It would be slower (roughly 30–90 s per turn) but gives full notes throughout.
-3. **Red flags:** I draft a starter red-flag list and the immediate steps for each, marked *unreviewed* (like the formulary and rules today), for your clinicians to correct. Is that OK?
-4. **Feedback:** do you agree that feedback changes SpaceDoc only through clinician-reviewed, versioned edits, never automatically?
-5. **Between human sessions:** do you want a **scripted stand-in patient** that answers from the scenario card? It would let regression runs happen overnight without people. Human sessions would stay the real measure.
-6. **One device, one consult:** in Phase 1, should only one person type per consult? Or should the CMO and the patient be able to take turns, with each turn tagged with who answered?
+| # | Question | Decision |
+|---|---|---|
+| 1 | Identification | ✅ Roster pick-list, no password, synthetic 4-person crew for Phase 1 |
+| 2 | Reasoning log for question turns | ✅ Structured reasoning by default. A **deep log** option turns thinking on for every turn. When it is on, each turn shows both its actual time and an estimate of the time **without** deep log, so speed can still be judged |
+| 3 | Red flags | ✅ SpaceDoc drafts a starter list with immediate steps, marked *unreviewed*, for clinicians to correct |
+| 4 | Feedback | ✅ Changes only through clinician-reviewed, versioned edits; never automatic |
+| 5 | Scripted stand-in patient | ✅ Not yet. Human sessions only for now |
+| 6 | Who types | ✅ One person per consult. When the user is not the patient, SpaceDoc phrases questions for them to ask the patient ("Ask C3 whether…") and they type the patient's answers |
+
+**How the deep-log estimate works.** Ollama reports how long it spent loading the model, reading the prompt and writing the reply. With thinking on, the reply includes the thinking notes. The estimate removes the share of writing time spent on the notes (by their share of the reply's characters). It is labelled as an estimate; turns run without deep log show measured times.
