@@ -1,6 +1,6 @@
 # Consult Mode — Design Proposal
 
-> **Status: approved. Milestone M1 (terminal consult with turn timing) is in progress.** Decisions marked ✅ were agreed in discussion; the answers to the design's open questions are in [§11](#11-decisions-on-the-open-questions).
+> **Status: approved. Milestone M1 (terminal consult with turn timing) is built; next is measuring turn times on the Mac.** Decisions marked ✅ were agreed in discussion; the answers to the design's open questions are in [§11](#11-decisions-on-the-open-questions).
 
 Phase 1 built a **one-shot** SpaceDoc: one message in, one checked answer out. That is not how a consult works. A clinician asks questions, narrows the possibilities, examines, and only then gives an assessment.
 

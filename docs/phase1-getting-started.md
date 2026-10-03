@@ -21,7 +21,8 @@ pip install -e ".[dev]"
 spacedoc serve --demo          # open http://127.0.0.1:8765 and press "Ask SpaceDoc"
 spacedoc ask --demo "Sharp right flank pain that moves toward my groin"
 spacedoc eval run --demo       # runs the 3 example cases, writes eval_runs/<time>/report.md
-pytest -q                      # 96 tests
+spacedoc consult --demo        # a scripted consult: questions, then a checked assessment
+pytest -q                      # 123 tests
 ```
 
 In the demo flank-pain answer, the verification layer should:
@@ -97,6 +98,25 @@ spacedoc serve                                  # GUI on http://127.0.0.1:8765
 spacedoc ask "..." --tier T4 --patient me.yaml  # CLI
 spacedoc audit verify                           # check the audit log hasn't been altered
 ```
+
+### Run a consult
+
+A consult is a short conversation: SpaceDoc asks one or two questions at a time to build a differential diagnosis, then gives the full checked assessment. The design is in [consult-mode-design.md](consult-mode-design.md).
+
+```bash
+spacedoc consult --tier T1                  # asks who you are, who the patient is, real or practice
+spacedoc consult --user C1 --patient C3 --practice --scenario SO-0104 --tier T1
+spacedoc consult --deep-log ...             # thinking on every turn (slower), see below
+```
+
+- **Who's who.** The crew roster in `data/crew/roster.yaml` is **synthetic** (C1 is the CMO). Pick yourself and the patient by number or crew ID; `s` means you are the patient, `u` someone not on the roster. When you are not the patient, SpaceDoc phrases questions for you to ask them, and you type their answers.
+- **Each turn** shows SpaceDoc's working list (labelled *not yet checked*), up to two questions with the reason for each, and any exams. Exams that need equipment not aboard, or that don't work in the environment, are marked ✗.
+- **Quick answers.** When every question is yes/no, type `y`, `n` or `?` (one per question, e.g. `y n`).
+- **Red flags.** Your words are checked against a draft list of urgent signs (`data/rules/red_flags.yaml`, **not yet clinician-reviewed**). A match pauses the consult and shows immediate steps; choose an immediate checked assessment or continue if it is not an emergency.
+- **Commands:** `/assess` (assess now), `/record` (show the consult record so far), `/quit`. SpaceDoc also assesses on its own when it has enough, or after 8 rounds (`consult_max_rounds`).
+- **Timing.** Each turn ends with a line like `⏱ 11.8 s (reading 1.2 s; writing 10.3 s, 182 tokens)`. When you quit, SpaceDoc prints the median turn time. The target is 10–15 s per turn; the first turn is slower while the model loads.
+- **Deep log** (`--deep-log`) turns thinking on for every turn, so the record has full thinking notes. Turns get slower, so each one also shows `about N s without deep log (estimated)`: the writing time minus the share spent on the notes. Measure the real number with a normal run.
+- **The consult record** is saved to `audit/consults/<consult id>.md` when you quit. It lists every turn, the working list as it changed, the reason for each question, red flags, exam checks, thinking notes (deep log), the assessment and the timings. Every turn is also in the audit log.
 
 ### Reviewing the model's reasoning
 
