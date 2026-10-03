@@ -13,6 +13,7 @@ from typing import Any
 from spacedoc.answer.schema import (
     Action,
     ActionVerdict,
+    Claim,
     ClaimVerdict,
     DraftAnswer,
     Finding,
@@ -108,6 +109,22 @@ class Verifier:
                     )
                 )
             return GroundingVerdict(False, "could not be checked")
+
+    def _as_patient_claim(
+        self, claim: Claim, ptext: str, precord: str, findings: list[Finding]
+    ) -> ClaimVerdict | None:
+        if not rules.numbers_in(claim.text) <= rules.numbers_in(ptext):
+            return None
+        supported, detail = self._ground(claim.text, {"record": precord}, findings)
+        if not supported:
+            return None
+        return ClaimVerdict(
+            claim=claim.model_copy(update={"kind": "patient", "citations": []}),
+            status="supported",
+            shown=True,
+            detail="This describes the patient, not a source: the model filed it as sourced, "
+            f"but the patient record and what was reported support it ({detail}).",
+        )
 
     def _check_dose(self, action: Action, calcs: dict[str, CalcResult]) -> list[Finding]:
         """A medication must carry a checked dose: a calculator result for a dosed formulary
@@ -240,7 +257,8 @@ class Verifier:
             valid_cites = [c for c in claim.citations if c in by_cid]
 
             num = rules.check_claim_numbers(claim, by_cid, ptext)
-            if num:
+            verdict: ClaimVerdict | None = None
+            if num and claim.kind != "sourced":
                 findings.append(num)
                 verdicts.append(
                     ClaimVerdict(claim=claim, status="removed", shown=False, detail=num.message)
@@ -248,13 +266,11 @@ class Verifier:
                 continue
 
             if claim.kind == "reasoning":
-                verdicts.append(
-                    ClaimVerdict(
-                        claim=claim,
-                        status="reasoning",
-                        shown=True,
-                        detail="Model reasoning, not taken from a source",
-                    )
+                verdict = ClaimVerdict(
+                    claim=claim,
+                    status="reasoning",
+                    shown=True,
+                    detail="Model reasoning, not taken from a source",
                 )
             elif claim.kind == "patient":
                 if patient:
@@ -262,37 +278,42 @@ class Verifier:
                     detail = f"Checked against the patient record and what was reported: {detail}"
                 else:
                     supported, detail = False, "No patient record was provided"
-                verdicts.append(
-                    ClaimVerdict(
-                        claim=claim,
-                        status="supported" if supported else "unsupported",
-                        shown=supported,
-                        detail=detail,
-                    )
+                verdict = ClaimVerdict(
+                    claim=claim,
+                    status="supported" if supported else "unsupported",
+                    shown=supported,
+                    detail=detail,
+                )
+            elif num:
+                verdict = ClaimVerdict(
+                    claim=claim, status="removed", shown=False, detail=num.message
                 )
             elif not valid_cites:
-                verdicts.append(
-                    ClaimVerdict(
-                        claim=claim,
-                        status="unsupported",
-                        shown=False,
-                        detail="The model did not name a source for this statement, so it is "
-                        "not shown. SpaceDoc only shows statements it can check against a "
-                        "source.",
-                    )
+                verdict = ClaimVerdict(
+                    claim=claim,
+                    status="unsupported",
+                    shown=False,
+                    detail="The model did not name a source for this statement, so it is "
+                    "not shown. SpaceDoc only shows statements it can check against a source.",
                 )
             else:
                 docs = {cid: by_cid[cid].text for cid in valid_cites}
                 supported, detail = self._ground(claim.text, docs, findings)
-                verdicts.append(
-                    ClaimVerdict(
-                        claim=claim,
-                        status="supported" if supported else "unsupported",
-                        shown=supported,
-                        detail=detail,
-                        checked_against=valid_cites,
-                    )
+                verdict = ClaimVerdict(
+                    claim=claim,
+                    status="supported" if supported else "unsupported",
+                    shown=supported,
+                    detail=detail,
+                    checked_against=valid_cites,
                 )
+            if claim.kind == "sourced" and not verdict.shown and patient:
+                # Models often file what the user reported ("the cut is 1/2 inch deep") as a
+                # sourced fact. If the record or the report supports it, show it as a patient
+                # statement instead of counting it against the sources.
+                verdict = self._as_patient_claim(claim, ptext, precord, findings) or verdict
+            if verdict.status == "removed" and num:
+                findings.append(num)
+            verdicts.append(verdict)
 
             for f in rules.check_feasibility(
                 claim.id, claim.text, env, self.feasibility, is_action=False

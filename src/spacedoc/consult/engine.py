@@ -438,7 +438,11 @@ class ConsultEngine:
     def assess(self, consult: Consult) -> VerifiedAnswer:
         """Run the full, checked pipeline on the consult so far."""
         summary = self.case_summary(consult)
-        patient: dict[str, Any] = dict(consult.patient.record) if consult.patient else {}
+        patient: dict[str, Any] = (
+            {"crew_id": consult.patient.crew_id, **consult.patient.record}
+            if consult.patient
+            else {}
+        )
         # Patient claims are checked against what the user actually said, not against the
         # model's extracted facts.
         patient["reported_in_consult"] = [t.user_text for t in consult.turns]

@@ -44,12 +44,15 @@ def check_claim_numbers(
     if not nums:
         return None
     if claim.kind == "reasoning":
+        # Reasoning may quote the patient's own numbers ("a 1/2 inch cut"), nothing else.
+        if nums <= numbers_in(patient_text):
+            return None
         return Finding(
             rule_id="NUM-REASONING",
             severity="block",
             target=claim.id,
-            message="The model's own reasoning may not contain numbers (only statements taken "
-            "from a source can), so this statement is hidden.",
+            message="The model's own reasoning may only contain numbers from the patient record "
+            "or what was reported, so this statement is hidden.",
         )
     if claim.kind == "patient":
         allowed = numbers_in(patient_text)
@@ -118,17 +121,21 @@ def _untraced_spans(
     """Where the action states a number that SpaceDoc cannot trace.
 
     A number with a unit (a dose, rate or weight) must match, number and unit together, the
-    linked calculator result, the product strength, or a record value (weight in kg). A bare
-    number must appear in the calculator result or product strength (e.g. "every 6 hours").
+    linked calculator result or a record value (weight in kg). A bare number must appear in the
+    calculator result (e.g. "every 6 hours"). Without a calculator result, the product strength
+    printed in the formulary is allowed instead. With one, it is not: "ibuprofen 200 mg" next to
+    a calculated 400 mg would show two different doses.
     """
     text = action.text
     calc = calcs.get(action.calc_ref or "")
     item = formulary.find(action.item) if action.item else None
     allowed_q = _record_quantities(patient)
     allowed_n: set[str] = set()
-    for source in ([calc.text, f"{calc.value:g} {calc.unit}"] if calc else []) + (
-        [item.strength] if item and item.strength else []
-    ):
+    if calc:
+        sources = [calc.text, f"{calc.value:g} {calc.unit}"]
+    else:
+        sources = [item.strength] if item and item.strength else []
+    for source in sources:
         allowed_q |= quantities_in(source)
         allowed_n |= numbers_in(source)
     spans, covered = [], []

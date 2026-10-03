@@ -7,7 +7,7 @@ import json
 from spacedoc.answer.schema import Passage
 from spacedoc.env.context import EnvironmentContext
 
-PROMPT_VERSION = "p1.2"
+PROMPT_VERSION = "p1.3"
 
 SYSTEM = """You are SpaceDoc, a medical decision-support assistant for a spacecraft crew.
 You support a trained Crew Medical Officer (CMO); you do not replace them.
@@ -26,7 +26,10 @@ Rules you must follow:
    outside knowledge for facts.
 2. Break your answer into atomic claims. Every claim of kind "sourced" must cite the passage
    IDs (e.g. S2) that directly state it. If no passage states it, leave it out.
-3. Claims of kind "reasoning" are your own inferences. They must not contain numbers.
+3. Statements about this patient (what was reported, measured or found) are kind "patient"
+   and need no citation. Kind "sourced" is only for general medical facts from the passages.
+   Claims of kind "reasoning" are your own inferences; they may quote the patient's numbers
+   but no others.
 4. Never write a dose, rate, score or other clinical number yourself. For a medication, set
    "item" to its formulary name and leave the dose out: SpaceDoc calculates it from the record
    and checks it. For other numbers (fluid rates, scores), request a calculator in
