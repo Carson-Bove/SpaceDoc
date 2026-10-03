@@ -2,7 +2,7 @@
 
 **The problem.** Our clinicians (physiologists, medical students, residents) have been scoring model outputs with OSCE forms, but it is hard to turn those judgments into numbers that are reliable, comparable over time, and defensible in a proposal.
 
-NASA's CMO-DA also used an OSCE framework. Published reports cite physician-rated diagnostic accuracy of ~88% (ankle injury), ~80% (ear pain) and ~74% (flank pain). Google's AMIE study showed how far a rigorous OSCE design can go: randomized, blinded, validated patient actors, and a multi-axis rubric.
+Google's AMIE study showed how far a rigorous OSCE design can go: a randomized, double-blind crossover of text-chat consultations with validated patient actors, rated by blinded specialists on several multi-axis rubrics [[R1](references.md#r1)]. MedQA-CS turned USMLE-style clinical skills cases into an OSCE-like benchmark for LLMs and found that clinical-skill scores sit far below multiple-choice scores [[R3](references.md#r3)]. (NASA has also reported OSCE-style evaluation of an AI assistant for crew medical officers; that report is in the [research backlog](research-backlog.md) until it can be read in full.)
 
 SpaceDoc's answer is **SpaceOSCE**: a structured case bank plus a scoring design that separates what can be measured objectively from what needs expert judgment, and then *measures the judges too*.
 
@@ -57,7 +57,7 @@ tags: [renal, urology, microgravity, common]
 **Case-bank design:**
 - Stratify by environment tier, body system, acuity (routine → emergency), user role, and **must-abstain** cases (insufficient information, or out of scope).
 - Include **adversarial** cases: a misleading user self-diagnosis, a drug not aboard, a test that is impossible in 0 g, a prompt-injection string inside a "document".
-- Seed conditions from NASA's exploration medical condition lists, so coverage matches what actually happens in flight.
+- Seed conditions from NASA's lists, so coverage matches the risks NASA plans for: the high-likelihood or high-consequence conditions in NASA-STD-3001 Vol 1, Table E.2-2 [[R5](references.md#r5)], and the 100-condition Exploration Medical Condition List behind the Integrated Medical Model [[R7](references.md#r7)].
 - **Split the bank.** Keep a **locked held-out set** that no one uses for development, and rotate new cases in. Otherwise the system gets tuned to the test (Goodhart's law).
 
 ## 3. Scoring: turning judgments into numbers
@@ -76,7 +76,7 @@ tags: [renal, urology, microgravity, common]
 
 ### 3.2 Rubric scoring (clinician raters)
 
-This follows the approach of **HealthBench**: 5,000 conversations, each with a *case-specific* physician-written rubric of weighted criteria, where some criteria carry negative points for harmful content. SpaceOSCE rubrics combine:
+This follows the approach of **HealthBench**: 5,000 conversations, each with a *case-specific* physician-written rubric of weighted criteria, where some criteria carry negative points for harmful content [[R2](references.md#r2)]. SpaceOSCE rubrics combine:
 
 1. **Critical-action checklist.** Binary items with weights. Score = Σ achieved weights ÷ Σ possible. Binary items are far more reproducible between raters than impressions are.
 2. **Harmful-action check.** Any "never event" fails the case regardless of the checklist score. This is reported separately as the **harmful-recommendation rate**, the headline safety metric.
@@ -97,8 +97,9 @@ A score is only as good as its agreement between raters. Protocol:
 - **≥ 2 independent raters per response**, blinded to its source (SpaceDoc vs baseline LLM vs human resident) and to each other.
 - **Report agreement:**
   - binary checklist items: **Cohen's κ** (2 raters) or **Fleiss' κ / Krippendorff's α** (more)
-  - global scales: **ICC** (two-way random, absolute agreement)
-  - Rule of thumb: κ/ICC ≥ ~0.6 is acceptable and ≥ ~0.75 is good. Items that stay below this get rewritten, not averaged away.
+  - global scales: **ICC**, two-way random effects, absolute agreement, because we want the result to generalize to other raters like ours [[R4](references.md#r4)]
+  - Report the ICC model, type and definition, the estimate and its 95% confidence interval. Interpret the confidence interval, not the point estimate, with Koo & Li's bands: below 0.5 poor, 0.5–0.75 moderate, 0.75–0.9 good, above 0.9 excellent. For a reliability study, aim for at least 30 heterogeneous cases and at least 3 raters [[R4](references.md#r4)].
+  - For κ, pre-register the minimum acceptable value before the study. Items that stay below their threshold get rewritten, not averaged away.
 - **Adjudication:** disagreements on critical or harmful items go to a third senior rater.
 
 ### 3.4 LLM-as-judge (for scale, not for final claims)
@@ -106,8 +107,9 @@ A score is only as good as its agreement between raters. Protocol:
 A strong local model (run overnight on the desktop) can score rubric items automatically. That makes it possible to run hundreds of cases on every code change. **It must first earn trust:**
 1. Score a set already rated by humans.
 2. Compute judge–human agreement, κ per rubric item.
-3. Use the judge only for items where judge–human agreement is **comparable to human–human agreement**.
-4. Re-check periodically.
+3. Use the judge only for items where judge–human agreement is **comparable to human–human agreement**. HealthBench validated its model grader this way against physicians [[R2](references.md#r2)].
+4. Check agreement per rubric section, not just overall. In MedQA-CS, a GPT-4 judge correlated well with experts on information gathering (0.90) and physical exam (0.92) but poorly on the closure section (0.47) [[R3](references.md#r3)].
+5. Re-check periodically.
 
 Use it for regression testing. Headline results in a proposal or paper should rest on human ratings.
 
@@ -116,9 +118,10 @@ Use it for regression testing. Headline results in a proposal or paper should re
 | Question | Design | Analysis |
 |---|---|---|
 | Is version N+1 better than N? | Same cases, both versions, blinded raters | Paired differences, bootstrap 95% CI |
-| Does SpaceDoc help a CMO? | Crossover: residents/students solve cases **with vs without** SpaceDoc, randomized order | Paired comparison of scores and time; the key "decision-support" result |
-| How does it compare to a clinician alone? | Blinded comparison vs residents on identical cases (AMIE-style) | Non-inferiority on accuracy; superiority on harmful rate as a stretch goal |
-| Does it work under stress? | Simulated emergencies (L4) with time pressure | Time-to-critical-action, protocol deviations, NASA-TLX workload |
+| Does SpaceDoc help a CMO? | Crossover: residents/students solve cases **with vs without** SpaceDoc, randomized order | Paired comparison of scores and time; the key "decision-support" result. GMLP asks for exactly this human-AI team performance [[R33](references.md#r33)] |
+| How does it compare to a clinician alone? | Blinded comparison vs residents on identical cases (AMIE-style [[R1](references.md#r1)]) | Non-inferiority on accuracy; superiority on harmful rate as a stretch goal |
+| Does it work under stress? | Simulated emergencies (L4) with time pressure | Time-to-critical-action, protocol deviations, workload |
+| Is it usable by crew? | L4 usability sessions with non-physician users | NASA-STD-3001 Vol 2 targets: a NASA Modified System Usability Scale score of 85 or more; Bedford workload of 3 or less for nominal tasks and 6 or less in degraded conditions; maximum observed design-induced error rates of 0% for catastrophic errors, 5% for other errors per user per task, and 10% per step [[R6](references.md#r6)] |
 | Does role adaptation work? | Same case rendered for CMO vs engineer; engineer-participants act on it | Task success, comprehension quiz, content-preservation audit |
 
 **Sample size.** Start with ~30–50 cases per stratum for pilot estimates. Then use the pilot variance to size the confirmatory study. A statistician should review this before any proposal.

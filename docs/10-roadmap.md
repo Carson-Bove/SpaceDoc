@@ -11,7 +11,7 @@ Architecture, requirements, research, validation design.
 
 | Done | Waiting on |
 |---|---|
-| Two-pass orchestrator, hybrid retrieval, verification pipeline, calculators, example formulary, 17 draft feasibility rules, audit log, GUI, CLI, SpaceOSCE schema + 3 draft cases, model bench, 54 tests + CI | Real-model runs on the Mac (`spacedoc bench`); open-access corpus (network access); clinician review of rules, formulary and cases; ~30 approved cases |
+| Two-pass orchestrator, hybrid retrieval, verification pipeline, calculators, example formulary, 17 draft feasibility rules, audit log, GUI, CLI, SpaceOSCE schema + 3 draft cases, model bench, 54 tests + CI, open-access corpus manifest (9 sources, hashes checked) | Real-model runs on the Mac (`spacedoc bench`); corpus ingest with real embeddings (`spacedoc corpus ingest`); clinician review of rules, formulary and cases; ~30 approved cases |
 
 **Goal:** one question type (general medical Q&A plus a simple differential) working end-to-end, *with* the verification layer, measured by a first harness.
 
@@ -65,10 +65,10 @@ Architecture, requirements, research, validation design.
 **You'll learn:** human-AI evaluation design, reliability statistics, conversational UX, prompt engineering at scale.
 
 ## Phase 4 — Hardening & analog deployment
-- Containerized deployment (RamaLama/Podman) on edge hardware; power, thermal and fault-injection testing
+- Containerized deployment (e.g. Podman) on edge hardware; power, thermal and fault-injection testing
 - Safety case v1, FMEA review, IEC 62304-style documentation
 - Earth-link packetizer and blackout mode
-- Analog mission partnership (MDRS / HERA / CHAPEA-class); proposal (e.g. TRISH Catalyst, SBIR)
+- Analog mission partnership (MDRS / HERA / CHAPEA-class); proposal (e.g. a TRISH or SBIR call)
 
 ---
 

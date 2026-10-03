@@ -43,12 +43,16 @@ In the demo, the acetaminophen dose comes from the calculator, not the model: 15
 Install Ollama from ollama.com (macOS app). Then pull these models:
 
 ```bash
-ollama pull qwen3:8b               # orchestrator (≈5 GB)
-ollama pull qwen3-embedding:0.6b   # embeddings for retrieval
-ollama pull bespoke-minicheck      # grounding checker (7B; Ollama swaps it in/out)
+ollama pull qwen3:8b               # orchestrator: 8.2B, Q4_K_M, 5.2 GB
+ollama pull qwen3-embedding:0.6b   # embeddings for retrieval: 639 MB
+ollama pull bespoke-minicheck:7b   # grounding checker: 7.7B, Q4_K_M, 4.7 GB (Ollama swaps it in/out)
 ```
 
-**Check the exact tags.** Ollama tags change. I could not reach ollama.com from the build environment to confirm these. If a `pull` fails, search the Ollama library for the model and put the working tag in `spacedoc.toml`.
+**Tags checked on ollama.com in Sept 2026.** All three tags exist, and these are the values in `spacedoc.toml`. Two details:
+- Always pull `qwen3-embedding:0.6b` by its size tag. The bare `qwen3-embedding` (`latest`) is the 8B model (4.7 GB).
+- `bespoke-minicheck:7b` is the same file as `bespoke-minicheck:latest`. Pinning the size tag keeps the checker from changing silently if `latest` moves.
+
+Ollama tags do change. If a `pull` fails, search the Ollama library for the model and put the working tag in `spacedoc.toml`.
 
 **Memory.** On 16 GB, Ollama holds only some models in memory at once and swaps the others in. Expect the first question after a switch to be slower. Close other large apps while testing.
 
@@ -61,7 +65,7 @@ spacedoc corpus fetch    # downloads into corpus/files/ (not committed to git)
 spacedoc corpus ingest   # chunks + embeds into spacedoc.db
 ```
 
-Until the manifest is filled in (see [research-backlog.md](research-backlog.md)), you can add your own PDFs:
+The manifest holds only sources that were read in full and whose license allows this use (US Government public domain or CC BY). Candidates that are still unread, or whose license is non-commercial or no-derivatives, are listed in [research-backlog.md](research-backlog.md). You can also add your own PDFs:
 1. Put the file in `corpus/files/`.
 2. Add an entry to `corpus/manifest.yaml` (see the field list in the file).
 3. Run `spacedoc corpus ingest`.
@@ -79,10 +83,14 @@ spacedoc audit verify                           # check the audit log hasn't bee
 `spacedoc bench` runs the same cases through several models and prints a comparison table:
 
 ```bash
-ollama pull gemma4:e4b   # example candidates; check tags in the Ollama library
-ollama pull medgemma:4b
+ollama pull gemma4:e4b    # example candidate: Q4_K_M, 9.6 GB
+ollama pull medgemma:4b   # example candidate: MedGemma 1 (not 1.5), 4.3B, Q4_K_M, 3.3 GB
 spacedoc bench qwen3:8b gemma4:e4b medgemma:4b --repeats 3
 ```
+
+Both tags were confirmed on ollama.com in Sept 2026. Things to know before benchmarking:
+- `gemma4:e4b` is 9.6 GB even at 4-bit. On the 16 GB Mac it leaves no room for the grounding checker. On the desktop it is larger than the 8 GB of VRAM, so part of it runs from CPU RAM, which is slower. `gemma4:e4b-it-qat` (6.1 GB) is a smaller variant to try.
+- `medgemma:4b` is MedGemma version 1. The Ollama library lists MedGemma 1.5 separately as `medgemma1.5:4b` (3.3 GB).
 
 Output format:
 
@@ -117,4 +125,4 @@ question ─► kb/retrieve.py      hybrid search: keyword (FTS5/BM25) + vector 
 - **Structured output.** Ollama receives the answer's JSON schema and constrains generation to match it. SpaceDoc still validates the reply with Pydantic and retries once, because small models occasionally produce schema-valid JSON with the wrong meaning. `schema_adherence` in the bench measures how often the first try parses.
 - **Reciprocal-rank fusion (RRF).** Keyword search scores (BM25) and vector scores (cosine) are on different scales, so adding them is meaningless. RRF ignores the scores and only uses each result's *rank*: every list contributes `1/(60 + rank)`. A passage ranked well by both methods rises to the top. The constant 60 damps the influence of any single list.
 - **Why two passes?** Letting the model call tools mid-sentence (native tool calling) is flexible but hard to audit. Phase 1 uses a fixed loop instead: draft, run the requested calculators in code, then finalize. It's less clever, but every step is deterministic and logged, which is what a safety case needs.
-- **Grounding checker.** Bespoke-MiniCheck is trained for one job: given a document and a sentence, answer whether the document supports the sentence. It is a different model from the orchestrator, which gives the independence that makes a second check worth having.
+- **Grounding checker.** Bespoke-MiniCheck's training details are on its model card; the original MiniCheck models it is named after are described in [R17](references.md#r17). It does one job: given a document and a sentence, answer whether the document supports the sentence. It is a different model from the orchestrator, which gives the independence that makes a second check worth having.

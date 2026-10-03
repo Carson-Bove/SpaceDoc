@@ -16,7 +16,7 @@ class Settings:
     llm_base_url: str = "http://localhost:11434/v1"
     chat_model: str = "qwen3:8b"
     embed_model: str = "qwen3-embedding:0.6b"
-    checker_model: str = "bespoke-minicheck"
+    checker_model: str = "bespoke-minicheck:7b"
     request_timeout_s: float = 300.0
 
     # Storage

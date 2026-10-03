@@ -1,74 +1,86 @@
 # References
 
-**Verification key:**
-- **[F]** — page fetched and read during research (Sept 2026)
-- **[S]** — located and summarized via web search during research. The page itself could not be fetched because the environment's network policy blocked many sites (NTRS, news sites), so re-read it before citing in a proposal
-- **[K]** — well-established reference from background knowledge. The link was not re-checked in this session
+This list contains only papers, preprints and official documents (standards, regulatory guidance, NASA evidence reports) that were read in full (Sept 2026). Sources that could not be opened in full, and the news, blog and vendor pages used during early research, are in the [research backlog](research-backlog.md) and are not cited.
 
-## 1. Related systems
-1. Google Cloud Blog, "How Google and NASA are Testing AI for Medical Care in Space" (Aug 2025). CMO-DA, OSCE evaluation. https://cloud.google.com/blog/topics/public-sector/how-google-and-nasa-are-testing-ai-for-medical-care-in-space **[F]**
-2. Red Hat Blog, "To the moon and beyond: RamaLama being tested by NASA to potentially support a medical AI assistant…" (Jun 2026). https://www.redhat.com/en/blog/moon-and-beyond-ramalama-being-tested-nasa-potentially-support-medical-ai-assistant-future-deep-space-missions **[S]**
-3. The Register, "NASA tests AI medic for astronauts too far from Earth to call a doctor" (27 Jun 2026). Reported accuracy: ankle 88%, ear pain 80%, flank pain 74%. https://www.theregister.com/ai-and-ml/2026/06/27/nasa-tests-ai-medic-for-astronauts-too-far-from-earth-to-call-a-doctor/5262828 **[S]**
-4. NTRS 20240011677, "Objective Structured Clinical Evaluation (OSCE) of an AI Clinical Decision Support System (CDSS) Tool". https://ntrs.nasa.gov/citations/20240011677 **[S]**
-5. TRISH, Hermes medical data platform. https://www.bcm.edu/academic-centers/space-medicine/translational-research-institute/research/hermes **[S]**
-6. Tu et al., "Towards conversational diagnostic artificial intelligence" (AMIE), *Nature* 2025. https://www.nature.com/articles/s41586-025-08866-7 **[S]**
+Citation conventions:
+- A paper read through PubMed Central is cited by its journal version, with the PMCID.
+- A paper read on arXiv is cited as a preprint, with the version read. If the arXiv record names a later venue, the venue is noted.
+- The design docs cite entries as **[Rn]**.
 
-## 2. Space medicine & standards
-7. NASA-STD-3001 Vol 1: Crew Health. https://www.nasa.gov/reference/nasa-std-3001v1/ **[S]**
-8. NASA/TM-2017-219290, "Interpretation of NASA-STD-3001 Levels of Care for Exploration Missions". https://ntrs.nasa.gov/api/citations/20170004345/downloads/20170004345.pdf **[S]**
-9. NASA Integrated Medical Model (IMM) overview. https://www.nasa.gov/nasa-integrated-medical-model-imm-overview/ **[S]**
-10. NASA/TM-2019-220299, "Development of an Accepted Medical Condition List". https://ntrs.nasa.gov/api/citations/20190027540/downloads/20190027540.pdf **[S]**
-11. HRP Evidence Report, "Risk of Adverse Health Outcomes… Due to Medical Conditions that occur in Mission". https://humanresearchroadmap.nasa.gov/Evidence/reports/Medical.pdf **[S]**
-12. HRP Evidence Report, "Risk of Spaceflight Associated Neuro-ocular Syndrome (SANS)". https://ntrs.nasa.gov/api/citations/20180000936/downloads/20180000936.pdf **[S]**
-13. HRP Human Research Roadmap, SANS risk page. https://humanresearchroadmap.nasa.gov/risks/risk.aspx?i=105 **[S]**
-14. ASCEND 2022, "Communication Delays, Disruptions, and Blackouts for Crewed Mars Missions". https://ntrs.nasa.gov/api/citations/20220013418/downloads/ASCEND-Communication%20Delays,%20Disruptions,%20and%20Blackouts%20for%20Crewed%20Mars%20Missions.pdf **[S]**
-15. Hinkelbein et al. / ESAM-SMG & DGLRM guideline for CPR in microgravity (Evetts-Russomano for BLS; handstand with CMRS for ALS). Summarized in "Alternative techniques for CPR in extreme environments — a scoping review". https://www.sciencedirect.com/science/article/pii/S2666520424002133 **[S]**
-16. "The effect of long-term spaceflight on drug potency and the risk of medication failure". https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10163248/ **[S]**
-17. "Expiration analysis of the International Space Station formulary for exploration mission planning". https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11266549/ **[S]**
-18. "Overview of lunar dust toxicity risk", *npj Microgravity* 2022. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9718825/ **[S]**
-19. "Lunar dust induces minimal pulmonary toxicity compared to Earth dust" (2025). https://www.sciencedirect.com/science/article/pii/S2214552425000252 **[S]**
-20. "Potential Health Impacts, Treatments, and Countermeasures of Martian Dust on Future Human Space Exploration". https://pmc.ncbi.nlm.nih.gov/articles/PMC11815326/ **[S]**
-21. CSA Bio-Monitor (Astroskin). https://www.asc-csa.gc.ca/eng/sciences/bio-monitor.asp **[S]**
-22. CHeCS ISS Medical Hardware Catalog (NTRS 20110022379). https://ntrs.nasa.gov/search.jsp?R=20110022379 **[S]**
+## 1. Clinical AI and its evaluation
 
-## 3. Hallucination & uncertainty
-23. Farquhar, Kossen, Kuhn, Gal, "Detecting hallucinations in large language models using semantic entropy", *Nature* 630, 625–630 (2024). https://oatml.cs.ox.ac.uk/blog/2024/06/19/detecting_hallucinations_2024.html **[S]**
-24. Tang, Laban, Durrett, "MiniCheck: Efficient Fact-Checking of LLMs on Grounding Documents", EMNLP 2024. https://arxiv.org/abs/2404.10774 **[S]**
-25. Pandit et al., "MedHallu: A Comprehensive Benchmark for Detecting Medical Hallucinations in LLMs", EMNLP 2025. https://arxiv.org/abs/2502.14302 **[S]**
-26. Dhuliawala et al., "Chain-of-Verification Reduces Hallucination in Large Language Models" (2023). https://arxiv.org/abs/2309.11495 **[K]**
-27. Min et al., "FActScore: Fine-grained Atomic Evaluation of Factual Precision" (2023). https://arxiv.org/abs/2305.14251 **[K]**
-28. Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks" (2020). https://arxiv.org/abs/2005.11401 **[K]**
-29. Kumar et al., "Conformal Prediction with Large Language Models for Multi-Choice Question Answering" (2023). https://arxiv.org/abs/2305.18404 **[S]**
-30. EdinburghNLP, awesome-hallucination-detection (curated paper list). https://github.com/EdinburghNLP/awesome-hallucination-detection **[S]**
+<a id="r1"></a>**R1.** Tu T, Schaekermann M, Palepu A, et al. Towards conversational diagnostic artificial intelligence. *Nature* 2025;642:442–450. doi:10.1038/s41586-025-08866-7. PMCID: PMC12158756. (AMIE; text-chat OSCE with patient actors.)
 
-## 4. Evaluation
-31. Arora et al., "HealthBench: Evaluating Large Language Models Towards Improved Human Health" (2025). https://arxiv.org/abs/2505.08775 **[S]**
-32. "MedQA-CS: OSCE-Style Benchmark for Evaluating LLM Clinical Skills". https://arxiv.org/abs/2410.01553 **[S]**
-33. Koo & Li, "A Guideline of Selecting and Reporting Intraclass Correlation Coefficients for Reliability Research", *J Chiropr Med* 2016. **[K]**
+<a id="r2"></a>**R2.** Arora RK, Wei J, Soskin Hicks R, et al. HealthBench: Evaluating Large Language Models Towards Improved Human Health. arXiv:2505.08775v1 [preprint], 2025. https://arxiv.org/abs/2505.08775
 
-## 5. Models & local inference
-34. MedGemma (Health AI Developer Foundations). https://developers.google.com/health-ai-developer-foundations/medgemma **[S]**
-35. Google Research, MedGemma 1.5 and MedASR (Jan 2026). https://research.google/blog/next-generation-medical-image-interpretation-with-medgemma-15-and-medical-speech-to-text-with-medasr/ **[S]**
-36. Google, "Gemma 4" announcement (Apr 2026, Apache 2.0). https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/ **[S]**
-37. Qwen3 release blog. https://qwen.ai/blog?id=qwen3 **[S]**
-38. "Qwen3 Embedding: Advancing Text Embedding and Reranking Through Foundation Models". https://arxiv.org/abs/2506.05176 **[S]**
-39. Ollama MLX backend analysis (v0.19, Mar 2026). https://yage.ai/share/mlx-apple-silicon-en-20260331.html **[S]**
-40. "A Comparative Study of MLX, MLC-LLM, Ollama, llama.cpp…" https://arxiv.org/abs/2511.05502 **[S]**
-41. HPE Spaceborne Computer-2 (NVIDIA T4 GPU node). https://www.hpe.com/us/en/compute/hpc/supercomputing/spaceborne.html **[S]**
-42. Hu et al., "LoRA: Low-Rank Adaptation of Large Language Models" (2021). https://arxiv.org/abs/2106.09685 **[K]**
+<a id="r3"></a>**R3.** Yao Z, Zhang Z, Tang C, et al. MedQA-CS: Benchmarking Large Language Models Clinical Skills Using an AI-SCE Framework. arXiv:2410.01553v2 [preprint], 2026. The arXiv record notes it is to appear at EACL 2026. https://arxiv.org/abs/2410.01553
 
-## 6. Device data (minis)
-43. Wagner et al., "PTB-XL, a large publicly available electrocardiography dataset", *Sci Data* 2020; PhysioNet v1.0.3. https://physionet.org/content/ptb-xl/1.0.3/ **[S]**
-44. Hannun et al., "Cardiologist-level arrhythmia detection and classification in ambulatory electrocardiograms using a deep neural network", *Nature Medicine* 2019. **[K]**
-45. MIT-BIH Arrhythmia Database, PhysioNet. https://physionet.org/content/mitdb/ **[K]**
-46. Kermany et al., "Identifying Medical Diagnoses and Treatable Diseases by Image-Based Deep Learning", *Cell* 2018 (OCT dataset). **[K]**
-47. Guo et al., "On Calibration of Modern Neural Networks" (temperature scaling), ICML 2017. https://arxiv.org/abs/1706.04599 **[K]**
+<a id="r4"></a>**R4.** Koo TK, Li MY. A Guideline of Selecting and Reporting Intraclass Correlation Coefficients for Reliability Research. *J Chiropr Med* 2016;15(2):155–163. doi:10.1016/j.jcm.2016.02.012. PMCID: PMC4913118.
 
-## 7. Regulatory
-48. FDA, Clinical Decision Support Software, final guidance (revised Jan 2026). https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software **[S]**
-49. Covington, "5 Key Takeaways from FDA's Revised CDS Software Guidance" (Jan 2026). https://www.cov.com/en/news-and-insights/insights/2026/01/5-key-takeaways-from-fdas-revised-clinical-decision-support-cds-software-guidance **[S]**
-50. IMDRF, "Software as a Medical Device: Possible Framework for Risk Categorization and Corresponding Considerations" (2014). **[K]**
-51. FDA/Health Canada/MHRA, "Good Machine Learning Practice for Medical Device Development: Guiding Principles" (2021). **[K]**
+## 2. Space medicine and standards
 
-## 8. Funding
-52. TRISH funding opportunities. https://www.bcm.edu/academic-centers/space-medicine/translational-research-institute/funding **[S]**
+<a id="r5"></a>**R5.** NASA. NASA-STD-3001, Volume 1, Revision C: NASA Space Flight Human-System Standard — Crew Health. Office of the Chief Health and Medical Officer; approved 15 Sep 2023. https://www.nasa.gov/wp-content/uploads/2023/11/nasa-std-3001-vol-1-rev-c-with-signature.pdf
+
+<a id="r6"></a>**R6.** NASA. NASA-STD-3001, Volume 2, Revision F: NASA Space Flight Human-System Standard — Human Factors, Habitability, and Environmental Health. Office of the Chief Health and Medical Officer; approved 14 Jul 2026. https://www.nasa.gov/wp-content/uploads/2025/05/nasa-std-3001-vol-2.pdf (this URL served Rev F when checked in Sept 2026).
+
+<a id="r7"></a>**R7.** Antonsen E, Bayuse T, Blue R, et al. Evidence Report: Risk of Adverse Health Outcomes and Decrements in Performance due to In-Flight Medical Conditions. NASA Human Research Program, Exploration Medical Capability Element; approved for public release 8 May 2017. https://humanresearchroadmap.nasa.gov/Evidence/reports/Medical.pdf
+
+<a id="r8"></a>**R8.** Laurie SS, Macias BR, Pardon LP, et al. Evidence Report: Risk of Spaceflight Associated Neuro-ocular Syndrome (SANS). NASA Human Research Program, Human Health Countermeasures Element; approved for public release 7 Apr 2022. https://humanresearchroadmap.nasa.gov/Evidence/reports/SANS%20EB%202022%20FINAL_8-15-22.pdf
+
+<a id="r9"></a>**R9.** Hinkelbein J, Kerkhoff S, Adler C, et al. Cardiopulmonary resuscitation (CPR) during spaceflight – a guideline for CPR in microgravity from the German Society of Aerospace Medicine (DGLRM) and the European Society of Aerospace Medicine Space Medicine Group (ESAM-SMG). *Scand J Trauma Resusc Emerg Med* 2020;28:108. doi:10.1186/s13049-020-00793-y. PMCID: PMC7607644.
+
+<a id="r10"></a>**R10.** Overbeek R, Liebold F, Johnson Kolaparambil Varghese L, et al. Alternative techniques for cardiopulmonary resuscitation in extreme environments – a scoping review. *Resusc Plus* 2024;20:100762. doi:10.1016/j.resplu.2024.100762. PMCID: PMC11404056.
+
+<a id="r11"></a>**R11.** Reichard JF, Phelps SE, Lehnhardt KR, Young M, Easter BD. The effect of long-term spaceflight on drug potency and the risk of medication failure. *npj Microgravity* 2023;9:35. doi:10.1038/s41526-023-00271-6. PMCID: PMC10163248.
+
+<a id="r12"></a>**R12.** Diaz TE, Ives EC, Lazare DI, Buckland DM. Expiration analysis of the International Space Station formulary for exploration mission planning. *npj Microgravity* 2024;10:76. doi:10.1038/s41526-024-00414-3. PMCID: PMC11266549.
+
+<a id="r13"></a>**R13.** Pohlen M, Carroll D, Prisk GK, Sawyer AJ. Overview of lunar dust toxicity risk. *npj Microgravity* 2022;8:55. doi:10.1038/s41526-022-00244-1. PMCID: PMC9718825.
+
+<a id="r14"></a>**R14.** Wang JL, Rosenbaum JJ, Prasad AN, et al. Potential health impacts, treatments, and countermeasures of Martian dust on future human space exploration. *GeoHealth* 2025;9(2):e2024GH001213. doi:10.1029/2024GH001213. PMCID: PMC11815326.
+
+## 3. Grounding, hallucination and uncertainty
+
+<a id="r15"></a>**R15.** Lewis P, Perez E, Piktus A, et al. Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. arXiv:2005.11401v4 [preprint], 2021. The arXiv record notes acceptance at NeurIPS 2020. https://arxiv.org/abs/2005.11401
+
+<a id="r16"></a>**R16.** Farquhar S, Kossen J, Kuhn L, Gal Y. Detecting hallucinations in large language models using semantic entropy. *Nature* 2024;630:625–630. doi:10.1038/s41586-024-07421-0. PMCID: PMC11186750.
+
+<a id="r17"></a>**R17.** Tang L, Laban P, Durrett G. MiniCheck: Efficient Fact-Checking of LLMs on Grounding Documents. arXiv:2404.10774v2 [preprint], 2024. The arXiv record notes EMNLP 2024. https://arxiv.org/abs/2404.10774
+
+<a id="r18"></a>**R18.** Pandit S, Xu J, Hong J, et al. MedHallu: A Comprehensive Benchmark for Detecting Medical Hallucinations in Large Language Models. arXiv:2502.14302v1 [preprint], 2025. https://arxiv.org/abs/2502.14302
+
+<a id="r19"></a>**R19.** Dhuliawala S, Komeili M, Xu J, et al. Chain-of-Verification Reduces Hallucination in Large Language Models. arXiv:2309.11495v2 [preprint], 2023. https://arxiv.org/abs/2309.11495
+
+<a id="r20"></a>**R20.** Min S, Krishna K, Lyu X, et al. FActScore: Fine-grained Atomic Evaluation of Factual Precision in Long Form Text Generation. arXiv:2305.14251v2 [preprint], 2023. The arXiv record notes EMNLP 2023 (main conference). https://arxiv.org/abs/2305.14251
+
+<a id="r21"></a>**R21.** Kumar B, Lu C, Gupta G, et al. Conformal Prediction with Large Language Models for Multi-Choice Question Answering. arXiv:2305.18404v3 [preprint], 2023. The arXiv record notes the ICML 2023 Neural Conversational AI (TEACH) workshop. https://arxiv.org/abs/2305.18404
+
+<a id="r22"></a>**R22.** Guo C, Pleiss G, Sun Y, Weinberger KQ. On Calibration of Modern Neural Networks. arXiv:1706.04599v2 [preprint], 2017. The arXiv record notes ICML 2017. https://arxiv.org/abs/1706.04599
+
+## 4. Models, fine-tuning and local inference
+
+<a id="r23"></a>**R23.** Qwen Team. Qwen3 Technical Report. arXiv:2505.09388v1 [preprint], 2025. https://arxiv.org/abs/2505.09388
+
+<a id="r24"></a>**R24.** Zhang Y, Li M, Long D, et al. Qwen3 Embedding: Advancing Text Embedding and Reranking Through Foundation Models. arXiv:2506.05176v3 [preprint], 2025. https://arxiv.org/abs/2506.05176
+
+<a id="r25"></a>**R25.** Sellergren A, Kazemzadeh S, Jaroensri T, et al. MedGemma Technical Report. arXiv:2507.05201v4 [preprint], 2026. https://arxiv.org/abs/2507.05201
+
+<a id="r26"></a>**R26.** Sellergren A, Mahvar F, Gao C, et al. MedGemma 1.5 Technical Report. arXiv:2604.05081v2 [preprint], 2026. https://arxiv.org/abs/2604.05081
+
+<a id="r27"></a>**R27.** Gemma Team, Google DeepMind. Gemma 4 Technical Report. arXiv:2607.02770v2 [preprint], 2026. https://arxiv.org/abs/2607.02770
+
+<a id="r28"></a>**R28.** Rajesh V, Jodhpurkar O, Anbuselvan P, et al. Production-Grade Local LLM Inference on Apple Silicon: A Comparative Study of MLX, MLC-LLM, Ollama, llama.cpp, and PyTorch MPS. arXiv:2511.05502v1 [preprint], 2025. https://arxiv.org/abs/2511.05502
+
+<a id="r29"></a>**R29.** Hu EJ, Shen Y, Wallis P, et al. LoRA: Low-Rank Adaptation of Large Language Models. arXiv:2106.09685v2 [preprint], 2021. https://arxiv.org/abs/2106.09685
+
+## 5. Device data (minis)
+
+<a id="r30"></a>**R30.** Wagner P, Strodthoff N, Bousseljot RD, et al. PTB-XL, a large publicly available electrocardiography dataset. *Sci Data* 2020;7:154. doi:10.1038/s41597-020-0495-6. PMCID: PMC7248071.
+
+<a id="r31"></a>**R31.** Hannun AY, Rajpurkar P, Haghpanahi M, et al. Cardiologist-level arrhythmia detection and classification in ambulatory electrocardiograms using a deep neural network. *Nat Med* 2019;25(1):65–69. doi:10.1038/s41591-018-0268-3. PMCID: PMC6784839 (author manuscript).
+
+## 6. Regulatory
+
+<a id="r32"></a>**R32.** US Food and Drug Administration. Clinical Decision Support Software: Guidance for Industry and Food and Drug Administration Staff. Issued 29 January 2026 (supersedes the version issued 6 January 2026). https://www.fda.gov/media/109618/download
+
+<a id="r33"></a>**R33.** US Food and Drug Administration, Health Canada, Medicines and Healthcare products Regulatory Agency. Good Machine Learning Practice for Medical Device Development: Guiding Principles. October 2021. https://www.fda.gov/media/153486/download

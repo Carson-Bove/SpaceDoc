@@ -6,33 +6,35 @@
 
 ### 1.1 Terrestrial (FDA): SpaceDoc would be a medical device
 
-The FDA's **Clinical Decision Support (CDS) Software guidance** was revised in January 2026. It excludes software from device regulation only if it meets *all four* statutory criteria. Roughly, the software must:
+The FDA's **Clinical Decision Support (CDS) Software guidance** was revised in January 2026 [[R32](references.md#r32)]. It excludes software from device regulation only if it meets *all four* statutory criteria. Roughly, the software must:
 1. not acquire, process or analyze medical images or signals
 2. display or analyze medical information
 3. support (not replace) a **healthcare professional's** decision
 4. let the professional independently review the basis for its recommendations
 
-SpaceDoc fails criterion 1 by design, because minis analyze ECG, ultrasound and other signals. It also targets non-HCP users (crewmembers), which conflicts with criterion 3. **So any terrestrial version is Software as a Medical Device (SaMD).** The design should follow device-grade processes from the start. This is cheaper than retrofitting them later.
+SpaceDoc fails criterion 1 by design, because minis analyze ECG, ultrasound and other signals. It also targets non-HCP users (crewmembers), which conflicts with criterion 3. Its emergency functions would also struggle with criterion 4: the guidance considers the time-critical nature of a decision, because users under time pressure are more likely to rely on the software instead of reviewing its basis [[R32](references.md#r32)]. **So any terrestrial version is Software as a Medical Device (SaMD).** The design should follow device-grade processes from the start. This is cheaper than retrofitting them later.
 
 Relevant frameworks:
 
 | Framework | What it governs | SpaceDoc implication |
 |---|---|---|
-| **IMDRF SaMD risk categorization** | Risk category from *state of the situation* (critical / serious / non-serious) × *significance of information* (treat or diagnose / drive / inform) | Emergency and diagnostic functions in critical situations fall in the highest category (IV) |
+| **IMDRF SaMD risk categorization** | Risk category from the seriousness of the healthcare situation and the significance of the information the software provides | Emergency and diagnostic functions in critical situations would likely fall in the highest-risk category; confirm against the IMDRF document |
 | **IEC 62304** | Medical device software lifecycle; software safety classes A/B/C | Functions that could contribute to serious injury or death are **Class C**: rigorous requirements, architecture, verification and traceability (this repo's ID scheme starts that) |
 | **ISO 14971** | Risk management for medical devices | Hazard analysis (§2), risk controls, residual risk evaluation |
 | **IEC 62366-1** | Usability engineering | Emergency mode, role adaptation, alarm design ([06](06-records-and-monitoring.md) §4) |
-| **FDA/Health Canada/MHRA Good Machine Learning Practice (GMLP)** | ML-specific principles: data management, independence of test data, human-AI team performance, monitoring | Held-out case bank, human-with-AI studies ([08](08-validation-framework.md) §4) |
+| **FDA/Health Canada/MHRA Good Machine Learning Practice (GMLP)** | Ten ML-specific principles, including representative data, test sets independent of training data, human-AI team performance, and monitoring of deployed models [[R33](references.md#r33)] | Held-out case bank, human-with-AI studies ([08](08-validation-framework.md) §4) |
 | **FDA Predetermined Change Control Plans (PCCP)** | Pre-authorized ways an ML device may be updated | Matches the versioned KB, model and adapter update design (NFR-04) |
+
+Only the FDA CDS guidance and GMLP have been read in full for this project. The IMDRF framework, IEC 62304, ISO 14971, IEC 62366-1 and FDA's PCCP guidance are listed in the [research backlog](research-backlog.md); treat their rows as orientation until they have been read.
 
 ### 1.2 Spaceflight (NASA)
 
 | Standard | Relevance |
 |---|---|
-| **NASA-STD-3001 Vol 1 (Crew Health) & Vol 2 (Human Factors, Habitability & Environmental Health)** | Levels of Care, medical capability requirements, human-factors requirements for crew interfaces |
-| **NPR 7150.2 (NASA Software Engineering Requirements)** | Software classification. Crew-health-related software will likely be a high class, with correspondingly heavy process |
-| **NASA-STD-8739.8 (Software Assurance & Software Safety)** | Independent assurance, safety-critical software analysis |
-| **HRP Evidence Reports & ExMC** | Evidence base and gap definitions the system should address |
+| **NASA-STD-3001 Vol 1 (Crew Health) & Vol 2 (Human Factors, Habitability & Environmental Health)** | Vol 1: Health and Medical Care requirements (which replaced the Levels of Care in Revision B), in-mission medical capabilities including autonomous medical care, and medical records [[R5](references.md#r5)]. Vol 2: medical equipment usable by non-physician crew, and crew-interface requirements for usability, workload, error rates, alerts and decision aids [[R6](references.md#r6)] |
+| **NPR 7150.2 (NASA Software Engineering Requirements)** | Software classification. Crew-health-related software will likely be a high class, with correspondingly heavy process (not yet read; see backlog) |
+| **NASA-STD-8739.8 (Software Assurance & Software Safety)** | Independent assurance, safety-critical software analysis (not yet read; see backlog) |
+| **HRP Evidence Reports & ExMC** | Evidence base and gap definitions the system should address, e.g. the lack of computed medical decision support for exploration missions [[R7](references.md#r7)], [[R8](references.md#r8)] |
 
 ## 2. Hazard analysis (FMEA-style, initial)
 
@@ -77,7 +79,7 @@ A safety case is a structured argument, supported by evidence, that the system i
 
 ### Funding and collaboration landscape
 
-- **TRISH** (Translational Research Institute for Space Health, Baylor College of Medicine with Caltech and MIT, funded by NASA HRP): Catalyst grants for proof-of-concept work (reported up to ~$150K / 1 year). Research priorities include medical system architecture (**Hermes**, an edge-computing crew health platform with per-crewmember AI agents).
+- **TRISH** (Translational Research Institute for Space Health): check its current funding calls. The program pages consulted during early research are listed in the [research backlog](research-backlog.md); confirm amounts and priorities directly before writing a proposal.
 - **NASA SBIR/STTR:** small-business pathway. Check current solicitation topics for crew health and autonomous medical care.
 - **NASA HRP solicitations:** research announcements tied to ExMC gaps.
 
@@ -85,9 +87,10 @@ A safety case is a structured argument, supported by evidence, that the system i
 
 | Effort | Focus | SpaceDoc's complementary angle |
 |---|---|---|
-| NASA **CMO-DA** (Google; offline via Red Hat RamaLama on Spaceborne Computer ground twin) | LLM + VLM clinical decision support, OSCE-tested | Explicit hallucination layer, device minis, longitudinal monitoring, role adaptation, open design |
-| TRISH **Hermes** | Edge crew health data platform | SpaceDoc could plug into Hermes-like platforms as the reasoning and verification layer |
-| Google **AMIE** | Conversational diagnostic AI (terrestrial) | Model for rigorous OSCE-style evaluation methodology |
+| NASA ExMC gap: no computed medical decision support for exploration missions [[R7](references.md#r7)] | Evidence gap | SpaceDoc targets this gap directly, with an explicit hallucination layer, device minis, longitudinal monitoring, role adaptation and an open design |
+| Google **AMIE** [[R1](references.md#r1)] | Conversational diagnostic AI (terrestrial) | Model for rigorous OSCE-style evaluation methodology |
+
+NASA and TRISH projects on crew medical assistants and crew health data platforms are listed in the [research backlog](research-backlog.md). Add them to this table once their reports have been read in full.
 
 **Recommendation:** position SpaceDoc as **complementary and interoperable**, especially its verification layer and SpaceOSCE framework, rather than as a competitor. Partnerships and analog access are more likely that way.
 

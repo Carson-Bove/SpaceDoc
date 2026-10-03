@@ -59,9 +59,9 @@ Doses, infusion rates, scores, unit conversions and reference ranges are all too
 
 For each claim–citation pair, a separate **entailment model** asks: *"Does passage S3 actually support this sentence?"* Candidates:
 
-- **MiniCheck** (0.77B): a purpose-built grounding checker. It reported GPT-4-level accuracy on the LLM-AggreFact benchmark at a small fraction of the cost.
-- An NLI (natural language inference) model as a cross-check.
-- For flagged or high-risk claims, a second pass by the LLM itself with a strict verification prompt, in the style of **Chain-of-Verification**: generate verification questions, answer them independently from the sources, compare.
+- **MiniCheck** (0.77B, Flan-T5): a purpose-built grounding checker. On the LLM-AggreFact benchmark it reached a balanced accuracy of 74.7%, against 75.3% for GPT-4, at more than 400 times lower cost [[R17](references.md#r17)]. It gives a binary verdict (supported or unsupported) and was tested in English only.
+- An NLI (natural language inference) model as a cross-check. This is also where a `contradicted` verdict comes from, since MiniCheck does not separate "unsupported" from "contradicted".
+- For flagged or high-risk claims, a second pass by the LLM itself in the style of **Chain-of-Verification** (CoVe): generate open verification questions, answer each one separately without showing the model its draft, then compare [[R19](references.md#r19)]. In the CoVe paper the model answers from its own memory; answering from the retrieved sources is SpaceDoc's adaptation (the authors name retrieval as a natural extension). Use open questions: the paper found that yes/no questions invite the model to agree with itself.
 
 Outcome per claim: `supported` / `unsupported` / `contradicted`. A contradicted claim triggers a revision. An unsupported high-risk claim is removed, and the answer states the gap.
 
@@ -71,8 +71,8 @@ Even supported answers can be fragile. Techniques, in order of cost:
 
 1. **Retrieval confidence:** reranker scores, source agreement.
 2. **Self-consistency:** sample the answer several times. If the differential rankings or recommended actions disagree, confidence is low.
-3. **Semantic entropy** (Farquhar et al., *Nature* 2024): cluster sampled answers by *meaning*, not wording. High entropy across meanings signals a likely confabulation.
-4. **Conformal prediction** for the differential diagnosis: calibrate on the SpaceOSCE case bank so the system outputs a *set* of diagnoses with a target coverage (e.g. the true diagnosis is in the set ≥ 90% of the time), and abstains when the set is too large to be useful.
+3. **Semantic entropy** [[R16](references.md#r16)]: cluster sampled answers by *meaning*, not wording. High entropy across meanings signals a likely confabulation. Two caveats: it detects *arbitrary* errors (answers that change from sample to sample), not errors the model makes consistently, and the paper tested it without retrieved passages in the prompt.
+4. **Conformal prediction** for the differential diagnosis: calibrate on the SpaceOSCE case bank so the system outputs a *set* of diagnoses with a target coverage (e.g. the true diagnosis is in the set ≥ 90% of the time), and abstains when the set is too large to be useful [[R21](references.md#r21)]. The coverage guarantee holds only when calibration cases resemble the cases seen in use (exchangeability). In the paper, calibrating on one subject and testing on another dropped coverage to about 83% against a 90% target, and the method was shown for multiple-choice answers, not free text. The calibration set must therefore match the mission's case mix.
 
 High uncertainty leads to abstention, with specific next steps: "I can't distinguish A from B. An ultrasound of the right kidney would help. Want the guided protocol?"
 
@@ -111,15 +111,15 @@ A hallucination layer we can't measure is just a hope. Metrics (details in [08](
 
 | Metric | Definition |
 |---|---|
-| Claim support rate | % of displayed claims supported by their citations (human-audited sample) |
-| Citation precision | % of citations that actually support their claim |
+| Claim support rate | % of displayed atomic claims supported by their citations (human-audited sample), in the style of FActScore [[R20](references.md#r20)]. Report it together with the abstention rate, since abstaining raises precision |
+| Citation precision | % of citations that actually support their claim. Having a citation is not the same as being supported: in the FActScore study, a search-backed system's supported and unsupported sentences carried citations at almost the same rate (36.0% vs 37.6%) [[R20](references.md#r20)] |
 | Unsupported-claim escape rate | Unsupported claims that reached the user ÷ all unsupported claims generated |
 | Verifier accuracy | MiniCheck/NLI accuracy on a SpaceDoc-specific labeled set, and on MedHallu for reference |
 | Numeric integrity | % of numbers in outputs that trace to a tool output (target 100%) |
 | Environment violation rate | Infeasible recommendations reaching the user (target 0) |
 | Abstention quality | Precision and recall of abstentions against cases that *should* be abstained |
 
-**Known limits.** Detection is imperfect. On MedHallu's "hard" category, the best LLM detector reached an F1 of only ~0.63. Verification models share blind spots with the models they check. Retrieval can surface an outdated source. That is why the layers are independent and diverse, why numbers and emergencies bypass the LLM entirely, and why a human stays in the loop for anything consequential.
+**Known limits.** Detection is imperfect. On MedHallu's "hard" category, the best LLM detector reached an F1 of only ~0.63 when it was not given the source text; with the source text it reached ~0.81 [[R18](references.md#r18)]. This is one more reason to verify against retrieved passages rather than the model's memory. Verification models share blind spots with the models they check. Retrieval can surface an outdated source. That is why the layers are independent and diverse, why numbers and emergencies bypass the LLM entirely, and why a human stays in the loop for anything consequential.
 
 ---
 

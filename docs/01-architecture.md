@@ -73,7 +73,7 @@ flowchart TB
 | C-01 | Interaction layer | Authentication, role profile, register adaptation, emergency UI, voice, Earth packets | FR-09, FR-10, FR-14, SR-09, SR-12 |
 | C-02 | Orchestrator agent | Understand intent, plan tool calls, draft structured answers | FR-01–04, FR-13 |
 | C-03 | Knowledge retrieval | Hybrid keyword and vector search, reranking, environment-tag filtering, citation IDs | FR-01, SR-01 |
-| C-04 | Differential Dx engine | Condition list (seeded from NASA's exploration condition lists), base rates by environment, evidence scoring, feasible discriminating tests | FR-03, SR-03 |
+| C-04 | Differential Dx engine | Condition list (seeded from NASA's 100-condition Exploration Medical Condition List [[R7](references.md#r7)] and the high-likelihood or high-consequence conditions in NASA-STD-3001 Vol 1, Table E.2-2 [[R5](references.md#r5)]), base rates by environment, evidence scoring, feasible discriminating tests | FR-03, SR-03 |
 | C-05 | Protocol engine | Deterministic emergency and procedure checklists with branching and timers | FR-05, SR-06, NFR-02 |
 | C-06 | Clinical calculators | Dosing (weight, renal), fluids, scores (e.g. GCS, qSOFA), unit conversions | SR-02 |
 | C-07 | Formulary & inventory | Onboard items, quantities, expiry, substitutions | FR-04, FR-11, SR-03 |
@@ -151,7 +151,7 @@ The laptop runs the system. The desktop trains minis and runs large overnight ev
 | Records | FHIR-inspired schema in SQLite; time series in DuckDB/Parquet | Zero-ops, portable, file-based |
 | Device bus | MQTT (e.g. Mosquitto) | Lightweight publish/subscribe standard used in IoT |
 | Protocols | Declarative YAML state machines + interpreter | Clinicians can review them; deterministic |
-| Packaging | Containers (Podman/Docker); NASA's CMO-DA uses RamaLama OCI images | Reproducibility, flight-like deployment |
+| Packaging | Containers (Podman/Docker) | Reproducibility; revisit container-based deployment for the analog phase |
 
 ---
 

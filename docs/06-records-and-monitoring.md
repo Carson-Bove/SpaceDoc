@@ -31,6 +31,8 @@ erDiagram
 - Records are append-only. Corrections create new versions and never overwrite.
 - Every AI-drafted item is labeled as such until a human confirms it.
 
+These rules follow NASA-STD-3001 Vol 1, which requires that crew health monitoring results are kept in a permanent, retrievable format that supports trend analysis, and that medical records are handled, stored and transmitted securely [[R5](references.md#r5)].
+
 ## 2. Data flow
 
 ```mermaid
@@ -78,7 +80,7 @@ SpaceDoc therefore monitors each person against **their own baseline, adjusted f
 
 ## 4. Alerting without alert fatigue
 
-The alert tiers borrow the spacecraft caution & warning convention, which is familiar to crews:
+The alert tiers borrow the spacecraft caution & warning convention, which is familiar to crews. NASA-STD-3001 Vol 2 defines emergency, warning, caution and advisory alerts with distinct visual and audio annunciation, and reserves red for emergency and warning, yellow for caution and blue for advisory [[R6](references.md#r6)]. Stale or missing data must be marked as such (cyan in the Vol 2 display standard):
 
 | Tier | Meaning | Delivery |
 |---|---|---|
@@ -95,7 +97,7 @@ The alert tiers borrow the spacecraft caution & warning convention, which is fam
 - snooze with reason, which is logged
 - weekly review of alert precision
 
-A monitor that cries wolf gets ignored, which is its own safety hazard.
+A monitor that cries wolf gets ignored, which is its own safety hazard. Vol 2 also requires that crew can silence, suppress and inhibit alerts, and that the system reminds them which alerts are inhibited [[R6](references.md#r6)].
 
 ## 5. Privacy and access (SR-12)
 
@@ -106,6 +108,8 @@ A monitor that cries wolf gets ignored, which is its own safety hazard.
 | Commander | Fitness-for-duty status and mission-impact summaries only |
 | Earth flight surgeon | Full records through sync (per mission medical policy) |
 | Other crew | Nothing, unless acting under CMO direction in an emergency (time-limited, logged) |
+
+NASA-STD-3001 requires private two-way medical communication with the ground and private transmission of medical data [[R5](references.md#r5)], and protection of sensitive and private data in the information system [[R6](references.md#r6)].
 
 ## 6. Earth synchronization (delay-tolerant)
 

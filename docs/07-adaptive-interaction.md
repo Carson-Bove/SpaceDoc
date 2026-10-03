@@ -62,8 +62,9 @@ Triggered by keywords, device warnings, or the CMO's emergency button:
 ## 4. Conversation design
 
 - **Structured intake.** For symptoms, SpaceDoc follows a history-taking structure (onset, location, duration, character, aggravating/relieving factors, radiation, timing, severity; plus a targeted review of systems). It asks one or two questions at a time.
-- **Ask, don't assume.** If a key discriminator is missing, ask for it before answering. This also counters sycophancy: the user's self-diagnosis is treated as a hypothesis to test.
-- **Explain on demand.** "Why?" shows the sources and the reasoning steps (FR-13).
+- **Ask, don't assume.** If a key discriminator is missing, ask for it before answering. This also counters sycophancy: the user's self-diagnosis is treated as a hypothesis to test. HealthBench found that seeking missing context was a weak spot for all the models it tested [[R2](references.md#r2)].
+- **Explain on demand.** "Why?" shows the sources and the reasoning steps (FR-13). NASA-STD-3001 Vol 2 requires decision aids to explain their rationale and the consequences of possible actions, to let the operator decide when to use them, and to say when a problem is beyond their capability [[R6](references.md#r6)].
+- **No human-like persona.** The Vol 2 display standard asks automated systems to avoid anthropomorphic phrasing [[R6](references.md#r6)]. SpaceDoc's wording stays plain and factual, and it never implies feelings or clinical authority it does not have.
 - **Time-delay awareness.** If Earth input would help and the link allows, SpaceDoc offers to prepare a packet and says when a reply could arrive.
 
 ## 5. Earth handoff: the SBAR packet

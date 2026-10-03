@@ -2,14 +2,14 @@
 
 ## 1. Problem
 
-On the ISS, a sick astronaut has a flight surgeon on a near-real-time voice link and can be back on Earth within about a day. That safety net thins out as missions go further:
+On the ISS, a sick astronaut can talk to a flight surgeon with almost no delay, and emergency return to Earth is measured in hours [[R6](references.md#r6)]. That safety net thins out as missions go further:
 
-- **Lunar missions:** the round-trip signal delay is only ~2.6 s, but evacuation takes days.
-- **Mars:** one-way delays range from ~3 to ~22 minutes. Roughly every 26 months, solar conjunction causes a communications blackout of about two weeks. There is no evacuation at all.
+- **Lunar missions:** the round-trip light time is only ~2.6 s, but getting back to Earth takes days.
+- **Mars:** one-way delays range from ~3 to ~23 minutes [[R9](references.md#r9)], so a round trip near Mars can take up to ~50 minutes [[R7](references.md#r7)]. Communication can also be interrupted altogether (blackouts), and bandwidth is limited [[R7](references.md#r7)]. There is no evacuation at all.
 
-The crew must therefore manage medical events autonomously, usually led by a non-physician Crew Medical Officer (CMO) who has limited training.
+The crew must therefore manage medical events autonomously. Care is led by a Crew Medical Officer (CMO), who is often not a physician [[R5](references.md#r5)]; CMO medical training is measured in tens of hours: about 40 hours in NASA's 2017 evidence report [[R7](references.md#r7)] and a minimum of 80 hours according to a 2020 CPR guideline [[R9](references.md#r9)].
 
-NASA is exploring the same problem. Its **Crew Medical Officer Digital Assistant (CMO-DA)** was developed with Google, evaluated with an OSCE framework, and is being tested fully offline using Red Hat's RamaLama on a ground twin of HPE's Spaceborne Computer. TRISH's **Hermes** platform targets edge-based crew health monitoring. SpaceDoc builds on these ideas in the open. It emphasizes four things: device-level models (minis), an explicit hallucination-prevention layer, long-term per-crewmember monitoring, and role-adaptive communication. See [references](references.md) §1.
+NASA's evidence report on in-flight medical conditions lists the lack of computed medical decision support for exploration missions as an open gap [[R7](references.md#r7)]. On the AI side, conversational diagnostic systems have been evaluated in OSCE-style studies with patient actors [[R1](references.md#r1)]. SpaceDoc builds on these ideas in the open. It emphasizes four things: device-level models (minis), an explicit hallucination-prevention layer, long-term per-crewmember monitoring, and role-adaptive communication. NASA and industry work on medical assistants that we could not yet read in full is listed in the [research backlog](research-backlog.md).
 
 ## 2. Users (personas)
 
@@ -26,13 +26,13 @@ NASA is exploring the same problem. Its **Crew Medical Officer Digital Assistant
 
 | Tier | Example | Gravity | One-way comm delay | Evacuation to definitive care | Resupply |
 |---|---|---|---|---|---|
-| **T1 LEO** | ISS | microgravity (~0 g) | < 1 s (relay satellite latency) | ~hours to a day | regular |
+| **T1 LEO** | ISS | microgravity (~0 g) | < 1 s (relay satellite latency) | hours | regular |
 | **T2 Cislunar** | Gateway, Orion | ~0 g | ~1.3 s | days | rare |
 | **T3 Lunar surface** | Artemis | 0.17 g (1/6) | ~1.3 s, with relay gaps possible | days | rare |
-| **T4 Deep-space transit** | Earth–Mars cruise | ~0 g | minutes → up to ~22 min | none (months) | none |
-| **T5 Mars surface** | Mars base | 0.38 g (3/8) | ~3–22 min; ~2-week conjunction blackout every ~26 months | none | none |
+| **T4 Deep-space transit** | Earth–Mars cruise | ~0 g | minutes → up to ~23 min | none (months) | none |
+| **T5 Mars surface** | Mars base | 0.38 g (3/8) | ~3–23 min; blackouts possible | none | none |
 
-The evacuation and resupply values are approximate and for design only. NASA-STD-3001 defines graded **Levels of Care**: the required onboard medical capability rises as the mission gets further from definitive care. SpaceDoc's autonomy settings should scale with the tier in the same way.
+The evacuation and resupply values are approximate and for design only. NASA-STD-3001 Volume 1 once defined graded **Levels of Care**. Since Revision B (2022) these have been replaced by **Health and Medical Care** technical requirements. Under these, the onboard medical capability is set from an evidence-based probabilistic risk assessment and the mission parameters, including mission duration and expected return time to Earth, and must include a means of providing autonomous medical care [[R5](references.md#r5)]. SpaceDoc's autonomy settings should scale with the tier in the same way.
 
 ## 4. Requirements
 

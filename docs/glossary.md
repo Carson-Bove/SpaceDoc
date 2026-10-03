@@ -44,19 +44,19 @@
 | **CHeCS** | Crew Health Care System (ISS medical system) |
 | **CMO** | Crew Medical Officer: the crewmember designated for medical care |
 | **CMRS** | Crew Medical Restraint System: restrains the patient for treatment in microgravity |
-| **Conjunction** | Mars and Earth on opposite sides of the Sun; ~2-week comm blackout |
+| **Conjunction** | Mars and Earth on opposite sides of the Sun, which can black out communication |
 | **DCS** | Decompression sickness |
 | **ExMC** | Exploration Medical Capability (NASA HRP element) |
 | **EVA** | Extravehicular activity (spacewalk or surface excursion) |
 | **HRP** | NASA Human Research Program |
-| **IMM** | Integrated Medical Model: NASA's probabilistic model of ~100 in-flight medical conditions |
-| **Levels of Care** | NASA-STD-3001 tiers of required onboard medical capability |
+| **EMCL** | Exploration Medical Condition List (also SMEMCL): NASA's list of 100 medical conditions of concern for exploration missions, the basis of the IMM |
+| **IMM** | Integrated Medical Model: NASA's Monte Carlo risk model of in-flight medical conditions |
+| **Levels of Care** | Former NASA-STD-3001 tiers of required onboard medical capability. Replaced in Revision B (2022) by the Health and Medical Care technical requirements, which scale capability with risk assessment and mission parameters |
 | **OCHMO** | NASA Office of the Chief Health & Medical Officer |
 | **OSCE** | Objective Structured Clinical Examination: station-based clinical skills assessment |
 | **POCUS** | Point-of-care ultrasound |
 | **SANS** | Spaceflight Associated Neuro-ocular Syndrome |
 | **SBAR** | Situation, Background, Assessment, Recommendation: a structured handoff format |
-| **SMEMCL** | Space Medicine Exploration Medical Condition List |
 
 ## Engineering & regulatory
 

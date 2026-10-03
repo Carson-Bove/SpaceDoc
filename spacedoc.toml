@@ -3,7 +3,7 @@
 llm_base_url = "http://localhost:11434/v1"   # Ollama's OpenAI-compatible API
 chat_model = "qwen3:8b"                      # orchestrator; compare candidates with `spacedoc bench`
 embed_model = "qwen3-embedding:0.6b"         # retrieval embeddings
-checker_model = "bespoke-minicheck"          # claim-vs-source grounding checker
+checker_model = "bespoke-minicheck:7b"       # claim-vs-source grounding checker
 
 db_path = "spacedoc.db"
 audit_path = "audit/audit.jsonl"

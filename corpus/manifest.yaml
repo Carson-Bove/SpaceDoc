@@ -19,5 +19,114 @@
 #     topic_tags: [standards, levels-of-care]
 #     published: "2023"
 #
-# Empty until network access to the source hosts is available; see docs/research-backlog.md.
-sources: []
+# Every source below was read in full (Sept 2026) and is US Government public domain or CC BY.
+# Each sha256 was checked by downloading the file with `spacedoc corpus fetch`. Candidates
+# that are unread, unreachable, or licensed NC/ND are listed in docs/research-backlog.md.
+# PMC papers are fetched from the PMC Open Access bucket on AWS, because the PMC website
+# serves its PDFs behind a browser check.
+sources:
+  - id: nasa-std-3001-v1
+    title: "NASA-STD-3001 Volume 1, Revision C: NASA Space Flight Human-System Standard, Crew Health"
+    file: nasa-std-3001-vol1-revC.pdf
+    url: https://www.nasa.gov/wp-content/uploads/2023/11/nasa-std-3001-vol-1-rev-c-with-signature.pdf
+    sha256: e65882af9c9a9861b520268f739baadba08f6225feb14489ff7c46442de26ce9
+    license: US Government work (public domain); NASA public release
+    tier: B
+    environment_tags: [microgravity, partial-gravity, long-duration, delayed-comm, no-evacuation]
+    topic_tags: [standards, health-and-medical-care, medical-capability, medical-records, radiation]
+    published: "2023-09-15"
+    notes: "Rev B (2022) replaced the Levels of Care with Health and Medical Care technical requirements."
+
+  - id: nasa-std-3001-v2
+    title: "NASA-STD-3001 Volume 2, Revision F: NASA Space Flight Human-System Standard, Human Factors, Habitability, and Environmental Health"
+    file: nasa-std-3001-vol2-revF.pdf
+    url: https://www.nasa.gov/wp-content/uploads/2025/05/nasa-std-3001-vol-2.pdf
+    sha256: 2bf853a84de99ce4a14f8a8b58c7566068826e7d399f7ed284507e743f6e7155
+    license: US Government work (public domain); NASA public release
+    tier: B
+    environment_tags: [microgravity, partial-gravity, long-duration, delayed-comm]
+    topic_tags: [standards, human-factors, environmental-health, atmosphere, dust, alerts, decision-aids]
+    published: "2026-07-14"
+    notes: "The URL path says 2025/05 but served Rev F (approved 2026-07-14) when checked; a later revision will change the sha256."
+
+  - id: nasa-hrp-medical-2017
+    title: "Evidence Report: Risk of Adverse Health Outcomes and Decrements in Performance due to In-Flight Medical Conditions"
+    file: nasa-hrp-medical-2017.pdf
+    url: https://humanresearchroadmap.nasa.gov/Evidence/reports/Medical.pdf
+    sha256: 9220eb25876700fe06c3857ba50fce236fddc1de1d184ba1549a15bd1e150006
+    license: US Government work (public domain); NASA public release
+    tier: B
+    environment_tags: [microgravity, long-duration, delayed-comm, no-evacuation]
+    topic_tags: [exmc, medical-conditions, emcl, imm, pharmacy, decision-support]
+    published: "2017-05-08"
+
+  - id: nasa-hrp-sans-2022
+    title: "Evidence Report: Risk of Spaceflight Associated Neuro-ocular Syndrome (SANS)"
+    file: nasa-hrp-sans-2022.pdf
+    url: https://humanresearchroadmap.nasa.gov/Evidence/reports/SANS%20EB%202022%20FINAL_8-15-22.pdf
+    sha256: ba4078994d696d45d948eb763a357dffa6b7e8f2891080b273b677f2ec2a399d
+    license: US Government work (public domain); NASA public release
+    tier: B
+    environment_tags: [microgravity, long-duration]
+    topic_tags: [ophthalmology, neuro, sans, oct]
+    published: "2022-04-07"
+
+  - id: reichard-2023-drug-potency
+    title: "The effect of long-term spaceflight on drug potency and the risk of medication failure"
+    file: PMC10163248.pdf
+    url: https://pmc-oa-opendata.s3.amazonaws.com/PMC10163248.1/PMC10163248.1.pdf
+    sha256: 8a9ab8cc5f5e54c0f6e54a928706a9fe22b80d5021948e44c14c4da627ac1783
+    license: CC BY 4.0
+    tier: B
+    environment_tags: [microgravity, long-duration]
+    topic_tags: [pharmacology, drug-stability, formulary]
+    published: "2023-05-05"
+    notes: "npj Microgravity 2023;9:35. doi:10.1038/s41526-023-00271-6. PMCID PMC10163248."
+
+  - id: diaz-2024-iss-formulary
+    title: "Expiration analysis of the International Space Station formulary for exploration mission planning"
+    file: PMC11266549.pdf
+    url: https://pmc-oa-opendata.s3.amazonaws.com/PMC11266549.1/PMC11266549.1.pdf
+    sha256: 281b1ee37d028c6f2fe9d0537dbfc92ee0cf53fd4c88ab2b094d462a9dc2a5f7
+    license: CC BY 4.0
+    tier: B
+    environment_tags: [long-duration, no-evacuation]
+    topic_tags: [pharmacology, formulary, shelf-life]
+    published: "2024-07-23"
+    notes: "npj Microgravity 2024;10:76. doi:10.1038/s41526-024-00414-3. PMCID PMC11266549."
+
+  - id: pohlen-2022-lunar-dust
+    title: "Overview of lunar dust toxicity risk"
+    file: PMC9718825.pdf
+    url: https://pmc-oa-opendata.s3.amazonaws.com/PMC9718825.1/PMC9718825.1.pdf
+    sha256: c290e729c6dd26f2cbf0c47aa97771416a4592977f6c3571c050d17254cfcfc7
+    license: CC BY 4.0
+    tier: B
+    environment_tags: [t3, partial-gravity]
+    topic_tags: [lunar-dust, toxicology, pulmonary, ocular]
+    published: "2022-12-02"
+    notes: "npj Microgravity 2022;8:55. doi:10.1038/s41526-022-00244-1. PMCID PMC9718825."
+
+  - id: wang-2025-martian-dust
+    title: "Potential health impacts, treatments, and countermeasures of Martian dust on future human space exploration"
+    file: PMC11815326.txt
+    url: https://pmc-oa-opendata.s3.amazonaws.com/PMC11815326.1/PMC11815326.1.txt
+    sha256: d7cdfd92536a9b0f3d919e8fa87205abdb5bfe1ab224eafb6690082cd22eb509
+    license: CC BY (Creative Commons Attribution License; version not stated in the article)
+    tier: B
+    environment_tags: [t5, partial-gravity, long-duration]
+    topic_tags: [mars-dust, perchlorate, thyroid, pulmonary, toxicology]
+    published: "2025-02-12"
+    notes: "GeoHealth 2025;9(2):e2024GH001213. doi:10.1029/2024GH001213. PMCID PMC11815326. Uses the PMC Open Access plain-text copy: the PDF's text layer extracts without word spaces."
+
+  - id: overbeek-2024-cpr-extreme
+    title: "Alternative techniques for cardiopulmonary resuscitation in extreme environments: a scoping review"
+    file: PMC11404056.pdf
+    url: https://pmc-oa-opendata.s3.amazonaws.com/PMC11404056.1/PMC11404056.1.pdf
+    sha256: 5c49b46af084bcede6a6762855a6e9aec93e4e42c35cfdd569ac4cd2f5a0124d
+    license: CC BY 4.0
+    tier: B
+    environment_tags: [microgravity, partial-gravity]
+    topic_tags: [cpr, resuscitation, emergency]
+    published: "2024-09-03"
+    notes: "Resusc Plus 2024;20:100762. doi:10.1016/j.resplu.2024.100762. PMCID PMC11404056. Manikin studies only."

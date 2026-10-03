@@ -1,6 +1,6 @@
 # 02 — Running SpaceDoc Locally
 
-**Goal (NFR-01):** SpaceDoc runs fully offline on the reference laptop (MacBook Air M4, 16 GB unified memory), with a path to flight-like edge hardware. NASA's CMO-DA made the same move from a cloud prototype to fully offline edge deployment, so this is the right constraint to design around from day one.
+**Goal (NFR-01):** SpaceDoc runs fully offline on the reference laptop (MacBook Air M4, 16 GB unified memory), with a path to flight-like edge hardware. Far from Earth, communication with the ground is delayed and bandwidth is limited [[R7](references.md#r7)], so a cloud service cannot be in the loop. This is the right constraint to design around from day one.
 
 ## 1. The hardware we have
 
@@ -35,7 +35,7 @@ total    ≈ weights + KV cache + runtime overhead (~0.5–1 GB)
 | **Total** | | **~8–9 GB**, workable |
 | Multimodal specialist (on demand) | MedGemma 1.5 4B, 4-bit | ~2.5–3 GB, swapped in when an image is involved |
 
-A 12–14B orchestrator at 4-bit (~7–8.5 GB) fits on its own but leaves no room for the verifier stack. On this machine, **one 8B model plus small specialist models beats one bigger model with no verification.**
+A 12–14B orchestrator at 4-bit (~7–8.5 GB; the Gemma 4 report lists 7.65 GB of weights for its 12B model at Q4_0 [[R27](references.md#r27)]) fits on its own but leaves no room for the verifier stack. On this machine, **one 8B model plus small specialist models beats one bigger model with no verification.**
 
 **Speed.** Generating each new token requires reading every weight from memory once. Decode speed is therefore bounded by `memory bandwidth ÷ model size` ≈ 120 GB/s ÷ 5 GB ≈ **~24 tokens/s upper bound** on the M4. Expect roughly 15–25 tokens/s in practice, and less when thermally throttled. Reading the prompt ("prefill") is compute-bound and much faster per token. Measure both in Phase 1.
 
@@ -45,35 +45,38 @@ A 12–14B orchestrator at 4-bit (~7–8.5 GB) fits on its own but leaves no roo
 
 | Runtime | What it is | Notes |
 |---|---|---|
-| **MLX / mlx-lm** | Apple's array framework for Apple Silicon | Usually the fastest option on Mac |
+| **MLX / mlx-lm** | Apple's array framework for Apple Silicon | Highest throughput in the one comparison we have read [[R28](references.md#r28)]; needs a wrapper for serving |
 | **llama.cpp** | C++ inference engine using GGUF model files | Same model files run on Mac *and* PC; grammar/JSON-schema-constrained decoding; OpenAI-compatible server |
-| **Ollama** | Friendly wrapper and model manager | Since v0.19 (Mar 2026) it uses an MLX backend on Macs with ≥ 32 GB; **16 GB Macs still use the llama.cpp path** |
+| **Ollama** | Friendly wrapper and model manager around llama.cpp (GGUF files) | Easiest to use, but trailed MLX and llama.cpp in throughput in [[R28](references.md#r28)]. Check the Ollama release notes for changes to its Apple Silicon backend |
 | **LM Studio** | Desktop GUI (MLX + llama.cpp) | Good for quick model comparisons by hand |
-| **RamaLama** | Red Hat project that runs models as OCI containers | Used for NASA's offline CMO-DA tests; closest to a flight-like deployment |
 
-**Recommendation.** Put every model behind an **OpenAI-compatible local HTTP API**, so SpaceDoc code never depends on a specific runtime. Start with **llama.cpp** (identical GGUF files on both machines, mature constrained decoding). Benchmark **MLX** on the Mac as the optimization path. Revisit **RamaLama** containers for the analog-deployment phase.
+**Recommendation.** Put every model behind an **OpenAI-compatible local HTTP API**, so SpaceDoc code never depends on a specific runtime. Start with **llama.cpp** (identical GGUF files on both machines, mature constrained decoding). Benchmark **MLX** on the Mac as the optimization path. Revisit container-based deployment for the analog-deployment phase.
+
+The runtime comparison in [[R28](references.md#r28)] used a Mac Studio (M2 Ultra, 192 GB) and one model family, so its numbers will not carry over directly to a 16 GB M4. Treat it as a ranking to re-check, not as a speed estimate.
 
 ## 4. Candidate models (as of Sept 2026; re-check at Phase 1)
 
 | Model | Size(s) | License | Why consider |
 |---|---|---|---|
-| **Qwen3 / Qwen3.5 family** | dense 0.6B–32B (e.g. 8B, 9B) | Apache 2.0 | Strong tool calling and instruction following at small sizes |
-| **Gemma 4** | E2B, E4B, 12B, 26B-A4B (MoE), 31B | Apache 2.0 (Apr 2026) | Multimodal, long context; E4B/12B fit the laptop |
-| **MedGemma 1.5** | 4B multimodal (Jan 2026); MedGemma 1 at 4B / 27B | Health AI Developer Foundations terms | Medical-tuned text and imaging; a developer building block, not a clinical product |
-| **Phi-4** | 14B | MIT | Strong reasoning for size; tight on 16 GB |
-| **Llama 3.x** | 8B | Llama community license | Widely supported baseline |
-| **Qwen3-Embedding / Reranker** | 0.6B, 4B, 8B | Apache 2.0 | Top-tier open retrieval models; the 0.6B fits easily |
-| **MiniCheck** | 0.77B (Flan-T5); 7B (Bespoke) | see model cards | Purpose-built "is this sentence supported by this document?" checker |
+| **Qwen3 family** | dense 0.6B–32B (e.g. 8B); MoE 30B-A3B and 235B-A22B | Apache 2.0 | Reports tool-calling (BFCL) and instruction-following (IFEval) results at small sizes; one model has both thinking and non-thinking modes [[R23](references.md#r23)] |
+| **Gemma 4** | E2B, E4B, 12B, 26B-A4B (MoE), 31B | Apache 2.0 | Multimodal, long context, native function calling [[R27](references.md#r27)]. E2B/E4B are laptop-class, but check the file size: Ollama's `gemma4:e4b` is 9.6 GB. The 12B at Q4_0 (7.65 GB) fits only without the verifier stack |
+| **MedGemma 1.5** | 4B multimodal; MedGemma 1 at 4B / 27B | Check the model card | Medical-tuned text and imaging. The report calls it a foundation for developers that is not meant to be deployed without clinical fine-tuning [[R26](references.md#r26)]. MedGemma models have no system prompt [[R26](references.md#r26)], and the MedGemma 1 4B struggled to follow the instructions of an agent framework [[R25](references.md#r25)], so use it as an on-demand image specialist, not as the orchestrator |
+| **Phi-4** | 14B | Check the model card | Comparison point; tight on 16 GB (see §2). Technical report not yet read |
+| **Llama 3.x** | 8B | Check the model card | Widely supported baseline. Technical report not yet read |
+| **Qwen3-Embedding / Reranker** | 0.6B, 4B, 8B | Apache 2.0 | Strong MTEB results in [[R24](references.md#r24)]; the 0.6B fits easily |
+| **MiniCheck** | 0.77B (Flan-T5) [[R17](references.md#r17)]; 7B (Bespoke-MiniCheck, the Phase 1 default; check the model card) | Check the model cards | Purpose-built "is this sentence supported by this document?" checker |
 
-**Do not pick a model because it has "Med" in its name.** The MedHallu benchmark found that when relevant knowledge is supplied (which is exactly what RAG does), general-purpose LLMs can outperform medically fine-tuned ones at spotting hallucinations. SpaceDoc selects models **empirically**. Shortlist 3–4 and score them on the Phase 1 harness ([08](08-validation-framework.md)) on:
+**Do not pick a model because it has "Med" in its name.** The MedHallu benchmark found that when relevant knowledge is supplied (which is exactly what RAG does), general-purpose LLMs can outperform medically fine-tuned ones at spotting hallucinations [[R18](references.md#r18)]. SpaceDoc selects models **empirically**. Shortlist 3–4 and score them on the Phase 1 harness ([08](08-validation-framework.md)) on:
 1. tool-call and JSON-schema reliability
 2. faithfulness to retrieved sources
 3. abstention when sources are missing
 4. latency on the M4
 
+For Qwen3, score both thinking and non-thinking modes. The Qwen3 report found that thinking mode slightly lowered long-context retrieval scores (RULER), and it recommends different sampling settings for each mode [[R23](references.md#r23)].
+
 ## 5. Toward flight hardware
 
-- **Existing precedent:** HPE's Spaceborne Computer-2 on the ISS includes an NVIDIA T4 GPU node. CMO-DA is being tested on its ground twin.
+- **Existing precedent:** reports on computers already flown on the ISS are listed in the [research backlog](research-backlog.md) until they have been read.
 - **Edge modules:** Jetson-class boards are the likely analog-mission target. Every model choice above is sized so it can transfer.
 - **Radiation:** outside LEO, single-event upsets (bit flips) can silently corrupt weights in memory. Mitigations:
   - ECC memory
