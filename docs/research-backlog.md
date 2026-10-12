@@ -10,7 +10,7 @@ Two quirks:
 - The PMC website serves PDFs behind a browser check, so scripts get an HTML page instead of the PDF. The manifest downloads PMC papers from the PMC Open Access bucket instead.
 - www.fda.gov returns 401 to the `spacedoc corpus fetch` user-agent but serves the same files to a browser or curl. FDA documents are cited, not in the corpus, so this does not affect the manifest.
 
-Still blocked (403 through this environment's network policy): ntrs.nasa.gov, www.nature.com (and its login host idp.nature.com), www.sciencedirect.com, europepmc.org, www.ebi.ac.uk and www.imdrf.org. Also blocked when checked in Oct 2026: afrri.usuhs.edu, www.cdc.gov, stacks.cdc.gov, remm.hhs.gov, dailymed.nlm.nih.gov, jts.health.mil, www.navsea.navy.mil and irp.fas.org. Most items below are waiting on one of these.
+Allowed in Oct 2026: ntrs.nasa.gov, afrri.usuhs.edu, www.cdc.gov, remm.hhs.gov, jts.health.mil, dailymed.nlm.nih.gov, irp.fas.org, www.nature.com and www.ebi.ac.uk (Europe PMC's API). The files SpaceDoc uses from these hosts download; the CDC and NTRS front pages themselves refuse scripts. Still not usable: www.sciencedirect.com, europepmc.org, www.imdrf.org and www.navsea.navy.mil refuse at the site; irp.fas.org answers with a bot check instead of the file; mrdc.health.mil, www.usuhs.edu, www.nlm.nih.gov and open.fda.gov are blocked by this environment's network policy.
 
 ## Knowledge-base corpus
 
@@ -55,17 +55,24 @@ Still blocked (403 through this environment's network policy): ntrs.nasa.gov, ww
 | JTS prolonged-care guidelines: wound management (2017), nursing, wound care and splints (2025), burns (2017), analgesia and sedation (2017) | Wound irrigation, debridement, closure and dressings; nursing care over days; burn fluids and dressings; pain and sedation doses | Written for long delays before evacuation, with "minimum, better, best" options. The 2017 tetanus charts predate CDC's current rules |
 | JTS, infection prevention (2021), eye trauma (2021), inhalation injury and toxic industrial chemicals (2016) | Antibiotics by wound type; eye injuries, abrasions, foreign bodies and chemical burns; ammonia, smoke, carbon monoxide and cyanide | Eye photos are third-party; only the text is used. The JTS site's terms page is on mrdc.health.mil, which this environment blocks |
 
+*NASA technical reports, added Oct 2026* (read in full; NTRS marks both Public, public use permitted; tier B).
+
+| Report | What it gives SpaceDoc | Notes |
+|---|---|---|
+| NASA/TM-2022-220299, *Development of an Accepted Medical Condition List for Exploration Medical Capability Scoping* (2022) | A case definition for each condition considered (best and worst case), and whether an exploration medical system should plan to treat it: 194 conditions for Mars transit, 200 for cis-lunar | A planning list, not treatment guidance. It was built from the ISS Integrated Medical Group Medical Checklist (JSC-48522), which is not public |
+| ISS CHeCS Medical Hardware Catalog, version 10.0 (2011) | What is in each ISS medical kit (ALSP, AMP, CCPK, IKA, RSP, VOS, AED, CMRS) and how the devices work: blood analyzer cartridge ranges, tonometer, oxygen weaning settings, defibrillator, and the air, water and radiation monitors | Calls itself "not an official NASA document". A 2011 snapshot, so the current ISS list should override it. Lists no medications; it points to the ISS Medical Checklist |
+
 Other JTS guidelines that may be worth adding next: ocular injuries and traumatic brain injury in prolonged field care, pain, anxiety and delirium, the Prolonged Casualty Care Guidelines, telemedicine, acute mental health, sepsis in prolonged field care, acute coronary syndrome, stroke, concussion, altitude emergencies (hypoxia) and extremity fractures.
 
-Still not covered by any source in the corpus: drug labels. The sources for these and the remaining items are below.
+Still not covered by any source in the corpus: drug labels, and the current ISS medical kit and formulary. The sources for these and the remaining items are below.
 
-*Probably US Government works; to read next.* These hosts were allowed in this environment in Oct 2026, except www.navsea.navy.mil, whose site refuses scripted downloads.
+*Probably US Government works; not added yet.* Each was tried in Oct 2026.
 
-| Document | Host | Why |
+| Document | Why | Why not added yet |
 |---|---|---|
-| US Public Health Service, *The Ship's Medicine Chest and Medical Aid at Sea* (2003) | official copy still to locate; a copy is on irp.fas.org | Medical care in an isolated vessel without a physician, written for lay responders: close to a CMO's situation |
-| DailyMed drug labels for the formulary medications | dailymed.nlm.nih.gov | Contraindications, interactions and label dosing, to check medication claims |
-| US Navy Diving Manual, Revision 7 (decompression sickness chapters) | www.navsea.navy.mil | Signs and classification of decompression sickness |
+| US Public Health Service, *The Ship's Medicine Chest and Medical Aid at Sea* (2003) | Medical care in an isolated vessel without a physician, written for lay responders: close to a CMO's situation | The copy on irp.fas.org returns a bot check instead of the PDF to scripts. Downloading it in a browser and adding the file by hand would work; an official government copy is still to locate |
+| DailyMed drug labels for the formulary medications | Contraindications, interactions and label dosing, to check medication claims | Labels are written by the drug companies, and the NLM and openFDA pages that state their terms are blocked here, so the license is not confirmed. The labels should also follow the real ISS formulary, which the NASA team is compiling, not the example formulary in data/ |
+| US Navy Diving Manual, Revision 7 (decompression sickness chapters) | Signs and classification of decompression sickness | www.navsea.navy.mil refuses scripted downloads |
 
 *Probably not eligible* (license to confirm): StatPearls on the NCBI Bookshelf (CC BY-NC-ND); the WHO *International Medical Guide for Ships* (WHO copyright); IAEA safety reports on radiation injuries (IAEA copyright).
 
@@ -73,8 +80,7 @@ Still not covered by any source in the corpus: drug labels. The sources for thes
 
 | Document | Blocker |
 |---|---|
-| Exploration medical condition list reports (e.g. NASA/TM-2019-220299, "Development of an Accepted Medical Condition List") | ntrs.nasa.gov blocked |
-| CHeCS ISS medical hardware catalog (NTRS 20110022379) | ntrs.nasa.gov blocked |
+| The current ISS medical kit list and formulary, and the ISS Medical Checklist (JSC-48522) | Not public; the NASA team may be able to supply them |
 
 **Not eligible for the corpus.** None of the candidates on the original list turned out to be NC or ND. These sources were read for the design docs but cannot be ingested:
 
@@ -88,9 +94,9 @@ Still not covered by any source in the corpus: drug labels. The sources for thes
 
 | Source | Status | Was used for |
 |---|---|---|
-| NTRS 20240011677, "Objective Structured Clinical Evaluation (OSCE) of an AI Clinical Decision Support System (CDSS) Tool" | ntrs.nasa.gov blocked | NASA's CMO-DA OSCE evaluation (docs 00, 08, 09) |
-| NASA/TM-2017-219290, "Interpretation of NASA-STD-3001 Levels of Care for Exploration Missions" | ntrs.nasa.gov blocked; also superseded, since Vol 1 Rev B replaced the Levels of Care | Levels of Care (now cited from Vol 1 Rev C) |
-| ASCEND 2022, "Communication Delays, Disruptions, and Blackouts for Crewed Mars Missions" | ntrs.nasa.gov blocked | Mars conjunction blackout length and period (removed from doc 00) |
+| NTRS 20240011677, "Objective Structured Clinical Evaluation (OSCE) of an AI Clinical Decision Support System (CDSS) Tool" | On NTRS, reachable since Oct 2026; not yet read | NASA's CMO-DA OSCE evaluation (docs 00, 08, 09) |
+| NASA/TM-2017-219290, "Interpretation of NASA-STD-3001 Levels of Care for Exploration Missions" | On NTRS, reachable since Oct 2026; not yet read; also superseded, since Vol 1 Rev B replaced the Levels of Care | Levels of Care (now cited from Vol 1 Rev C) |
+| ASCEND 2022, "Communication Delays, Disruptions, and Blackouts for Crewed Mars Missions" | On NTRS, reachable since Oct 2026; not yet read | Mars conjunction blackout length and period (removed from doc 00) |
 | "Lunar dust induces minimal pulmonary toxicity compared to Earth dust" (2025) | www.sciencedirect.com blocked | Lunar dust toxicity (doc 04 now cites the lunar dust review, the HRP report and Vol 2) |
 | Moody & Mark, MIT-BIH Arrhythmia Database paper | Not yet located and read | MIT-BIH facts (doc 05 now cites the PTB-XL paper's summary table) |
 | Kermany et al., *Cell* 2018 (retinal OCT dataset) | Not yet opened | Fundus/OCT mini data |

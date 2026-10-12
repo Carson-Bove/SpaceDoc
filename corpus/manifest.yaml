@@ -570,3 +570,27 @@ sources:
     topic_tags: [inhalation-injury, ammonia, carbon-monoxide, cyanide, smoke, toxicology]
     published: "2016-07-25"
     notes: 'Oxygen targets updated Sept 2023. Covers ammonia, smoke, carbon monoxide, cyanide, chlorine and fire-suppressant byproducts.'
+
+  - id: nasa-tm-2022-220299-amcl
+    title: 'Development of an Accepted Medical Condition List for Exploration Medical Capability Scoping (NASA/TM-2022-220299)'
+    file: nasa-tm-2022-220299-amcl.pdf
+    url: https://ntrs.nasa.gov/api/citations/20220003136/downloads/NASA-T_1.pdf
+    sha256: 246f7d2c9ec1c7acfbf337977fea589f8b8afb2ed1ad1df005a5e583cd2073a3
+    license: 'US Government work (public domain); NASA Technical Memorandum, NTRS distribution Public, public use permitted'
+    tier: B
+    environment_tags: [microgravity, long-duration, delayed-comm, no-evacuation]
+    topic_tags: [exmc, medical-conditions, case-definitions, plan-to-treat, mission-planning]
+    published: "2022-03"
+    notes: 'Johnson Space Center; the authors are contractor and university staff working at JSC. Case definitions for the conditions considered, and whether an exploration medical system should plan to treat each one (194 conditions for Mars transit, 200 for cis-lunar). This is a planning list, not treatment guidance.'
+
+  - id: nasa-ntrs-checs-2011
+    title: 'ISS Crew Health Care System (CHeCS) Medical Hardware Catalog, Version 10.0'
+    file: nasa-ntrs-checs-2011.pdf
+    url: https://ntrs.nasa.gov/api/citations/20110022379/downloads/20110022379.pdf
+    sha256: a7012c732a975e6dab62ffc841fb4c71f015ebc99b50a774926ea00a961acac4
+    license: 'US Government work (public domain); NTRS distribution Public, public use permitted'
+    tier: B
+    environment_tags: [microgravity]
+    topic_tags: [iss-hardware, medical-kits, equipment-use, alsp, amp, aed, ventilation, oxygen, blood-analyzer, toxicology-monitors, radiation-monitoring, water-quality, exercise-devices]
+    published: "2011-03"
+    notes: 'Johnson Space Center Medical Operations. Calls itself "not an official NASA document"; written for ISS biomedical flight controllers. A March 2011 snapshot: ISS hardware has changed since, so check the current onboard list before relying on a component or its location. It points to the ISS Medical Checklist for every medication and lists none. Many figures are photos.'
