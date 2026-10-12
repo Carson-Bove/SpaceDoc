@@ -13,10 +13,12 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 import re
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass, replace
 from typing import Any, Protocol
 
@@ -118,6 +120,10 @@ class LLM(Protocol):
     def embed(self, texts: list[str]) -> list[list[float]]: ...
 
 
+def _skip(_data: dict) -> None:
+    pass
+
+
 class _HTTPClient:
     def __init__(self, root: str, timeout_s: float) -> None:
         self.root = root
@@ -128,11 +134,48 @@ class _HTTPClient:
         return self.post(path, None, label)
 
     def post(self, path: str, body: dict[str, Any] | None, model: str) -> dict[str, Any]:
-        try:
+        with self._errors(model):
             if body is None:
                 resp = self._http.get(f"{self.root}{path}", timeout=min(self.timeout_s, 10.0))
             else:
                 resp = self._http.post(f"{self.root}{path}", json=body)
+        self._check(resp, model)
+        try:
+            return resp.json()
+        except ValueError as e:
+            raise LLMError(f"Model server returned invalid JSON for {model}") from e
+
+    def delete(self, path: str, body: dict[str, Any], model: str) -> None:
+        with self._errors(model):
+            resp = self._http.request("DELETE", f"{self.root}{path}", json=body)
+        self._check(resp, model)
+
+    def stream(
+        self, path: str, body: dict[str, Any], model: str, on_line: Callable[[dict], None]
+    ) -> None:
+        """POST and hand each JSON line of the streamed reply to `on_line`."""
+        with (
+            self._errors(model),
+            self._http.stream("POST", f"{self.root}{path}", json=body) as resp,
+        ):
+            if resp.status_code >= 400:
+                resp.read()
+                self._check(resp, model)
+            for line in resp.iter_lines():
+                if not line.strip():
+                    continue
+                try:
+                    data = json.loads(line)
+                except ValueError as e:
+                    raise LLMError(f"Model server returned invalid JSON for {model}") from e
+                if data.get("error"):
+                    raise LLMError(f"Model server error for {model}: {data['error']}")
+                on_line(data)
+
+    @contextmanager
+    def _errors(self, model: str) -> Iterator[None]:
+        try:
+            yield
         except httpx.ConnectError as e:
             raise LLMError(
                 f"Cannot reach the model server at {self.root}. Is Ollama running?"
@@ -143,18 +186,18 @@ class _HTTPClient:
             ) from e
         except httpx.HTTPError as e:
             raise LLMError(f"Model server request failed: {e}") from e
-        if resp.status_code >= 400:
-            try:
-                detail = resp.json().get("error") or resp.text
-            except ValueError:
-                detail = resp.text
-            if isinstance(detail, dict):
-                detail = detail.get("message") or str(detail)
-            raise LLMError(f"Model server error {resp.status_code} for {model}: {detail}")
+
+    @staticmethod
+    def _check(resp: httpx.Response, model: str) -> None:
+        if resp.status_code < 400:
+            return
         try:
-            return resp.json()
-        except ValueError as e:
-            raise LLMError(f"Model server returned invalid JSON for {model}") from e
+            detail = resp.json().get("error") or resp.text
+        except ValueError:
+            detail = resp.text
+        if isinstance(detail, dict):
+            detail = detail.get("message") or str(detail)
+        raise LLMError(f"Model server error {resp.status_code} for {model}: {detail}")
 
 
 class OllamaLLM:
@@ -261,7 +304,19 @@ class OllamaLLM:
 
     def installed_models(self) -> list[str]:
         """Names of the models this Ollama server has, e.g. ["qwen3:8b", ...]."""
-        return [m["name"] for m in self._client.get("/api/tags").get("models", [])]
+        return list(self.model_sizes())
+
+    def model_sizes(self) -> dict[str, int]:
+        """Installed models and their size on disk in bytes."""
+        models = self._client.get("/api/tags").get("models", [])
+        return {m["name"]: int(m.get("size") or 0) for m in models}
+
+    def pull_model(self, name: str, progress: Callable[[dict], None] | None = None) -> None:
+        """Download a model. Re-pulling a tag makes Ollama delete the files it replaced."""
+        self._client.stream("/api/pull", {"model": name, "stream": True}, name, progress or _skip)
+
+    def delete_model(self, name: str) -> None:
+        self._client.delete("/api/delete", {"model": name}, name)
 
     def embed(self, texts: list[str]) -> list[list[float]]:
         if not self.embed_model:

@@ -59,31 +59,31 @@ class ModelCheck:
     reachable: bool
     missing: list[str]
     error: str | None = None
+    ollama: bool = True
 
     def problems(self) -> list[str]:
         """Plain-language lines for the user; empty when everything is in place."""
         if not self.reachable:
             return [f"Cannot reach the model server: {self.error}"]
-        return [f"Model {m} is not installed. Run: ollama pull {m}" for m in self.missing]
+        if self.ollama:
+            return [f"Model {m} is not installed. Run: spacedoc models pull" for m in self.missing]
+        return [f"Model {m} is not loaded in the model server." for m in self.missing]
 
 
 def check_models(settings: Settings) -> ModelCheck:
     """Are the configured models installed on the model server? (Cheap; no model loads.)"""
     from spacedoc.llm.client import LLMError
+    from spacedoc.models import configured_models, tag
 
     client = connect(settings.llm_backend, settings.llm_base_url, settings.chat_model, None, 10.0)
+    ollama = settings.llm_backend == "ollama"
     try:
         installed = set(client.installed_models())
     except LLMError as e:
-        return ModelCheck(reachable=False, missing=[], error=str(e))
-    wanted = [settings.chat_model, settings.embed_model, settings.checker_model]
-    if settings.consult_model:
-        wanted.append(settings.consult_model)
-
-    def have(name: str) -> bool:
-        return name in installed or (":" not in name and f"{name}:latest" in installed)
-
-    return ModelCheck(reachable=True, missing=[m for m in dict.fromkeys(wanted) if not have(m)])
+        return ModelCheck(reachable=False, missing=[], error=str(e), ollama=ollama)
+    have = {tag(n) for n in installed} if ollama else installed
+    missing = [m for m in configured_models(settings) if (tag(m) if ollama else m) not in have]
+    return ModelCheck(reachable=True, missing=missing, ollama=ollama)
 
 
 def generation_plan(settings: Settings) -> GenerationPlan:

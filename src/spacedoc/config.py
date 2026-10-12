@@ -48,6 +48,8 @@ class Settings:
     corpus_dir: Path = field(default_factory=lambda: REPO_ROOT / "corpus")
     db_path: Path = field(default_factory=lambda: REPO_ROOT / "spacedoc.db")
     audit_path: Path = field(default_factory=lambda: REPO_ROOT / "audit" / "audit.jsonl")
+    # Models SpaceDoc downloaded or compared, so `spacedoc models clean` knows which are its own
+    models_record_path: Path = field(default_factory=lambda: REPO_ROOT / "spacedoc-models.json")
 
     # Retrieval
     top_k: int = 6

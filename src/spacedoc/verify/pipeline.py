@@ -44,7 +44,10 @@ def _verdict_note(label: str, v: GroundingVerdict) -> str:
 def _check_error_message(e: Exception) -> str:
     msg = f"The source checker could not run ({e}), so statements that needed checking are hidden."
     if m := re.search(r"model '([^']+)' not found", str(e)):
-        msg += f" The checker model is not installed. Install it with: ollama pull {m.group(1)}"
+        msg += (
+            f" The checker model ({m.group(1)}) is not installed."
+            " Install it with: spacedoc models pull"
+        )
     return msg
 
 

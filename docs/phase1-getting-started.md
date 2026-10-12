@@ -33,7 +33,7 @@ pytest -q
 
 - `consult` runs a scripted consult in Terminal: questions, then a checked assessment.
 - `eval run` runs the 3 example cases through the assessment step and writes `eval_runs/<time>/report.md`.
-- `pytest -q` runs the 191 tests.
+- `pytest -q` runs the 203 tests.
 
 In the demo flank-pain assessment, the verification layer should:
 
@@ -55,12 +55,10 @@ The flank-pain answer also has scripted thinking notes. Open **Model reasoning (
 
 ### Install Ollama and pull models
 
-If Ollama is not installed yet, install the macOS app from ollama.com. Then pull these models:
+If Ollama is not installed yet, install the macOS app from ollama.com. With Ollama running, download the models named in `spacedoc.toml`:
 
 ```bash
-ollama pull qwen3:8b
-ollama pull qwen3-embedding:0.6b
-ollama pull bespoke-minicheck:7b
+spacedoc models pull
 ```
 
 | Model | Role | Size |
@@ -69,7 +67,14 @@ ollama pull bespoke-minicheck:7b
 | `qwen3-embedding:0.6b` | Embeddings for retrieval | 639 MB |
 | `bespoke-minicheck:7b` | Grounding checker | 7.7B, Q4_K_M, 4.7 GB (Ollama swaps it in and out) |
 
-For the consult speed comparison, also run `ollama pull qwen3:4b`.
+For the consult speed comparison, set `consult_model = "qwen3:4b"` in `spacedoc.toml` and run `spacedoc models pull` again (see *Comparing models for question turns* under [Run a consult](#run-a-consult)).
+
+**Removing old models to save space.** Run `spacedoc models pull` again whenever you change a model in `spacedoc.toml`. Once every named model has downloaded, it lists the models SpaceDoc no longer uses, with their sizes, and asks before removing them:
+- "No longer used" means SpaceDoc downloaded it, compared it with `spacedoc bench`, or this guide named it, and `spacedoc.toml` no longer names it. Models you downloaded for anything else are never offered.
+- Nothing is removed if a named model failed to download or is not there yet, so the old model stays until the new one is in place.
+- Re-downloading the same tag (for example a newer `qwen3:8b`) needs no cleanup: Ollama deletes the files it replaced.
+- `spacedoc models clean` does only the cleanup step, and `spacedoc models list` shows each named model with its size, plus any old ones. Add `--yes` to `pull` or `clean` to remove old models without being asked.
+- SpaceDoc keeps its list of models it downloaded or compared in `spacedoc-models.json` (not in git).
 
 **Tags checked on ollama.com in Sept 2026.** All three tags exist, and these are the values in `spacedoc.toml`. Two details:
 - Always pull `qwen3-embedding:0.6b` by its size tag. The bare `qwen3-embedding` (`latest`) is the 8B model (4.7 GB).
@@ -158,7 +163,7 @@ spacedoc consult --user C1 --patient C3 --practice --scenario SO-0104 --tier T1
 - **Commands:** `/assess` (assess now), `/record` (show the consult record so far), `/quit`. SpaceDoc also assesses on its own when it has enough, or after 8 rounds (`consult_max_rounds`).
 - **Timing.** Each turn ends with a line like `⏱ 11.8 s (reading 1.2 s; writing 10.3 s, 182 tokens)`. When you quit, SpaceDoc prints the median turn time. The target is 10–15 s per turn; the first turn is slower while the model loads.
 - **Deep log** (`--deep-log`) turns thinking on for every turn, so the record has full thinking notes. Turns get slower, so each one also shows `about N s without deep log (estimated)`: the writing time minus the share spent on the notes. Measure the real number with a normal run.
-- **Comparing models for question turns.** `spacedoc consult --model qwen3:4b` (or `spacedoc serve --consult-model qwen3:4b`, or `consult_model` in `spacedoc.toml`) uses another model for question turns; the assessment still uses `chat_model`. Pull it first: `ollama pull qwen3:4b`. Compare turn times and question quality on the same scenario.
+- **Comparing models for question turns.** `spacedoc consult --model qwen3:4b` (or `spacedoc serve --consult-model qwen3:4b`, or `consult_model` in `spacedoc.toml`) uses another model for question turns; the assessment still uses `chat_model`. Set it as `consult_model` and run `spacedoc models pull`, so it is downloaded and kept while both are named; `spacedoc consult --model qwen3:8b` then runs the same consult on the 8B model. Compare turn times and question quality on the same scenario.
 - **The consult record** is saved to `audit/consults/<consult id>.md` when you quit. It lists every turn, the working list as it changed, the reason for each question, red flags, exam checks, thinking notes (deep log), the assessment and the timings. Every turn is also in the audit log.
 
 ### Reading the assessment
@@ -208,7 +213,7 @@ spacedoc bench qwen3:8b gemma4:e4b medgemma:4b --repeats 3
 
 The two example candidates: `gemma4:e4b` (Q4_K_M, 9.6 GB) and `medgemma:4b` (MedGemma 1, not 1.5; 4.3B, Q4_K_M, 3.3 GB).
 
-Both tags were confirmed on ollama.com in Sept 2026. `--thinking` controls the first pass: `config` (default, uses `think_draft`), `on`, `off`, or `both`, which runs each model twice so you can compare the modes. The Qwen3 report found that thinking slightly lowered some long-context scores [[R23](references.md#r23)], so measure it on SpaceDoc's cases rather than assume. Models that cannot think (such as `medgemma:4b`) are asked once with thinking, refuse, and are then run without it.
+Both tags were confirmed on ollama.com in Sept 2026. Compared models count as SpaceDoc's, so when you are done, `spacedoc models clean` offers to remove the ones `spacedoc.toml` does not name. `--thinking` controls the first pass: `config` (default, uses `think_draft`), `on`, `off`, or `both`, which runs each model twice so you can compare the modes. The Qwen3 report found that thinking slightly lowered some long-context scores [[R23](references.md#r23)], so measure it on SpaceDoc's cases rather than assume. Models that cannot think (such as `medgemma:4b`) are asked once with thinking, refuse, and are then run without it.
 
 Things to know before benchmarking:
 - `gemma4:e4b` is 9.6 GB even at 4-bit. On the 16 GB Mac it leaves no room for the grounding checker. On the desktop it is larger than the 8 GB of VRAM, so part of it runs from CPU RAM, which is slower. `gemma4:e4b-it-qat` (6.1 GB) is a smaller variant to try.

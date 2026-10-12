@@ -115,7 +115,8 @@ def test_missing_checker_is_explained_and_the_answer_still_says_what_to_do(demo_
     assert v.abstained and "source checker could not run" in v.abstain_reason
     assert v.uncertainty == "high"
     err = next(f for f in v.findings if f.rule_id == "CHECK-ERROR")
-    assert "ollama pull bespoke-minicheck:7b" in err.message
+    assert "(bespoke-minicheck:7b) is not installed" in err.message
+    assert "spacedoc models pull" in err.message
     assert v.next_steps[0].startswith("SpaceDoc could not give a full, checked answer")
     assert any("ground medical team" in s for s in v.next_steps)
 

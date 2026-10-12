@@ -247,9 +247,9 @@ def test_model_check_names_missing_models(monkeypatch):
     fake_server(llm, lambda r: httpx.Response(200, json=tags))
     monkeypatch.setattr(system_mod, "connect", lambda *a, **k: llm)
     check = system_mod.check_models(Settings(consult_model="qwen3:4b"))
-    assert check.reachable and check.missing == ["bespoke-minicheck:7b", "qwen3:4b"]
-    assert check.problems()[0] == (
-        "Model bespoke-minicheck:7b is not installed. Run: ollama pull bespoke-minicheck:7b"
+    assert check.reachable and check.missing == ["qwen3:4b", "bespoke-minicheck:7b"]
+    assert check.problems()[1] == (
+        "Model bespoke-minicheck:7b is not installed. Run: spacedoc models pull"
     )
 
 

@@ -7,3 +7,4 @@ spacedoc.db
 /audit/
 eval_runs/
 corpus/files/
+/spacedoc-models.json

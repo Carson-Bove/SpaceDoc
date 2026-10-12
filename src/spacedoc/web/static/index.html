@@ -261,7 +261,7 @@ async function init() {
   $("mode-chip").textContent = status.demo ? "DEMO · scripted, no model"
     : `model ${status.model}${status.consult_model && status.consult_model !== status.model ? ` · questions ${status.consult_model}` : ""} · checker ${status.checker}`;
   if (status.model_problems && status.model_problems.length) {
-    $("model-banner").innerHTML = "<b>SpaceDoc is not ready:</b> " + status.model_problems.map(p => esc(p).replace(/ollama pull (\S+)/, "<code>ollama pull $1</code>")).join(" · ");
+    $("model-banner").innerHTML = "<b>SpaceDoc is not ready:</b> " + status.model_problems.map(p => esc(p).replace(/spacedoc models pull/, "<code>spacedoc models pull</code>")).join(" · ");
     $("model-banner").hidden = false;
   }
   $("kb-status").textContent = `Knowledge base: ${status.chunks} passages from ${status.sources.length} source(s)` +

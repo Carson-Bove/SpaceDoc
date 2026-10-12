@@ -16,9 +16,14 @@ app = typer.Typer(
 eval_app = typer.Typer(help="SpaceOSCE evaluation.", no_args_is_help=True)
 corpus_app = typer.Typer(help="Knowledge-base corpus.", no_args_is_help=True)
 audit_app = typer.Typer(help="Audit log.", no_args_is_help=True)
+models_app = typer.Typer(
+    help="Local models: download the ones spacedoc.toml names, remove old ones.",
+    no_args_is_help=True,
+)
 app.add_typer(eval_app, name="eval")
 app.add_typer(corpus_app, name="corpus")
 app.add_typer(audit_app, name="audit")
+app.add_typer(models_app, name="models")
 
 ConfigOpt = typer.Option(None, "--config", "-c", help="Path to spacedoc.toml")
 
@@ -29,6 +34,130 @@ def warn_about_models(settings) -> None:
 
     for line in check_models(settings).problems():
         typer.secho(f"WARNING: {line}", fg=typer.colors.RED, err=True)
+
+
+YesOpt = typer.Option(False, "--yes", "-y", help="Remove old models without asking")
+
+
+def _ollama_client(settings):
+    if settings.llm_backend != "ollama":
+        typer.echo(
+            "`spacedoc models` works with Ollama only; load models in your server.", err=True
+        )
+        raise typer.Exit(1)
+    from spacedoc.llm.client import OllamaLLM
+
+    return OllamaLLM(settings.llm_base_url, settings.chat_model, None, settings.request_timeout_s)
+
+
+class _PullProgress:
+    """Print Ollama's pull status, with one updating line per file being downloaded."""
+
+    def __init__(self) -> None:
+        self.last = ""
+        self.open_line = False
+
+    def __call__(self, data: dict) -> None:
+        from spacedoc.models import gigabytes
+
+        status = data.get("status", "")
+        total = data.get("total")
+        if total and status.startswith("pulling"):
+            pct = int(100 * (data.get("completed") or 0) / total)
+            line = f"  downloading {gigabytes(total)} {pct:3d}%"
+            if line != self.last:
+                typer.echo(f"\r{line}", nl=False)
+                self.last, self.open_line = line, True
+            return
+        if status and status != self.last:
+            if self.open_line:
+                typer.echo()
+            typer.echo(f"  {status}")
+            self.last, self.open_line = status, False
+
+
+@models_app.command("pull")
+def models_pull(yes: bool = YesOpt, config: Path = ConfigOpt) -> None:
+    """Download every model spacedoc.toml names, then offer to remove old ones."""
+    from spacedoc.llm.client import LLMError
+    from spacedoc.models import ModelRecord, configured_models
+
+    s = load_settings(config)
+    client = _ollama_client(s)
+    record = ModelRecord(s.models_record_path)
+    failed = []
+    for name in configured_models(s):
+        typer.echo(f"{name}:")
+        try:
+            client.pull_model(name, _PullProgress())
+        except LLMError as e:
+            typer.secho(f"  failed: {e}", fg=typer.colors.RED, err=True)
+            failed.append(name)
+            continue
+        record.add([name])
+    if failed:
+        typer.secho(
+            f"Not removing any old models, because {', '.join(failed)} did not download.",
+            fg=typer.colors.RED,
+            err=True,
+        )
+        raise typer.Exit(1)
+    _clean(s, client, record, yes)
+
+
+@models_app.command("clean")
+def models_clean(yes: bool = YesOpt, config: Path = ConfigOpt) -> None:
+    """Offer to remove models SpaceDoc used before that spacedoc.toml no longer names."""
+    from spacedoc.models import ModelRecord
+
+    s = load_settings(config)
+    _clean(s, _ollama_client(s), ModelRecord(s.models_record_path), yes)
+
+
+@models_app.command("list")
+def models_list(config: Path = ConfigOpt) -> None:
+    """Show the models spacedoc.toml names, and any old ones SpaceDoc could remove."""
+    from spacedoc.models import ModelRecord, configured_models, gigabytes, old_models, tag
+
+    s = load_settings(config)
+    installed = _ollama_client(s).model_sizes()
+    sizes = {tag(n): size for n, size in installed.items()}
+    typer.echo("Named in spacedoc.toml:")
+    for name in configured_models(s):
+        size = sizes.get(tag(name))
+        typer.echo(f"  {name:<28} {gigabytes(size) if size is not None else 'not downloaded'}")
+    old = old_models(s, installed, ModelRecord(s.models_record_path))
+    if old:
+        typer.echo("No longer used (spacedoc models clean offers to remove these):")
+        for name, size in old.items():
+            typer.echo(f"  {name:<28} {gigabytes(size)}")
+
+
+def _clean(settings, client, record, yes: bool) -> None:
+    from spacedoc.models import gigabytes, missing_models, old_models
+
+    installed = client.model_sizes()
+    if missing := missing_models(settings, installed):
+        typer.echo(
+            f"Not removing any old models: {', '.join(missing)} is not downloaded yet. "
+            "Run: spacedoc models pull"
+        )
+        return
+    old = old_models(settings, installed, record)
+    if not old:
+        typer.echo("All models are ready. No old models to remove.")
+        return
+    typer.echo("SpaceDoc no longer uses these models:")
+    for name, size in old.items():
+        typer.echo(f"  {name:<28} {gigabytes(size)}")
+    freed = gigabytes(sum(old.values()))
+    if not yes and not typer.confirm(f"Remove them and free {freed}?", default=False):
+        typer.echo("Kept them.")
+        return
+    for name in old:
+        client.delete_model(name)
+        record.discard([name])
+        typer.echo(f"Removed {name}")
 
 
 @corpus_app.command("fetch")
@@ -167,10 +296,12 @@ def bench(
     """Compare candidate orchestrator models on the same cases."""
     from spacedoc.eval.bench import bench_markdown, bench_models
     from spacedoc.eval.cases import load_cases
+    from spacedoc.models import ModelRecord
 
-    table = bench_models(
-        load_settings(config), models, load_cases(cases_dir), repeats, thinking=thinking
-    )
+    s = load_settings(config)
+    # Compared models count as SpaceDoc's, so `spacedoc models clean` can offer to remove them.
+    ModelRecord(s.models_record_path).add(models)
+    table = bench_models(s, models, load_cases(cases_dir), repeats, thinking=thinking)
     typer.echo(bench_markdown(table))
 
 
