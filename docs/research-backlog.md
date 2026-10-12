@@ -14,7 +14,7 @@ Still blocked (403 through this environment's network policy): ntrs.nasa.gov, ww
 
 ## Knowledge-base corpus
 
-**In the manifest** (read in full; US Government public domain or CC BY): NASA-STD-3001 Vol 1 Rev C and Vol 2 Rev F; the HRP evidence reports on in-flight medical conditions (2017) and SANS (2022); the drug potency (2023) and ISS formulary expiration (2024) papers; the lunar dust (2022) and Martian dust (2025) reviews; and the CPR in extreme environments scoping review (2024). The 2022 SANS report replaces the 2017 version that was on the original list.
+**In the manifest** (read in full; US Government public domain or CC BY): NASA-STD-3001 Vol 1 Rev C and Vol 2 Rev F; the HRP evidence reports on in-flight medical conditions (2017) and SANS (2022); the drug potency (2023) and ISS formulary expiration (2024) papers; the lunar dust (2022) and Martian dust (2025) reviews; and the CPR in extreme environments scoping review (2024). The 2022 SANS report replaces the 2017 version that was on the original list. Added in Oct 2026: eight more HRP evidence reports, listed below.
 
 **Proposed additions** (read in full, permissive, not on the original candidate list):
 
@@ -22,20 +22,22 @@ Still blocked (403 through this environment's network policy): ntrs.nasa.gov, ww
 |---|---|---|
 | Hinkelbein et al., ESAM/DGLRM guideline for CPR in microgravity (2020), PMC7607644 | CC BY 4.0 | The recommendations behind the microgravity CPR protocol variants; cited as [R9] |
 
-**Proposed clinical sources (Oct 2026, waiting for approval).** The practice consults showed the knowledge base has no clinical source for acute radiation syndrome, wounds, tetanus or decompression sickness, so the assessment abstains on them. These are proposed to fill that gap. None is read in full yet; each will be read in full, and its license confirmed on the document itself, before it goes in the manifest. NASA documents the NASA team adds go through the same steps.
+**Clinical sources (Oct 2026).** The practice consults showed the knowledge base had no clinical source for acute radiation syndrome, wounds, tetanus or decompression sickness, so the assessment abstained on them. Sources were proposed to fill that gap, and each is read in full and its license confirmed on the document itself before it goes in the manifest. NASA documents the NASA team adds go through the same steps.
 
-*Reachable now, license stated on the title page.* All are NASA HRP evidence reports on humanresearchroadmap.nasa.gov, marked "Approved for Public Release", the same series and terms as the two HRP reports already in the corpus. Some co-authors are contractors or university staff, as in those two.
+*Added to the manifest.* NASA HRP evidence reports on humanresearchroadmap.nasa.gov, marked "Approved for Public Release", the same series and terms as the two HRP reports already in the corpus. Some co-authors are contractors or university staff, as in those two. The body of each was read in full and the reference lists skimmed. These are risk reports, not treatment protocols, so they support the assessment's reasoning but do not replace a clinical handbook.
 
-| Priority | Document | Pages | Why |
-|---|---|---|---|
-| 1 | Risk of Acute Radiation Syndromes due to Solar Particle Events (2016; `evidence/other/Acute.pdf`) | 69 | The gap from the radiation practice consult: symptom phases, human evidence, blood-count response, countermeasures such as G-CSF, solar alerts and shelter. A risk report, not a treatment protocol |
-| 2 | Risk of Renal Stone Formation (2024) | 42 | Kidney stones, the demo scenario; risk factors and in-flight management |
-| 3 | Risk of Reduced Crew Health and Performance due to Decompression Sickness and Hypoxia (2023) | 94 | Decompression sickness after a spacewalk (on the must-not-miss list) and hypoxia |
-| 4 | Risk of Injury and Compromised Performance due to EVA Operations (2022) | 65 | Suit and glove injuries, including hands |
-| 5 | Risk of Ineffective or Toxic Medication During Long-Duration Exploration Spaceflight (2023) | 126 | Medication stability and dosing in flight; supports the formulary |
-| 6 | Risk of Adverse Health Effects due to Host-Microorganism Interactions (2022) | 29 | Infection risk aboard, including wounds |
-| 7 | Risk of Bone Fracture due to Spaceflight-induced Changes to Bone (2024) | 60 | Fractures |
-| 8 | Risk of Injury due to Dynamic Loads (2021) | 106 | Injuries from launch, landing and impacts |
+| Report | What it gives SpaceDoc | Use in a consult |
+|---|---|---|
+| Acute Radiation Syndromes due to Solar Particle Events (2016) | Symptom phases and timing, dose thresholds, blood-count response, antiemetics and G-CSF as countermeasures, skin injury | High: the gap from the radiation practice consult |
+| Renal Stone Formation (2024) | Presentation, differential, risk factors, ultrasound and urine checks, hydration and medicines aboard | High: the demo scenario |
+| Decompression Sickness and Hypoxia (2023) | Signs and types of decompression sickness after a spacewalk, in-suit and cabin pressure treatment, hypoxia signs, oxygen | High: on the must-not-miss list |
+| Injury and Compromised Performance due to EVA Operations (2022) | Hand, shoulder and foot injuries from the suit, heat stress, CO2 symptoms | Moderate |
+| Host-Microorganism Interactions (2022) | Infections seen in flight and viral reactivation | Moderate |
+| Ineffective or Toxic Medication (2023) | Drug stability and shelf life; repackaging shortens shelf life, while most drugs in sealed packaging keep their strength well past the expiry date | Low to moderate: drug quality, not dosing |
+| Bone Fracture due to Spaceflight-induced Changes to Bone (2024) | Mostly bone loss and fracture-risk estimates | Low: little on treating a fracture |
+| Injury due to Dynamic Loads (2021) | Mostly occupant-protection engineering for launch and landing; injury rates, mild head and spine injury | Low |
+
+Still not covered by any source in the corpus: wound care and tetanus prophylaxis, an acute radiation syndrome treatment protocol, and drug labels. The sources for these are below, all on hosts this environment blocks.
 
 *Probably US Government works; not reachable from the build environment, so the license is not yet confirmed.* These hosts were blocked by this environment's network policy in Oct 2026; they may load fine on the Mac.
 

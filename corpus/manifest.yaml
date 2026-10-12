@@ -19,7 +19,7 @@
 #     topic_tags: [standards, levels-of-care]
 #     published: "2023"
 #
-# Every source below was read in full (Sept 2026) and is US Government public domain or CC BY.
+# Every source below was read in full (Sept-Oct 2026) and is US Government public domain or CC BY.
 # Each sha256 was checked by downloading the file with `spacedoc corpus fetch`. Candidates
 # that are unread, unreachable, or licensed NC/ND are listed in docs/research-backlog.md.
 # PMC papers are fetched from the PMC Open Access bucket on AWS, because the PMC website
@@ -130,3 +130,103 @@ sources:
     topic_tags: [cpr, resuscitation, emergency]
     published: "2024-09-03"
     notes: "Resusc Plus 2024;20:100762. doi:10.1016/j.resplu.2024.100762. PMCID PMC11404056. Manikin studies only."
+
+  # NASA HRP evidence reports added Oct 2026 to fill the clinical gaps found in the practice
+  # consults (radiation sickness, kidney stones, decompression sickness, spacewalk injuries,
+  # medicines, infection, fractures, launch and landing injuries). The body of each was read
+  # in full and the reference lists skimmed. Each title page says "Approved for Public
+  # Release". Some co-authors are contractors (KBR, Geocontrol) or university staff, as in
+  # the two HRP reports above. These are risk reports, not treatment protocols.
+  - id: nasa-hrp-ars-2016
+    title: "Evidence Report: Risk of Acute Radiation Syndromes due to Solar Particle Events"
+    file: nasa-hrp-ars-2016.pdf
+    url: https://humanresearchroadmap.nasa.gov/evidence/other/Acute.pdf
+    sha256: 4d855600fb020592ed2e53a8a8b1166056197c8d2fd3698c1f2b87154b5a5624
+    license: US Government work (public domain); NASA public release
+    tier: B
+    environment_tags: [microgravity, partial-gravity, long-duration, no-evacuation]
+    topic_tags: [radiation, acute-radiation-syndrome, solar-particle-events, hematology, antiemetics, countermeasures]
+    published: "2016-04-06"
+    notes: "Symptom phases, dose thresholds, lymphocyte counts, and countermeasures such as antiemetics and G-CSF."
+
+  - id: nasa-hrp-renal-2024
+    title: "Evidence Report: Risk of Renal Stone Formation"
+    file: nasa-hrp-renal-2024.pdf
+    url: https://humanresearchroadmap.nasa.gov/evidence/other/2024%20Renal%20Evidence%20Report_Final.pdf
+    sha256: b7e4fa985fc18e5f9a9946f8f63209e9f5e28c29ecfef7690033baf7d4ab23d7
+    license: US Government work (public domain); NASA public release
+    tier: B
+    environment_tags: [microgravity, long-duration, no-evacuation]
+    topic_tags: [renal, kidney-stones, urology, ultrasound, hydration]
+    published: "2024-09-23"
+
+  - id: nasa-hrp-dcs-hypoxia-2023
+    title: "Evidence Report: Risk of Reduced Crew Health and Performance due to Decompression Sickness and Hypoxia"
+    file: nasa-hrp-dcs-hypoxia-2023.pdf
+    url: https://humanresearchroadmap.nasa.gov/evidence/reports/Evidence%20Report%20Hypoxia%20and%20DCS_FINAL_1-8-2024.pdf
+    sha256: 83712b9cfe8f4756033f83bf8eee754dbf7c46b97e7aa066aece512ebeb9b468
+    license: US Government work (public domain); NASA public release
+    tier: B
+    environment_tags: [microgravity, partial-gravity, long-duration]
+    topic_tags: [decompression-sickness, hypoxia, eva, atmosphere, hyperbaric-treatment]
+    published: "2023-10-31"
+    notes: "File name is dated 2024-01-08; the title page gives the public release date used here."
+
+  - id: nasa-hrp-eva-injury-2022
+    title: "Evidence Report: Risk of Injury and Compromised Performance due to EVA Operations"
+    file: nasa-hrp-eva-injury-2022.pdf
+    url: https://humanresearchroadmap.nasa.gov/evidence/other/EVA%20Injury%20Evidence%20Report%20FINAL_6-14-2023.pdf
+    sha256: d843cf3a035251dfe4ba1e64a0fd96407ed239acb645ae925ebdf534fa89098d
+    license: US Government work (public domain); NASA public release
+    tier: B
+    environment_tags: [microgravity, partial-gravity]
+    topic_tags: [eva, suit-injury, hand-injury, shoulder-injury, heat-stress, co2]
+    published: "2022-05-16"
+    notes: "File name is dated 2023-06-14; the title page gives the public release date used here and says review was ongoing."
+
+  - id: nasa-hrp-pharm-2023
+    title: "Evidence Report: Risk of Ineffective or Toxic Medication During Long-Duration Exploration Spaceflight"
+    file: nasa-hrp-pharm-2023.pdf
+    url: https://humanresearchroadmap.nasa.gov/evidence/other/Pharm%20evidence%20report_12-20-23_FINAL.pdf
+    sha256: 0bef8227c8a0c33e2f43ee4844dde6636f37e89ef14e0c3acf8b8020010886db
+    license: US Government work (public domain); NASA public release
+    tier: B
+    environment_tags: [microgravity, long-duration, no-evacuation]
+    topic_tags: [pharmacology, drug-stability, repackaging, shelf-life, formulary]
+    published: "2023-12-20"
+    notes: "Covers drug stability and packaging only; effects of spaceflight on how the body handles drugs are left to a later report. Appendices 2 and 6-9 read; the data-table appendices skimmed."
+
+  - id: nasa-hrp-host-micro-2022
+    title: "Evidence Report: Risk of Adverse Health Effects Due to Host-Microorganism Interactions"
+    file: nasa-hrp-host-micro-2022.pdf
+    url: https://humanresearchroadmap.nasa.gov/evidence/reports/Host_Micro%20EB_Final%207-6-22.pdf
+    sha256: 18495b207d059150fa6a82b1910ddad91c2bf395b2b636fb68697ca496e50911
+    license: US Government work (public domain); NASA public release
+    tier: B
+    environment_tags: [microgravity, long-duration]
+    topic_tags: [infection, microbiology, viral-reactivation, immunology]
+    published: "2022-07-06"
+
+  - id: nasa-hrp-bone-fracture-2024
+    title: "Evidence Report: Risk of Bone Fracture due to Spaceflight-induced Changes to Bone"
+    file: nasa-hrp-bone-fracture-2024.pdf
+    url: https://humanresearchroadmap.nasa.gov/evidence/reports/Bone%20Fracture%20Evidence%20Report_07-18-2024.pdf
+    sha256: 154a70e7b51b0ac07d71ba559af2a6841da8bcdb280c71d21bb91b398216b902
+    license: US Government work (public domain); NASA public release
+    tier: B
+    environment_tags: [microgravity, partial-gravity, long-duration]
+    topic_tags: [bone, fracture, bone-density, orthopedics]
+    published: "2024-07-18"
+    notes: "Mostly bone loss and fracture-risk estimates; little on treating a fracture aboard."
+
+  - id: nasa-hrp-dynamic-loads-2021
+    title: "Evidence Report: Risk of Injury Due to Dynamic Loads"
+    file: nasa-hrp-dynamic-loads-2021.pdf
+    url: https://humanresearchroadmap.nasa.gov/evidence/reports/OP%20Dynamic%20Loads%20EB%20FINAL_11-30-22.pdf
+    sha256: 9df97456035899e73ffe4f08d791018001e4aec0b4a79c3b03746d52fdf61527
+    license: US Government work (public domain); NASA public release
+    tier: B
+    environment_tags: [microgravity, partial-gravity]
+    topic_tags: [launch-landing, injury, spine, head-injury, occupant-protection]
+    published: "2021-09-15"
+    notes: "Revision A. Mostly occupant-protection engineering for launch and landing; also injury rates, mild head injury and spine injury."
