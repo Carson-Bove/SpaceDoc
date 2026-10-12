@@ -66,35 +66,6 @@ def corpus_ingest(config: Path = ConfigOpt) -> None:
 
 
 @app.command()
-def ask(
-    question: str,
-    tier: str = typer.Option(None, help="Environment tier T1-T5"),
-    patient: Path = typer.Option(None, help="YAML/JSON file with the patient record"),
-    role: str = "cmo",
-    demo: bool = typer.Option(False, help="Scripted demo mode (no model needed)"),
-    as_json: bool = typer.Option(False, "--json", help="Print the full verified answer as JSON"),
-    config: Path = ConfigOpt,
-) -> None:
-    """Ask a question and print the verified answer."""
-    import yaml
-
-    from spacedoc.render.text import render_text
-    from spacedoc.system import build_system
-
-    settings = load_settings(config)
-    if not demo:
-        warn_about_models(settings)
-    system = build_system(settings, demo=demo)
-    record = yaml.safe_load(patient.read_text()) if patient else None
-    if demo and record is None:
-        from spacedoc.demo import DEMO_PATIENT
-
-        record = DEMO_PATIENT
-    v = system.orchestrator.ask(question, system.environment(tier), record, role)
-    typer.echo(v.model_dump_json(indent=2) if as_json else render_text(v))
-
-
-@app.command()
 def serve(
     host: str = "127.0.0.1",
     port: int = 8765,
@@ -104,7 +75,7 @@ def serve(
     ),
     config: Path = ConfigOpt,
 ) -> None:
-    """Start the local GUI at http://127.0.0.1:8765."""
+    """Start the consult page at http://127.0.0.1:8765."""
     import uvicorn
 
     from spacedoc.system import build_system

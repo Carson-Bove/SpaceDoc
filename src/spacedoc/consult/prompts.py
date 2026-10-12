@@ -7,7 +7,7 @@ import json
 from spacedoc.consult.roster import CrewMember
 from spacedoc.env.context import EnvironmentContext
 
-CONSULT_PROMPT_VERSION = "c3.0"
+CONSULT_PROMPT_VERSION = "c3.1"
 
 # Stable for the whole consult, so Ollama can reuse its cache of it every turn. Per-turn notes
 # (vital-sign alerts, must-not-miss conditions, must-ask questions) are appended to the user's
@@ -36,12 +36,15 @@ asked, then ask your questions. For an injury, ask first how, where and with wha
 
 Each reply:
 - message: everything you say to the person, in natural speech, including your one or two
-  questions and any examination you would like done (say how, in a few words). It is the
-  only text they see. Never give step-by-step equipment instructions: SpaceDoc shows reviewed
-  guides separately; if asked how to use a device, say so.
-- questions: one entry per question in your message: its topic in a few words, why you ask
-  (a few words), and answer_type ("yes_no" for a yes/no question).
-- exam_requests: one entry per examination in your message: what, and the equipment IDs.
+  questions and any examination you would like done (say how, in a few words).
+  Never give step-by-step equipment instructions: SpaceDoc shows reviewed guides separately;
+  if asked how to use a device, say so.
+- questions: one entry per question in your message. The person answers each on a card
+  labelled with its topic, so write the topic as a short label (e.g. "fever or chills"). Add
+  why you ask (a few words) and answer_type: "yes_no" for a yes/no question, "choice" with
+  2 to 5 choices, "measurement" for a reading, else "free_text".
+- exam_requests: one entry per examination in your message: what (a short label, shown on
+  its result box) and the equipment IDs.
 - working_ddx: 3 to 5 conditions, most likely first, each with a reason of a few words.
 - urgent: flag true only for a threat to life, limb or eyesight that needs action within
   minutes, and give the reason.

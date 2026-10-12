@@ -60,4 +60,4 @@ pip install -e ".[dev]"
 spacedoc serve --demo
 ```
 
-Then open http://127.0.0.1:8765: a scripted demo that needs no model. Run the tests with `pytest -q`.
+Then open http://127.0.0.1:8765 and start a consult: a scripted demo that needs no model. Run the tests with `pytest -q`.

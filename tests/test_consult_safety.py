@@ -8,6 +8,7 @@ from spacedoc.consult.engine import Answer, ExamResult
 from spacedoc.consult.render import record_markdown, render_turn
 from spacedoc.llm.client import FakeLLM
 from spacedoc.system import build_system
+from tests.conftest import exposure
 
 ARS_TURN_1 = (
     "Crewmember had sudden onset nausea and vomiting as well as headaches and dizziness 34 hours "
@@ -91,17 +92,27 @@ def test_reversed_blood_pressure_is_flagged_for_recheck(demo_system, env_t4):
     assert "recheck the reading" in bp.message
 
 
-def test_exposure_check_comes_once_after_the_first_message(demo_system, env_t4):
+def test_exposure_card_comes_after_the_first_message(demo_system, env_t4):
     engine = demo_system.consult
     c = engine.start("C1", "C3", env_t4)
     first = engine.turn(c, "flank pain in waves")
-    assert first.exposure_asked
-    assert first.reply.message.endswith(engine.screen.sentence)
-    assert "One more thing: has there been a recent spacewalk" in render_turn(first)
-    second = engine.turn(c, "no fever, no spacewalk or alarms")
-    assert not second.exposure_asked and engine.screen.sentence not in second.reply.message
+    assert first.exposure_asked and [i.id for i in first.screen][0] == "EXP-EVA"
+    assert first.reply.message.endswith(engine.screen.lead)
+    second = engine.turn(c, "no fever", exposure(engine))
+    assert not second.screen and engine.screen.lead not in second.reply.message
     # The model is told what SpaceDoc asked on its behalf.
     assert "SpaceDoc's last message also asked: One more thing" in second.notes
+
+
+def test_unanswered_exposure_card_is_shown_once_more(demo_system, env_t4):
+    engine = engine_with(demo_system, {**HEMORRHAGIC, "urgent": {"flag": False, "reason": ""}})
+    c = engine.start("C1", "C3", env_t4)
+    engine.turn(c, "feeling unwell")
+    again = engine.turn(c, "since this morning")
+    assert again.screen and "Please also answer the exposure check" in again.reply.message
+    third = engine.turn(c, "still the same")
+    assert not third.screen
+    assert "Exposure check: not answered." in engine.case_summary(c)
 
 
 def test_assessment_starts_with_the_urgent_steps(demo_system, env_t4):

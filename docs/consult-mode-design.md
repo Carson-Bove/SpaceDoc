@@ -1,6 +1,6 @@
 # Consult Mode — Design Proposal
 
-> **Status: approved. M1 (terminal consult) and M2 (web page) are built, plus the changes from the first practice consult (§12) and the conversation-first turns and must-ask lists from the later ones (§13). Next: equipment knowledge from the ISS inventory, and speed on the laptop.** Decision for M2: the working list is shown to every user, including a crewmember who is the patient. Decisions marked ✅ were agreed in discussion; the answers to the design's open questions are in [§11](#11-decisions-on-the-open-questions).
+> **Status: approved. M1 (terminal consult) and M2 (web page) are built, plus the changes from the first practice consult (§12), the conversation-first turns and must-ask lists from the later ones (§13), and answer cards with consult as the only mode (§14). Next: equipment knowledge from the ISS inventory, and speed on the laptop.** Decision for M2: the working list is shown to every user, including a crewmember who is the patient. Decisions marked ✅ were agreed in discussion; the answers to the design's open questions are in [§11](#11-decisions-on-the-open-questions).
 
 Phase 1 built a **one-shot** SpaceDoc: one message in, one checked answer out. That is not how a consult works. A clinician asks questions, narrows the possibilities, examines, and only then gives an assessment.
 
@@ -14,8 +14,8 @@ Consult mode makes SpaceDoc **semi-conversational**. It asks one or two question
 | 2 | When questioning stops | ✅ SpaceDoc decides when it has enough (usually 3–6 rounds of 1–2 questions). The user can press **Assess now** at any time. A dangerous answer jumps straight to urgent guidance |
 | 3 | Working differential | ✅ Shown during questioning, labelled "working list, not yet checked", with a one-line reason for each question. At the end, the **full reasoning log** is available |
 | 4 | Exams and measurements | ✅ SpaceDoc can ask for exams or measurements, limited to equipment aboard. Later, SpaceDoc minis attached to the crewmember supply readings automatically |
-| 5 | Answer input | ✅ Free text, plus quick buttons (yes / no / not sure) for simple questions |
-| 6 | One-shot mode | ✅ Kept as **Quick question** for general questions. **Consult** is added for symptoms |
+| 5 | Answer input | ✅ Free text, plus an answer card for each question and measurement (§14) |
+| 6 | One-shot mode | ✅ First kept as **Quick question**; removed later, so consult is the only mode (§14) |
 | 7 | Speed | ✅ 10–15 s per question turn on the MacBook Air. The final checked assessment may take longer |
 | 8 | Thinking | ✅ Off for question turns (speed); on for the final assessment, which keeps the reasoning summaries for clinical review |
 | 9 | Testing | ✅ Clinicians write scenarios and run them with each other (one plays the patient or CMO), SpaceDoc's performance is graded, and **practice sessions** feed a feedback loop |
@@ -113,7 +113,7 @@ When SpaceDoc has enough, or the user presses **Assess now**:
 
 ## 6. What the user sees
 
-- **Chat panel:** one SpaceDoc message per turn, like a conversation, with the reasons for its questions folded underneath. **Yes / No / Not sure** buttons appear only when the message asks a single yes/no question. Readings are typed as answers.
+- **Chat panel:** one SpaceDoc message per turn, like a conversation, with an **answer card** per question (Yes / No / Not sure, choices, or a short text box) and a **result box** per measurement under it, and the reasons for its questions folded underneath. The first message also has the **exposure check** card (§14).
 - **Working list panel:** the current differential, labelled *working list, not yet checked*. It updates every turn and highlights what changed.
 - **Equipment notes:** shown under the message only when a requested exam needs equipment that is not aboard or does not work in the environment.
 - **Urgent card (red flag):** shows at once, with the reason and the immediate steps from a clinician-reviewed list. It offers an immediate checked assessment. It also states the communication delay to the ground for the current mission tier. The full emergency protocol engine (C-05) is a later item, so Phase 1 shows only these reviewed steps.
@@ -272,3 +272,24 @@ Later practice consults, including a hand laceration, showed:
 Quick replies appear only when the message asks a single yes/no question and SpaceDoc added nothing to it, so a button can never answer the wrong question. The same rule applies to `y`/`n` in Terminal.
 
 **Sources for the clinical gaps.** The NASA team adds NASA documents. SpaceDoc proposes open-access clinical references in [research-backlog.md](research-backlog.md); each is read in full and its licence checked before it is added to the manifest.
+
+## 14. Answer cards, and consult as the only mode
+
+After trying the conversation-first page, the NASA team asked for the answer cards back, since they made answering quicker, and for the one-question mode to go.
+
+| Decision | What changed |
+|---|---|
+| Message plus cards | SpaceDoc's plain message stays. Under it, one card per question (Yes / No / Not sure for yes/no, buttons for a choice, a short text box otherwise; must-ask questions SpaceDoc adds get a card too) and a result box per measurement. Everything is sent together with any typed text |
+| Exposure check card | The six exposure questions, each Yes / No / Not sure, plus **None of these**. Shown with the first reply and once more if unanswered; the assessment waits for it unless an alert was raised. In Terminal: `none`, or the numbers that apply (`?` if unsure) |
+| One-question mode removed | The Quick question tab, `/api/ask` and `spacedoc ask` are gone. `spacedoc eval` and `spacedoc bench` stay, as developer tools that run written cases through the assessment step |
+
+**A "No" never raises an alarm.** Earlier, a No to SpaceDoc's own question about smoke raised the fire card. That was fixed by checking only the user's words; with the cards back, every path a No could take is now closed and tested (`tests/test_no_false_alarms.py`):
+
+| Path | How it is closed |
+|---|---|
+| Red-flag and vital-sign rules | They read only what the user typed or chose, and the topic of a question answered **Yes**. SpaceDoc's question text, and No or Not sure answers, are never read |
+| Must-not-miss list | Exposure-card **Yes** and **Not sure** add the item's draft text (`if_yes` in `data/rules/exposure_screen.yaml`); No adds nothing |
+| The question-turn model | Each No is spelled out as "no …", with an instruction to treat it as absent and not ask again |
+| The assessment | Items answered No are not named ("No to all 6 spaceflight exposures asked about"), so their wording cannot steer the source search or the model |
+| Typed negatives | A negation now covers a list joined by "or" ("no spacewalk, radiation alert, smoke or smell"; "there hasn't been any smoke or fire"), and "denies" or "negative for" covers a comma list. It never covers a new statement: "no fever, I have chest pain", "no fever, chest pain" and "no fever and chest pain since this morning" still raise the chest-pain card, since missing a real sign costs more than one dismissed card |
+

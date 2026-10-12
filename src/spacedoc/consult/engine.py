@@ -7,6 +7,7 @@ pipeline on a summary of the consult. See docs/consult-mode-design.md.
 
 from __future__ import annotations
 
+import re
 import time
 import uuid
 from dataclasses import asdict, dataclass, field, replace
@@ -21,28 +22,40 @@ from spacedoc.audit.log import AuditLog
 from spacedoc.consult import prompts
 from spacedoc.consult.redflags import RedFlagHit, RedFlags
 from spacedoc.consult.roster import CrewMember
-from spacedoc.consult.safety import ExposureScreen, MustAsk, MustNotMiss, VitalRules
-from spacedoc.consult.schema import ExamRequest, TurnReply, WorkingDx
+from spacedoc.consult.safety import (
+    ExposureScreen,
+    MustAsk,
+    MustNotMiss,
+    ScreenItem,
+    VitalRules,
+    answer_kind,
+)
+from spacedoc.consult.schema import ExamRequest, Question, TurnReply, WorkingDx
 from spacedoc.env.context import EnvironmentContext
 from spacedoc.llm.client import LLM, ChatResult, GenParams, LLMError
 from spacedoc.verify.rules import FeasibilityRule, check_feasibility, record_summary
 
 SELF = "self"
 UNLISTED = "unlisted"
-YES = {"yes", "y"}
 
 
 class Answer(BaseModel):
-    """A button answer: to one of SpaceDoc's questions, or to the exposure check."""
+    """An answer from a card: to one of SpaceDoc's questions (Yes / No / Not sure, a choice,
+    or a short typed answer), or to one item of the exposure check."""
 
     kind: Literal["question", "screen"] = "question"
-    question: str
+    question: str  # the question's topic, or the exposure item's question
     answer: str
     screen_id: str | None = None
 
     @property
     def yes(self) -> bool:
-        return self.answer.strip().lower() in YES
+        return answer_kind(self.answer) == "yes"
+
+    @property
+    def typed(self) -> bool:
+        """A typed or chosen answer: the user's own words."""
+        return answer_kind(self.answer) == "typed"
 
 
 class ExamResult(BaseModel):
@@ -51,11 +64,9 @@ class ExamResult(BaseModel):
 
 
 def compose(text: str, answers: list[Answer], exams: list[ExamResult]) -> str:
-    """The message as the model and the transcript see it: answers, exams, then free text."""
+    """The message as the model and the transcript see it: answers, exams, then free text.
+    Exposure-check answers are kept apart (Turn.exposure_answers)."""
     lines = [f"{a.question}: {a.answer}." for a in answers if a.kind == "question"]
-    screen = [f"{a.question} {a.answer}." for a in answers if a.kind == "screen"]
-    if screen:
-        lines.append("Exposure check: " + " ".join(screen))
     lines += [f"Exam ({e.request}): {e.result}" for e in exams]
     if text.strip():
         lines.append(text.strip())
@@ -92,7 +103,8 @@ class Turn:
     user_text: str
     # What the deterministic checks read: only the user's own words. SpaceDoc's question text
     # counts only when the user answered "Yes" to it, so a "No" to "Any smoke?" never trips
-    # the fire rule.
+    # the fire rule. Exposure-check wording is never read; a Yes or Not sure adds its
+    # must-not-miss text (mnm_text) only.
     check_text: str = ""
     mnm_text: str = ""
     red_flags: list[RedFlagHit] = field(default_factory=list)
@@ -110,6 +122,9 @@ class Turn:
     must_ask_added: list[str] = field(default_factory=list)  # must-ask IDs added by SpaceDoc
     must_not_miss_added: list[str] = field(default_factory=list)  # put back by SpaceDoc
     notes: str = ""  # SpaceDoc notes sent to the model with this message
+    screen: list[ScreenItem] = field(default_factory=list)  # exposure card shown with the reply
+    exposure_answers: dict[str, str] = field(default_factory=dict)  # sent with this message
+    exposure_text: str = ""  # how those answers were put to the model
 
     @property
     def paused(self) -> bool:
@@ -133,6 +148,8 @@ class Consult:
     assessments: list[VerifiedAnswer] = field(default_factory=list)
     patient_summary: str = "none"
     must_not_miss: list[str] = field(default_factory=list)  # active rule IDs
+    exposure: dict[str, str] = field(default_factory=dict)  # exposure-check answers by item ID
+    exposure_shown: int = 0  # times the exposure card was shown (at most twice)
     must_ask: list[str] = field(default_factory=list)  # active must-ask list IDs
 
     @property
@@ -269,21 +286,36 @@ class ConsultEngine:
         `answers` and `exams` come from the buttons and result boxes; `text` is typed.
         """
         answers, exams = answers or [], exams or []
-        turn = Turn(n=len(consult.turns) + 1, user_text=compose(text, answers, exams))
-        affirmed = [a.question for a in answers if a.kind == "question" and a.yes]
+        questions = [a for a in answers if a.kind == "question"]
+        turn = Turn(n=len(consult.turns) + 1, user_text=compose(text, questions, exams))
+        if self.screen:
+            turn.exposure_answers = {
+                a.screen_id: a.answer
+                for a in answers
+                if a.kind == "screen" and a.screen_id and self.screen.item(a.screen_id)
+            }
+            consult.exposure.update(turn.exposure_answers)
+        # Only the user's own words are checked: what they typed or chose, and the topic of a
+        # question they answered "Yes". A "No" or "Not sure" adds nothing.
+        affirmed = [a.question for a in questions if a.yes]
+        typed = [a.answer for a in questions if a.typed]
         turn.check_text = "\n".join(
-            p for p in [text.strip(), *(e.result for e in exams), *affirmed] if p
+            p for p in [text.strip(), *typed, *(e.result for e in exams), *affirmed] if p
         )
-        turn.mnm_text = turn.check_text
+        screen_mnm = self.screen.must_not_miss_text(turn.exposure_answers) if self.screen else []
+        turn.mnm_text = "\n".join([turn.check_text, *screen_mnm])
         turn.red_flags = self.red_flags.screen(turn.check_text, consult.delay())
         if self.vitals:
-            # The device SpaceDoc asked to use tells the parser what a bare "85%" is; the
-            # device names are SpaceDoc's words but carry no symptoms.
+            # What SpaceDoc asked to measure tells the parser what a bare "85%" is. Those words
+            # are SpaceDoc's but carry no symptoms; their digits are dropped so only the
+            # user's numbers are read.
+            last = consult.last_reply
             vitals_text = "\n".join(
                 [
                     text.strip(),
-                    *(f"Exam ({e.request}): {e.result}" for e in exams),
-                    *_device_context(text, consult.last_reply),
+                    *(f"{_no_digits(a.question)}: {a.answer}" for a in questions if a.typed),
+                    *(line for e in exams for line in _exam_context(e, last)),
+                    *_device_context(text, last),
                 ]
             )
             turn.red_flags += self.vitals.alerts(vitals_text, consult.delay())
@@ -325,7 +357,13 @@ class ConsultEngine:
 
     @staticmethod
     def _spacedoc_words(consult: Consult) -> str:
-        return "\n".join(t.reply.message for t in consult.turns if t.reply)
+        """Everything SpaceDoc has asked: its messages and the exposure card's questions."""
+        parts = []
+        for t in consult.turns:
+            if t.reply:
+                parts.append(t.reply.message)
+            parts += [i.question for i in t.screen]
+        return "\n".join(parts)
 
     def pending_must_ask(self, consult: Consult) -> list[tuple[str, object]]:
         """(complaint, question) pairs not yet asked or answered, in list order."""
@@ -360,7 +398,9 @@ class ConsultEngine:
     def _ask_model(self, consult: Consult, turn: Turn) -> Turn:
         pending_before = {i.id for _, i in self.pending_must_ask(consult)}
         turn.notes = self._notes(consult, turn)
-        content = turn.user_text
+        if self.screen and turn.exposure_answers:
+            turn.exposure_text = self.screen.for_model(turn.exposure_answers)
+        content = "\n".join(p for p in [turn.user_text, turn.exposure_text] if p)
         if turn.notes:
             content += f"\n\n[SpaceDoc notes, not from the user]\n{turn.notes}"
         messages = consult.messages + [{"role": "user", "content": content}]
@@ -407,13 +447,29 @@ class ConsultEngine:
                 _, item = pending_after[0]
                 lead = "Before the assessment: " if reply.ready_to_assess else ""
                 self._append(turn, lead + item.question)
+                reply.questions.append(
+                    Question(
+                        topic=item.topic,
+                        why="On SpaceDoc's must-ask list (draft)",
+                        answer_type="free_text",
+                    )
+                )
                 turn.must_ask_added.append(item.id)
                 pending_after = pending_after[1:]
             if pending_after and not consult.alerts:
                 reply.ready_to_assess = False  # finish the must-ask questions first
-            if turn.n == 1 and self.screen:
-                self._append(turn, self.screen.sentence)
+            if self.screen and not consult.exposure and consult.exposure_shown < 2:
+                # Shown after the first reply, and once more if it was not answered.
+                consult.exposure_shown += 1
+                again = consult.exposure_shown > 1
+                self._append(
+                    turn,
+                    "Please also answer the exposure check below." if again else self.screen.lead,
+                )
+                turn.screen = list(self.screen.items)
                 turn.exposure_asked = True
+                if not consult.alerts:
+                    reply.ready_to_assess = False
             turn.exam_checks = [self._check_exam(e, consult.env) for e in turn.reply.exam_requests]
             if consult.deep_log:
                 turn.thinking = "\n\n".join(r.thinking for r in results if r.thinking)
@@ -449,7 +505,12 @@ class ConsultEngine:
         if consult.rounds >= self.max_rounds:
             return f"SpaceDoc has asked {self.max_rounds} rounds of questions."
         last = next(t for t in reversed(consult.turns) if t.reply)
-        if not reply.questions and not reply.exam_requests and not last.appended:
+        if (
+            not reply.questions
+            and not reply.exam_requests
+            and not last.appended
+            and not last.screen
+        ):
             return "SpaceDoc has no further questions."
         return None
 
@@ -468,12 +529,15 @@ class ConsultEngine:
         follow = []
         for prev, cur in zip(consult.turns, consult.turns[1:], strict=False):
             asked = " ".join(prev.reply.message.split()) if prev.reply else ""
+            answer = cur.user_text or "(answered the exposure check only)"
             if asked:
-                follow.append(f'- SpaceDoc said: "{asked}"\n  Answer: "{cur.user_text}"')
+                follow.append(f'- SpaceDoc said: "{asked}"\n  Answer: "{answer}"')
             else:
-                follow.append(f'- Added: "{cur.user_text}"')
+                follow.append(f'- Added: "{answer}"')
         if follow:
             lines += ["Follow-up questions and answers:"] + follow
+        if self.screen and consult.exposure_shown:
+            lines.append(self.screen.for_summary(consult.exposure))
         flags = sorted({h.message for h in consult.alerts})
         if flags:
             lines.append(
@@ -561,6 +625,9 @@ class ConsultEngine:
                 "must_not_miss_added": turn.must_not_miss_added,
                 "appended": turn.appended,
                 "exposure_asked": turn.exposure_asked,
+                "screen": [i.id for i in turn.screen],
+                "exposure_answers": turn.exposure_answers,
+                "exposure_text": turn.exposure_text,
                 "must_ask_added": turn.must_ask_added,
             },
         )
@@ -595,6 +662,22 @@ _DEVICE_CUES = {
     "blood_pressure_cuff": "blood pressure",
     "thermometer": "temperature",
 }
+
+
+def _no_digits(words: str) -> str:
+    return re.sub(r"\d", "", words)
+
+
+def _exam_context(exam: ExamResult, last: TurnReply | None) -> list[str]:
+    """An exam result with the request it answers, plus the measurement its device takes, so
+    "88%" in the pulse oximeter's box is read as oxygen saturation."""
+    lines = [f"Exam ({_no_digits(exam.request)}): {exam.result}"]
+    request = next(
+        (r for r in (last.exam_requests if last else []) if r.what == exam.request), None
+    )
+    devices = set(request.equipment) if request else set()
+    lines += [f"{cue}: {exam.result}" for d, cue in _DEVICE_CUES.items() if d in devices]
+    return lines
 
 
 def _device_context(text: str, last: TurnReply | None) -> list[str]:

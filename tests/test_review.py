@@ -60,11 +60,15 @@ def test_long_notes_are_shortened_to_fit(tmp_path):
     assert "middle of the notes omitted" in prompt and len(prompt) < 4096 * 3
 
 
+def consult_assessment(client, text):
+    cid = client.post("/api/consult", json={"user": "C1", "patient": "C3"}).json()["consult_id"]
+    client.post(f"/api/consult/{cid}/turn", json={"text": text})
+    return client.post(f"/api/consult/{cid}/assess").json()
+
+
 def test_review_api(demo_system):
     client = TestClient(create_app(demo_system))
-    v = client.post(
-        "/api/ask", json={"question": FLANK, "tier": "T4", "patient": DEMO_PATIENT}
-    ).json()
+    v = consult_assessment(client, FLANK)
     assert v["reasoning_available"]
     audit_id = v["audit_id"]
 
@@ -78,7 +82,7 @@ def test_review_api(demo_system):
     assert notes["notes"][0]["thinking"] == DEMO_NOTES
 
     assert client.get("/api/review/audit-999999").status_code == 404
-    eye = client.post("/api/ask", json={"question": "eye", "tier": "T4"}).json()
+    eye = consult_assessment(client, "Something in my eye")
     assert client.post(f"/api/review/{eye['audit_id']}/summarize").status_code == 404
 
 

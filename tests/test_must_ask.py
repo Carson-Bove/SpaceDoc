@@ -50,8 +50,10 @@ def test_spacedoc_asks_how_it_happened_when_the_model_does_not(demo_system, env_
     assert turn.must_ask_added == ["MA-INJ-HOW"]
     # The model said it was ready, so the added question says why it comes first.
     assert "Before the assessment: How and where did it happen" in turn.reply.message
-    # The exposure sentence still comes last on the first turn.
-    assert turn.reply.message.endswith(engine.screen.sentence)
+    # It gets its own answer card, and the exposure check still comes last.
+    added = turn.reply.questions[-1]
+    assert added.topic == "how and where it happened" and "must-ask" in added.why
+    assert turn.reply.message.endswith(engine.screen.lead)
     # Questions are still owed, so SpaceDoc does not offer to assess yet.
     assert not turn.reply.ready_to_assess and engine.should_assess(c) is None
     assert "SpaceDoc added a must-ask question" in render_turn(turn)
@@ -81,10 +83,10 @@ def test_no_quick_replies_when_spacedoc_added_a_question(demo_system, env_t4):
     engine = engine_saying(demo_system, says("Is it still bleeding?", questions=yes_no))
     c = engine.start("C2", "C4", env_t4)
     turn = engine.turn(c, CUT)
-    assert turn.appended  # the must-ask question and the exposure sentence
+    assert turn.appended  # the must-ask question and the exposure check
     # "n" could answer the wrong question, so it is sent as typed.
     assert quick_answers("n", turn) is None and answer_prompt(turn) == "Answer"
-    turn.appended = []
+    turn.appended, turn.reply.questions = [], turn.reply.questions[:1]
     assert quick_answers("n", turn)[0].answer == "No" and "y/n/?" in answer_prompt(turn)
 
 

@@ -26,3 +26,15 @@ def env_t4():
 @pytest.fixture
 def demo_system(settings):
     return build_system(settings, demo=True)
+
+
+def exposure(engine, **answers):
+    """Exposure-check answers as the card sends them: every item No unless named, e.g.
+    exposure(engine, EXP_ATMOS="Yes")."""
+    named = {k.replace("_", "-"): v for k, v in answers.items()}
+    from spacedoc.consult.engine import Answer
+
+    return [
+        Answer(kind="screen", question=i.question, answer=named.get(i.id, "No"), screen_id=i.id)
+        for i in engine.screen.items
+    ]

@@ -30,9 +30,6 @@
     padding: 10px 20px; border-bottom: 1px solid var(--rule); background: var(--surface);
   }
   header h1 { font-size: 20px; margin: 0; letter-spacing: 0.01em; }
-  .tabs { display: flex; gap: 2px; background: var(--bg); border: 1px solid var(--rule); border-radius: 5px; padding: 2px; }
-  .tabs button { border: 0; background: none; color: var(--muted); padding: 5px 12px; border-radius: 3px; cursor: pointer; font-size: 14px; }
-  .tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 0 0 1px var(--rule); }
   .chip { font: 12px var(--mono); padding: 2px 8px; border: 1px solid var(--rule); border-radius: 3px; color: var(--muted); }
   .chip.caution { color: var(--caution); border-color: var(--caution); background: var(--caution-bg); }
   .layout { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 0; min-height: calc(100% - 50px); }
@@ -48,8 +45,6 @@
   select, textarea, button, input { font: inherit; color: var(--ink); }
   select, textarea, input[type="text"] { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 7px 9px; }
   textarea { resize: vertical; }
-  #patient { font: 12px/1.4 var(--mono); min-height: 150px; }
-  #question { min-height: 96px; }
   .env-summary { font-size: 12.5px; color: var(--muted); }
   button.primary { background: var(--ink); color: var(--bg); border: 0; border-radius: 4px; padding: 10px 14px; font-weight: 600; cursor: pointer; }
   button.primary:disabled { opacity: .5; cursor: progress; }
@@ -112,10 +107,20 @@
   .bubble .who { display: block; font: 11px var(--mono); color: var(--accent); margin-bottom: 2px; }
   .note { font-size: 13px; color: var(--muted); text-align: center; }
   .why { font-size: 12.5px; color: var(--muted); }
-  .quick { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .quick { display: flex; gap: 6px; flex-wrap: wrap; }
   .quick button { border: 1px solid var(--rule); background: var(--surface); color: var(--ink); border-radius: 14px; padding: 3px 12px; cursor: pointer; font-size: 13.5px; }
   .quick button:hover { border-color: var(--accent); }
+  .quick button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
   .quick button:disabled { opacity: .55; cursor: default; }
+  .cards { display: grid; gap: 8px; }
+  .acard { border: 1px solid var(--rule); border-radius: 6px; padding: 8px 10px; display: grid; gap: 6px; background: var(--bg); min-width: 0; }
+  .acard .atopic { font-size: 14px; font-weight: 500; }
+  .acard .atopic .meta { font-weight: 400; margin-left: 6px; }
+  .acard input[type="text"] { width: 100%; min-width: 0; }
+  .acard.screen .head { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+  .srow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; border-top: 1px solid var(--rule); padding-top: 6px; font-size: 14px; }
+  @media (max-width: 560px) { .srow { grid-template-columns: 1fr; } }
+  .acard.done { opacity: .75; }
   .urgent { border: 2px solid var(--bad); background: var(--bad-bg); }
   .urgent h2 { color: var(--bad); }
   .urgent ol { margin: 0; padding-left: 20px; }
@@ -153,10 +158,6 @@
 <body>
 <header>
   <h1>SpaceDoc</h1>
-  <nav class="tabs" role="tablist" aria-label="Mode">
-    <button type="button" role="tab" id="tab-quick" aria-selected="true">Quick question</button>
-    <button type="button" role="tab" id="tab-consult" aria-selected="false">Consult</button>
-  </nav>
   <span class="chip" id="mode-chip">loading…</span>
   <span class="chip caution">Research prototype · not for clinical use</span>
 </header>
@@ -170,24 +171,7 @@
     </label>
     <div class="env-summary" id="env-summary"></div>
 
-    <div id="quick-controls" class="stack">
-      <label for="role">Who is asking
-        <select id="role">
-          <option value="cmo">Crew Medical Officer</option>
-          <option value="crew">Crewmember / patient</option>
-          <option value="physician">Physician-astronaut</option>
-        </select>
-      </label>
-      <label for="patient">Patient record (JSON, optional)
-        <textarea id="patient" spellcheck="false" placeholder='{"crew_id": "C3", "weight_kg": 78}'></textarea>
-      </label>
-      <label for="question">Question
-        <textarea id="question" placeholder="Describe the symptoms or ask a question"></textarea>
-      </label>
-      <button class="primary" id="ask" type="button">Ask SpaceDoc</button>
-    </div>
-
-    <div id="consult-controls" class="stack" hidden>
+    <div id="consult-controls" class="stack">
       <div id="consult-setup" class="stack">
         <label for="c-user">Who is using SpaceDoc?
           <select id="c-user"></select>
@@ -224,17 +208,12 @@
     <div class="meta" id="kb-status"></div>
   </aside>
 
-  <main id="out">
-    <p class="empty">Answers appear here. Each claim shows whether the verifier found it in its cited
-      source; blocked or unconfirmed actions are marked; and "Why this answer" shows the retrieved
-      passages, calculator results and every rule that fired.</p>
-  </main>
-
-  <main id="consult-out" hidden>
+  <main id="consult-out">
     <div id="c-chat" class="chat">
-      <p class="empty">A consult is a short conversation. SpaceDoc asks one or two questions at a time to
-        build a differential diagnosis, then gives a fully checked assessment. Choose who is using
-        SpaceDoc and who the patient is, then press Start consult.</p>
+      <p class="empty">A consult is a short conversation. SpaceDoc asks a question or two at a time,
+        with answer cards for quick replies, to build a differential diagnosis, then gives a fully
+        checked assessment. Choose who is using SpaceDoc and who the patient is, then press Start
+        consult.</p>
     </div>
     <div id="c-status" class="meta" role="status"></div>
     <div class="composer" id="c-composer" hidden>
@@ -266,11 +245,6 @@ let tiers = [];
 let demo = false;
 const passagesByAnswer = {};
 
-const store = {
-  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
-  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
-};
-
 async function api(path, options = {}) {
   const r = await fetch(path, options.body ? {method: "POST", headers: {"Content-Type": "application/json"}, ...options}
                                            : options);
@@ -300,12 +274,6 @@ async function init() {
   }
   showEnv();
   fillRoster(roster);
-  if (status.demo) {
-    const p = await api("/api/demo-patient");
-    $("patient").value = JSON.stringify(p, null, 2);
-    $("question").value = "Sharp right flank pain since this morning that comes in waves and moves toward my groin. I think I pulled a muscle.";
-  }
-  setMode(store.get("spacedoc-mode") === "consult" ? "consult" : "quick");
 }
 function showEnv() {
   const e = tiers.find(t => t.tier === $("tier").value);
@@ -313,42 +281,7 @@ function showEnv() {
 }
 $("tier").addEventListener("change", showEnv);
 
-function setMode(mode) {
-  const consult = mode === "consult";
-  $("tab-quick").setAttribute("aria-selected", String(!consult));
-  $("tab-consult").setAttribute("aria-selected", String(consult));
-  $("quick-controls").hidden = consult;
-  $("consult-controls").hidden = !consult;
-  $("out").hidden = consult;
-  $("consult-out").hidden = !consult;
-  store.set("spacedoc-mode", mode);
-}
-$("tab-quick").addEventListener("click", () => setMode("quick"));
-$("tab-consult").addEventListener("click", () => setMode("consult"));
-
-// ---- quick question --------------------------------------------------------------------
-
-async function ask() {
-  let patient = null;
-  const raw = $("patient").value.trim();
-  if (raw) {
-    try { patient = JSON.parse(raw); }
-    catch (e) { $("out").innerHTML = `<p class="error">The patient record is not valid JSON: ${esc(e.message)}</p>`; return; }
-  }
-  $("ask").disabled = true; $("ask").textContent = "Thinking…";
-  $("out").innerHTML = `<p class="empty">Retrieving sources, drafting, running calculators and verifying…</p>`;
-  try {
-    const data = await api("/api/ask", {body: JSON.stringify({question: $("question").value, tier: $("tier").value, role: $("role").value, patient})});
-    $("out").innerHTML = renderAnswer(data);
-    attachReview($("out"));
-  } catch (e) {
-    $("out").innerHTML = `<p class="error">SpaceDoc could not answer: ${esc(e.message)}. Is Ollama running?</p>`;
-  } finally {
-    $("ask").disabled = false; $("ask").textContent = "Ask SpaceDoc";
-  }
-}
-$("ask").addEventListener("click", ask);
-$("question").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) ask(); });
+// ---- checked assessment ------------------------------------------------------------------
 
 const BADGE = {supported: "✓", reasoning: "~", unsupported: "✗", removed: "✗", contradicted: "✗"};
 const ASTATUS = {ok: "OK", requires_confirmation: "CONFIRM", blocked: "BLOCKED"};
@@ -567,25 +500,55 @@ async function startConsult() {
 }
 $("c-start").addEventListener("click", startConsult);
 
-// What will be sent: typed text, plus the quick reply if one was pressed. A quick reply goes
-// as structured data (SpaceDoc's safety checks read only the user's own words).
-function sendWith(chip) {
+const cap = (x) => { const t = String(x || ""); return t.charAt(0).toUpperCase() + t.slice(1); };
+const pressed = (group) => { const b = group && group.querySelector('button[aria-pressed="true"]'); return b ? b.dataset.a : ""; };
+
+// What will be sent: everything filled in on the latest turn's cards, plus typed text. Card
+// answers go as structured data, so SpaceDoc's checks read only the user's own words: a "No"
+// to a question about smoke is never read as smoke.
+function gatherAnswer() {
+  const answers = [], exams = [], shown = [];
+  const said = lastTurn ? $("c-chat").querySelector(`.said[data-turn="${lastTurn.n}"]`) : null;
+  if (said) {
+    for (const card of said.querySelectorAll('.acard[data-kind="question"]')) {
+      const q = lastTurn.reply.questions[card.dataset.q];
+      const input = card.querySelector("input");
+      const answer = input ? input.value.trim() : pressed(card.querySelector(".quick"));
+      if (answer) { answers.push({kind: "question", question: q.topic, answer}); shown.push(`${cap(q.topic)}: ${answer}`); }
+    }
+    for (const input of said.querySelectorAll("input[data-exam]")) {
+      const what = lastTurn.exam_checks[input.dataset.exam].request.what;
+      if (input.value.trim()) { exams.push({request: what, result: input.value.trim()}); shown.push(`${cap(what)}: ${input.value.trim()}`); }
+    }
+    const screen = [];
+    for (const row of said.querySelectorAll(".srow")) {
+      const item = lastTurn.screen[row.dataset.s];
+      const answer = pressed(row.querySelector(".quick"));
+      if (answer) screen.push({kind: "screen", question: item.question, answer, screen_id: item.id, label: item.label});
+    }
+    if (screen.length) {
+      answers.push(...screen.map(({label, ...a}) => a));
+      const notNo = screen.filter(a => a.answer !== "No");
+      shown.push(!notNo.length && screen.length === lastTurn.screen.length ? "Exposure check: none of these"
+        : "Exposure check: " + (notNo.map(a => `${a.answer} — ${a.label}`).join("; ") || "No") + (notNo.length ? "; the rest No" : ""));
+    }
+  }
   const text = $("c-input").value.trim();
-  const answers = chip ? [{kind: "question", question: chip.topic, answer: chip.answer}] : [];
-  const display = [chip ? chip.answer : "", text].filter(Boolean).join("\n");
-  return {text, answers, display};
+  if (text) shown.push(text);
+  return {text, answers, exams, display: shown.join("\n")};
 }
 
-async function send(chip = null) {
-  const msg = sendWith(chip);
+async function send() {
+  const msg = gatherAnswer();
   if (!msg.display || busy || !consult) return;
   $("c-input").value = "";
-  for (const b of $("c-chat").querySelectorAll(".quick button")) b.disabled = true;
+  for (const el of $("c-chat").querySelectorAll(".acard button, .acard input")) el.disabled = true;
+  for (const el of $("c-chat").querySelectorAll(".acard")) el.classList.add("done");
   chat(`<div class="bubble"><span class="who">${esc(consult.user.split(" · ")[0])}</span>${esc(msg.display)}</div>`);
   setBusy(true, consult.deep_log ? "SpaceDoc is thinking (deep log on)…" : "SpaceDoc is working…");
   try {
     handleTurn(await api(`/api/consult/${encodeURIComponent(consult.consult_id)}/turn`,
-      {body: JSON.stringify({text: msg.text, answers: msg.answers})}));
+      {body: JSON.stringify({text: msg.text, answers: msg.answers, exams: msg.exams})}));
   } catch (e) {
     setBusy(false);
     chat(`<p class="error">SpaceDoc could not continue: ${esc(e.message)}</p>`);
@@ -636,45 +599,69 @@ async function handleTurn(t) {
     chat(`<p class="note">${esc(t.assess_reason)}</p>`);
     return assess();
   }
-  $("c-input").placeholder = "Your answer";
+  $("c-input").placeholder = $("c-chat").querySelector(`.said[data-turn="${t.n}"] .acard`) ? "Anything else (optional)" : "Your answer";
   $("c-input").focus();
 }
 
-// One SpaceDoc message, as in a conversation. Quick replies appear only when the message asks
-// a single yes/no or choice question, so a button can never answer the wrong question.
+const YNU = ["Yes", "No", "Not sure"];
+const buttons = (options) => `<div class="quick">${options.map(a => `<button type="button" aria-pressed="false" data-a="${esc(a)}">${esc(a)}</button>`).join("")}</div>`;
+
+// One SpaceDoc message, as in a conversation, with an answer card for each question and
+// measurement under it, and the exposure check card when SpaceDoc adds it.
 function renderTurn(t) {
   const r = t.reply;
-  const q = r.questions.length === 1 && !t.appended.length ? r.questions[0] : null;
-  const quick = !q ? [] : q.answer_type === "yes_no" ? ["Yes", "No", "Not sure"]
-    : q.answer_type === "choice" ? q.choices : [];
   const urgent = r.urgent.flag ? `<div class="urgent-line" role="alert"><span><b>⚠ Possibly urgent:</b> ${esc(r.urgent.reason)}</span>
     <button class="secondary" type="button" data-act="assess">Assess now</button></div>` : "";
-  const problems = t.exam_checks.flatMap(c => [
-    ...(c.missing.length ? [`${c.request.what} needs ${c.missing.join(", ")}, which is not aboard.`] : []),
-    ...c.findings,
-  ]);
+  const questions = r.questions.map((q, i) => {
+    const input = q.answer_type === "yes_no" ? buttons(YNU)
+      : q.answer_type === "choice" && q.choices.length ? buttons(q.choices)
+      : `<input type="text" aria-label="${esc(q.topic)}" placeholder="${q.answer_type === "measurement" ? "Reading" : "Short answer (optional)"}">`;
+    return `<div class="acard" data-kind="question" data-q="${i}"><div class="atopic">${esc(cap(q.topic))}</div>${input}</div>`;
+  });
+  const exams = t.exam_checks.map((c, i) => {
+    const eq = c.request.equipment.join(", ");
+    return c.ok ? `<div class="acard exam"><div class="atopic">${esc(cap(c.request.what))}${eq ? `<span class="meta">${esc(eq)}</span>` : ""}</div>
+        <input type="text" data-exam="${i}" aria-label="Result: ${esc(c.request.what)}" placeholder="Result"></div>`
+      : `<div class="acard exam"><div class="atopic">${esc(cap(c.request.what))}</div>
+        ${c.missing.length ? `<div class="eq-note">✗ Needs ${esc(c.missing.join(", "))}, which is not aboard. Skip it, or use equipment that is aboard.</div>` : ""}
+        ${c.findings.map(f => `<div class="eq-note">✗ ${esc(f)}</div>`).join("")}</div>`;
+  });
+  const screen = t.screen.length ? `<div class="acard screen"><div class="head"><div class="atopic">Exposure check<span class="meta">draft list</span></div>
+      <button class="secondary none-btn" type="button" aria-pressed="false">None of these</button></div>
+      ${t.screen.map((item, i) => `<div class="srow" data-s="${i}"><span>${esc(item.question)}</span>${buttons(YNU)}</div>`).join("")}</div>` : "";
   const why = [
     ...r.questions.map(x => `${x.topic}: ${x.why}`),
     ...(t.must_ask_added.length ? ["SpaceDoc added a question from its must-ask list (draft) that the model left out."] : []),
-    ...(t.exposure_asked ? ["SpaceDoc asks the exposure question once in every consult (draft list)."] : []),
+    ...(t.screen.length ? ["SpaceDoc asks the exposure check in every consult (draft list)."] : []),
   ];
+  const cards = [...questions, ...exams].join("") + screen;
   return `<div class="said" data-turn="${t.n}"><span class="who">SpaceDoc</span>${urgent}
     <div class="msg">${esc(r.message || "(no message)")}</div>
-    ${problems.map(p => `<div class="eq-note">✗ ${esc(p)}</div>`).join("")}
-    ${quick.length ? `<div class="quick">${quick.map(a => `<button type="button" data-a="${esc(a)}">${esc(a)}</button>`).join("")}</div>` : ""}
+    ${cards ? `<div class="cards">${cards}</div>` : ""}
     ${why.length ? `<details><summary>Why SpaceDoc is asking</summary><ul>${why.map(w => `<li>${esc(w)}</li>`).join("")}</ul></details>` : ""}
     ${t.thinking ? `<details><summary>Thinking notes (deep log, unverified)</summary><pre class="thinking">${esc(t.thinking)}</pre></details>` : ""}
     <div class="meta">Conversation, not checked against sources · ${esc(t.timing_line)}</div></div>`;
 }
 
+// Card buttons: one choice per question or exposure row; "None of these" answers No to every
+// exposure row, and any single change after it clears it.
 $("c-chat").addEventListener("click", (e) => {
+  if (e.target.closest(".said button[data-act='assess']")) return assess();
+  const none = e.target.closest(".none-btn");
   const qb = e.target.closest(".quick button");
-  if (qb) {
-    const said = qb.closest(".said");
-    if (!lastTurn || Number(said.dataset.turn) !== lastTurn.n) return;
-    return send({topic: lastTurn.reply.questions[0].topic, answer: qb.dataset.a});
+  const card = (none || qb) && (none || qb).closest(".acard");
+  if (!card || card.classList.contains("done")) return;
+  if (none) {
+    const on = none.getAttribute("aria-pressed") !== "true";
+    none.setAttribute("aria-pressed", String(on));
+    for (const b of card.querySelectorAll(".srow button")) b.setAttribute("aria-pressed", String(on && b.dataset.a === "No"));
+    return;
   }
-  if (e.target.closest(".said button[data-act='assess']")) assess();
+  const wasOn = qb.getAttribute("aria-pressed") === "true";
+  for (const b of qb.parentElement.querySelectorAll("button")) b.setAttribute("aria-pressed", "false");
+  qb.setAttribute("aria-pressed", String(!wasOn));
+  const noneBtn = card.querySelector(".none-btn");
+  if (noneBtn) noneBtn.setAttribute("aria-pressed", "false");
 });
 
 function updateWorkingList(ddx, added = []) {

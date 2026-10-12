@@ -14,6 +14,7 @@ from spacedoc.consult.render import (
     timing_summary,
 )
 from spacedoc.consult.roster import CrewMember
+from spacedoc.consult.safety import ScreenItem
 from spacedoc.render.text import render_text
 from spacedoc.system import System
 
@@ -60,6 +61,56 @@ def quick_answers(text: str, turn: Turn) -> list[Answer] | None:
     if not qs or len(tokens) != len(qs) or not all(t in QUICK for t in tokens):
         return None
     return [Answer(question=q.topic, answer=QUICK[t]) for q, t in zip(qs, tokens, strict=True)]
+
+
+def exposure_card(items: list[ScreenItem]) -> str:
+    lines = ["Exposure check (draft list, not yet clinician-reviewed):"]
+    lines += [f"  {i}. {item.question}" for i, item in enumerate(items, 1)]
+    return "\n".join(lines)
+
+
+EXPOSURE_PROMPT = (
+    "Exposure: type none, or the numbers that apply; the rest count as No "
+    "(add ? if unsure, e.g. 2 5?). Enter to skip"
+)
+
+
+def exposure_answers(text: str, items: list[ScreenItem]) -> list[Answer] | None:
+    """Parse "none" or "2 5?" into one answer per item; None if it can't be read."""
+    low = text.strip().lower()
+    if low in {"none", "no", "n", "none of these", "0"}:
+        chosen: dict[int, str] = {}
+    else:
+        chosen = {}
+        for token in low.replace(",", " ").split():
+            unsure = token.endswith("?")
+            number = token.rstrip("?")
+            if not number.isdigit() or not 1 <= int(number) <= len(items):
+                return None
+            chosen[int(number)] = "Not sure" if unsure else "Yes"
+        if not chosen:
+            return None
+    return [
+        Answer(
+            kind="screen",
+            question=item.question,
+            answer=chosen.get(i, "No"),
+            screen_id=item.id,
+        )
+        for i, item in enumerate(items, 1)
+    ]
+
+
+def ask_exposure(items: list[ScreenItem]) -> list[Answer]:
+    typer.echo(exposure_card(items))
+    while True:
+        text = ask(EXPOSURE_PROMPT, default="")
+        if not text or text == "/quit":
+            return []
+        answers = exposure_answers(text, items)
+        if answers is not None:
+            return answers
+        typer.echo(f"Type none, or numbers from 1 to {len(items)}.")
 
 
 def answer_prompt(turn: Turn) -> str:
@@ -124,6 +175,7 @@ def run_consult(
 def _loop(system: System, consult: Consult) -> None:
     text = ask("Describe the problem")
     answers: list[Answer] | None = None
+    screen: list[Answer] = []
     while True:
         if text == "/quit":
             break
@@ -131,14 +183,14 @@ def _loop(system: System, consult: Consult) -> None:
             typer.echo(record_markdown(consult))
             text = ask("Answer")
             continue
-        if text == "/assess" or (not text and not answers):
+        if text == "/assess" or (not text and not answers and not screen):
             if text == "/assess":
                 assess(system, consult)
             text = ask("Add new information to continue, or /quit")
             continue
 
-        turn = system.consult.turn(consult, "" if answers else text, answers)
-        answers = None
+        turn = system.consult.turn(consult, "" if answers else text, (answers or []) + screen)
+        answers, screen = None, []
         if turn.paused:
             typer.echo(red_flag_card(turn.red_flags))
             choice = ask(
@@ -163,7 +215,9 @@ def _loop(system: System, consult: Consult) -> None:
             assess(system, consult)
             text = ask("Add new information to continue, or /quit")
             continue
-        text = ask(answer_prompt(turn))
+        if turn.screen:
+            screen = ask_exposure(turn.screen)
+        text = ask(answer_prompt(turn), default="" if screen else None)
         answers = quick_answers(text, turn)
 
 

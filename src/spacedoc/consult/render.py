@@ -129,8 +129,15 @@ def record_markdown(consult: Consult) -> str:
         f"- **Started:** {consult.started_at} · deep log {'on' if consult.deep_log else 'off'}",
         "",
     ]
+    labels = {item.id: item.label for t in consult.turns for item in t.screen}
     for t in consult.turns:
         lines += [f"## Turn {t.n}", "", f"**{consult.user.crew_id}:** {t.user_text}", ""]
+        if t.exposure_answers:
+            answered = "; ".join(
+                f"{labels.get(item_id, item_id)}: {answer}"
+                for item_id, answer in t.exposure_answers.items()
+            )
+            lines += [f"**Exposure check answers:** {answered}", ""]
         if t.red_flags:
             state = "continued by the user" if t.red_flags_dismissed else "consult paused"
             flags = "; ".join(f"{h.message} ({h.rule_id})" for h in t.red_flags)
@@ -148,8 +155,8 @@ def record_markdown(consult: Consult) -> str:
                     "- **Added by SpaceDoc** (must-ask, left out by the model): "
                     + ", ".join(t.must_ask_added)
                 )
-            if t.exposure_asked:
-                lines.append("- **Exposure check** asked (fixed sentence)")
+            if t.screen:
+                lines.append("- **Exposure check** shown (card, draft list)")
             for c in t.exam_checks:
                 status = "ok" if c.ok else "; ".join(c.missing + c.findings)
                 lines.append(f"- **Exam:** {c.request.what} _(equipment check: {status})_")

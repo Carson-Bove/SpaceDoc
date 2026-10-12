@@ -13,6 +13,7 @@ from spacedoc.consult.redflags import RedFlags
 from spacedoc.consult.render import record_markdown, render_turn, timing_line
 from spacedoc.consult.roster import load_roster
 from spacedoc.llm.client import ChatResult, FakeLLM, LLMError
+from tests.conftest import exposure
 
 DATA = REPO_ROOT / "data"
 FLANK = "Sharp right flank pain that comes in waves"
@@ -125,7 +126,7 @@ def test_each_turn_extends_the_previous_prompt(demo_system, env_t4):
 def test_questions_are_capped_at_two(demo_system, env_t4):
     qs = [{"topic": f"Q{i}", "why": "x"} for i in range(4)]
     demo_system.consult.llm = FakeLLM([reply(questions=qs)])
-    turn = demo_system.consult.turn(start(demo_system, env_t4), FLANK)
+    turn = demo_system.consult.turn(start(demo_system, env_t4), "Feeling unwell")
     assert [q.topic for q in turn.reply.questions] == ["Q0", "Q1"]
 
 
@@ -163,7 +164,7 @@ def test_assessment_point(demo_system, env_t4):
     c = start(demo_system, env_t4)
     engine.turn(c, FLANK)
     assert engine.should_assess(c) is None
-    engine.turn(c, "Yes fever, no blood")
+    engine.turn(c, "Yes fever, no blood", exposure(engine))
     assert engine.should_assess(c) == "SpaceDoc has enough information to assess."
 
     engine.llm = FakeLLM(lambda m, s: reply(questions=[{"topic": "more", "why": "x"}]))
@@ -217,11 +218,12 @@ def test_assessment_uses_the_whole_consult(demo_system, env_t4):
     engine = demo_system.consult
     c = start(demo_system, env_t4)
     engine.turn(c, FLANK)
-    engine.turn(c, "1. Any fever or chills? Yes. 2. Any blood in the urine? No.")
+    engine.turn(c, "1. Any fever or chills? Yes. 2. Any blood in the urine? No.", exposure(engine))
     summary = engine.case_summary(c)
     assert f'in C1\'s words: "{FLANK}"' in summary
     assert 'SpaceDoc said: "Pain that comes in waves points in a few directions.' in summary
-    assert "One more thing: has there been a recent spacewalk" in summary  # the exposure check
+    assert "Exposure check: No to all 6 spaceflight exposures asked about." in summary
+    assert "smoke" not in summary.lower()  # items answered No are not named
     assert "not checked; re-evaluate" in summary
 
     v = engine.assess(c)
@@ -248,8 +250,8 @@ def test_quick_replies_become_button_answers(demo_system, env_t4):
     demo_system.consult.llm = FakeLLM([reply(), reply(questions=qs)])
     c = start(demo_system, env_t4)
     first = demo_system.consult.turn(c, "Feeling unwell")
-    assert quick_answers("y", first) is None  # the exposure sentence was added to turn 1
-    turn = demo_system.consult.turn(c, "Since this morning")
+    assert quick_answers("y", first) is None  # SpaceDoc added the exposure check to turn 1
+    turn = demo_system.consult.turn(c, "Since this morning", exposure(demo_system.consult))
     answers = quick_answers("y n", turn)
     assert [(a.question, a.answer) for a in answers] == [
         ("fever or chills", "Yes"),
@@ -265,12 +267,13 @@ def test_cli_consult_runs_end_to_end(tmp_path):
     result = CliRunner().invoke(
         app,
         ["consult", "--demo", "--config", str(config), "--tier", "T4"],
-        input="1\n3\np\nSO-0001\n" + FLANK + "\nLower right side, no fever\n/quit\n",
+        input="1\n3\np\nSO-0001\n" + FLANK + "\nnone\nLower right side, no fever\n/quit\n",
     )
     assert result.exit_code == 0, result.output
     out = result.output
     assert "PRACTICE consult" in out and "C1 · Commander · CMO" in out
     assert "needs ct_scanner, which is not aboard" in out
+    assert "Exposure check (draft list" in out and "1. Any spacewalk (EVA)" in out
     assert "SpaceDoc has enough information to assess." in out
     assert "Full answer saved in the audit log" in out
     records = list((tmp_path / "audit" / "consults").glob("*.md"))

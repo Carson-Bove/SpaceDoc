@@ -1,4 +1,5 @@
-"""Local GUI (FastAPI + one static page). Runs offline; binds to localhost by default."""
+"""Local GUI (FastAPI + one static page) for consults. Runs offline; binds to localhost by
+default."""
 
 from __future__ import annotations
 
@@ -14,13 +15,6 @@ from spacedoc.env.context import list_tiers
 from spacedoc.system import System
 
 STATIC = Path(__file__).parent / "static"
-
-
-class AskRequest(BaseModel):
-    question: str
-    tier: str | None = None
-    role: str = "cmo"
-    patient: dict[str, Any] | None = None
 
 
 class ConsultStart(BaseModel):
@@ -67,23 +61,6 @@ def create_app(system: System) -> FastAPI:
         return [
             {**e.model_dump(), "summary": e.summary()} for e in list_tiers(system.settings.data_dir)
         ]
-
-    @app.get("/api/demo-patient")
-    def demo_patient() -> dict[str, Any]:
-        from spacedoc.demo import DEMO_PATIENT
-
-        return DEMO_PATIENT
-
-    @app.post("/api/ask")
-    def ask(req: AskRequest) -> dict[str, Any]:
-        if not req.question.strip():
-            raise HTTPException(400, "Type a question first.")
-        try:
-            env = system.environment(req.tier)
-        except FileNotFoundError as e:
-            raise HTTPException(400, str(e)) from e
-        v = system.orchestrator.ask(req.question, env, req.patient, req.role)
-        return v.model_dump(mode="json")
 
     @app.get("/api/review/{audit_id}")
     def review(audit_id: str) -> dict[str, Any]:
@@ -175,6 +152,8 @@ def create_app(system: System) -> FastAPI:
             "assess_reason": engine.should_assess(consult) if reply else None,
             "appended": turn.appended,
             "exposure_asked": turn.exposure_asked,
+            "screen": [i.model_dump() for i in turn.screen],
+            "exposure_answers": turn.exposure_answers,
             "must_ask_added": turn.must_ask_added,
             "must_not_miss_added": turn.must_not_miss_added,
         }

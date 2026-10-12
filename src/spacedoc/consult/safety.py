@@ -215,13 +215,81 @@ class MustAsk(BaseModel):
 
 class ScreenItem(BaseModel):
     id: str
-    topic: str
+    question: str  # shown on the card; SpaceDoc's wording, never screened
+    label: str  # how the answer is described to the model and in the record
+    if_yes: str  # what a "Yes" or "Not sure" adds to the must-not-miss matching
+
+
+YES_WORDS = {"yes", "y"}
+UNSURE_WORDS = {"not sure", "unsure", "?"}
+
+
+def answer_kind(answer: str) -> str:
+    """'yes', 'no', 'not sure' for a button answer, else 'typed'."""
+    a = answer.strip().lower()
+    if a in YES_WORDS:
+        return "yes"
+    if a in {"no", "n"}:
+        return "no"
+    if a in UNSURE_WORDS:
+        return "not sure"
+    return "typed"
 
 
 class ExposureScreen(BaseModel):
-    sentence: str
-    items: list[ScreenItem] = []
+    lead: str
+    items: list[ScreenItem]
 
     @classmethod
     def load(cls, data_dir: Path) -> ExposureScreen:
         return cls(**yaml.safe_load((data_dir / "rules" / "exposure_screen.yaml").read_text()))
+
+    def item(self, item_id: str) -> ScreenItem | None:
+        return next((i for i in self.items if i.id == item_id), None)
+
+    def _grouped(self, answers: dict[str, str]) -> dict[str, list[ScreenItem]]:
+        groups: dict[str, list[ScreenItem]] = {"yes": [], "not sure": [], "no": []}
+        for item in self.items:
+            kind = answer_kind(answers.get(item.id, ""))
+            if kind in groups:
+                groups[kind].append(item)
+        return groups
+
+    def for_model(self, answers: dict[str, str]) -> str:
+        """The answers as the model reads them: each "No" spelled out as "no ...", so a No
+        cannot be mistaken for a Yes."""
+        g = self._grouped(answers)
+        parts = [f"YES: {i.label}" for i in g["yes"]]
+        parts += [f"not sure: {i.label}" for i in g["not sure"]]
+        parts += [f"no {i.label}" for i in g["no"]]
+        if not parts:
+            return ""
+        return (
+            "Exposure check (answered with buttons; treat each No as absent and do not ask "
+            "about it again): " + "; ".join(parts) + "."
+        )
+
+    def for_summary(self, answers: dict[str, str]) -> str:
+        """The answers for the assessment. Items answered No are not named, so their wording
+        (smoke, radiation...) cannot steer the source search or the model."""
+        g = self._grouped(answers)
+        if not any(g.values()):
+            return "Exposure check: not answered."
+        if not g["yes"] and not g["not sure"] and len(g["no"]) == len(self.items):
+            return f"Exposure check: No to all {len(self.items)} spaceflight exposures asked about."
+        parts = []
+        if g["yes"]:
+            parts.append("Yes: " + "; ".join(i.label for i in g["yes"]) + ".")
+        if g["not sure"]:
+            parts.append("Not sure: " + "; ".join(i.label for i in g["not sure"]) + ".")
+        unanswered = len(self.items) - sum(len(v) for v in g.values())
+        if g["no"]:
+            other = "the other " if g["yes"] or g["not sure"] else ""
+            parts.append(f"No to {other}{len(g['no'])} asked about.")
+        if unanswered:
+            parts.append(f"{unanswered} not answered.")
+        return "Exposure check: " + " ".join(parts)
+
+    def must_not_miss_text(self, answers: dict[str, str]) -> list[str]:
+        g = self._grouped(answers)
+        return [i.if_yes for i in g["yes"]] + [f"possible {i.if_yes}" for i in g["not sure"]]
