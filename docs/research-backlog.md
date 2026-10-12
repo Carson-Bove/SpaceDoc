@@ -46,15 +46,24 @@ Still blocked (403 through this environment's network policy): ntrs.nasa.gov, ww
 | CDC, *Cutaneous Radiation Injury: A Brochure for Physicians* | Skin injury stages and grades, treatment by stage | Photos are third-party; only the text is used |
 | HHS REMM (12 pages) | Severity grading and treatments to consider, time phases by dose range, cytokine label doses (updated 2026), combined injury and surgery timing, aspirin/NSAID caution, skin radiation syndrome, physical exam | Public domain; REMM asks to be credited as "Source: https://remm.hhs.gov". Menu and calculator pages were left out |
 
-Still not covered by any source in the corpus: wound care and tetanus prophylaxis, and drug labels. The sources for these are below.
+*Wounds, tetanus and trauma, added Oct 2026* (read in full; US Government works; tier C).
+
+| Source | What it gives SpaceDoc | Notes |
+|---|---|---|
+| CDC, *Pink Book* chapter 21 (tetanus) and four CDC tetanus clinician pages (2026) | Tetanus signs and diagnosis, the wound vaccine and TIG rules, TIG doses (250 IU to prevent, 500 IU to treat), treatment | The 2026 CDC pages are the current rules; the Pink Book says its vaccine advice may be outdated. CDC's printable flow chart was left out because its text extracts out of order |
+| JTS, *Human Space Flight Emergencies in the Prehospital Environment* (Dec 2025) | Hydrazine, nitrogen tetroxide and ammonia exposure (with methylene blue and pyridoxine doses), decompression illness, post-flight physiology | Written with NASA Space Medicine Operations, for rescue forces after landing |
+| JTS prolonged-care guidelines: wound management (2017), nursing, wound care and splints (2025), burns (2017), analgesia and sedation (2017) | Wound irrigation, debridement, closure and dressings; nursing care over days; burn fluids and dressings; pain and sedation doses | Written for long delays before evacuation, with "minimum, better, best" options. The 2017 tetanus charts predate CDC's current rules |
+| JTS, infection prevention (2021), eye trauma (2021), inhalation injury and toxic industrial chemicals (2016) | Antibiotics by wound type; eye injuries, abrasions, foreign bodies and chemical burns; ammonia, smoke, carbon monoxide and cyanide | Eye photos are third-party; only the text is used. The JTS site's terms page is on mrdc.health.mil, which this environment blocks |
+
+Other JTS guidelines that may be worth adding next: ocular injuries and traumatic brain injury in prolonged field care, pain, anxiety and delirium, the Prolonged Casualty Care Guidelines, telemedicine, acute mental health, sepsis in prolonged field care, acute coronary syndrome, stroke, concussion, altitude emergencies (hypoxia) and extremity fractures.
+
+Still not covered by any source in the corpus: drug labels. The sources for these and the remaining items are below.
 
 *Probably US Government works; to read next.* These hosts were allowed in this environment in Oct 2026, except www.navsea.navy.mil, whose site refuses scripted downloads.
 
 | Document | Host | Why |
 |---|---|---|
 | US Public Health Service, *The Ship's Medicine Chest and Medical Aid at Sea* (2003) | official copy still to locate; a copy is on irp.fas.org | Medical care in an isolated vessel without a physician, written for lay responders: close to a CMO's situation |
-| CDC, tetanus chapter of the *Pink Book* (wound management and tetanus prophylaxis) | www.cdc.gov | Backs the tetanus must-ask question and the assessment's wound advice |
-| Joint Trauma System clinical practice guidelines (e.g. burns, pain, infection prevention) | jts.health.mil | Wound and trauma care with limited resources |
 | DailyMed drug labels for the formulary medications | dailymed.nlm.nih.gov | Contraindications, interactions and label dosing, to check medication claims |
 | US Navy Diving Manual, Revision 7 (decompression sickness chapters) | www.navsea.navy.mil | Signs and classification of decompression sickness |
 

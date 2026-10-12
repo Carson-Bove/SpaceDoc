@@ -411,3 +411,162 @@ sources:
     topic_tags: [radiation, physical-exam, acute-radiation-syndrome]
     published: null
     notes: "Written for a nuclear detonation; the ARS signs apply to any large exposure."
+
+  # Wounds, tetanus, burns, pain, infection, eye injury and toxic inhalation, added Oct 2026.
+  # CDC tetanus pages and Joint Trauma System (JTS) clinical practice guidelines, each read in
+  # full. The JTS prolonged-care guidelines are written for long delays before evacuation,
+  # with "minimum, better, best" options. JTS files are renamed when revised, so an old URL
+  # may stop working; ingest then keeps the version read here.
+  - id: cdc-pinkbook-tetanus
+    title: 'Epidemiology and Prevention of Vaccine-Preventable Diseases (Pink Book), Chapter 21: Tetanus (CDC)'
+    file: cdc-pinkbook-tetanus.html
+    url: https://www.cdc.gov/pinkbook/hcp/table-of-contents/chapter-21-tetanus.html
+    sha256: 3b81259f638320252337626312756764376ef325ffe557bef0f4016b6f903309
+    license: 'US Government work (public domain); CDC'
+    tier: C
+    environment_tags: []
+    topic_tags: [tetanus, wound-care, vaccination, tetanus-immune-globulin]
+    published: "2024-04-25"
+    notes: '14th edition (2021) text, page updated 2024-04-25. Says vaccine recommendations may be outdated; the CDC clinician pages below are newer.'
+
+  - id: cdc-tetanus-wound-guidance
+    title: 'Clinical Guidance for Wound Management to Prevent Tetanus (CDC)'
+    file: cdc-tetanus-wound-guidance.html
+    url: https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html
+    sha256: 5f61508bdcc3b04b1a8372b18915f7d825babb8719f2fc3b10092f0589815460
+    license: 'US Government work (public domain); CDC'
+    tier: C
+    environment_tags: []
+    topic_tags: [tetanus, wound-care, vaccination, tetanus-immune-globulin]
+    published: "2026-09-08"
+    notes: 'Current wound rules: vaccine by wound type and time since last dose; TIG 250 IU IM for dirty or major wounds with unknown, incomplete or no vaccination. Newer than the tetanus charts in the JTS guidelines.'
+
+  - id: cdc-tetanus-clinical-care
+    title: 'Clinical Care of Tetanus (CDC)'
+    file: cdc-tetanus-clinical-care.html
+    url: https://www.cdc.gov/tetanus/hcp/clinical-care/index.html
+    sha256: 84188607b4119f8ea7661f24b64697d7de1b2c1515ae89dedbeb8ecfb79aaae0
+    license: 'US Government work (public domain); CDC'
+    tier: C
+    environment_tags: []
+    topic_tags: [tetanus, tetanus-immune-globulin, airway]
+    published: "2026-09-08"
+    notes: 'Treating tetanus disease: TIG 500 IU IM, spasm control, airway.'
+
+  - id: cdc-tetanus-clinical-signs
+    title: 'Clinical Features of Tetanus (CDC)'
+    file: cdc-tetanus-clinical-signs.html
+    url: https://www.cdc.gov/tetanus/hcp/clinical-signs/index.html
+    sha256: bed0f4710f9b513029f3262a3511719a8fdea72f52ee9c6f4e6cec6a37adb117
+    license: 'US Government work (public domain); CDC'
+    tier: C
+    environment_tags: []
+    topic_tags: [tetanus, diagnosis]
+    published: "2026-09-08"
+
+  - id: cdc-tetanus-clinical-overview
+    title: 'Clinical Overview of Tetanus (CDC)'
+    file: cdc-tetanus-clinical-overview.html
+    url: https://www.cdc.gov/tetanus/hcp/clinical-overview/index.html
+    sha256: 2a26403d09fb8b64a173d7ecb3b9f41081b1c5cead82abdd0214d11bae287709
+    license: 'US Government work (public domain); CDC'
+    tier: C
+    environment_tags: []
+    topic_tags: [tetanus, diagnosis, incubation]
+    published: "2026-09-08"
+
+  - id: jts-space-flight-emergencies-2025
+    title: 'Human Space Flight Emergencies in the Prehospital Environment (Joint Staff / JTS CPG)'
+    file: jts-space-flight-emergencies-2025.pdf
+    url: https://jts.health.mil/assets/docs/cpgs/%28JOINTSTAFF%29_20251223_CPG_Space_Medicine_final_v1.2.pdf
+    sha256: 53ada2ac5b46f6b44f569c02023cceebe2a0e9866d5c37f1770bc1412791fccb
+    license: 'US Government work (DoD Joint Trauma System); no copyright notice; published free on jts.health.mil'
+    tier: C
+    environment_tags: [microgravity]
+    topic_tags: [space-medicine, hydrazine, ammonia, decompression-sickness, entry-motion-sickness, orthostatic-intolerance, methemoglobinemia]
+    published: "2025-12-23"
+    notes: 'Written for rescue forces after landing, with NASA Space Medicine Operations; covers hazardous gas exposure (hydrazine, nitrogen tetroxide, ammonia) with methylene blue and pyridoxine doses, decompression illness, and post-flight physiology.'
+
+  - id: jts-wound-management-pfc-2017
+    title: 'Acute Traumatic Wound Management in the Prolonged Field Care Setting (JTS CPG 62)'
+    file: jts-wound-management-pfc-2017.pdf
+    url: https://jts.health.mil/assets/docs/cpgs/Wound_Management_PFC_24_Jul_2017_ID62.pdf
+    sha256: aceed85cc5f53616ff181508e4778dcf27f0c257310cd510478b6d2e9c67686f
+    license: 'US Government work (DoD Joint Trauma System); no copyright notice; published free on jts.health.mil'
+    tier: C
+    environment_tags: [no-evacuation]
+    topic_tags: [wound-care, irrigation, debridement, wound-closure, antibiotics, local-anesthesia, sterilization]
+    published: "2017-07-24"
+    notes: 'Its tetanus chart predates CDC''s current guidance; use the CDC tetanus pages for tetanus decisions.'
+
+  - id: jts-nursing-wound-splint-pcc-2025
+    title: 'Nursing Interventions, Wound Care, and Splint Management in Prolonged Casualty Care (JTS CPG 70)'
+    file: jts-nursing-wound-splint-pcc-2025.pdf
+    url: https://jts.health.mil/assets/docs/cpgs/Nursing_Interventions_PCC_08_July_2025_ID70_v1.1.pdf
+    sha256: 58d57dcbda1a5e28bf857ff8a288e6c3ea154d249da8156d91dd735a62c8eeda
+    license: 'US Government work (DoD Joint Trauma System); no copyright notice; published free on jts.health.mil'
+    tier: C
+    environment_tags: [no-evacuation]
+    topic_tags: [nursing-care, wound-care, splints, hydration, pressure-injury, vital-signs]
+    published: "2025-07-08"
+    notes: 'Written for non-medical and medical responders. The flowsheet appendix pages are images.'
+
+  - id: jts-burn-pfc-2017
+    title: 'Burn Wound Management in Prolonged Field Care (JTS CPG 57)'
+    file: jts-burn-pfc-2017.pdf
+    url: https://jts.health.mil/assets/docs/cpgs/Burn_Management_PFC_13_Jan_2017_ID57.pdf
+    sha256: 1d5d671c3550189af6037e75d624f7ffdd521113a2d898ed6f074c6478c3f768
+    license: 'US Government work (DoD Joint Trauma System); no copyright notice; published free on jts.health.mil'
+    tier: C
+    environment_tags: [no-evacuation]
+    topic_tags: [burns, fluid-resuscitation, inhalation-injury, wound-care]
+    published: "2017-01-13"
+    notes: 'The rule-of-nines and Lund-Browder charts are images.'
+
+  - id: jts-infection-prevention-2021
+    title: 'Infection Prevention in Combat-related Injuries (JTS CPG 24)'
+    file: jts-infection-prevention-2021.pdf
+    url: https://jts.health.mil/assets/docs/cpgs/Infection_Prevention_in_Combat-related_Injuries_27_Jan_2021_ID24.pdf
+    sha256: 60feea3e36db2d7ec4d3d16b1a115e369105c26f4f7c34b030a4eec9fe00ecb4
+    license: 'US Government work (DoD Joint Trauma System); no copyright notice; published free on jts.health.mil'
+    tier: C
+    environment_tags: []
+    topic_tags: [infection-prevention, antibiotics, wound-care, bloodborne-exposure]
+    published: "2021-01-27"
+    notes: 'Antibiotic choice and duration by wound type. Its tetanus chart predates CDC''s current guidance.'
+
+  - id: jts-analgesia-sedation-pfc-2017
+    title: 'Analgesia and Sedation Management during Prolonged Field Care (JTS CPG 61)'
+    file: jts-analgesia-sedation-pfc-2017.pdf
+    url: https://jts.health.mil/assets/docs/cpgs/Analgesia_and_Sedation_Management_during_PFC_11_May_2017_ID61.pdf
+    sha256: e0fd67fba597ed7c86c3ec53b8b0e6ffa596e2381384600cb937d7362703249e
+    license: 'US Government work (DoD Joint Trauma System); no copyright notice; published free on jts.health.mil'
+    tier: C
+    environment_tags: [no-evacuation]
+    topic_tags: [pain, sedation, ketamine, opioids, dosing]
+    published: "2017-05-11"
+    notes: 'Oxygen targets updated Sept 2023. The regional anesthesia appendix pages are images.'
+
+  - id: jts-eye-trauma-2021
+    title: 'Eye Trauma: Initial Care (JTS CPG 03)'
+    file: jts-eye-trauma-2021.pdf
+    url: https://jts.health.mil/assets/docs/cpgs/Eye_Trauma_Initial_Care_01_Jun_2021_ID03.pdf
+    sha256: 4eda56ea057e695bda5f5c78f4a6d26fea14f8b6b15dcefcce4e019ec756cacf
+    license: 'US Government work (DoD Joint Trauma System); no copyright notice; published free on jts.health.mil'
+    tier: C
+    environment_tags: []
+    topic_tags: [ophthalmology, eye-injury, corneal-abrasion, foreign-body, chemical-eye-injury]
+    published: "2021-06-01"
+    notes: 'Some photos are credited to the American Academy of Ophthalmology and the Wills Eye Manual; only the text is used. Promethazine advice was removed in a June 2023 update.'
+
+  - id: jts-inhalation-tic-2016
+    title: 'Inhalation Injury and Toxic Industrial Chemical Exposure (JTS CPG 25)'
+    file: jts-inhalation-tic-2016.pdf
+    url: https://jts.health.mil/assets/docs/cpgs/Inhalation_Injury_Toxic_and_Industrial_Chemical_Exposure_26_Jul_2016_ID25.pdf
+    sha256: 1d6e944202418af346ac517420de160f8c7b3f8b2ef1f733b5fa798d83218197
+    license: 'US Government work (DoD Joint Trauma System); no copyright notice; published free on jts.health.mil'
+    tier: C
+    environment_tags: []
+    topic_tags: [inhalation-injury, ammonia, carbon-monoxide, cyanide, smoke, toxicology]
+    published: "2016-07-25"
+    notes: 'Oxygen targets updated Sept 2023. Covers ammonia, smoke, carbon monoxide, cyanide, chlorine and fire-suppressant byproducts.'
