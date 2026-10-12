@@ -1,6 +1,6 @@
 # Consult Mode — Design Proposal
 
-> **Status: approved. M1 (terminal consult) and M2 (web page) are built, plus the changes from the first practice consult (§12). Next: equipment knowledge from the ISS inventory, and speed on the laptop.** Decision for M2: the working list is shown to every user, including a crewmember who is the patient. Decisions marked ✅ were agreed in discussion; the answers to the design's open questions are in [§11](#11-decisions-on-the-open-questions).
+> **Status: approved. M1 (terminal consult) and M2 (web page) are built, plus the changes from the first practice consult (§12) and the conversation-first turns and must-ask lists from the later ones (§13). Next: equipment knowledge from the ISS inventory, and speed on the laptop.** Decision for M2: the working list is shown to every user, including a crewmember who is the patient. Decisions marked ✅ were agreed in discussion; the answers to the design's open questions are in [§11](#11-decisions-on-the-open-questions).
 
 Phase 1 built a **one-shot** SpaceDoc: one message in, one checked answer out. That is not how a consult works. A clinician asks questions, narrows the possibilities, examines, and only then gives an assessment.
 
@@ -81,17 +81,18 @@ A question turn must finish in 10–15 s, so it does only what is needed to pick
 
 **Steps, in order:**
 1. **Urgent-sign rules** check the user's words and any readings against a red-flag list. These are deterministic and take under 0.1 s. A match stops questioning and shows the urgent card (§6).
-2. **One model call** (Qwen3, thinking off, short JSON reply):
-   - `urgent`: the model's own red-flag judgement, as a second net behind the rules.
-   - `facts`: what this answer added (for example *onset: gradual, about 1 week*), each tied to the turn it came from.
-   - `working_ddx`: 3–5 conditions with likelihood and a one-line reason.
-   - `questions`: 1–2 questions, each with `why` and an answer type (yes/no, choice, free text, measurement).
+2. **One model call** (Qwen3, thinking off, short JSON reply, fields in this order):
+   - `urgent`: the model's own judgement that something needs action within minutes, with a reason. A second net behind the rules; it is shown, not enforced (§13).
+   - `message`: the only text the user sees. It responds to what was said, and asks the questions and exams in plain words.
+   - `questions`: 1–2 entries naming the **topic** of each question in the message, with `why` and an answer type (yes/no, choice, free text, measurement).
    - `exam_requests`: exams or measurements, each naming the equipment it needs.
+   - `working_ddx`: 3–5 conditions with likelihood and a few words of reason.
    - `ready_to_assess`: whether the model thinks it has enough.
-3. **Checks on the reply:**
-   - At most two questions.
+3. **Checks on the reply, in code:**
+   - At most two questions and two exams.
    - Every exam request is checked against the equipment aboard, using the same rule as actions today. If equipment is missing, SpaceDoc says so.
-   - Facts must quote or paraphrase something the user actually said.
+   - Must-not-miss conditions go back on the working list if left off; owed must-ask questions are added to the message if none was asked; the exposure sentence is added to the first message (§12, §13).
+   - Facts are not extracted: the assessment reads what the user actually said.
 4. **Log the turn** in the audit log and show it.
 
 **Kept out of question turns, for speed:**
@@ -112,9 +113,9 @@ When SpaceDoc has enough, or the user presses **Assess now**:
 
 ## 6. What the user sees
 
-- **Chat panel:** SpaceDoc's questions, each with its "why", and quick-reply buttons.
+- **Chat panel:** one SpaceDoc message per turn, like a conversation, with the reasons for its questions folded underneath. **Yes / No / Not sure** buttons appear only when the message asks a single yes/no question. Readings are typed as answers.
 - **Working list panel:** the current differential, labelled *working list, not yet checked*. It updates every turn and highlights what changed.
-- **Exam cards:** what to measure, how, which equipment, and a field for the result.
+- **Equipment notes:** shown under the message only when a requested exam needs equipment that is not aboard or does not work in the environment.
 - **Urgent card (red flag):** shows at once, with the reason and the immediate steps from a clinician-reviewed list. It offers an immediate checked assessment. It also states the communication delay to the ground for the current mission tier. The full emergency protocol engine (C-05) is a later item, so Phase 1 shows only these reviewed steps.
 - **Assess now** button, always visible.
 - **Consult record (end of consult):**
@@ -129,8 +130,9 @@ When SpaceDoc has enough, or the user presses **Assess now**:
 |---|---|---|
 | Questions and their "why" | No. They are questions, not statements of fact | Plain |
 | Working differential | No. It is a hypothesis list | Labelled "working list, not yet checked" |
-| Red flags | Yes: deterministic rules, plus the model as a second net | Urgent card |
-| Exam requests | Equipment checked against what is aboard | Exam card |
+| Red flags | Yes: deterministic rules, plus the model as a second net | Urgent card (rules); highlighted line (model) |
+| Must-ask questions | Coverage is checked in code against what SpaceDoc asked and the user said | Added to the message; noted in the record |
+| Exam requests | Equipment checked against what is aboard | A note under the message when something is missing |
 | Facts extracted | Must trace to the user's words. The final patient claims are checked against the transcript | In the consult record |
 | Final assessment | Fully checked, as in Phase 1 | As now |
 
@@ -254,3 +256,19 @@ A NASA-run practice scenario of acute radiation syndrome (prodrome, latent phase
 - **Step 3: equipment knowledge.** The ISS medical equipment inventory, compiled by the NASA team, replaces the generic T1 equipment list. A workflow adds each device's documents (manuals, procedures, checklists) to the knowledge base, tagged with the device, so **Show me how** can show checked steps from those documents. LEO scenarios first.
 - **Step 4: speed on the laptop only.** SpaceDoc must work without Earth or any other computer. Compare `qwen3:8b` and `qwen3:4b` for question turns on the same scenarios, then tune the assessment (thinking budget, number of checks).
 - **Knowledge gaps.** The knowledge base has no acute radiation syndrome source yet, so the assessment cannot support that diagnosis from sources. Candidate NASA documents go through the corpus workflow like any other.
+
+## 13. After the later practice consults
+
+Later practice consults, including a hand laceration, showed:
+
+| Finding | Change |
+|---|---|
+| The questions the model wrote in its reply read better than the page's list of question cards, exposure buttons and result boxes | **Conversation-first turns** (prompt c3.0). The model writes one message that responds and asks; the page shows it as a chat bubble. The question list only names topics and reasons, shown folded as *Why SpaceDoc is asking*. Readings are typed as answers: a bare `92%` after a pulse-oximeter request is read as oxygen saturation |
+| For a cut, SpaceDoc never asked how or where it happened, so it never learned about possible contamination | Draft **must-ask lists** by complaint (`data/rules/must_ask.yaml`: injury, chest pain, abdominal pain, neurological, eye, breathing). Matched in code against the user's words. The model is told which questions are still owed; if a reply asks none, SpaceDoc adds the next one to the message and the record says so; it doesn't offer to assess until they are covered. A question is covered when SpaceDoc has asked it or the user has already said the answer. Tetanus is skipped when the record has it (the synthetic roster now records boosters for C1–C3) |
+| SpaceDoc's own exposure question, which mentioned smoke, raised a fire alarm | Safety checks read only the user's words. The exposure check is now **one fixed sentence** added to the first message; the answer is free text |
+| The model's urgent flag stopped the consult with a card, even when the reason was thin | The model's flag is a **highlighted line** in its message with **Assess now**; it does not block. The red card stays for SpaceDoc's own rules (red flags and vital signs) |
+| Tone | Plain and natural, with no claimed feelings ("I'm concerned", "I'm sorry") |
+
+Quick replies appear only when the message asks a single yes/no question and SpaceDoc added nothing to it, so a button can never answer the wrong question. The same rule applies to `y`/`n` in Terminal.
+
+**Sources for the clinical gaps.** The NASA team adds NASA documents. SpaceDoc proposes open-access clinical references in [research-backlog.md](research-backlog.md); each is read in full and its licence checked before it is added to the manifest.

@@ -111,19 +111,11 @@
   .bubble { justify-self: end; max-width: min(620px, 90%); background: var(--accent-soft); border-radius: 8px 8px 2px 8px; padding: 8px 12px; white-space: pre-wrap; }
   .bubble .who { display: block; font: 11px var(--mono); color: var(--accent); margin-bottom: 2px; }
   .note { font-size: 13px; color: var(--muted); text-align: center; }
-  .turn { border-left: 3px solid var(--accent); }
-  .question { display: grid; gap: 4px; }
-  .question .q { font-size: 16px; font-weight: 500; }
   .why { font-size: 12.5px; color: var(--muted); }
-  .quick { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
-  .quick button { border: 1px solid var(--rule); background: var(--surface); border-radius: 14px; padding: 3px 12px; cursor: pointer; font-size: 13.5px; }
-  .quick button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-  .exam { border: 1px dashed var(--rule); border-radius: 4px; padding: 8px 10px; display: grid; gap: 6px; }
-  .exam.bad { border-color: var(--bad); }
-  .exam .eq { font: 12px var(--mono); color: var(--muted); }
-  .exam .eq b { color: var(--bad); font-weight: 600; }
-  .exam-row { display: flex; gap: 6px; flex-wrap: wrap; }
-  .exam-row input { flex: 1 1 160px; min-width: 0; }
+  .quick { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .quick button { border: 1px solid var(--rule); background: var(--surface); color: var(--ink); border-radius: 14px; padding: 3px 12px; cursor: pointer; font-size: 13.5px; }
+  .quick button:hover { border-color: var(--accent); }
+  .quick button:disabled { opacity: .55; cursor: default; }
   .urgent { border: 2px solid var(--bad); background: var(--bad-bg); }
   .urgent h2 { color: var(--bad); }
   .urgent ol { margin: 0; padding-left: 20px; }
@@ -142,10 +134,17 @@
   .next { border-left: 3px solid var(--accent); }
   ul.steps { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
   #c-status { min-height: 1.5em; }
-  .said { justify-self: start; max-width: min(620px, 92%); background: var(--surface); border: 1px solid var(--rule); border-radius: 8px 8px 8px 2px; padding: 8px 12px; }
-  .said .who { display: block; font: 11px var(--mono); color: var(--muted); margin-bottom: 2px; }
-  .screen { border: 1px solid var(--caution); border-radius: 4px; padding: 8px 10px; display: grid; gap: 8px; }
-  .screen .q { font-size: 14.5px; font-weight: 400; }
+  .said { justify-self: start; max-width: min(620px, 92%); background: var(--surface); border: 1px solid var(--rule); border-radius: 8px 8px 8px 2px; padding: 10px 12px; display: grid; gap: 6px; }
+  .said .who { display: block; font: 11px var(--mono); color: var(--muted); }
+  .said .msg { white-space: pre-wrap; font-size: 15.5px; line-height: 1.5; }
+  .said details { font-size: 13px; }
+  .said details summary { cursor: pointer; color: var(--muted); }
+  .said details ul { margin: 4px 0 0; padding-left: 18px; }
+  .said .eq-note { font-size: 13px; color: var(--bad); }
+  .said .meta { font-size: 12px; }
+  .urgent-line { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; background: var(--bad-bg); color: var(--bad); border-left: 3px solid var(--bad); border-radius: 3px; padding: 6px 9px; font-size: 14px; }
+  .urgent-line b { font-weight: 600; }
+  .urgent-line button { margin-left: auto; }
   .model-banner { background: var(--bad-bg); color: var(--bad); border-bottom: 1px solid var(--bad); padding: 8px 20px; font-size: 14px; }
   .model-banner code { font: 13px var(--mono); }
   .added { font: 11px var(--mono); color: var(--bad); margin-left: 6px; }
@@ -568,52 +567,34 @@ async function startConsult() {
 }
 $("c-start").addEventListener("click", startConsult);
 
-// What will be sent: button answers and exam results as structured data (SpaceDoc's safety
-// checks read only the user's own words), plus typed text. `display` is how it reads.
-function gatherAnswer() {
-  const answers = [], exams = [];
-  const card = lastTurn ? $("c-chat").querySelector(`.turn[data-turn="${lastTurn.n}"]`) : null;
-  if (card) {
-    const qs = lastTurn.reply.questions;
-    for (const g of card.querySelectorAll(".quick[data-q]")) {
-      const chosen = g.querySelector('button[aria-pressed="true"]');
-      if (chosen) answers.push({kind: "question", question: qs[g.dataset.q].text, answer: chosen.dataset.a});
-    }
-    for (const g of card.querySelectorAll(".quick[data-s]")) {
-      const chosen = g.querySelector('button[aria-pressed="true"]');
-      const item = lastTurn.screen[g.dataset.s];
-      if (chosen) answers.push({kind: "screen", question: item.question, answer: chosen.dataset.a, screen_id: item.id});
-    }
-    for (const input of card.querySelectorAll("input[data-exam]")) {
-      if (input.value.trim()) exams.push({request: lastTurn.exam_checks[input.dataset.exam].request.text, result: input.value.trim()});
-    }
-  }
+// What will be sent: typed text, plus the quick reply if one was pressed. A quick reply goes
+// as structured data (SpaceDoc's safety checks read only the user's own words).
+function sendWith(chip) {
   const text = $("c-input").value.trim();
-  const lines = answers.filter(a => a.kind === "question").map(a => `${a.question} ${a.answer}.`);
-  const screen = answers.filter(a => a.kind === "screen").map(a => `${a.question} ${a.answer}.`);
-  if (screen.length) lines.push("Exposure check: " + screen.join(" "));
-  lines.push(...exams.map(e => `Exam (${e.request}): ${e.result}`));
-  if (text) lines.push(text);
-  return {text, answers, exams, display: lines.join("\n")};
+  const answers = chip ? [{kind: "question", question: chip.topic, answer: chip.answer}] : [];
+  const display = [chip ? chip.answer : "", text].filter(Boolean).join("\n");
+  return {text, answers, display};
 }
 
-async function send() {
-  const msg = gatherAnswer();
+async function send(chip = null) {
+  const msg = sendWith(chip);
   if (!msg.display || busy || !consult) return;
   $("c-input").value = "";
+  for (const b of $("c-chat").querySelectorAll(".quick button")) b.disabled = true;
   chat(`<div class="bubble"><span class="who">${esc(consult.user.split(" · ")[0])}</span>${esc(msg.display)}</div>`);
   setBusy(true, consult.deep_log ? "SpaceDoc is thinking (deep log on)…" : "SpaceDoc is working…");
   try {
     handleTurn(await api(`/api/consult/${encodeURIComponent(consult.consult_id)}/turn`,
-      {body: JSON.stringify({text: msg.text, answers: msg.answers, exams: msg.exams})}));
+      {body: JSON.stringify({text: msg.text, answers: msg.answers})}));
   } catch (e) {
     setBusy(false);
     chat(`<p class="error">SpaceDoc could not continue: ${esc(e.message)}</p>`);
   }
 }
-$("c-send").addEventListener("click", send);
+$("c-send").addEventListener("click", () => send());
 $("c-input").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) send(); });
 
+// Red flags and vital-sign alerts (rules in code) stop the consult until the user decides.
 function urgentCard(title, reasons, steps, continueLabel) {
   const el = chat(`<div class="card urgent" role="alert"><h2>⚠ ${esc(title)}</h2>
     <ul class="plain">${reasons.map(r => `<li>${esc(r)}</li>`).join("")}</ul>
@@ -649,10 +630,6 @@ async function handleTurn(t) {
     return;
   }
   lastTurn = t;
-  if (t.reply.urgent.flag) {
-    const act = await urgentCard("Possible urgent problem (flagged by the model)", [t.reply.urgent.reason || "No reason given"], t.urgent_steps, "Continue questions");
-    if (act === "assess") return assess();
-  }
   chat(renderTurn(t));
   updateWorkingList(t.reply.working_ddx, t.must_not_miss_added || []);
   if (t.assess_reason) {
@@ -663,45 +640,41 @@ async function handleTurn(t) {
   $("c-input").focus();
 }
 
+// One SpaceDoc message, as in a conversation. Quick replies appear only when the message asks
+// a single yes/no or choice question, so a button can never answer the wrong question.
 function renderTurn(t) {
   const r = t.reply;
-  const qs = r.questions.map((q, i) => {
-    let quick = "";
-    if (q.answer_type === "yes_no") quick = ["Yes", "No", "Not sure"];
-    else if (q.answer_type === "choice" && q.choices.length) quick = q.choices;
-    return `<div class="question"><div class="q">${r.questions.length > 1 ? `${i + 1}. ` : ""}${esc(q.text)}</div>
-      <div class="why">Why: ${esc(q.why)}</div>
-      ${quick ? `<div class="quick" data-q="${i}">${quick.map(a => `<button type="button" aria-pressed="false" data-a="${esc(a)}">${esc(a)}</button>`).join("")}</div>` : ""}</div>`;
-  }).join("");
-  const exams = t.exam_checks.map((c, i) => {
-    const eq = c.request.equipment.map(x => c.missing.includes(x) ? `<b>✗ ${esc(x)} not aboard</b>` : `✓ ${esc(x)}`).join(" · ");
-    return `<div class="exam ${c.ok ? "" : "bad"}"><div>Exam: ${esc(c.request.text)}</div>
-      ${c.request.why ? `<div class="why">Why: ${esc(c.request.why)}</div>` : ""}
-      <div class="eq">${eq || "no equipment named"}</div>
-      ${c.findings.map(f => `<div class="error">✗ ${esc(f)}</div>`).join("")}
-      ${c.ok ? `<div class="exam-row"><input type="text" placeholder="Result (sent with your answer)" aria-label="Exam result" data-exam="${i}"></div>
-        <div class="meta">Equipment guide: not yet in SpaceDoc's library.</div>`
-        : `<div class="meta">Skip this, or use equipment that is aboard.</div>`}</div>`;
-  }).join("");
-  const said = r.message ? `<div class="said"><span class="who">SpaceDoc · conversation reply, not checked</span>${esc(r.message)}</div>` : "";
-  const screen = t.screen && t.screen.length ? `<div class="screen"><div class="why"><b>Exposure check</b> · draft list, not yet clinician-reviewed</div>` +
-    t.screen.map((item, i) => `<div class="question"><div class="q">${esc(item.question)}</div>
-      <div class="quick" data-s="${i}">${["Yes", "No", "Not sure"].map(a => `<button type="button" aria-pressed="false" data-a="${a}">${a}</button>`).join("")}</div></div>`).join("") + `</div>` : "";
-  return `${said}<div class="card turn" data-turn="${t.n}">
-    ${qs || `<div class="meta">No further questions.</div>`}${exams}${screen}
+  const q = r.questions.length === 1 && !t.appended.length ? r.questions[0] : null;
+  const quick = !q ? [] : q.answer_type === "yes_no" ? ["Yes", "No", "Not sure"]
+    : q.answer_type === "choice" ? q.choices : [];
+  const urgent = r.urgent.flag ? `<div class="urgent-line" role="alert"><span><b>⚠ Possibly urgent:</b> ${esc(r.urgent.reason)}</span>
+    <button class="secondary" type="button" data-act="assess">Assess now</button></div>` : "";
+  const problems = t.exam_checks.flatMap(c => [
+    ...(c.missing.length ? [`${c.request.what} needs ${c.missing.join(", ")}, which is not aboard.`] : []),
+    ...c.findings,
+  ]);
+  const why = [
+    ...r.questions.map(x => `${x.topic}: ${x.why}`),
+    ...(t.must_ask_added.length ? ["SpaceDoc added a question from its must-ask list (draft) that the model left out."] : []),
+    ...(t.exposure_asked ? ["SpaceDoc asks the exposure question once in every consult (draft list)."] : []),
+  ];
+  return `<div class="said" data-turn="${t.n}"><span class="who">SpaceDoc</span>${urgent}
+    <div class="msg">${esc(r.message || "(no message)")}</div>
+    ${problems.map(p => `<div class="eq-note">✗ ${esc(p)}</div>`).join("")}
+    ${quick.length ? `<div class="quick">${quick.map(a => `<button type="button" data-a="${esc(a)}">${esc(a)}</button>`).join("")}</div>` : ""}
+    ${why.length ? `<details><summary>Why SpaceDoc is asking</summary><ul>${why.map(w => `<li>${esc(w)}</li>`).join("")}</ul></details>` : ""}
     ${t.thinking ? `<details><summary>Thinking notes (deep log, unverified)</summary><pre class="thinking">${esc(t.thinking)}</pre></details>` : ""}
-    <div class="meta">${esc(t.timing_line)}</div></div>`;
+    <div class="meta">Conversation, not checked against sources · ${esc(t.timing_line)}</div></div>`;
 }
 
-// Quick replies, exposure answers and exam results are sent together with any typed text.
 $("c-chat").addEventListener("click", (e) => {
   const qb = e.target.closest(".quick button");
-  if (!qb) return;
-  const card = qb.closest(".turn");
-  if (!lastTurn || Number(card.dataset.turn) !== lastTurn.n) return;
-  const wasOn = qb.getAttribute("aria-pressed") === "true";
-  for (const b of qb.parentElement.querySelectorAll("button")) b.setAttribute("aria-pressed", "false");
-  qb.setAttribute("aria-pressed", String(!wasOn));
+  if (qb) {
+    const said = qb.closest(".said");
+    if (!lastTurn || Number(said.dataset.turn) !== lastTurn.n) return;
+    return send({topic: lastTurn.reply.questions[0].topic, answer: qb.dataset.a});
+  }
+  if (e.target.closest(".said button[data-act='assess']")) assess();
 });
 
 function updateWorkingList(ddx, added = []) {

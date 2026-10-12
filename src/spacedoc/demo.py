@@ -231,54 +231,74 @@ CONSULT_NOTES = (
 def _consult_turn(messages) -> ChatResult:
     """Scripted consult replies: one round of questions, then ready to assess.
 
-    The first reply also asks for a CT scan, which is not aboard, so the equipment check can
-    be seen catching it. Every reply carries thinking notes; the engine keeps them only when
-    deep log is on.
+    For flank pain the first reply also asks for a CT scan, which is not aboard, so the
+    equipment check can be seen catching it. For anything else the second reply asks a single
+    yes/no question, so the quick-reply buttons can be seen. Every reply carries thinking
+    notes; the engine keeps them only when deep log is on.
     """
     answers = [m["content"].lower() for m in messages if m["role"] == "user"]
     first = answers[0] if answers else ""
     stone = any(w in first for w in ("flank", "kidney", "side", "groin"))
-    if len(answers) == 1:
+    if len(answers) == 1 and not stone:
         reply = {
             "urgent": {"flag": False, "reason": ""},
-            "message": "Thanks. Pain that comes in waves needs a couple of quick checks before "
-            "I can narrow it down.",
-            "working_ddx": (
-                [
-                    {
-                        "condition": "Kidney stone",
-                        "likelihood": "high",
-                        "why": "colicky flank pain",
-                    },
-                    {
-                        "condition": "Infected obstructed stone",
-                        "likelihood": "must not miss",
-                        "why": "needs fever excluded",
-                    },
-                    {
-                        "condition": "Muscle strain",
-                        "likelihood": "low",
-                        "why": "pain comes in waves",
-                    },
-                ]
-                if stone
-                else [{"condition": "Not yet clear", "likelihood": "moderate", "why": "few facts"}]
+            "message": "Can you say a bit more about what is going on and when it started?",
+            "questions": [
+                {"topic": "what is going on and when it started", "why": "few facts so far"}
+            ],
+            "working_ddx": [
+                {"condition": "Not yet clear", "likelihood": "moderate", "why": "few facts"}
+            ],
+            "ready_to_assess": False,
+        }
+    elif len(answers) == 2 and not stone and "how do i" not in answers[-1]:
+        reply = {
+            "urgent": {"flag": False, "reason": ""},
+            "message": "Thanks. Has anything like this happened before?",
+            "questions": [
+                {
+                    "topic": "happened before",
+                    "why": "a repeat episode changes the likely causes",
+                    "answer_type": "yes_no",
+                }
+            ],
+            "working_ddx": [
+                {"condition": "Not yet clear", "likelihood": "moderate", "why": "few facts"}
+            ],
+            "ready_to_assess": False,
+        }
+    elif len(answers) == 1:
+        reply = {
+            "urgent": {"flag": False, "reason": ""},
+            "message": (
+                "Pain that comes in waves points in a few directions. Where exactly is it, and "
+                "does it spread anywhere? And has there been any fever or chills? If you can, "
+                "take a temperature; a CT scan of the abdomen would also help."
             ),
             "questions": [
                 {
-                    "text": "Any fever or chills?",
-                    "why": "fever changes urgency",
-                    "answer_type": "yes_no",
+                    "topic": "where the pain is and spreads",
+                    "why": "stone pain often spreads to the groin",
+                    "answer_type": "free_text",
                 },
                 {
-                    "text": "Any blood in the urine?",
-                    "why": "supports a stone",
+                    "topic": "fever or chills",
+                    "why": "fever changes urgency",
                     "answer_type": "yes_no",
                 },
             ],
             "exam_requests": [
-                {"text": "Measure temperature", "equipment": ["thermometer"], "why": "fever"},
-                {"text": "CT scan of the abdomen", "equipment": ["ct_scanner"], "why": "confirm"},
+                {"what": "temperature", "equipment": ["thermometer"]},
+                {"what": "CT scan of the abdomen", "equipment": ["ct_scanner"]},
+            ],
+            "working_ddx": [
+                {"condition": "Kidney stone", "likelihood": "high", "why": "colicky flank pain"},
+                {
+                    "condition": "Infected obstructed stone",
+                    "likelihood": "must not miss",
+                    "why": "needs fever excluded",
+                },
+                {"condition": "Muscle strain", "likelihood": "low", "why": "pain comes in waves"},
             ],
             "ready_to_assess": False,
         }

@@ -160,20 +160,67 @@ class MustNotMiss(BaseModel):
         return any(name in c or c in name for name in rule.names() for c in listed)
 
 
+# ---- must-ask questions by complaint ------------------------------------------------------
+
+
+def _says(patterns: list[str], text: str) -> bool:
+    return any(not _negated(text, m.start()) for p in patterns for m in re.finditer(p, text, re.I))
+
+
+class AskItem(BaseModel):
+    id: str
+    topic: str
+    question: str
+    asked: list[str] = []  # SpaceDoc has asked it, if its messages match
+    answered: list[str] = []  # the user has already said it, if their words match
+    skip_if_record: str | None = None
+
+
+class AskList(BaseModel):
+    id: str
+    complaint: str
+    triggers: list[str]
+    asks: list[AskItem]
+
+
+class MustAsk(BaseModel):
+    lists: list[AskList]
+
+    @classmethod
+    def load(cls, data_dir: Path) -> MustAsk:
+        return cls(**yaml.safe_load((data_dir / "rules" / "must_ask.yaml").read_text()))
+
+    def match(self, user_text: str) -> list[AskList]:
+        return [lst for lst in self.lists if _says(lst.triggers, user_text)]
+
+    @staticmethod
+    def uncovered(
+        lst: AskList, spacedoc_text: str, user_text: str, record: dict | None
+    ) -> list[AskItem]:
+        """The list's questions not yet asked by SpaceDoc nor already answered by the user."""
+        out = []
+        for item in lst.asks:
+            if item.skip_if_record and (record or {}).get(item.skip_if_record):
+                continue
+            if _says(item.asked, spacedoc_text) or (
+                item.answered and _says(item.answered, user_text)
+            ):
+                continue
+            out.append(item)
+        return out
+
+
 # ---- exposure screen -----------------------------------------------------------------------
 
 
 class ScreenItem(BaseModel):
     id: str
-    question: str
-    if_yes: str = ""  # what a "Yes" adds to the must-not-miss matching
+    topic: str
 
 
 class ExposureScreen(BaseModel):
-    items: list[ScreenItem]
-
-    def if_yes(self, item_id: str | None) -> str:
-        return next((i.if_yes for i in self.items if i.id == item_id), "")
+    sentence: str
+    items: list[ScreenItem] = []
 
     @classmethod
     def load(cls, data_dir: Path) -> ExposureScreen:

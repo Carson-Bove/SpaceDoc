@@ -54,35 +54,35 @@ def red_flag_card(hits: list[RedFlagHit]) -> str:
 
 
 def render_turn(turn: Turn) -> str:
+    """One SpaceDoc turn for Terminal: its message first, then the details, kept short."""
     r = turn.reply
     if r is None:
         return f"SpaceDoc could not continue: {turn.error}" if turn.error else ""
     out: list[str] = []
-    if r.message:
-        out += [f"SpaceDoc: {r.message}", "  (conversation reply, not checked against sources)"]
+    if r.urgent.flag:
+        out.append(
+            f"⚠ Possibly urgent (the model's judgement): {r.urgent.reason} "
+            "Type /assess for a checked assessment now."
+        )
+    paragraphs = [p.strip() for p in r.message.split("\n\n") if p.strip()]
+    out.append("SpaceDoc: " + "\n          ".join(paragraphs))
+    out.append("  (conversation, not checked against sources)")
+    for c in turn.exam_checks:
+        if c.missing:
+            out.append(
+                f"  Note: {c.request.what} needs {', '.join(c.missing)}, which is not aboard."
+            )
+        for f in c.findings:
+            out.append(f"  Note: {f}")
+    if r.questions:
+        out.append("  Why: " + "; ".join(f"{q.topic}: {q.why}" for q in r.questions))
+    if turn.must_ask_added:
+        out.append("  (SpaceDoc added a must-ask question the model left out.)")
     if r.working_ddx:
         out.append(f"{WORKING_LABEL}:")
         out += [f"  - {d.condition} · {d.likelihood} · {d.why}" for d in r.working_ddx]
         for added in turn.must_not_miss_added:
             out.append(f"    ({added} was added back by SpaceDoc's must-not-miss list)")
-    if r.questions:
-        out.append("Questions:")
-        for i, q in enumerate(r.questions, 1):
-            choices = f" [{' / '.join(q.choices)}]" if q.choices else ""
-            out.append(f"  {i}. {q.text}{choices}")
-            out.append(f"     why: {q.why}")
-    for c in turn.exam_checks:
-        eq = ", ".join(c.request.equipment) or "no equipment"
-        out.append(f"Exam: {c.request.text} (equipment: {eq})")
-        if c.request.why:
-            out.append(f"     why: {c.request.why}")
-        if c.missing:
-            out.append(f"     ✗ NOT ABOARD: {', '.join(c.missing)}. Skip or use what is aboard.")
-        for f in c.findings:
-            out.append(f"     ✗ {f}")
-    if turn.screen:
-        out.append("Exposure check (please answer each; draft list, not yet clinician-reviewed):")
-        out += [f"  - {item.question}" for item in turn.screen]
     out.append(timing_line(turn.timing))
     return "\n".join(out)
 
@@ -138,28 +138,30 @@ def record_markdown(consult: Consult) -> str:
         r = t.reply
         if r:
             if r.urgent.flag:
-                lines += [f"**Model flagged urgent:** {r.urgent.reason}", ""]
-            if r.message:
-                lines += [f"**SpaceDoc:** {r.message} _(not checked)_", ""]
+                lines += [f"**Model judged possibly urgent:** {r.urgent.reason}", ""]
+            quoted = "\n> ".join(r.message.splitlines())
+            lines += ["**SpaceDoc** _(not checked)_:", f"> {quoted}", ""]
+            if r.questions:
+                lines += [f"- **Asked about** {q.topic} _(why: {q.why})_" for q in r.questions]
+            if t.must_ask_added:
+                lines.append(
+                    "- **Added by SpaceDoc** (must-ask, left out by the model): "
+                    + ", ".join(t.must_ask_added)
+                )
+            if t.exposure_asked:
+                lines.append("- **Exposure check** asked (fixed sentence)")
+            for c in t.exam_checks:
+                status = "ok" if c.ok else "; ".join(c.missing + c.findings)
+                lines.append(f"- **Exam:** {c.request.what} _(equipment check: {status})_")
+            if r.ready_to_assess:
+                lines.append("- **Ready to assess**")
             if r.working_ddx:
-                lines.append(f"**{WORKING_LABEL}:**")
+                lines += ["", f"**{WORKING_LABEL}:**"]
                 lines += [f"- {d.condition} · {d.likelihood} · {d.why}" for d in r.working_ddx]
                 lines += [
                     f"- _{a} was added back by the must-not-miss list_"
                     for a in t.must_not_miss_added
                 ]
-                lines.append("")
-            for q in r.questions:
-                lines.append(f"- **Asked:** {q.text} _(why: {q.why})_")
-            for c in t.exam_checks:
-                status = "ok" if c.ok else "; ".join(c.missing + c.findings)
-                lines.append(f"- **Exam:** {c.request.text} _(equipment check: {status})_")
-            if t.screen:
-                lines.append(
-                    "- **Exposure check asked:** " + "; ".join(i.question for i in t.screen)
-                )
-            if r.ready_to_assess:
-                lines.append("- **Ready to assess**")
             lines.append("")
         if t.notes:
             lines += ["<details><summary>SpaceDoc notes sent to the model</summary>", ""]

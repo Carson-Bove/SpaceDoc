@@ -21,7 +21,7 @@ from spacedoc.audit.log import AuditLog
 from spacedoc.consult import prompts
 from spacedoc.consult.redflags import RedFlagHit, RedFlags
 from spacedoc.consult.roster import CrewMember
-from spacedoc.consult.safety import ExposureScreen, MustNotMiss, ScreenItem, VitalRules
+from spacedoc.consult.safety import ExposureScreen, MustAsk, MustNotMiss, VitalRules
 from spacedoc.consult.schema import ExamRequest, TurnReply, WorkingDx
 from spacedoc.env.context import EnvironmentContext
 from spacedoc.llm.client import LLM, ChatResult, GenParams, LLMError
@@ -52,7 +52,7 @@ class ExamResult(BaseModel):
 
 def compose(text: str, answers: list[Answer], exams: list[ExamResult]) -> str:
     """The message as the model and the transcript see it: answers, exams, then free text."""
-    lines = [f"{a.question} {a.answer}." for a in answers if a.kind == "question"]
+    lines = [f"{a.question}: {a.answer}." for a in answers if a.kind == "question"]
     screen = [f"{a.question} {a.answer}." for a in answers if a.kind == "screen"]
     if screen:
         lines.append("Exposure check: " + " ".join(screen))
@@ -103,7 +103,11 @@ class Turn:
     thinking: str = ""
     error: str | None = None
     audit_id: str | None = None
-    screen: list[ScreenItem] = field(default_factory=list)  # exposure screen (turn 1)
+    # Questions SpaceDoc added to the model's message itself: the exposure check (first
+    # reply) and must-ask questions the model left out.
+    appended: list[str] = field(default_factory=list)
+    exposure_asked: bool = False
+    must_ask_added: list[str] = field(default_factory=list)  # must-ask IDs added by SpaceDoc
     must_not_miss_added: list[str] = field(default_factory=list)  # put back by SpaceDoc
     notes: str = ""  # SpaceDoc notes sent to the model with this message
 
@@ -129,6 +133,7 @@ class Consult:
     assessments: list[VerifiedAnswer] = field(default_factory=list)
     patient_summary: str = "none"
     must_not_miss: list[str] = field(default_factory=list)  # active rule IDs
+    must_ask: list[str] = field(default_factory=list)  # active must-ask list IDs
 
     @property
     def patient_label(self) -> str:
@@ -170,6 +175,7 @@ class ConsultEngine:
         vitals: VitalRules | None = None,
         must_not_miss: MustNotMiss | None = None,
         screen: ExposureScreen | None = None,
+        must_ask: MustAsk | None = None,
     ) -> None:
         self.llm = llm
         self.orchestrator = orchestrator
@@ -185,6 +191,7 @@ class ConsultEngine:
         self.vitals = vitals
         self.mnm = must_not_miss
         self.screen = screen
+        self.must_ask = must_ask
         self.schema = require_all(TurnReply.model_json_schema())
 
     # ---- start -----------------------------------------------------------------------
@@ -267,22 +274,22 @@ class ConsultEngine:
         turn.check_text = "\n".join(
             p for p in [text.strip(), *(e.result for e in exams), *affirmed] if p
         )
-        screen_yes = (
-            [self.screen.if_yes(a.screen_id) for a in answers if a.kind == "screen" and a.yes]
-            if self.screen
-            else []
-        )
-        turn.mnm_text = "\n".join([turn.check_text, *screen_yes])
+        turn.mnm_text = turn.check_text
         turn.red_flags = self.red_flags.screen(turn.check_text, consult.delay())
         if self.vitals:
-            # Exam requests name the device ("pulse oximeter"), which tells the parser what a
-            # bare "85%" is; they are SpaceDoc's words but carry no symptoms.
+            # The device SpaceDoc asked to use tells the parser what a bare "85%" is; the
+            # device names are SpaceDoc's words but carry no symptoms.
             vitals_text = "\n".join(
-                [text.strip(), *(f"Exam ({e.request}): {e.result}" for e in exams)]
+                [
+                    text.strip(),
+                    *(f"Exam ({e.request}): {e.result}" for e in exams),
+                    *_device_context(text, consult.last_reply),
+                ]
             )
             turn.red_flags += self.vitals.alerts(vitals_text, consult.delay())
         consult.turns.append(turn)
         self._update_must_not_miss(consult)
+        self._update_must_ask(consult)
         if turn.paused:
             turn.timing = TurnTiming(total_s=0.0)
             self._log(consult, turn)
@@ -305,17 +312,53 @@ class ConsultEngine:
             if rule.id not in consult.must_not_miss:
                 consult.must_not_miss.append(rule.id)
 
+    def _update_must_ask(self, consult: Consult) -> None:
+        if not self.must_ask:
+            return
+        for lst in self.must_ask.match(self._user_words(consult)):
+            if lst.id not in consult.must_ask:
+                consult.must_ask.append(lst.id)
+
+    @staticmethod
+    def _user_words(consult: Consult) -> str:
+        return "\n".join(t.check_text for t in consult.turns)
+
+    @staticmethod
+    def _spacedoc_words(consult: Consult) -> str:
+        return "\n".join(t.reply.message for t in consult.turns if t.reply)
+
+    def pending_must_ask(self, consult: Consult) -> list[tuple[str, object]]:
+        """(complaint, question) pairs not yet asked or answered, in list order."""
+        if not self.must_ask:
+            return []
+        record = consult.patient.record if consult.patient else {}
+        said, user = self._spacedoc_words(consult), self._user_words(consult)
+        out = []
+        for lst in self.must_ask.lists:
+            if lst.id in consult.must_ask:
+                out += [(lst.complaint, i) for i in MustAsk.uncovered(lst, said, user, record)]
+        return out
+
     def _active_rules(self, consult: Consult):
         return [r for r in (self.mnm.rules if self.mnm else []) if r.id in consult.must_not_miss]
 
     def _notes(self, consult: Consult, turn: Turn) -> str:
-        lines = [f"Vital-sign or red-flag alert: {h.message}" for h in turn.red_flags]
+        prev = next((t for t in reversed(consult.turns) if t.reply and t is not turn), None)
+        lines = [
+            f"SpaceDoc's last message also asked: {q}" for q in (prev.appended if prev else [])
+        ]
+        lines += [f"Vital-sign or red-flag alert: {h.message}" for h in turn.red_flags]
         lines += [
             f"Must not miss: {r.condition} (ask: {r.ask})" for r in self._active_rules(consult)
+        ]
+        lines += [
+            f"Must ask ({complaint}): {item.question}"
+            for complaint, item in self.pending_must_ask(consult)[:2]
         ]
         return "\n".join(lines)
 
     def _ask_model(self, consult: Consult, turn: Turn) -> Turn:
+        pending_before = {i.id for _, i in self.pending_must_ask(consult)}
         turn.notes = self._notes(consult, turn)
         content = turn.user_text
         if turn.notes:
@@ -343,6 +386,7 @@ class ConsultEngine:
         if turn.reply:
             reply = turn.reply
             reply.questions = reply.questions[: self.max_questions]
+            reply.message = reply.message.strip()
             reply.exam_requests = reply.exam_requests[:2]
             if reply.urgent.flag and not reply.urgent.reason.strip():
                 reply.urgent.reason = "The model flagged this as urgent without giving a reason."
@@ -357,8 +401,19 @@ class ConsultEngine:
                         )
                     )
                     turn.must_not_miss_added.append(rule.condition)
+            pending_after = self.pending_must_ask(consult)
+            if pending_before and {i.id for _, i in pending_after} >= pending_before:
+                # The model asked none of the must-ask questions: SpaceDoc asks the next one.
+                _, item = pending_after[0]
+                lead = "Before the assessment: " if reply.ready_to_assess else ""
+                self._append(turn, lead + item.question)
+                turn.must_ask_added.append(item.id)
+                pending_after = pending_after[1:]
+            if pending_after and not consult.alerts:
+                reply.ready_to_assess = False  # finish the must-ask questions first
             if turn.n == 1 and self.screen:
-                turn.screen = list(self.screen.items)
+                self._append(turn, self.screen.sentence)
+                turn.exposure_asked = True
             turn.exam_checks = [self._check_exam(e, consult.env) for e in turn.reply.exam_requests]
             if consult.deep_log:
                 turn.thinking = "\n\n".join(r.thinking for r in results if r.thinking)
@@ -370,11 +425,17 @@ class ConsultEngine:
         self._log(consult, turn)
         return turn
 
+    @staticmethod
+    def _append(turn: Turn, question: str) -> None:
+        """Add a question to the model's message (shown as part of it) and remember it."""
+        turn.reply.message = f"{turn.reply.message}\n\n{question}".strip()
+        turn.appended.append(question)
+
     def _check_exam(self, request: ExamRequest, env: EnvironmentContext) -> ExamCheck:
         aboard = {e.lower() for e in env.equipment}
         missing = [e for e in request.equipment if e.lower() not in aboard]
         findings = [
-            f.message for f in check_feasibility("exam", request.text, env, self.feasibility, True)
+            f.message for f in check_feasibility("exam", request.what, env, self.feasibility, True)
         ]
         return ExamCheck(request=request, missing=missing, findings=findings)
 
@@ -387,7 +448,8 @@ class ConsultEngine:
             return "SpaceDoc has enough information to assess."
         if consult.rounds >= self.max_rounds:
             return f"SpaceDoc has asked {self.max_rounds} rounds of questions."
-        if not reply.questions and not reply.exam_requests:
+        last = next(t for t in reversed(consult.turns) if t.reply)
+        if not reply.questions and not reply.exam_requests and not last.appended:
             return "SpaceDoc has no further questions."
         return None
 
@@ -405,12 +467,9 @@ class ConsultEngine:
         )
         follow = []
         for prev, cur in zip(consult.turns, consult.turns[1:], strict=False):
-            asked = []
-            if prev.reply:
-                asked += [q.text for q in prev.reply.questions]
-                asked += [e.request.text for e in prev.exam_checks]
+            asked = " ".join(prev.reply.message.split()) if prev.reply else ""
             if asked:
-                follow.append(f'- SpaceDoc asked: {" / ".join(asked)}\n  Answer: "{cur.user_text}"')
+                follow.append(f'- SpaceDoc said: "{asked}"\n  Answer: "{cur.user_text}"')
             else:
                 follow.append(f'- Added: "{cur.user_text}"')
         if follow:
@@ -500,7 +559,9 @@ class ConsultEngine:
                 "error": turn.error,
                 "notes": turn.notes,
                 "must_not_miss_added": turn.must_not_miss_added,
-                "screen": [i.model_dump() for i in turn.screen],
+                "appended": turn.appended,
+                "exposure_asked": turn.exposure_asked,
+                "must_ask_added": turn.must_ask_added,
             },
         )
 
@@ -526,3 +587,20 @@ def _timing(results: list[ChatResult], elapsed: float, deep_log: bool) -> TurnTi
                 thinking_time += r.gen_s * len(r.thinking) / chars
         timing.without_deep_log_s = max(elapsed - thinking_time, 0.0)
     return timing
+
+
+# What a bare number means after SpaceDoc asked for a measurement with a given device.
+_DEVICE_CUES = {
+    "pulse_oximeter": "oxygen saturation",
+    "blood_pressure_cuff": "blood pressure",
+    "thermometer": "temperature",
+}
+
+
+def _device_context(text: str, last: TurnReply | None) -> list[str]:
+    """If SpaceDoc just asked for a measurement, read the answer as that measurement: a reply
+    of "92%" after a pulse-oximeter request is an oxygen saturation."""
+    if not last or not text.strip():
+        return []
+    devices = {e for r in last.exam_requests for e in r.equipment}
+    return [f"{cue}: {text.strip()}" for device, cue in _DEVICE_CUES.items() if device in devices]

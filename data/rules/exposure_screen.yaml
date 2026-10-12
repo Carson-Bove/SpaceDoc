@@ -1,28 +1,20 @@
-# Exposure screen, asked after the first message of every consult.
+# Exposure check, added to the end of SpaceDoc's first reply in every consult.
 #
 # DRAFT, UNREVIEWED. Written by the engineering team as a starting point; the clinical team
-# must review the questions. They ask about exposures that are specific to spaceflight and
-# easy to miss when a general-purpose model leads the questioning.
-#
-# `if_yes` is what a "Yes" adds to the must-not-miss matching (data/rules/must_not_miss.yaml).
-# The question text itself is never checked: it is SpaceDoc's wording, not the user's.
+# must review the wording. It asks about exposures that are specific to spaceflight and easy
+# to miss when a general-purpose model leads the questioning. The user answers in their own
+# words; SpaceDoc's must-not-miss rules read the answer.
 
+sentence: >-
+  One more thing: has there been a recent spacewalk or suit run, a radiation alert or dosimeter
+  alarm, a cabin air alarm or unusual smell, work with payloads, experiments or lab animals, a
+  new medication, or anyone else aboard feeling unwell?
+
+# The topics the sentence covers, for reviewers and the consult record.
 items:
-  - id: EXP-EVA
-    question: "Any spacewalk (EVA), suit run or airlock use in the last few days?"
-    if_yes: "recent spacewalk (EVA), suit run or airlock use"
-  - id: EXP-RAD
-    question: "Any radiation alert, solar particle event or dosimeter alarm recently?"
-    if_yes: "recent radiation alert or dosimeter alarm"
-  - id: EXP-ATMOS
-    question: "Any cabin atmosphere alarm (CO2, ammonia, smoke) or unusual smell?"
-    if_yes: "cabin atmosphere alarm (CO2, ammonia or smoke) or unusual smell"
-  - id: EXP-PAYLOAD
-    question: "Any recent work with payloads, experiments, lab animals or chemicals?"
-    if_yes: "recent work with payloads or experiments"
-  - id: EXP-MEDS
-    question: "Any new medication or supplement, or a change in food or water?"
-    if_yes: "new medication, supplement, food or water"
-  - id: EXP-OTHERS
-    question: "Does anyone else aboard have similar symptoms?"
-    if_yes: "others aboard have similar symptoms"
+  - {id: EXP-EVA, topic: spacewalk, suit run or airlock use}
+  - {id: EXP-RAD, topic: radiation alert, solar particle event or dosimeter alarm}
+  - {id: EXP-ATMOS, topic: cabin atmosphere alarm (CO2, ammonia, smoke) or unusual smell}
+  - {id: EXP-PAYLOAD, topic: payloads, experiments, lab animals or chemicals}
+  - {id: EXP-MEDS, topic: new medication or supplement, or a change in food or water}
+  - {id: EXP-OTHERS, topic: others aboard with similar symptoms}

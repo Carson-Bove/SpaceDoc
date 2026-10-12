@@ -30,7 +30,7 @@ HEMORRHAGIC = {
         {"condition": "Hemorrhagic fever", "likelihood": "high", "why": "bleeding, fever"},
         {"condition": "Toxic shock syndrome", "likelihood": "moderate", "why": "skin changes"},
     ],
-    "questions": [{"text": "Any recent travel?", "why": "infection source"}],
+    "questions": [{"topic": "recent travel", "why": "infection source"}],
     "exam_requests": [],
     "ready_to_assess": False,
 }
@@ -95,10 +95,13 @@ def test_exposure_check_comes_once_after_the_first_message(demo_system, env_t4):
     engine = demo_system.consult
     c = engine.start("C1", "C3", env_t4)
     first = engine.turn(c, "flank pain in waves")
-    assert [i.id for i in first.screen][:2] == ["EXP-EVA", "EXP-RAD"]
-    assert "Exposure check" in render_turn(first)
-    second = engine.turn(c, "no fever")
-    assert second.screen == []
+    assert first.exposure_asked
+    assert first.reply.message.endswith(engine.screen.sentence)
+    assert "One more thing: has there been a recent spacewalk" in render_turn(first)
+    second = engine.turn(c, "no fever, no spacewalk or alarms")
+    assert not second.exposure_asked and engine.screen.sentence not in second.reply.message
+    # The model is told what SpaceDoc asked on its behalf.
+    assert "SpaceDoc's last message also asked: One more thing" in second.notes
 
 
 def test_assessment_starts_with_the_urgent_steps(demo_system, env_t4):
@@ -116,8 +119,8 @@ def test_reply_record_and_patient_record_are_shown(demo_system, env_t4):
     engine = demo_system.consult
     c = engine.start("C3", "C1", env_t4)
     turn = engine.turn(c, "flank pain in waves")
-    assert turn.reply.message.startswith("Thanks")
-    assert render_turn(turn).startswith("SpaceDoc: Thanks")
+    assert turn.reply.message.startswith("Pain that comes in waves")
+    assert render_turn(turn).startswith("SpaceDoc: Pain that comes in waves")
     record = record_markdown(c)
     assert "**Patient record used:** C1 · 46 F · 64 kg" in record
     assert "_(not checked)_" in record
@@ -131,11 +134,14 @@ def test_conversation_reply_answers_how_to_questions(demo_system, env_t4):
     assert "no reviewed guide" in turn.reply.message
 
 
-def test_consult_prompt_is_spaceflight_aware():
+def test_consult_prompt_is_spaceflight_aware_and_plain():
     from spacedoc.consult.prompts import SYSTEM
 
-    assert "never ask about travel" in SYSTEM and "radiation exposure" in SYSTEM
-    assert "set urgent" in SYSTEM and "Never give step-by-step instructions" in SYSTEM
+    assert "Never ask about travel" in SYSTEM and "radiation exposure" in SYSTEM
+    assert "Never give step-by-step equipment instructions" in SYSTEM
+    assert 'never say "I\'m concerned"' in SYSTEM  # no claimed feelings (NASA-STD-3001 Vol 2)
+    assert "only for a threat to life, limb or eyesight" in SYSTEM
+    assert "ask first how, where and with what it happened" in SYSTEM
 
 
 def test_consult_model_can_differ_from_the_main_model(tmp_path):
@@ -149,44 +155,20 @@ def test_consult_model_can_differ_from_the_main_model(tmp_path):
     assert system.orchestrator.verifier.checker.llm.keep_alive == "1m"
 
 
-def screen(item_id, answer, demo_system):
-    item = next(i for i in demo_system.consult.screen.items if i.id == item_id)
-    return Answer(kind="screen", question=item.question, answer=answer, screen_id=item_id)
-
-
-def test_spacedocs_own_question_wording_is_never_screened(demo_system, env_t4):
-    """Replays a practice turn where answering "No" to the atmosphere question (which mentions
-    smoke) raised a fire alarm."""
+def test_spacedocs_own_wording_is_never_screened(demo_system, env_t4):
+    """Replays a practice turn where SpaceDoc's own exposure question (which mentioned smoke)
+    raised a fire alarm. Only the user's words are checked."""
     engine = engine_with(demo_system)
-    c = engine.start("C2", "self", env_t4)
-    engine.turn(c, "Deep cut on my hand from a panel edge")
-    answers = [
-        Answer(
-            question="Can you tell me if there is any numbness, tingling, or pain in the fingers?",
-            answer="Yes",
-        ),
-        screen("EXP-EVA", "Yes", demo_system),
-        screen("EXP-RAD", "No", demo_system),
-        screen("EXP-ATMOS", "No", demo_system),
-        screen("EXP-PAYLOAD", "Yes", demo_system),
-        screen("EXP-MEDS", "No", demo_system),
-        screen("EXP-OTHERS", "No", demo_system),
-    ]
-    exams = [
-        ExamResult(request="ultrasound", result="not trained on ultrasound"),
-        ExamResult(
-            request="stethoscope", result="since bandage on hand cannot get stethoscope to listen"
-        ),
-    ]
-    text = (
-        "pain near the cut, deep and radiating. not much numbness except for close to finger tips"
-    )
-    turn = engine.turn(c, text, answers, exams)
+    c = engine.start("C2", "C4", env_t4)
+    first = engine.turn(c, "Crew member sliced the webbing between two fingers on a panel edge")
+    assert first.exposure_asked and not first.red_flags
+    answers = [Answer(question="numbness or tingling in the fingers", answer="Yes")]
+    text = "Spacewalk 3 days ago for maintenance, no alarms or smells, nothing else"
+    turn = engine.turn(c, text, answers)
     assert not turn.paused and turn.red_flags == []
-    assert "smoke" in turn.user_text and "smoke" not in turn.check_text
     # A spacewalk plus numbness and tingling does call for decompression sickness.
     assert "MNM-DCS" in c.must_not_miss
-    assert "MNM-TOXIC" not in c.must_not_miss  # payload work alone is not enough
+    assert "MNM-TOXIC" not in c.must_not_miss
 
 
 def test_a_yes_to_a_question_counts_as_the_users_words(demo_system, env_t4):

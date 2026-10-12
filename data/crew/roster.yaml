@@ -16,6 +16,7 @@ crew:
       allergies: []
       medications: []
       history: []
+      tetanus: booster 2024
       baselines:
         vision: corrected with reading glasses for near work before flight
 
@@ -29,6 +30,7 @@ crew:
       allergies: [penicillin (rash)]
       medications: []
       history: [mild seasonal allergies]
+      tetanus: booster 2021
       baselines:
         vision: no correction needed before flight
 
@@ -42,6 +44,7 @@ crew:
       allergies: []
       medications: []
       history: [no prior kidney stones]
+      tetanus: booster 2023
       baselines:
         vision: no correction needed before flight
 

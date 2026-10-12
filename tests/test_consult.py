@@ -99,10 +99,10 @@ def test_question_turn_checks_exam_equipment(demo_system, env_t4):
     c = start(demo_system, env_t4)
     turn = demo_system.consult.turn(c, FLANK)
     assert len(turn.reply.questions) == 2 and turn.reply.working_ddx
-    ct = next(x for x in turn.exam_checks if "CT" in x.request.text)
-    thermo = next(x for x in turn.exam_checks if "temperature" in x.request.text)
+    ct = next(x for x in turn.exam_checks if "CT" in x.request.what)
+    thermo = next(x for x in turn.exam_checks if "temperature" in x.request.what)
     assert ct.missing == ["ct_scanner"] and not ct.ok and thermo.ok
-    assert "NOT ABOARD: ct_scanner" in render_turn(turn)
+    assert "needs ct_scanner, which is not aboard" in render_turn(turn)
     assert [m["role"] for m in c.messages] == ["system", "user", "assistant"]
     logged = demo_system.orchestrator.audit.get(turn.audit_id)
     assert logged["event"] == "consult_turn" and logged["payload"]["reply"]["questions"]
@@ -111,7 +111,7 @@ def test_question_turn_checks_exam_equipment(demo_system, env_t4):
 
 def test_each_turn_extends_the_previous_prompt(demo_system, env_t4):
     """Ollama can reuse its cache only if each prompt starts with the previous one."""
-    llm = FakeLLM([reply(questions=[{"text": "Fever?", "why": "x"}]), reply()])
+    llm = FakeLLM([reply(questions=[{"topic": "fever", "why": "x"}]), reply()])
     demo_system.consult.llm = llm
     c = start(demo_system, env_t4)
     demo_system.consult.turn(c, FLANK)
@@ -123,10 +123,10 @@ def test_each_turn_extends_the_previous_prompt(demo_system, env_t4):
 
 
 def test_questions_are_capped_at_two(demo_system, env_t4):
-    qs = [{"text": f"Q{i}?", "why": "x"} for i in range(4)]
+    qs = [{"topic": f"Q{i}", "why": "x"} for i in range(4)]
     demo_system.consult.llm = FakeLLM([reply(questions=qs)])
     turn = demo_system.consult.turn(start(demo_system, env_t4), FLANK)
-    assert [q.text for q in turn.reply.questions] == ["Q0?", "Q1?"]
+    assert [q.topic for q in turn.reply.questions] == ["Q0", "Q1"]
 
 
 def test_bad_replies_and_failures_leave_the_consult_unchanged(demo_system, env_t4):
@@ -148,7 +148,7 @@ def test_bad_replies_and_failures_leave_the_consult_unchanged(demo_system, env_t
 
 def test_red_flag_pauses_before_the_model(demo_system, env_t4):
     engine = demo_system.consult
-    engine.llm = FakeLLM([reply(questions=[{"text": "When did it start?", "why": "x"}])])
+    engine.llm = FakeLLM([reply(questions=[{"topic": "onset", "why": "x"}])])
     c = start(demo_system, env_t4)
     turn = engine.turn(c, "Crushing chest pain since this morning")
     assert turn.paused and not engine.llm.calls
@@ -166,7 +166,7 @@ def test_assessment_point(demo_system, env_t4):
     engine.turn(c, "Yes fever, no blood")
     assert engine.should_assess(c) == "SpaceDoc has enough information to assess."
 
-    engine.llm = FakeLLM(lambda m, s: reply(questions=[{"text": "More?", "why": "x"}]))
+    engine.llm = FakeLLM(lambda m, s: reply(questions=[{"topic": "more", "why": "x"}]))
     engine.max_rounds = 2
     c2 = start(demo_system, env_t4)
     engine.turn(c2, FLANK)
@@ -220,7 +220,8 @@ def test_assessment_uses_the_whole_consult(demo_system, env_t4):
     engine.turn(c, "1. Any fever or chills? Yes. 2. Any blood in the urine? No.")
     summary = engine.case_summary(c)
     assert f'in C1\'s words: "{FLANK}"' in summary
-    assert "SpaceDoc asked: Any fever or chills? / Any blood in the urine?" in summary
+    assert 'SpaceDoc said: "Pain that comes in waves points in a few directions.' in summary
+    assert "One more thing: has there been a recent spacewalk" in summary  # the exposure check
     assert "not checked; re-evaluate" in summary
 
     v = engine.assess(c)
@@ -240,11 +241,19 @@ def test_assessment_uses_the_whole_consult(demo_system, env_t4):
 
 
 def test_quick_replies_become_button_answers(demo_system, env_t4):
-    turn = demo_system.consult.turn(start(demo_system, env_t4), FLANK)
+    qs = [
+        {"topic": "fever or chills", "why": "x", "answer_type": "yes_no"},
+        {"topic": "blood in the urine", "why": "x", "answer_type": "yes_no"},
+    ]
+    demo_system.consult.llm = FakeLLM([reply(), reply(questions=qs)])
+    c = start(demo_system, env_t4)
+    first = demo_system.consult.turn(c, "Feeling unwell")
+    assert quick_answers("y", first) is None  # the exposure sentence was added to turn 1
+    turn = demo_system.consult.turn(c, "Since this morning")
     answers = quick_answers("y n", turn)
     assert [(a.question, a.answer) for a in answers] == [
-        ("Any fever or chills?", "Yes"),
-        ("Any blood in the urine?", "No"),
+        ("fever or chills", "Yes"),
+        ("blood in the urine", "No"),
     ]
     assert quick_answers("y", turn) is None  # two questions, one answer: left as typed
     assert quick_answers("No fever", turn) is None
@@ -256,12 +265,12 @@ def test_cli_consult_runs_end_to_end(tmp_path):
     result = CliRunner().invoke(
         app,
         ["consult", "--demo", "--config", str(config), "--tier", "T4"],
-        input="1\n3\np\nSO-0001\n" + FLANK + "\ny n\n/quit\n",
+        input="1\n3\np\nSO-0001\n" + FLANK + "\nLower right side, no fever\n/quit\n",
     )
     assert result.exit_code == 0, result.output
     out = result.output
     assert "PRACTICE consult" in out and "C1 · Commander · CMO" in out
-    assert "NOT ABOARD: ct_scanner" in out
+    assert "needs ct_scanner, which is not aboard" in out
     assert "SpaceDoc has enough information to assess." in out
     assert "Full answer saved in the audit log" in out
     records = list((tmp_path / "audit" / "consults").glob("*.md"))

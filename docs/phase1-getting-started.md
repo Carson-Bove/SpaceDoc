@@ -34,7 +34,7 @@ pytest -q
 
 - `eval run` runs the 3 example cases and writes `eval_runs/<time>/report.md`.
 - `consult` runs a scripted consult in Terminal: questions, then a checked assessment.
-- `pytest -q` runs the 145 tests.
+- `pytest -q` runs the 162 tests.
 
 In the demo flank-pain answer, the verification layer should:
 
@@ -130,15 +130,17 @@ spacedoc audit verify
 
 ### Run a consult
 
-A consult is a short conversation: SpaceDoc asks one or two questions at a time to build a differential diagnosis, then gives the full checked assessment. The design is in [consult-mode-design.md](consult-mode-design.md).
+A consult is a short conversation: SpaceDoc asks a question or two at a time, in plain words, to build a differential diagnosis, then gives the full checked assessment. The design is in [consult-mode-design.md](consult-mode-design.md).
 
 **In the browser:** `spacedoc serve`, then choose the **Consult** tab. Pick who is using SpaceDoc and who the patient is, real or practice, and press **Start consult**.
 - The page shows the **patient record in use** (from the synthetic roster). If a model is missing, a red banner says which one and how to install it.
-- Each turn starts with **SpaceDoc's reply**: it acknowledges what you said and answers your question, labelled *not checked*. It does not give step-by-step equipment instructions; reviewed equipment guides are a later step.
+- SpaceDoc replies with **one message**, like a chat: it responds to what you said, asks its questions and says which measurements would help. Answer in your own words (a reading like `92%` after it asks for the pulse oximeter is understood as oxygen saturation). The message is labelled *not checked against sources*. It does not give step-by-step equipment instructions; reviewed equipment guides are a later step.
+- **Why SpaceDoc is asking** (folded under the message) gives the reason for each question. A red note appears only when a requested exam needs equipment that is not aboard or does not work in the environment.
+- When the message asks a **single yes/no question**, **Yes / No / Not sure** buttons appear; pressing one sends it, together with anything you have typed.
 - The **working list** on the left updates every turn and marks what is new or changed. It is labelled *not yet checked*, and everyone sees it. Conditions added back by the must-not-miss list (below) are marked *added by SpaceDoc*.
-- After your first message comes an **exposure check**: spacewalks, radiation alerts, cabin atmosphere, payloads and lab animals, new medication, others affected.
-- Yes/no questions and the exposure check have **Yes / No / Not sure** buttons; exams have a **Result** box. Everything you select or fill in is sent together with anything you type when you press **Send** (or Cmd+Enter).
-- A **red-flag card** pauses the consult. Choose **Checked assessment now**, or **Continue questions** if it is not an emergency.
+- The first message always ends with the same **exposure question**: a recent spacewalk or suit run, a radiation alert, a cabin air alarm or smell, payloads, experiments or lab animals, a new medication, or anyone else unwell.
+- If the model thinks something is urgent, a **highlighted line** at the top of its message says why, with an **Assess now** button. It does not stop the consult.
+- A **red-flag card** (from SpaceDoc's rules, not the model) pauses the consult. Choose **Checked assessment now**, or **Continue questions** if it is not an emergency.
 - **Assess now**, **Consult record** (view or download the record) and **End consult** (saves the record to `audit/consults/`) are on the left.
 
 **In Terminal:**
@@ -154,10 +156,11 @@ spacedoc consult --user C1 --patient C3 --practice --scenario SO-0104 --tier T1
 ```
 
 - **Who's who.** The crew roster in `data/crew/roster.yaml` is **synthetic** (C1 is the CMO). Pick yourself and the patient by number or crew ID; `s` means you are the patient, `u` someone not on the roster. When you are not the patient, SpaceDoc phrases questions for you to ask them, and you type their answers.
-- **Each turn** shows SpaceDoc's working list (labelled *not yet checked*), up to two questions with the reason for each, and any exams. Exams that need equipment not aboard, or that don't work in the environment, are marked ✗.
-- **Quick answers.** When every question is yes/no, type `y`, `n` or `?` (one per question, e.g. `y n`).
+- **Each turn** shows SpaceDoc's message, the reason for each question, notes on any exam that needs equipment not aboard, and the working list (labelled *not yet checked*).
+- **Quick answers.** When every question is yes/no and SpaceDoc added none of its own, the prompt says `quick: y/n/?`; type `y`, `n` or `?` (one per question, e.g. `y n`).
 - **Red flags and vital signs.** Your words are checked against a draft list of urgent signs (`data/rules/red_flags.yaml`), and any vital signs you type (oxygen saturation, blood pressure, heart rate, breathing rate, temperature; e.g. `SpO2 85%`, `BP 70/50`) against draft thresholds (`data/rules/vital_signs.yaml`). A match pauses the consult before the model is asked and shows immediate steps; choose an immediate checked assessment or continue. A reversed blood pressure like `40/60` is flagged for a recheck. **Neither list is clinician-reviewed yet.**
 - **Spaceflight must-not-miss conditions.** A draft list (`data/rules/must_not_miss.yaml`) matches what has been said, for example nausea and vomiting plus hair loss or skin changes → acute radiation syndrome. A matched condition is sent to the model with the question to ask, put back on the working list if the model leaves it out, and passed to the assessment to address.
+- **Must-ask questions.** For some complaints SpaceDoc keeps a draft list of questions that must be asked (`data/rules/must_ask.yaml`). For a cut or other injury: how and where it happened, what caused it, possible contamination, when it happened and whether it was cleaned, and the last tetanus vaccination (skipped when the patient record has it). The model is told which are still owed. If a reply asks none of them, SpaceDoc adds the next one to the message itself (the record says so), and it doesn't offer to assess until they are covered. A question counts as covered once SpaceDoc has asked it or you have already said the answer. **Not clinician-reviewed yet.**
 - **Commands:** `/assess` (assess now), `/record` (show the consult record so far), `/quit`. SpaceDoc also assesses on its own when it has enough, or after 8 rounds (`consult_max_rounds`).
 - **Timing.** Each turn ends with a line like `⏱ 11.8 s (reading 1.2 s; writing 10.3 s, 182 tokens)`. When you quit, SpaceDoc prints the median turn time. The target is 10–15 s per turn; the first turn is slower while the model loads.
 - **Deep log** (`--deep-log`) turns thinking on for every turn, so the record has full thinking notes. Turns get slower, so each one also shows `about N s without deep log (estimated)`: the writing time minus the share spent on the notes. Measure the real number with a normal run.

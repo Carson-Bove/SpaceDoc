@@ -1,0 +1,132 @@
+# Must-ask questions by type of complaint, for consults.
+#
+# DRAFT, UNREVIEWED. Written by the engineering team as a starting point; the clinical team
+# must review every list, question and pattern before they are relied on.
+#
+# A list applies when one of its `triggers` appears (not negated) in what the user has said.
+# While a list applies, SpaceDoc tells the model which of its questions have not been asked
+# yet. If a reply asks none of them, SpaceDoc adds the next one to the message itself, and the
+# consult record says so. A question counts as covered when SpaceDoc's messages match its
+# `asked` patterns, or the user has already said it (`answered` patterns). `skip_if_record`
+# skips a question when the patient record has that field.
+
+lists:
+  - id: MA-INJURY
+    complaint: injury
+    triggers: ['\bcut\b|laceration|slic(e|ed|ing)|gash|puncture|stab', 'scald|(chemical|thermal) burn|burned (my|his|her|their)', 'crush|pinch(ed)?|\bbit(e|ten)\b|struck|\bfell\b|\bfall\b|bump(ed)? (my|his|her|their)|hit (my|his|her|their) head', 'wound|injur|sprain|fractur']
+    asks:
+      - id: MA-INJ-HOW
+        topic: how and where it happened
+        question: "How and where did it happen, and what were you doing at the time?"
+        asked: ['how did (it|this|that|you|the|she|he|they)', 'how it happened', 'what happened', 'where (did|were|was)', 'what were (you|they|she|he) doing']
+        answered: ['while (i|she|he|they|we) (was|were)', 'during (the|a|an)', 'in the (lab|module|node|airlock|galley)']
+      - id: MA-INJ-WHAT
+        topic: what caused it
+        question: "What caused it: a tool, a panel or rack edge, glass, a piece of equipment, or an animal?"
+        asked: ['what caused', 'caused (it|the|this)', 'what (cut|hit|struck|bit)', 'with what', 'what (object|tool|edge)']
+        answered: ['\bedge\b|tool|glass|knife|blade|scissors|panel|rack|bracket|latch|animal|mouse|mice|\brat\b']
+      - id: MA-INJ-CONTAM
+        topic: possible contamination
+        question: "Could it be contaminated: chemicals, coolant, biological samples, or animal tissue or fluids?"
+        asked: ['contamin', 'chemical', 'coolant', 'biological|sample', 'animal (tissue|fluid|blood)']
+        answered: ['contamin|coolant|biological sample']
+      - id: MA-INJ-WHEN
+        topic: when, and whether it was cleaned
+        question: "When did it happen, and has it been cleaned?"
+        asked: ['when did', 'how long ago', 'been cleaned|clean(ed)? it|irrigat|washed']
+        answered: ['\d+\s*(min|minute|hour|hr|h)s? ago|this morning|yesterday|just now|an hour ago']
+      - id: MA-INJ-TETANUS
+        topic: tetanus vaccination
+        question: "When was their last tetanus vaccination?"
+        asked: ['tetanus']
+        skip_if_record: tetanus
+
+  - id: MA-CHEST
+    complaint: chest pain
+    triggers: ['chest (pain|pressure|tight)', 'palpitat|heart (is )?(racing|pounding)']
+    asks:
+      - id: MA-CH-ONSET
+        topic: when it started and what they were doing
+        question: "When did it start, and what were you doing at the time?"
+        asked: ['when did', 'what were (you|they|she|he) doing', 'how long']
+      - id: MA-CH-CHAR
+        topic: what it feels like and where it spreads
+        question: "What does it feel like, and does it spread to the arm, jaw or back?"
+        asked: ['feel like', 'spread', 'radiat', '\barm\b|\bjaw\b|\bback\b']
+      - id: MA-CH-ASSOC
+        topic: breathlessness, sweating, nausea or faintness
+        question: "Any shortness of breath, sweating, nausea or feeling faint?"
+        asked: ['breath', 'sweat', 'nause', 'faint']
+
+  - id: MA-ABDO
+    complaint: abdominal pain
+    triggers: ['abdom|belly|stomach (pain|ache|cramp)|tummy|flank (pain)?|groin pain|pain in (my|his|her|their) side']
+    asks:
+      - id: MA-AB-WHERE
+        topic: where it is and where it spreads
+        question: "Where exactly is the pain, and does it spread anywhere?"
+        asked: ['where (exactly|is)', 'spread', 'radiat', 'which side']
+      - id: MA-AB-PATTERN
+        topic: onset and pattern
+        question: "When did it start, and is it constant or does it come in waves?"
+        asked: ['when did', 'constant', 'in waves|comes and goes|cramp']
+      - id: MA-AB-ASSOC
+        topic: vomiting, bowel or urine changes, fever
+        question: "Any vomiting, change in bowel movements or urine, or fever?"
+        asked: ['vomit', 'bowel|stool', 'urin', 'fever']
+
+  - id: MA-NEURO
+    complaint: headache or neurological symptoms
+    triggers: ['headache', 'dizz|vertigo', 'confus|disorient', 'numb|tingl', 'weakness', 'faint|passed out', 'seizure']
+    asks:
+      - id: MA-NE-ONSET
+        topic: sudden or gradual onset
+        question: "Did it come on suddenly or build up gradually?"
+        asked: ['sudden', 'gradual', 'come on|came on|build up']
+      - id: MA-NE-HEAD
+        topic: any head strike
+        question: "Has the patient hit their head recently?"
+        asked: ['hit (your|their|her|his) head', 'head (injury|strike|bump)', 'bump(ed)? (your|their|her|his) head']
+      - id: MA-NE-FOCAL
+        topic: weakness, numbness, speech or vision changes
+        question: "Any weakness or numbness on one side, trouble speaking, or change in vision?"
+        asked: ['weak', 'numb', 'speak|speech|slurr', 'vision|see']
+      - id: MA-NE-OTHERS
+        topic: others affected or cabin air
+        question: "Does anyone else aboard have similar symptoms, and are the cabin CO2 readings normal?"
+        asked: ['anyone else|others aboard|other crew', '\bco2\b|carbon dioxide|cabin air']
+
+  - id: MA-EYE
+    complaint: eye problem
+    triggers: ['\beyes?\b', 'vision|blurr']
+    asks:
+      - id: MA-EY-WHAT
+        topic: what happened to the eye
+        question: "What happened: did something get into the eye, or was there a splash or a blow?"
+        asked: ['get into|got into|splash|blow|something in']
+      - id: MA-EY-VISION
+        topic: change in vision
+        question: "Is the vision in that eye blurred or reduced compared with the other eye?"
+        asked: ['vision|blurr|see']
+      - id: MA-EY-LENS
+        topic: contact lenses
+        question: "Does the patient wear contact lenses?"
+        asked: ['contact lens']
+        answered: ['contact lens']
+
+  - id: MA-BREATH
+    complaint: breathing problem
+    triggers: ['short(ness)? of breath|breathless', 'cough|wheez', "(can't|cannot) breathe|trouble breathing|difficulty breathing"]
+    asks:
+      - id: MA-BR-ONSET
+        topic: sudden or gradual onset
+        question: "Did the breathing problem start suddenly or build up gradually?"
+        asked: ['sudden', 'gradual', 'start']
+      - id: MA-BR-CHEST
+        topic: chest pain
+        question: "Any chest pain, especially when breathing in?"
+        asked: ['chest pain|chest hurt']
+      - id: MA-BR-AIR
+        topic: cabin air and others affected
+        question: "Is anyone else aboard short of breath, and are there any cabin air alarms?"
+        asked: ['anyone else|others aboard|other crew', 'cabin air|alarm|\bco2\b|ammonia|smoke']

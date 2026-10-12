@@ -172,11 +172,10 @@ def create_app(system: System) -> FastAPI:
             "timing_line": timing_line(turn.timing),
             "thinking": turn.thinking,
             "error": turn.error,
-            "urgent_steps": engine.red_flags.steps(delay=consult.delay())
-            if reply and reply.urgent.flag
-            else [],
             "assess_reason": engine.should_assess(consult) if reply else None,
-            "screen": [i.model_dump() for i in turn.screen],
+            "appended": turn.appended,
+            "exposure_asked": turn.exposure_asked,
+            "must_ask_added": turn.must_ask_added,
             "must_not_miss_added": turn.must_not_miss_added,
         }
 

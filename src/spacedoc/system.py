@@ -11,7 +11,7 @@ from spacedoc.config import Settings
 from spacedoc.consult.engine import ConsultEngine
 from spacedoc.consult.redflags import RedFlags
 from spacedoc.consult.roster import load_roster
-from spacedoc.consult.safety import ExposureScreen, MustNotMiss, VitalRules
+from spacedoc.consult.safety import ExposureScreen, MustAsk, MustNotMiss, VitalRules
 from spacedoc.env.context import EnvironmentContext, load_environment
 from spacedoc.kb.ingest import chunk_source, load_manifest
 from spacedoc.kb.retrieve import Retriever
@@ -191,6 +191,7 @@ def build_system(settings: Settings, demo: bool = False) -> System:
         vitals=VitalRules.load(settings.data_dir),
         must_not_miss=MustNotMiss.load(settings.data_dir),
         screen=ExposureScreen.load(settings.data_dir),
+        must_ask=MustAsk.load(settings.data_dir),
     )
     return System(
         settings=settings,

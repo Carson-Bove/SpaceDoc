@@ -12,7 +12,6 @@ from spacedoc.consult.render import (
     render_turn,
     save_record,
     timing_summary,
-    urgent_card,
 )
 from spacedoc.consult.roster import CrewMember
 from spacedoc.render.text import render_text
@@ -45,22 +44,27 @@ def pick_patient(answer: str, roster: list[CrewMember]) -> str:
     return pick_member(answer, roster)
 
 
+def _yes_no_questions(turn: Turn) -> list:
+    """The questions quick replies can answer: all yes/no, and nothing added by SpaceDoc (a
+    "y" could otherwise answer the wrong question)."""
+    qs = turn.reply.questions if turn.reply else []
+    if not qs or turn.appended or any(q.answer_type != "yes_no" for q in qs):
+        return []
+    return qs
+
+
 def quick_answers(text: str, turn: Turn) -> list[Answer] | None:
     """Turn "y" or "y n" into button answers when every question is yes/no; else None."""
-    qs = turn.reply.questions if turn.reply else []
+    qs = _yes_no_questions(turn)
     tokens = text.lower().replace(",", " ").split()
-    if not qs or len(tokens) != len(qs) or any(q.answer_type != "yes_no" for q in qs):
+    if not qs or len(tokens) != len(qs) or not all(t in QUICK for t in tokens):
         return None
-    if not all(t in QUICK for t in tokens):
-        return None
-    return [Answer(question=q.text, answer=QUICK[t]) for q, t in zip(qs, tokens, strict=True)]
+    return [Answer(question=q.topic, answer=QUICK[t]) for q, t in zip(qs, tokens, strict=True)]
 
 
 def answer_prompt(turn: Turn) -> str:
-    qs = turn.reply.questions if turn.reply else []
-    if qs and all(q.answer_type == "yes_no" for q in qs):
-        keys = " ".join(["y/n/?"] * len(qs))
-        return f"Answer (quick: {keys})"
+    if qs := _yes_no_questions(turn):
+        return f"Answer (quick: {' '.join(['y/n/?'] * len(qs))})"
     return "Answer"
 
 
@@ -152,14 +156,6 @@ def _loop(system: System, consult: Consult) -> None:
             typer.echo(f"SpaceDoc could not continue: {turn.error}")
             text = ask("Try again (or /assess, /quit)")
             continue
-        if turn.reply.urgent.flag:
-            steps = system.consult.red_flags.steps(delay=consult.delay())
-            typer.echo(urgent_card([turn.reply.urgent.reason], steps, "flagged by the model"))
-            choice = ask("[a] checked assessment now · [c] continue questions", default="a")
-            if not choice.lower().startswith("c"):
-                assess(system, consult)
-                text = ask("Add new information to continue, or /quit")
-                continue
         typer.echo("\n" + render_turn(turn) + "\n")
         reason = system.consult.should_assess(consult)
         if reason:
