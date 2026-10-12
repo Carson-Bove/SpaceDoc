@@ -37,15 +37,21 @@ Still blocked (403 through this environment's network policy): ntrs.nasa.gov, ww
 | Bone Fracture due to Spaceflight-induced Changes to Bone (2024) | Mostly bone loss and fracture-risk estimates | Low: little on treating a fracture |
 | Injury due to Dynamic Loads (2021) | Mostly occupant-protection engineering for launch and landing; injury rates, mild head and spine injury | Low |
 
-Still not covered by any source in the corpus: wound care and tetanus prophylaxis, an acute radiation syndrome treatment protocol, and drug labels. The sources for these are below, all on hosts this environment blocks.
+*Radiation sickness, added Oct 2026* (read in full; US Government works). These are terrestrial clinical guidance, tier C.
 
-*Probably US Government works; not reachable from the build environment, so the license is not yet confirmed.* These hosts were blocked by this environment's network policy in Oct 2026; they may load fine on the Mac.
+| Source | What it gives SpaceDoc | Notes |
+|---|---|---|
+| AFRRI, *Medical Management of Radiological Casualties*, 5th edition (2022) | First 72 hours: triage score from blood counts and vomiting, dose estimation, antiemetic and cytokine doses, skin injury, internal contamination and decorporation drugs, decontamination | No copyright notice; a DoD (Uniformed Services University) publication. Its tables are images, so retrieval cannot see them (triage categories, dose effects, time-to-vomiting biodosimetry, decorporation doses, potassium iodide). The university's site-wide policy page is on www.usuhs.edu, which this environment blocks |
+| CDC, *Acute Radiation Syndrome: A Brochure for Physicians* | Conditions for ARS, the three syndromes and four stages, serial blood counts | Its syndrome thresholds are higher than AFRRI's |
+| CDC, *Cutaneous Radiation Injury: A Brochure for Physicians* | Skin injury stages and grades, treatment by stage | Photos are third-party; only the text is used |
+| HHS REMM (12 pages) | Severity grading and treatments to consider, time phases by dose range, cytokine label doses (updated 2026), combined injury and surgery timing, aspirin/NSAID caution, skin radiation syndrome, physical exam | Public domain; REMM asks to be credited as "Source: https://remm.hhs.gov". Menu and calculator pages were left out |
+
+Still not covered by any source in the corpus: wound care and tetanus prophylaxis, and drug labels. The sources for these are below.
+
+*Probably US Government works; to read next.* These hosts were allowed in this environment in Oct 2026, except www.navsea.navy.mil, whose site refuses scripted downloads.
 
 | Document | Host | Why |
 |---|---|---|
-| AFRRI, *Medical Management of Radiological Casualties*, 5th edition | afrri.usuhs.edu | The standard clinician handbook for acute radiation syndrome: triage, dose estimation, treatment |
-| CDC, Acute Radiation Syndrome guidance for clinicians | www.cdc.gov | Short summary of phases, dose thresholds and treatment |
-| HHS, Radiation Emergency Medical Management (REMM) | remm.hhs.gov | Diagnosis and treatment pages for acute radiation syndrome |
 | US Public Health Service, *The Ship's Medicine Chest and Medical Aid at Sea* (2003) | official copy still to locate; a copy is on irp.fas.org | Medical care in an isolated vessel without a physician, written for lay responders: close to a CMO's situation |
 | CDC, tetanus chapter of the *Pink Book* (wound management and tetanus prophylaxis) | www.cdc.gov | Backs the tetanus must-ask question and the assessment's wound advice |
 | Joint Trauma System clinical practice guidelines (e.g. burns, pain, infection prevention) | jts.health.mil | Wound and trauma care with limited resources |

@@ -33,7 +33,7 @@ pytest -q
 
 - `consult` runs a scripted consult in Terminal: questions, then a checked assessment.
 - `eval run` runs the 3 example cases through the assessment step and writes `eval_runs/<time>/report.md`.
-- `pytest -q` runs the 203 tests.
+- `pytest -q` runs the 204 tests.
 
 In the demo flank-pain assessment, the verification layer should:
 
@@ -110,7 +110,7 @@ spacedoc corpus fetch
 spacedoc corpus ingest
 ```
 
-`fetch` downloads the files into `corpus/files/` (not committed to git) and prints one line per file when it has finished them all. `ingest` splits them into passages and embeds them into `spacedoc.db`.
+`fetch` downloads the files into `corpus/files/` (not committed to git) and prints one line per file when it has finished them all. `ingest` splits them into passages and embeds them into `spacedoc.db`. If a file is missing or has changed since it was read (its sha256 differs), `ingest` skips it, keeps any version ingested before, and says so at the end; the new version has to be read before its hash goes in the manifest. Web pages such as REMM's are revised from time to time, so expect this now and then.
 
 The manifest holds only sources that were read in full and whose license allows this use (US Government public domain or CC BY). Candidates that are still unread, or whose license is non-commercial or no-derivatives, are listed in [research-backlog.md](research-backlog.md). You can also add your own PDFs:
 1. Put the file in `corpus/files/`.

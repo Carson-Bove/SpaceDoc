@@ -64,3 +64,31 @@ def test_query_gets_the_embedding_instruction_but_documents_do_not():
     r.search("kidney stone pain")
     assert seen == ["Instruct: Retrieve passages that answer it\nQuery:kidney stone pain"]
     assert query_text("q", "") == "q"  # no instruction configured: query unchanged
+
+
+def test_changed_or_missing_files_are_skipped_not_fatal(tmp_path):
+    import shutil
+
+    import pytest
+
+    d = DATA / "demo_corpus"
+    for f in d.iterdir():
+        shutil.copy(f, tmp_path / f.name)
+    manifest = (tmp_path / "manifest.yaml").read_text()
+    renal = next(m for m in load_manifest(tmp_path / "manifest.yaml") if m.id == "demo-renal")
+    eye = next(m for m in load_manifest(tmp_path / "manifest.yaml") if m.id == "demo-eye")
+    (tmp_path / "manifest.yaml").write_text(
+        manifest.replace(f"file: {renal.file}", f"file: {renal.file}\n    sha256: {'a' * 64}")
+    )
+    (tmp_path / eye.file).unlink()
+
+    store, llm = KnowledgeStore(":memory:"), FakeLLM()
+    with pytest.raises(ValueError, match="sha256 mismatch"):
+        ingest_manifest(store, llm, tmp_path / "manifest.yaml", tmp_path, "fake")
+
+    skipped = []
+    ingest_manifest(store, llm, tmp_path / "manifest.yaml", tmp_path, "fake", skipped)
+    assert {s for s, _, _ in store.sources()} == {"demo-injection"}
+    assert len(skipped) == 2
+    assert any("demo-renal" in s and "sha256 mismatch" in s for s in skipped)
+    assert any("demo-eye" in s and "not found" in s for s in skipped)

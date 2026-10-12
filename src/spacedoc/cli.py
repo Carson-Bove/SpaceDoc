@@ -182,9 +182,15 @@ def corpus_ingest(config: Path = ConfigOpt) -> None:
     embedder = connect(
         s.llm_backend, s.llm_base_url, s.chat_model, s.embed_model, s.request_timeout_s
     )
+    skipped: list[str] = []
     try:
         n = ingest_manifest(
-            store, embedder, s.corpus_dir / "manifest.yaml", s.corpus_dir / "files", s.embed_model
+            store,
+            embedder,
+            s.corpus_dir / "manifest.yaml",
+            s.corpus_dir / "files",
+            s.embed_model,
+            skipped,
         )
     except LLMError as e:
         typer.echo(f"Embedding failed: {e}", err=True)
@@ -192,6 +198,14 @@ def corpus_ingest(config: Path = ConfigOpt) -> None:
     typer.echo(f"Ingested {n} chunks. Store now holds {store.count()} chunks:")
     for source_id, title, count in store.sources():
         typer.echo(f"  {source_id:<32} {count:>5}  {title}")
+    for line in skipped:
+        typer.secho(f"SKIPPED  {line}", fg=typer.colors.RED, err=True)
+    if skipped:
+        typer.echo(
+            "Skipped sources keep the version ingested before, if any. A changed file must be "
+            "read again before its new sha256 goes in corpus/manifest.yaml.",
+            err=True,
+        )
 
 
 @app.command()

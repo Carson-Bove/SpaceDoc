@@ -230,3 +230,184 @@ sources:
     topic_tags: [launch-landing, injury, spine, head-injury, occupant-protection]
     published: "2021-09-15"
     notes: "Revision A. Mostly occupant-protection engineering for launch and landing; also injury rates, mild head injury and spine injury."
+
+  # Radiation sickness clinical sources added Oct 2026: the AFRRI handbook, two CDC clinician
+  # brochures and REMM pages. Each was read in full. These are terrestrial clinical guidance
+  # (tier C); their dose thresholds differ somewhat from one another, as each states. REMM
+  # pages that are only menus or interactive calculators were left out.
+  - id: afrri-mmrc-2022
+    title: "Medical Management of Radiological Casualties, Fifth Edition (AFRRI)"
+    file: afrri-mmrc-5.pdf
+    url: https://afrri.usuhs.edu/sites/default/files/media/documents/affri_-_medical_management_of_rad_casualties_5th_edition_0.pdf
+    sha256: de93b19854fa2213c1a193edd1e3d24e6b9a618cfe18619da7d755f87c217b94
+    license: 'US Government publication (AFRRI, Uniformed Services University, DoD); no copyright notice; distributed free by AFRRI'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, acute-radiation-syndrome, triage, biodosimetry, antiemetics, g-csf, skin-injury, internal-contamination, decontamination, dosing]
+    published: "2022-02"
+    notes: "Covers the first 72 hours. Tables 1-8 (triage categories, dose effects, time to vomiting and lymphocyte biodosimetry, decorporation drugs and doses, potassium iodide, exposure categories) are images, so their content is not in the extracted text and retrieval cannot see it. Read as images Oct 2026."
+
+  - id: cdc-ars-physicians
+    title: "Acute Radiation Syndrome: A Brochure for Physicians (CDC)"
+    file: cdc-ars.pdf
+    url: https://www.cdc.gov/radiation-emergencies/media/pdfs/ARS.pdf
+    sha256: 08cbfbe1bb783673f8c7daa7e2caf0ad53c3b8639b33dffffd51007bf7a48204
+    license: 'US Government work (public domain); CDC'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, acute-radiation-syndrome, diagnosis, lymphocytes]
+    published: "2017-07"
+    notes: "Gives higher syndrome thresholds than AFRRI (GI over 10 Gy, cardiovascular/CNS over 50 Gy). The Andrews lymphocyte nomogram is an image."
+
+  - id: cdc-cri-physicians
+    title: "Cutaneous Radiation Injury: A Brochure for Physicians (CDC)"
+    file: cdc-cri.pdf
+    url: https://www.cdc.gov/radiation-emergencies/media/pdfs/CRI.pdf
+    sha256: 1099284bb92defe8d6aa0fa4e348818e9dac17da0efe284f954e6d4ec410d341
+    license: 'US Government work (public domain); CDC. The photographs are third-party, reprinted with permission; only the text is used.'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, skin-injury, wound-care, burns]
+    published: "2017-07"
+    notes: "Its treatment-by-stage list names some products not sold in the US (e.g. Gordox, Lioxasol, Actovegin) and says it is not official CDC advice."
+
+  - id: remm-ars-management
+    title: "REMM: Managing Acute Radiation Syndrome (ARS), severity grading and treatments to consider"
+    file: remm-ars.htm
+    url: https://remm.hhs.gov/ars.htm
+    sha256: 84995e438cc7708a66aece9ad7506576c189643c313d66a7513314a9ac242d7d
+    license: 'US Government work (public domain); HHS/ASPR REMM, credit "Source: https://remm.hhs.gov"'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, acute-radiation-syndrome, triage, severity-grading]
+    published: null
+    notes: "The METREPOL-based tool: severity grades 1-4 for blood, gut, skin and nervous-system signs, treatments to consider, and response categories. The interactive parts do not survive text extraction."
+
+  - id: remm-ars-definition
+    title: "REMM: What is Acute Radiation Syndrome"
+    file: remm-ars-definition.htm
+    url: https://remm.hhs.gov/ars_definition.htm
+    sha256: 2266811861c5dbcf5894b9ff4fc711fd8cf339112dc841b099883eaeb271248a
+    license: 'US Government work (public domain); HHS/ASPR REMM, credit "Source: https://remm.hhs.gov"'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, acute-radiation-syndrome]
+    published: null
+
+  - id: remm-ars-phases-1-2gy
+    title: "REMM: Time phases of ARS, whole-body dose 1-2 Gy"
+    file: remm-ars-timephases1.htm
+    url: https://remm.hhs.gov/ars_timephases1.htm
+    sha256: 7fd852520fcfe25855f9f6fac073f954d0b074216b88a90c5e83a433433a87cc
+    license: 'US Government work (public domain); HHS/ASPR REMM, credit "Source: https://remm.hhs.gov"'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, acute-radiation-syndrome, dose-estimation]
+    published: null
+    notes: "Adapted by REMM from IAEA Safety Reports Series No. 2 (1998)."
+
+  - id: remm-ars-phases-2-4gy
+    title: "REMM: Time phases of ARS, whole-body dose 2-4 Gy"
+    file: remm-ars-timephases2.htm
+    url: https://remm.hhs.gov/ars_timephases2.htm
+    sha256: f2c554ec15885e927d5d26099236d30d4d45a8b5c846d9dec43cc01308b60ddb
+    license: 'US Government work (public domain); HHS/ASPR REMM, credit "Source: https://remm.hhs.gov"'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, acute-radiation-syndrome, dose-estimation]
+    published: null
+    notes: "Adapted by REMM from IAEA Safety Reports Series No. 2 (1998)."
+
+  - id: remm-ars-phases-4-6gy
+    title: "REMM: Time phases of ARS, whole-body dose 4-6 Gy"
+    file: remm-ars-timephases3.htm
+    url: https://remm.hhs.gov/ars_timephases3.htm
+    sha256: 82968e513f958f0cdf237e0665b0be8e42e8d799b874c180013cb7bb89640c4a
+    license: 'US Government work (public domain); HHS/ASPR REMM, credit "Source: https://remm.hhs.gov"'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, acute-radiation-syndrome, dose-estimation]
+    published: null
+    notes: "Adapted by REMM from IAEA Safety Reports Series No. 2 (1998)."
+
+  - id: remm-ars-phases-6-8gy
+    title: "REMM: Time phases of ARS, whole-body dose 6-8 Gy"
+    file: remm-ars-timephases4.htm
+    url: https://remm.hhs.gov/ars_timephases4.htm
+    sha256: 189aaa8be73a99d56e77f7bb233a32fd8435e9fdc74516351545b9d34052bf50
+    license: 'US Government work (public domain); HHS/ASPR REMM, credit "Source: https://remm.hhs.gov"'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, acute-radiation-syndrome, dose-estimation]
+    published: null
+    notes: "Adapted by REMM from IAEA Safety Reports Series No. 2 (1998)."
+
+  - id: remm-ars-phases-over-8gy
+    title: "REMM: Time phases of ARS, whole-body dose over 8 Gy"
+    file: remm-ars-timephases5.htm
+    url: https://remm.hhs.gov/ars_timephases5.htm
+    sha256: 8b02a0a6dc05fde276a742521a0348b8be87ebfb59a7fb612c24b5f22129ce79
+    license: 'US Government work (public domain); HHS/ASPR REMM, credit "Source: https://remm.hhs.gov"'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, acute-radiation-syndrome, dose-estimation]
+    published: null
+    notes: "Adapted by REMM from IAEA Safety Reports Series No. 2 (1998)."
+
+  - id: remm-myeloid-cytokines
+    title: "REMM: Cytokines for acute exposure to myelosuppressive doses of radiation (H-ARS)"
+    file: remm-cytokines.htm
+    url: https://remm.hhs.gov/cytokines.htm
+    sha256: f47c7ebf100067c332a4066df6b5658ee4f52fe6de1d4e9be920876b233078c1
+    license: 'US Government work (public domain); HHS/ASPR REMM, credit "Source: https://remm.hhs.gov"'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, hematology, g-csf, filgrastim, pegfilgrastim, romiplostim, dosing]
+    published: null
+    notes: "FDA label doses for filgrastim, pegfilgrastim, sargramostim and romiplostim in H-ARS, with REMM's lower-dose strategies for short supply (marked as not in the labels). Updated often; checked Oct 2026 (approvals listed to May 2026)."
+
+  - id: remm-exposure-modifiers
+    title: "REMM: Management modifiers for treating radiation exposure (burns, trauma, surgery timing, blood products)"
+    file: remm-exposure-modifiers.htm
+    url: https://remm.hhs.gov/exposure_modifiers.htm
+    sha256: 6920e7f1f20be769770b8445cd883598c71efeef1ff9b82894214590fcd0983f
+    license: 'US Government work (public domain); HHS/ASPR REMM, credit "Source: https://remm.hhs.gov"'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, combined-injury, surgery-timing, blood-products]
+    published: null
+
+  - id: remm-aspirin-nsaid-caution
+    title: "REMM: Caution about prescribing aspirin and NSAIDs in irradiated patients"
+    file: remm-aspirinwarning.htm
+    url: https://remm.hhs.gov/aspirinwarning.htm
+    sha256: a0e707a607a3eb5882794282a7f5dfc1ec394ca906e3c3361df71bd2092fc803
+    license: 'US Government work (public domain); HHS/ASPR REMM, credit "Source: https://remm.hhs.gov"'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, thrombocytopenia, nsaids, medication-safety]
+    published: null
+
+  - id: remm-cutaneous-radiation-syndrome
+    title: "REMM: Cutaneous Radiation Syndrome"
+    file: remm-cutaneoussyndrome.htm
+    url: https://remm.hhs.gov/cutaneoussyndrome.htm
+    sha256: bcddfe7b708da215c7f58f18b145284f3c863c76f3c4994eefef2bdb6fededde
+    license: 'US Government work (public domain); HHS/ASPR REMM, credit "Source: https://remm.hhs.gov"'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, skin-injury, wound-care, burns]
+    published: null
+    notes: "Gives no threshold doses on purpose; see the CDC and AFRRI skin-injury sources for those."
+
+  - id: remm-ars-physical-exam
+    title: "REMM: Targeted physical examination following a nuclear detonation"
+    file: remm-physicalexam.htm
+    url: https://remm.hhs.gov/physicalexam.htm
+    sha256: 543d9a8d598bba2b8a0bb0aeb41510afa6b48e96be6f5023cc8cc83c4458a85b
+    license: 'US Government work (public domain); HHS/ASPR REMM, credit "Source: https://remm.hhs.gov"'
+    tier: C
+    environment_tags: []
+    topic_tags: [radiation, physical-exam, acute-radiation-syndrome]
+    published: null
+    notes: "Written for a nuclear detonation; the ARS signs apply to any large exposure."

@@ -40,11 +40,24 @@ class System:
 
 
 def ingest_manifest(
-    store: KnowledgeStore, embedder, manifest: Path, files_dir: Path, model: str
+    store: KnowledgeStore,
+    embedder,
+    manifest: Path,
+    files_dir: Path,
+    model: str,
+    skipped: list[str] | None = None,
 ) -> int:
+    """Chunk and embed every source. With `skipped`, a missing file or one whose sha256
+    changed is left out (and its earlier chunks kept) instead of stopping the ingest."""
     total = 0
     for meta in load_manifest(manifest):
-        chunks = chunk_source(meta, files_dir)
+        try:
+            chunks = chunk_source(meta, files_dir)
+        except (FileNotFoundError, ValueError) as e:
+            if skipped is None:
+                raise
+            skipped.append(str(e))
+            continue
         store.delete_source(meta.id)
         vectors = []
         for i in range(0, len(chunks), 32):
