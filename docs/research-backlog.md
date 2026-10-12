@@ -10,7 +10,7 @@ Two quirks:
 - The PMC website serves PDFs behind a browser check, so scripts get an HTML page instead of the PDF. The manifest downloads PMC papers from the PMC Open Access bucket instead.
 - www.fda.gov returns 401 to the `spacedoc corpus fetch` user-agent but serves the same files to a browser or curl. FDA documents are cited, not in the corpus, so this does not affect the manifest.
 
-Still blocked (403 through this environment's network policy): ntrs.nasa.gov, www.nature.com (and its login host idp.nature.com), www.sciencedirect.com, europepmc.org, www.ebi.ac.uk and www.imdrf.org. Most items below are waiting on one of these.
+Still blocked (403 through this environment's network policy): ntrs.nasa.gov, www.nature.com (and its login host idp.nature.com), www.sciencedirect.com, europepmc.org, www.ebi.ac.uk and www.imdrf.org. Also blocked when checked in Oct 2026: afrri.usuhs.edu, www.cdc.gov, stacks.cdc.gov, remm.hhs.gov, dailymed.nlm.nih.gov, jts.health.mil, www.navsea.navy.mil and irp.fas.org. Most items below are waiting on one of these.
 
 ## Knowledge-base corpus
 
@@ -21,7 +21,36 @@ Still blocked (403 through this environment's network policy): ntrs.nasa.gov, ww
 | Document | License | Why |
 |---|---|---|
 | Hinkelbein et al., ESAM/DGLRM guideline for CPR in microgravity (2020), PMC7607644 | CC BY 4.0 | The recommendations behind the microgravity CPR protocol variants; cited as [R9] |
-| Other HRP evidence reports on humanresearchroadmap.nasa.gov (e.g. renal stones, bone, behavioral health) | US Gov | Same series as the two already in the corpus; host is reachable, reports not yet read |
+
+**Proposed clinical sources (Oct 2026, waiting for approval).** The practice consults showed the knowledge base has no clinical source for acute radiation syndrome, wounds, tetanus or decompression sickness, so the assessment abstains on them. These are proposed to fill that gap. None is read in full yet; each will be read in full, and its license confirmed on the document itself, before it goes in the manifest. NASA documents the NASA team adds go through the same steps.
+
+*Reachable now, license stated on the title page.* All are NASA HRP evidence reports on humanresearchroadmap.nasa.gov, marked "Approved for Public Release", the same series and terms as the two HRP reports already in the corpus. Some co-authors are contractors or university staff, as in those two.
+
+| Priority | Document | Pages | Why |
+|---|---|---|---|
+| 1 | Risk of Acute Radiation Syndromes due to Solar Particle Events (2016; `evidence/other/Acute.pdf`) | 69 | The gap from the radiation practice consult: symptom phases, human evidence, blood-count response, countermeasures such as G-CSF, solar alerts and shelter. A risk report, not a treatment protocol |
+| 2 | Risk of Renal Stone Formation (2024) | 42 | Kidney stones, the demo scenario; risk factors and in-flight management |
+| 3 | Risk of Reduced Crew Health and Performance due to Decompression Sickness and Hypoxia (2023) | 94 | Decompression sickness after a spacewalk (on the must-not-miss list) and hypoxia |
+| 4 | Risk of Injury and Compromised Performance due to EVA Operations (2022) | 65 | Suit and glove injuries, including hands |
+| 5 | Risk of Ineffective or Toxic Medication During Long-Duration Exploration Spaceflight (2023) | 126 | Medication stability and dosing in flight; supports the formulary |
+| 6 | Risk of Adverse Health Effects due to Host-Microorganism Interactions (2022) | 29 | Infection risk aboard, including wounds |
+| 7 | Risk of Bone Fracture due to Spaceflight-induced Changes to Bone (2024) | 60 | Fractures |
+| 8 | Risk of Injury due to Dynamic Loads (2021) | 106 | Injuries from launch, landing and impacts |
+
+*Probably US Government works; not reachable from the build environment, so the license is not yet confirmed.* These hosts were blocked by this environment's network policy in Oct 2026; they may load fine on the Mac.
+
+| Document | Host | Why |
+|---|---|---|
+| AFRRI, *Medical Management of Radiological Casualties*, 5th edition | afrri.usuhs.edu | The standard clinician handbook for acute radiation syndrome: triage, dose estimation, treatment |
+| CDC, Acute Radiation Syndrome guidance for clinicians | www.cdc.gov | Short summary of phases, dose thresholds and treatment |
+| HHS, Radiation Emergency Medical Management (REMM) | remm.hhs.gov | Diagnosis and treatment pages for acute radiation syndrome |
+| US Public Health Service, *The Ship's Medicine Chest and Medical Aid at Sea* (2003) | official copy still to locate; a copy is on irp.fas.org | Medical care in an isolated vessel without a physician, written for lay responders: close to a CMO's situation |
+| CDC, tetanus chapter of the *Pink Book* (wound management and tetanus prophylaxis) | www.cdc.gov | Backs the tetanus must-ask question and the assessment's wound advice |
+| Joint Trauma System clinical practice guidelines (e.g. burns, pain, infection prevention) | jts.health.mil | Wound and trauma care with limited resources |
+| DailyMed drug labels for the formulary medications | dailymed.nlm.nih.gov | Contraindications, interactions and label dosing, to check medication claims |
+| US Navy Diving Manual, Revision 7 (decompression sickness chapters) | www.navsea.navy.mil | Signs and classification of decompression sickness |
+
+*Probably not eligible* (license to confirm): StatPearls on the NCBI Bookshelf (CC BY-NC-ND); the WHO *International Medical Guide for Ships* (WHO copyright); IAEA safety reports on radiation injuries (IAEA copyright).
 
 **Still to obtain:**
 
