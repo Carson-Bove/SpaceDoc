@@ -131,6 +131,18 @@ sources:
     published: "2024-09-03"
     notes: "Resusc Plus 2024;20:100762. doi:10.1016/j.resplu.2024.100762. PMCID PMC11404056. Manikin studies only."
 
+  - id: hinkelbein-2020-cpr-microgravity
+    title: "Cardiopulmonary resuscitation (CPR) during spaceflight: a guideline for CPR in microgravity from the German Society of Aerospace Medicine (DGLRM) and the European Society of Aerospace Medicine Space Medicine Group (ESAM-SMG)"
+    file: PMC7607644.pdf
+    url: https://pmc-oa-opendata.s3.amazonaws.com/PMC7607644.1/PMC7607644.1.pdf
+    sha256: bc1c0e596c42fff00cd743b8c5035b626743029b996120ce7104353fb3149e10
+    license: CC BY 4.0
+    tier: B
+    environment_tags: [microgravity]
+    topic_tags: [cpr, resuscitation, cardiac-arrest, basic-life-support, advanced-life-support, guidelines]
+    published: "2020-11-02"
+    notes: "Scand J Trauma Resusc Emerg Med 2020;28:108. doi:10.1186/s13049-020-00793-y. PMCID PMC7607644. A consensus guideline (Delphi): Evetts-Russomano compressions for immediate basic life support, the handstand method once the patient is on the Crew Medical Restraint System, airway management only with two rescuers and a restrained patient."
+
   # NASA HRP evidence reports added Oct 2026 to fill the clinical gaps found in the practice
   # consults (radiation sickness, kidney stones, decompression sickness, spacewalk injuries,
   # medicines, infection, fractures, launch and landing injuries). The body of each was read

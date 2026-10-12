@@ -89,8 +89,9 @@ A safety case is a structured argument, supported by evidence, that the system i
 |---|---|---|
 | NASA ExMC gap: no computed medical decision support for exploration missions [[R7](references.md#r7)] | Evidence gap | SpaceDoc targets this gap directly, with an explicit hallucination layer, device minis, longitudinal monitoring, role adaptation and an open design |
 | Google **AMIE** [[R1](references.md#r1)] | Conversational diagnostic AI (terrestrial) | Model for rigorous OSCE-style evaluation methodology |
+| NASA LuCCI **"Doc in a Box"** [[R34](references.md#r34)] | LLM assistant for crew medical officers, evaluated with an adapted OSCE | SpaceDoc's must-not-miss list and code-checked doses target the two weaknesses it reported: can't-miss diagnoses with atypical presentations, and treatment recommendations. SpaceOSCE could use the same kind of cases |
 
-NASA and TRISH projects on crew medical assistants and crew health data platforms are listed in the [research backlog](research-backlog.md). Add them to this table once their reports have been read in full.
+Other NASA and TRISH projects, such as crew health data platforms, are listed in the [research backlog](research-backlog.md). Add them to this table once their reports have been read in full.
 
 **Recommendation:** position SpaceDoc as **complementary and interoperable**, especially its verification layer and SpaceOSCE framework, rather than as a competitor. Partnerships and analog access are more likely that way.
 

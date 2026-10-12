@@ -1,6 +1,6 @@
 # References
 
-This list contains only papers, preprints and official documents (standards, regulatory guidance, NASA evidence reports) that were read in full (Sept 2026). Sources that could not be opened in full, and the news, blog and vendor pages used during early research, are in the [research backlog](research-backlog.md) and are not cited.
+This list contains only papers, preprints and official documents (standards, regulatory guidance, NASA evidence reports) that were read in full (Sept–Oct 2026). Sources that could not be opened in full, and the news, blog and vendor pages used during early research, are in the [research backlog](research-backlog.md) and are not cited.
 
 Citation conventions:
 - A paper read through PubMed Central is cited by its journal version, with the PMCID.
@@ -16,6 +16,8 @@ Citation conventions:
 <a id="r3"></a>**R3.** Yao Z, Zhang Z, Tang C, et al. MedQA-CS: Benchmarking Large Language Models Clinical Skills Using an AI-SCE Framework. arXiv:2410.01553v2 [preprint], 2026. The arXiv record notes it is to appear at EACL 2026. https://arxiv.org/abs/2410.01553
 
 <a id="r4"></a>**R4.** Koo TK, Li MY. A Guideline of Selecting and Reporting Intraclass Correlation Coefficients for Reliability Research. *J Chiropr Med* 2016;15(2):155–163. doi:10.1016/j.jcm.2016.02.012. PMCID: PMC4913118.
+
+<a id="r34"></a>**R34.** Nelson AM, Al A, Lemery J, Hilmers D. Objective Structured Clinical Evaluation of an Artificial Intelligence Clinical Decision Support System Tool. Abstract, Aerospace Medical Association Annual Meeting, 2025. NASA Johnson Space Center; NTRS 20240012747. https://ntrs.nasa.gov/citations/20240012747. Read with the two slide decks from the same project: Nelson A, Al A, Anderson A, et al., AsMA 95th Annual Meeting, June 2025 (NTRS 20250002755), and Nelson A, Al A, Garcia M, et al., HRP Investigators' Workshop, February 2025 (NTRS 20250000051), and the workshop abstract (NTRS 20240011677). Only abstracts and slides are public, and they describe the model differently: the AsMA abstract calls it an 8B model reduced from the 80B OpenBio LLM, while the slides name Llama 3.1 8B and Gemma 2 27B.
 
 ## 2. Space medicine and standards
 
@@ -38,6 +40,10 @@ Citation conventions:
 <a id="r13"></a>**R13.** Pohlen M, Carroll D, Prisk GK, Sawyer AJ. Overview of lunar dust toxicity risk. *npj Microgravity* 2022;8:55. doi:10.1038/s41526-022-00244-1. PMCID: PMC9718825.
 
 <a id="r14"></a>**R14.** Wang JL, Rosenbaum JJ, Prasad AN, et al. Potential health impacts, treatments, and countermeasures of Martian dust on future human space exploration. *GeoHealth* 2025;9(2):e2024GH001213. doi:10.1029/2024GH001213. PMCID: PMC11815326.
+
+<a id="r35"></a>**R35.** Hailey M, Urbina M, Reyes D, Antonsen E. Interpretation of NASA-STD-3001 Levels of Care for Exploration Medical System Development. NASA/TM-2017-219290, Johnson Space Center, April 2017. NTRS 20170004345. https://ntrs.nasa.gov/citations/20170004345. (Interprets the five Levels of Care, which NASA-STD-3001 Vol 1 Rev B later replaced; see [R5].)
+
+<a id="r36"></a>**R36.** McBrayer KT, Chai PR, Judd EL. Communication Delays, Disruptions, and Blackouts for Crewed Mars Missions. ASCEND 2022, NASA Langley Research Center. NTRS 20220013418. https://ntrs.nasa.gov/citations/20220013418
 
 ## 3. Grounding, hallucination and uncertainty
 

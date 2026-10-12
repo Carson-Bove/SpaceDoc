@@ -14,13 +14,7 @@ Allowed in Oct 2026: ntrs.nasa.gov, afrri.usuhs.edu, www.cdc.gov, remm.hhs.gov, 
 
 ## Knowledge-base corpus
 
-**In the manifest** (read in full; US Government public domain or CC BY): NASA-STD-3001 Vol 1 Rev C and Vol 2 Rev F; the HRP evidence reports on in-flight medical conditions (2017) and SANS (2022); the drug potency (2023) and ISS formulary expiration (2024) papers; the lunar dust (2022) and Martian dust (2025) reviews; and the CPR in extreme environments scoping review (2024). The 2022 SANS report replaces the 2017 version that was on the original list. Added in Oct 2026: eight more HRP evidence reports, listed below.
-
-**Proposed additions** (read in full, permissive, not on the original candidate list):
-
-| Document | License | Why |
-|---|---|---|
-| Hinkelbein et al., ESAM/DGLRM guideline for CPR in microgravity (2020), PMC7607644 | CC BY 4.0 | The recommendations behind the microgravity CPR protocol variants; cited as [R9] |
+**In the manifest** (read in full; US Government public domain or CC BY): NASA-STD-3001 Vol 1 Rev C and Vol 2 Rev F; the HRP evidence reports on in-flight medical conditions (2017) and SANS (2022); the drug potency (2023) and ISS formulary expiration (2024) papers; the lunar dust (2022) and Martian dust (2025) reviews; and the CPR in extreme environments scoping review (2024). The 2022 SANS report replaces the 2017 version that was on the original list. Added in Oct 2026: eight more HRP evidence reports, the clinical sources and NASA technical reports listed below, and the ESAM/DGLRM guideline for CPR in microgravity (2020, PMC7607644, CC BY 4.0; cited as [R9]).
 
 **Clinical sources (Oct 2026).** The practice consults showed the knowledge base had no clinical source for acute radiation syndrome, wounds, tetanus or decompression sickness, so the assessment abstained on them. Sources were proposed to fill that gap, and each is read in full and its license confirmed on the document itself before it goes in the manifest. NASA documents the NASA team adds go through the same steps.
 
@@ -70,9 +64,9 @@ Still not covered by any source in the corpus: drug labels, and the current ISS 
 
 | Document | Why | Why not added yet |
 |---|---|---|
-| US Public Health Service, *The Ship's Medicine Chest and Medical Aid at Sea* (2003) | Medical care in an isolated vessel without a physician, written for lay responders: close to a CMO's situation | The copy on irp.fas.org returns a bot check instead of the PDF to scripts. Downloading it in a browser and adding the file by hand would work; an official government copy is still to locate |
-| DailyMed drug labels for the formulary medications | Contraindications, interactions and label dosing, to check medication claims | Labels are written by the drug companies, and the NLM and openFDA pages that state their terms are blocked here, so the license is not confirmed. The labels should also follow the real ISS formulary, which the NASA team is compiling, not the example formulary in data/ |
-| US Navy Diving Manual, Revision 7 (decompression sickness chapters) | Signs and classification of decompression sickness | www.navsea.navy.mil refuses scripted downloads |
+| US Public Health Service, *The Ship's Medicine Chest and Medical Aid at Sea* (2003) | Medical care in an isolated vessel without a physician, written for lay responders: close to a CMO's situation | The copy on irp.fas.org returns a bot check instead of the PDF to scripts (retried Oct 2026), and no copy on a government site was found. If someone downloads it in a browser and shares the file, it can be read and added by hand |
+| DailyMed drug labels for the formulary medications | Contraindications, interactions and label dosing, to check medication claims | Labels are written by the drug companies. DailyMed's own Copyright link points to www.nlm.nih.gov, and openFDA's terms are on open.fda.gov; both are blocked here, so the license is not confirmed. The labels should also follow the real ISS formulary, which the NASA team is compiling, not the example formulary in data/ |
+| US Navy Diving Manual, Revision 7 Change A (decompression sickness chapters) | Signs and classification of decompression sickness | www.navsea.navy.mil refuses scripted downloads. A university site (researchcompliance.asu.edu) hosts the 2016 base Revision 7, which Change A (2018) replaced, so it was not used. The HRP decompression sickness report and the JTS space flight emergencies guideline already cover decompression sickness after a spacewalk |
 
 *Probably not eligible* (license to confirm): StatPearls on the NCBI Bookshelf (CC BY-NC-ND); the WHO *International Medical Guide for Ships* (WHO copyright); IAEA safety reports on radiation injuries (IAEA copyright).
 
@@ -94,13 +88,10 @@ Still not covered by any source in the corpus: drug labels, and the current ISS 
 
 | Source | Status | Was used for |
 |---|---|---|
-| NTRS 20240011677, "Objective Structured Clinical Evaluation (OSCE) of an AI Clinical Decision Support System (CDSS) Tool" | On NTRS, reachable since Oct 2026; not yet read | NASA's CMO-DA OSCE evaluation (docs 00, 08, 09) |
-| NASA/TM-2017-219290, "Interpretation of NASA-STD-3001 Levels of Care for Exploration Missions" | On NTRS, reachable since Oct 2026; not yet read; also superseded, since Vol 1 Rev B replaced the Levels of Care | Levels of Care (now cited from Vol 1 Rev C) |
-| ASCEND 2022, "Communication Delays, Disruptions, and Blackouts for Crewed Mars Missions" | On NTRS, reachable since Oct 2026; not yet read | Mars conjunction blackout length and period (removed from doc 00) |
-| "Lunar dust induces minimal pulmonary toxicity compared to Earth dust" (2025) | www.sciencedirect.com blocked | Lunar dust toxicity (doc 04 now cites the lunar dust review, the HRP report and Vol 2) |
+| Smith MB, et al., "Lunar dust induces minimal pulmonary toxicity compared to Earth dust", *Life Sci Space Res* 2025 (doi:10.1016/j.lssr.2025.02.005) | CC BY per Europe PMC, but not in PMC; www.sciencedirect.com refuses scripts and linkinghub.elsevier.com is blocked here. Could be added from a file downloaded in a browser | Lunar dust toxicity (doc 04 now cites the lunar dust review, the HRP report and Vol 2) |
 | Moody & Mark, MIT-BIH Arrhythmia Database paper | Not yet located and read | MIT-BIH facts (doc 05 now cites the PTB-XL paper's summary table) |
 | Kermany et al., *Cell* 2018 (retinal OCT dataset) | Not yet opened | Fundus/OCT mini data |
-| IMDRF, "Software as a Medical Device: Possible Framework for Risk Categorization" (N12, 2014) | www.imdrf.org blocked | SaMD risk category (doc 09, now marked orientation only) |
+| IMDRF, "Software as a Medical Device: Possible Framework for Risk Categorization" (N12, 2014) | www.imdrf.org does not respond (retried Oct 2026) | SaMD risk category (doc 09, now marked orientation only) |
 | Dettmers et al., QLoRA (arXiv:2305.14314) | Reachable, not yet read | 4-bit fine-tuning on 8 GB VRAM (doc 04 keeps "verify in practice") |
 | Phi-4 and Llama 3 technical reports | Not yet read | Doc 02 model table |
 | Papers on computers flown on the ISS (e.g. HPE Spaceborne Computer-2) | No paper found yet | Flight-hardware precedent (removed from doc 02) |
@@ -135,7 +126,7 @@ These were news articles, blogs, vendor or program pages, or curated lists, so t
 |---|---|
 | Google Cloud blog on NASA/Google CMO-DA testing (Aug 2025) | CMO-DA description removed; the HRP report's decision-support gap and AMIE ([R1]) are cited instead |
 | Red Hat blog on RamaLama and NASA (Jun 2026) | RamaLama row and offline-test claim removed; container deployment kept as a later-phase task |
-| The Register, NASA AI medic (27 Jun 2026) | CMO-DA accuracy figures (88/80/74%) removed |
+| The Register, NASA AI medic (27 Jun 2026) | CMO-DA accuracy figures (88/80/74%) removed. The same per-case figures (ankle injury 88%, ear pain 80%, flank pain 74%) appear in NASA's own June 2025 slides, now cited through [R34] |
 | TRISH Hermes and TRISH funding pages | Hermes description and the ~$150K Catalyst figure removed |
 | NASA IMM overview web page | Replaced by the HRP report (EMCL of 100 conditions) and Vol 1 Appendix E |
 | Human Research Roadmap SANS risk page | Replaced by the 2022 SANS evidence report |

@@ -6,6 +6,7 @@ Each source is described in corpus/manifest.yaml; see docs/04 §2.2 for the fiel
 from __future__ import annotations
 
 import hashlib
+import logging
 import re
 from html.parser import HTMLParser
 from pathlib import Path
@@ -68,6 +69,9 @@ def extract_pages(path: Path) -> list[tuple[int | None, str]]:
     if suffix == ".pdf":
         from pypdf import PdfReader
 
+        # pypdf logs a warning for every repairable defect in older PDFs (e.g. "Ignoring
+        # wrong pointing object"); the text still extracts, so keep the ingest output quiet.
+        logging.getLogger("pypdf").setLevel(logging.ERROR)
         reader = PdfReader(str(path))
         return [(i + 1, page.extract_text() or "") for i, page in enumerate(reader.pages)]
     text = path.read_text(encoding="utf-8", errors="replace")
