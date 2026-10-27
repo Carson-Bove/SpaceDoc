@@ -1,0 +1,34 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "medsim-eval"
+version = "0.1.0"
+description = "Simulation-based evaluation of crew medical digital assistants (research prototype; works with any assistant)"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.7",
+  "typer>=0.12",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+medsim = "medsim_eval.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/medsim_eval"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008", "E501"]  # Typer idiom; long strings are left to the formatter

@@ -8,3 +8,4 @@ spacedoc.db
 eval_runs/
 corpus/files/
 /spacedoc-models.json
+.cliff-cache/

@@ -1,0 +1,57 @@
+{
+ "schema_version": "0.1",
+ "drm_id": "imm-artemis-7.5d",
+ "name": "Artemis lunar surface stay, 7.5 days, 2 crew",
+ "source": {
+  "doc": "IMM SR S-20190528-412 (2024 Lunar)",
+  "url": "https://www.nasa.gov/integrated-medical-model-documentation/",
+  "locator": "Table 1"
+ },
+ "duration_days": 7.5,
+ "crew": [
+  {
+   "crew_id": "C1",
+   "sex": "M",
+   "crowns": true,
+   "eva": true,
+   "cac": true,
+   "contacts": true,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C2",
+   "sex": "F",
+   "crowns": false,
+   "eva": true,
+   "cac": true,
+   "contacts": false,
+   "prior_abd_surgery": true
+  }
+ ],
+ "phases": [
+  {
+   "id": "surface",
+   "name": "Lunar surface",
+   "env": "T3",
+   "days": 7.5,
+   "habitats": [
+    "lunar-lander"
+   ],
+   "assumption": false,
+   "eva": {
+    "crew": [
+     "C1",
+     "C2"
+    ],
+    "count": 4
+   }
+  }
+ ],
+ "resources": {
+  "state": "medcap",
+  "resupply": false,
+  "kit_mass_kg": 2.37,
+  "kit_volume_cm3": 6430
+ },
+ "notes": "The 7.5 days are the middle 7.5 days of the 27.5-day DRM: the two crew on the surface."
+}

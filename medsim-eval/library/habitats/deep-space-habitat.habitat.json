@@ -1,0 +1,2536 @@
+{
+ "schema_version": "0.1",
+ "profile_id": "deep-space-habitat",
+ "name": "Deep-space transit habitat (ISS MedCap as modelled by the IMM)",
+ "kind": "vehicle",
+ "envs": [
+  "T2",
+  "T4"
+ ],
+ "gravity_g": 0.0,
+ "status": "concept",
+ "sources": [
+  {
+   "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+   "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+  },
+  {
+   "doc": "IMM SR S-20200303-423 and S-20210809-441 (Mars DRMs): modelled with the ISS MedCap, no resupply",
+   "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+  }
+ ],
+ "equipment": [
+  {
+   "id": "absorbable-suture-3-0",
+   "name": "ABSORBABLE SUTURE 3.0",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ace-bandage-2-inches",
+   "name": "ACE BANDAGE 2 INCHES",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ace-bandage-3-inches",
+   "name": "ACE BANDAGE 3 INCHES",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ace-bandage-4-inches",
+   "name": "ACE BANDAGE 4 INCHES",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "aed",
+   "name": "AED",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ambu-bag-and-mask",
+   "name": "AMBU BAG AND MASK",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "bandaid-2x3",
+   "name": "BANDAID (2X3)",
+   "category": "equipment",
+   "qty": 5,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "bandaid-knuckle",
+   "name": "BANDAID (KNUCKLE)",
+   "category": "equipment",
+   "qty": 5,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "bandaid-dot",
+   "name": "BANDAID DOT",
+   "category": "equipment",
+   "qty": 10,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "bandaid-strip",
+   "name": "BANDAID STRIP",
+   "category": "equipment",
+   "qty": 10,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "biohazard-trash-bag",
+   "name": "BIOHAZARD TRASH BAG",
+   "category": "equipment",
+   "qty": 15,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "blood-oximeter",
+   "name": "BLOOD OXIMETER",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "blood-pressure-ecg-monitor",
+   "name": "BLOOD PRESSURE /ECG MONITOR",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "blood-pressure-cuff-large",
+   "name": "BLOOD PRESSURE CUFF - LARGE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "blood-pressure-cuff-small",
+   "name": "BLOOD PRESSURE CUFF - SMALL",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "bougie-et-tube-introducer",
+   "name": "BOUGIE ET TUBE INTRODUCER",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "burn-bandage",
+   "name": "BURN BANDAGE",
+   "category": "equipment",
+   "qty": 10,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "bzk-wipes",
+   "name": "BZK WIPES",
+   "category": "equipment",
+   "qty": 60,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "camera",
+   "name": "CAMERA",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "clear-bandage",
+   "name": "CLEAR BANDAGE",
+   "category": "equipment",
+   "qty": 9,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "cmrs",
+   "name": "CMRS",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "cotton-balls",
+   "name": "COTTON BALLS",
+   "category": "equipment",
+   "qty": 40,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "cotton-pellet",
+   "name": "COTTON PELLET",
+   "category": "equipment",
+   "qty": 6,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "cotton-swabs",
+   "name": "COTTON SWABS",
+   "category": "equipment",
+   "qty": 6,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dcs-examination-scorecard",
+   "name": "DCS EXAMINATION SCORECARD",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-adhesive-76-grams",
+   "name": "DENTAL ADHESIVE (76 GRAMS)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-adhesive-tip",
+   "name": "DENTAL ADHESIVE TIP",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-amalgam-file",
+   "name": "DENTAL AMALGAM FILE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-carver-file-g",
+   "name": "DENTAL CARVER FILE (G)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-crown-remover",
+   "name": "DENTAL CROWN REMOVER",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-elevator-301-i",
+   "name": "DENTAL ELEVATOR - 301 (I)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-elevator-34s-j",
+   "name": "DENTAL ELEVATOR - 34S (J)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-explorer-probe-e",
+   "name": "DENTAL EXPLORER/PROBE (E)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-forceps-10s-a",
+   "name": "DENTAL FORCEPS-10S (A)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-forceps-151a-b",
+   "name": "DENTAL FORCEPS-151A (B)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-forceps-17-c",
+   "name": "DENTAL FORCEPS-17 (C)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-mirror-h",
+   "name": "DENTAL MIRROR (H)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-syringe-tubex",
+   "name": "DENTAL SYRINGE (TUBEX)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dermabond-applicator-0-5ml",
+   "name": "DERMABOND APPLICATOR 0.5ML",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "disposable-otoscope-specula",
+   "name": "DISPOSABLE OTOSCOPE SPECULA",
+   "category": "equipment",
+   "qty": 80,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ear-curette",
+   "name": "EAR CURETTE",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ear-wick",
+   "name": "EAR WICK",
+   "category": "equipment",
+   "qty": 6,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "endotracheal-stylet",
+   "name": "ENDOTRACHEAL STYLET",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ept",
+   "name": "EPT",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "eye-shield",
+   "name": "EYE SHIELD",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "eye-simulator-cornea",
+   "name": "EYE SIMULATOR CORNEA",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "eye-wash-goggles-tubing",
+   "name": "EYE WASH GOGGLES & TUBING",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "eyewash-waste-water-bag",
+   "name": "EYEWASH WASTE WATER BAG",
+   "category": "equipment",
+   "qty": 6,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "finger-splint",
+   "name": "FINGER SPLINT",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "foam-electrodes",
+   "name": "FOAM ELECTRODES",
+   "category": "equipment",
+   "qty": 20,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "g1-camcorder",
+   "name": "G1 CAMCORDER",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "gauze-pads-4x4",
+   "name": "GAUZE PADS (4X4)",
+   "category": "equipment",
+   "qty": 50,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "heimlich-maneuver",
+   "name": "HEIMLICH MANEUVER",
+   "category": "intervention",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "hemostats",
+   "name": "HEMOSTATS",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "hot-and-cold-pad",
+   "name": "HOT AND COLD PAD",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ilma-cue-card",
+   "name": "ILMA CUE CARD",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ilma-endotracheal-tube-7-0-7-5-endotracheal-tube-7-0-8-0",
+   "name": "ILMA ENDOTRACHEAL TUBE 7.0/7.5 & ENDOTRACHEAL TUBE 7.0/8.0",
+   "category": "equipment",
+   "qty": 4,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ilma-hardware",
+   "name": "ILMA HARDWARE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ilma-stabilizing-rod",
+   "name": "ILMA STABILIZING ROD",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ilma-syringe",
+   "name": "ILMA SYRINGE",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "intraosseous-device-starter-kit",
+   "name": "INTRAOSSEOUS DEVICE STARTER KIT",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "intraosseous-injection-device",
+   "name": "INTRAOSSEOUS INJECTION DEVICE",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "iodine-swab-stick",
+   "name": "IODINE SWAB STICK",
+   "category": "equipment",
+   "qty": 14,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "iv-administration-set",
+   "name": "IV ADMINISTRATION SET",
+   "category": "equipment",
+   "qty": 3,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "iv-cap",
+   "name": "IV CAP",
+   "category": "equipment",
+   "qty": 5,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "iv-catheter-14g",
+   "name": "IV CATHETER (14G)",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "iv-catheter-18g",
+   "name": "IV CATHETER (18G)",
+   "category": "equipment",
+   "qty": 4,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "iv-catheter-20g",
+   "name": "IV CATHETER (20G)",
+   "category": "equipment",
+   "qty": 4,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "iv-catheter-22g",
+   "name": "IV CATHETER (22G)",
+   "category": "equipment",
+   "qty": 4,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "iv-pressure-infuser",
+   "name": "IV PRESSURE INFUSER",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "laryngoscope-blade",
+   "name": "LARYNGOSCOPE (BLADE)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "laryngoscope-handle",
+   "name": "LARYNGOSCOPE HANDLE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "maximum-absorbency-garment-mag",
+   "name": "MAXIMUM ABSORBENCY GARMENT (MAG)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "medical-tape",
+   "name": "MEDICAL TAPE",
+   "category": "equipment",
+   "qty": 5,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "mirror",
+   "name": "MIRROR",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "nasal-airway-6mm",
+   "name": "NASAL AIRWAY 6MM",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "nasal-airway-7mm",
+   "name": "NASAL AIRWAY 7MM",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "nasal-packing-posterior-nasal-packing",
+   "name": "NASAL PACKING (POSTERIOR NASAL PACKING)",
+   "category": "equipment",
+   "qty": 10,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "needle-23g",
+   "name": "NEEDLE (23G)",
+   "category": "equipment",
+   "qty": 20,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "needle-25g",
+   "name": "NEEDLE [25G]",
+   "category": "equipment",
+   "qty": 4,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "needle-driver-aa",
+   "name": "NEEDLE DRIVER (AA)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "needle-plastic",
+   "name": "NEEDLE PLASTIC",
+   "category": "equipment",
+   "qty": 10,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "nitrile-gloves-large-medium-and-small-pair",
+   "name": "NITRILE GLOVES (LARGE, MEDIUM, AND SMALL) (PAIR)",
+   "category": "equipment",
+   "qty": 30,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "nonstick-bandage-telfa-pads",
+   "name": "NONSTICK BANDAGE (TELFA PADS)",
+   "category": "equipment",
+   "qty": 20,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "nylon-suture-2-0",
+   "name": "NYLON SUTURE 2.0",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "nylon-suture-5-0",
+   "name": "NYLON SUTURE 5.0",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "oral-airway",
+   "name": "ORAL AIRWAY",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "otoscope-handle",
+   "name": "OTOSCOPE HANDLE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "otoscope-head",
+   "name": "OTOSCOPE HEAD",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "otoscope-usb-cable",
+   "name": "OTOSCOPE USB CABLE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "oxygen-mask-resuscitation-mask",
+   "name": "OXYGEN MASK - RESUSCITATION MASK",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "oxygen-tubing",
+   "name": "OXYGEN TUBING",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "panoptic-ophthalmoscope",
+   "name": "PANOPTIC OPHTHALMOSCOPE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "penlight",
+   "name": "PENLIGHT",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "psychotherapy",
+   "name": "PSYCHOTHERAPY",
+   "category": "intervention",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "rolled-gauze",
+   "name": "ROLLED GAUZE",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "sam-splint-leg-arm-splint",
+   "name": "SAM SPLINT - LEG/ARM SPLINT",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "scalpel-11-scalpel-blade-handle",
+   "name": "SCALPEL #11 (SCALPEL BLADE & HANDLE)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "scissors-trauma",
+   "name": "SCISSORS - TRAUMA",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "sharps-container",
+   "name": "SHARPS CONTAINER",
+   "category": "equipment",
+   "qty": 40,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "skin-staple-remover",
+   "name": "SKIN STAPLE REMOVER",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "skin-stapler",
+   "name": "SKIN STAPLER",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "smooth-forceps",
+   "name": "SMOOTH FORCEPS",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "space-anticipation-glasses",
+   "name": "SPACE ANTICIPATION GLASSES",
+   "category": "equipment",
+   "qty": 6,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "space-station-eye-wash",
+   "name": "SPACE STATION EYE WASH",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "sterile-gloves-large-medium-and-small-pair",
+   "name": "STERILE GLOVES (LARGE, MEDIUM, AND SMALL) (PAIR)",
+   "category": "equipment",
+   "qty": 6,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "stethoscope",
+   "name": "STETHOSCOPE",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "stethoscope-ear-pieces",
+   "name": "STETHOSCOPE EAR PIECES",
+   "category": "equipment",
+   "qty": 15,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "suction-cartridge",
+   "name": "SUCTION CARTRIDGE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "suction-device",
+   "name": "SUCTION DEVICE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "suction-device-collection-bag",
+   "name": "SUCTION DEVICE COLLECTION BAG",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "suction-device-syringe",
+   "name": "SUCTION DEVICE SYRINGE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "suction-tip-mouth-curette",
+   "name": "SUCTION TIP - MOUTH (CURETTE)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "suction-tubing-endotracheal-tube",
+   "name": "SUCTION TUBING - ENDOTRACHEAL TUBE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "suction-tubing-gastric-tube",
+   "name": "SUCTION TUBING - GASTRIC TUBE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "surgical-lubricant",
+   "name": "SURGICAL LUBRICANT",
+   "category": "equipment",
+   "qty": 6,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "surgical-tools-kit",
+   "name": "SURGICAL TOOLS KIT",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "suture-scissors-bb",
+   "name": "SUTURE SCISSORS (BB)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "syringe-10cc",
+   "name": "SYRINGE (10CC)",
+   "category": "equipment",
+   "qty": 6,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "syringe-35cc",
+   "name": "SYRINGE (35CC)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "syringe-3cc",
+   "name": "SYRINGE (3CC)",
+   "category": "equipment",
+   "qty": 20,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "syringe-5cc",
+   "name": "SYRINGE (5CC)",
+   "category": "equipment",
+   "qty": 6,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "syringe-60ml",
+   "name": "SYRINGE (60ML)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "temporary-tooth-filling",
+   "name": "TEMPORARY TOOTH FILLING",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "thermometer",
+   "name": "THERMOMETER",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "tongue-depressor",
+   "name": "TONGUE DEPRESSOR",
+   "category": "equipment",
+   "qty": 20,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "tonometer",
+   "name": "TONOMETER",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "tonometer-tip-cover",
+   "name": "TONOMETER TIP COVER",
+   "category": "equipment",
+   "qty": 150,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "toothed-forceps-ee",
+   "name": "TOOTHED FORCEPS (EE)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "tourniquet",
+   "name": "TOURNIQUET",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ultrasound-gel",
+   "name": "ULTRASOUND GEL",
+   "category": "equipment",
+   "qty": 17,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ultrasound-machine",
+   "name": "ULTRASOUND MACHINE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "urinary-collection-bag-leg-bag",
+   "name": "URINARY COLLECTION BAG (LEG BAG)",
+   "category": "equipment",
+   "qty": 250,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "urine-catheter-coude",
+   "name": "URINE CATHETER COUDE",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "urine-catheter-foley",
+   "name": "URINE CATHETER FOLEY",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "urine-catheter-short",
+   "name": "URINE CATHETER SHORT",
+   "category": "equipment",
+   "qty": 10,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "urine-catheter-straight",
+   "name": "URINE CATHETER STRAIGHT",
+   "category": "equipment",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "urine-chemstrips",
+   "name": "URINE CHEMSTRIPS",
+   "category": "equipment",
+   "qty": 10,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "urine-color-chart",
+   "name": "URINE COLOR CHART",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "variable-oxygen-system",
+   "name": "VARIABLE OXYGEN SYSTEM",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "vos-intubated-patient-hardware-ventilator-respirator",
+   "name": "VOS INTUBATED PATIENT HARDWARE (VENTILATOR/RESPIRATOR)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "wound-packing",
+   "name": "WOUND PACKING",
+   "category": "equipment",
+   "qty": 3,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  }
+ ],
+ "formulary": [
+  {
+   "id": "abilify-aripiprazole-5-mg",
+   "name": "ABILIFY (ARIPIPRAZOLE) 5 MG",
+   "category": "drug",
+   "qty": 60,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "abilify-aripiprazole-7-5-mg-ml-1-3-ml",
+   "name": "ABILIFY (ARIPIPRAZOLE) 7.5 MG/ML, 1.3 ML",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "adrenaline-epinephrine-1-10000-10ml",
+   "name": "ADRENALINE (EPINEPHRINE 1:10000) 10ML",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "afrin-oxymetazoline-0-05-15ml-bottle",
+   "name": "AFRIN (OXYMETAZOLINE) 0.05% 15ML BOTTLE",
+   "category": "drug",
+   "qty": 12,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "albuterol-inhaler-proventil-90-mcg-6-7-gm",
+   "name": "ALBUTEROL INHALER (PROVENTIL) 90 MCG, 6.7 GM",
+   "category": "drug",
+   "qty": 3,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ambien-10mg-tablet",
+   "name": "AMBIEN 10MG TABLET",
+   "category": "drug",
+   "qty": 250,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "amoxicillin-500-mg-capsule",
+   "name": "AMOXICILLIN 500 MG CAPSULE",
+   "category": "drug",
+   "qty": 60,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "antivert-meclizine-25-mg",
+   "name": "ANTIVERT (MECLIZINE) 25 MG",
+   "category": "drug",
+   "qty": 20,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "aspirin-325mg-tab",
+   "name": "ASPIRIN 325MG TAB.",
+   "category": "drug",
+   "qty": 120,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ativan-lorazepam-1-mg-tablet",
+   "name": "ATIVAN (LORAZEPAM) 1 MG TABLET",
+   "category": "drug",
+   "qty": 60,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "atropine-1-mg-10ml-syringe",
+   "name": "ATROPINE 1 MG, 10ML SYRINGE.",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "bacitracin-500-units-gm-28-gm-tube",
+   "name": "BACITRACIN 500 UNITS/GM. 28 GM TUBE",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "bactrim-ds-sulfamethoxazole-trimethoprim-800-mg-160-mg-tablet",
+   "name": "BACTRIM DS (SULFAMETHOXAZOLE/TRIMETHOPRIM) 800 MG/160 MG TABLET",
+   "category": "drug",
+   "qty": 40,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "benadryl-25-mg-capsule",
+   "name": "BENADRYL 25 MG CAPSULE",
+   "category": "drug",
+   "qty": 60,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "benadryl-50-mg-ml-1ml-injectable",
+   "name": "BENADRYL 50 MG/ML, 1ML INJECTABLE",
+   "category": "drug",
+   "qty": 3,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "benzocaine-swab-stick-oral-20-0-15-ml-swab",
+   "name": "BENZOCAINE SWAB STICK ORAL 20%, 0.15 ML SWAB",
+   "category": "drug",
+   "qty": 24,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ciprofloxacin-and-dexamethasone-ciprodex-3-7-7-5-ml-bottle",
+   "name": "CIPROFLOXACIN AND DEXAMETHASONE (CIPRODEX) 3%,7%, 7.5 ML BOTTLE",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "claritin-loratadine-10mg-tablet",
+   "name": "CLARITIN (LORATADINE)10MG TABLET",
+   "category": "drug",
+   "qty": 75,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "cleocin-clindamycin-300mg",
+   "name": "CLEOCIN (CLINDAMYCIN) 300MG",
+   "category": "drug",
+   "qty": 60,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "cyclopentolate-2-15ml-bottle",
+   "name": "CYCLOPENTOLATE 2% 15ML BOTTLE.",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "debrox-for-earwax-carbamide-peroxide-6-5-15ml-bottle",
+   "name": "DEBROX FOR EARWAX (CARBAMIDE PEROXIDE) 6.5% 15ML BOTTLE",
+   "category": "drug",
+   "qty": 4,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-eugenol-anesthetic-1ml-oral-syringe",
+   "name": "DENTAL EUGENOL ANESTHETIC 1ML ORAL SYRINGE",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dexamethasone-decadron-10mg-injectable",
+   "name": "DEXAMETHASONE (DECADRON) 10MG INJECTABLE",
+   "category": "drug",
+   "qty": 20,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "diamox-acetazolamide-250-mg-tablets",
+   "name": "DIAMOX (ACETAZOLAMIDE) 250 MG TABLETS",
+   "category": "drug",
+   "qty": 100,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "diflucan-fluconazole-150-mg",
+   "name": "DIFLUCAN (FLUCONAZOLE) 150 MG",
+   "category": "drug",
+   "qty": 150,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dilantin-phenytoin-300mg-capsules",
+   "name": "DILANTIN (PHENYTOIN) 300MG CAPSULES",
+   "category": "drug",
+   "qty": 30,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dilaudid-hydromorphone-2mg-ml-1ml-syringe",
+   "name": "DILAUDID (HYDROMORPHONE) 2MG/ML, 1ML SYRINGE",
+   "category": "drug",
+   "qty": 18,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dulcolax-bisacodyl-tablet-5mg",
+   "name": "DULCOLAX (BISACODYL) TABLET 5MG",
+   "category": "drug",
+   "qty": 40,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "effexor-xr-venlafaxine-xr-75-mg-capsules",
+   "name": "EFFEXOR XR (VENLAFAXINE XR) 75 MG CAPSULES",
+   "category": "drug",
+   "qty": 60,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "epipen-1-1000",
+   "name": "EPIPEN 1:1000",
+   "category": "drug",
+   "qty": 3,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ertapenem-1gm",
+   "name": "ERTAPENEM 1GM",
+   "category": "drug",
+   "qty": 6,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "erythromycin-ointment-0-5-3-5-gm-tube",
+   "name": "ERYTHROMYCIN OINTMENT 0.5%, 3.5 GM TUBE",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "estrogen-1-25-mg-tablets",
+   "name": "ESTROGEN 1.25 MG TABLETS",
+   "category": "drug",
+   "qty": 100,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ethinyl-estradiol-norgestrel-0-05-mg-0-5-mg",
+   "name": "ETHINYL ESTRADIOL / NORGESTREL 0.05 MG/ 0.5 MG",
+   "category": "drug",
+   "qty": 42,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "flagyl-metronidazole-500mg",
+   "name": "FLAGYL (METRONIDAZOLE) 500MG",
+   "category": "drug",
+   "qty": 60,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "fluocinonide-0-05-30gm-tube",
+   "name": "FLUOCINONIDE 0.05%, 30GM TUBE",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "fluorescein-1mg-strips",
+   "name": "FLUORESCEIN 1MG STRIPS",
+   "category": "drug",
+   "qty": 20,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "fluticasone-220mcg-12gm-inhaler",
+   "name": "FLUTICASONE 220MCG, 12GM INHALER",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "imodium-loperamide-hcl-2-mg-tablet",
+   "name": "IMODIUM (LOPERAMIDE HCL) 2 MG TABLET",
+   "category": "drug",
+   "qty": 40,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "iv-fluid-1l-1000ml",
+   "name": "IV FLUID 1L (1000ML)",
+   "category": "fluid",
+   "qty": 4,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ketamine-50-mg-ml-10-ml-multi-dose-vial",
+   "name": "KETAMINE 50 MG/ML, 10 ML MULTI DOSE VIAL",
+   "category": "drug",
+   "qty": 4,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "levaquin-levofloxacin-500mg",
+   "name": "LEVAQUIN (LEVOFLOXACIN) 500MG",
+   "category": "drug",
+   "qty": 30,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "lidocaine-xylocaine-cardiac-2-20mg-ml-5ml-syringe",
+   "name": "LIDOCAINE (XYLOCAINE) CARDIAC 2% (20MG/ML) 5ML SYRINGE",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "lidocaine-xylocaine-plain-1-10ml-multi-dose-vial",
+   "name": "LIDOCAINE (XYLOCAINE) PLAIN 1%, 10ML MULTI DOSE VIAL",
+   "category": "drug",
+   "qty": 3,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "lidocaine-jelly-2-30ml-tube",
+   "name": "LIDOCAINE JELLY 2% 30ML TUBE",
+   "category": "drug",
+   "qty": 3,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "lidocaine-w-epinephrine-xylocaine-2-2-ml-units-1-100-000-epi-20-ml-multi-dose-vi",
+   "name": "LIDOCAINE W/ EPINEPHRINE (XYLOCAINE) 2 %, 2-ML UNITS 1:100,000 EPI, 20 ML. MULTI DOSE VIALS.",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "lopressor-metoprolol-50-mg",
+   "name": "LOPRESSOR (METOPROLOL) 50 MG",
+   "category": "drug",
+   "qty": 100,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "lotrimin-af-cream-clotrimazole-1-30gm-tube",
+   "name": "LOTRIMIN AF CREAM (CLOTRIMAZOLE) 1%, 30GM TUBE",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "melatonin-3-mg",
+   "name": "MELATONIN 3 MG",
+   "category": "drug",
+   "qty": 200,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "motrin-ibuprofen-400mg",
+   "name": "MOTRIN (IBUPROFEN) 400MG",
+   "category": "drug",
+   "qty": 500,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "moxifloxacin-avelox-0-5-3ml-bottle",
+   "name": "MOXIFLOXACIN (AVELOX) 0.5%, 3ML BOTTLE",
+   "category": "drug",
+   "qty": 4,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "mupirocin-bactroban-2-22-gm-tube",
+   "name": "MUPIROCIN (BACTROBAN) 2%, 22 GM TUBE",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "nitroglycerin-tablet-0-4mg",
+   "name": "NITROGLYCERIN TABLET 0.4MG",
+   "category": "drug",
+   "qty": 25,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "pepto-bismol-262mg-chewable-tabs",
+   "name": "PEPTO-BISMOL 262MG CHEWABLE TABS",
+   "category": "drug",
+   "qty": 80,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "phenergan-promethazine-tablet-25-mg",
+   "name": "PHENERGAN (PROMETHAZINE TABLET) 25 MG",
+   "category": "drug",
+   "qty": 30,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "prednisone-20-mg",
+   "name": "PREDNISONE 20 MG",
+   "category": "drug",
+   "qty": 40,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "prilosec-20mg",
+   "name": "PRILOSEC 20MG",
+   "category": "drug",
+   "qty": 90,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "promethazine-injectable-phenergan-50mg-ml-single-dose-vial",
+   "name": "PROMETHAZINE INJECTABLE (PHENERGAN) 50MG/ML SINGLE DOSE VIAL",
+   "category": "drug",
+   "qty": 12,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "proparacaine-eye-drops-0-5-15ml-bottle",
+   "name": "PROPARACAINE EYE DROPS 0.5%, 15ML BOTTLE",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "provigil-modafinil-200-mg-tablets",
+   "name": "PROVIGIL (MODAFINIL) 200 MG TABLETS",
+   "category": "drug",
+   "qty": 30,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "refresh-artificial-tears-carboxymethylcellulose-0-5-0-4ml-bottle",
+   "name": "REFRESH ARTIFICIAL TEARS (CARBOXYMETHYLCELLULOSE) 0.5%, 0.4ML BOTTLE",
+   "category": "drug",
+   "qty": 40,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "refresh-eye-ointment-petrolatum-white-and-mineral-oil-42-5-57-3-3-5gm",
+   "name": "REFRESH EYE OINTMENT (PETROLATUM WHITE AND MINERAL OIL) 42.5%; 57.3%, 3.5GM",
+   "category": "drug",
+   "qty": 4,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "robinul-glycopyrrolate-0-2mg-ml",
+   "name": "ROBINUL (GLYCOPYRROLATE) 0.2MG/ML",
+   "category": "drug",
+   "qty": 5,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "rocephin-ceftriaxone-1-gm",
+   "name": "ROCEPHIN (CEFTRIAXONE) 1 GM",
+   "category": "drug",
+   "qty": 3,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "saline-nose-spray-22ml-bottle",
+   "name": "SALINE NOSE SPRAY 22ML BOTTLE",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "silver-nitrate-stick-75-25",
+   "name": "SILVER NITRATE STICK 75%/25%",
+   "category": "drug",
+   "qty": 10,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "sterile-water-10-ml-vial",
+   "name": "STERILE WATER 10 ML VIAL",
+   "category": "fluid",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "sudafed-pseudoephedrine-30mg",
+   "name": "SUDAFED (PSEUDOEPHEDRINE) 30MG",
+   "category": "drug",
+   "qty": 100,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "sudafed-12-hour-pseudoephedrine-120-mg",
+   "name": "SUDAFED 12 HOUR (PSEUDOEPHEDRINE) 120 MG",
+   "category": "drug",
+   "qty": 125,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "tamsulosin-0-4-mg-tablet",
+   "name": "TAMSULOSIN 0.4 MG TABLET",
+   "category": "drug",
+   "qty": 10,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "tobramycin-and-dexamethasone-0-3-0-1-10ml-bottle",
+   "name": "TOBRAMYCIN AND DEXAMETHASONE 0.3%; 0.1%, 10ML BOTTLE",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "toradol-ketorolac-30mg-ml-2ml-single-dose-vial",
+   "name": "TORADOL (KETOROLAC) 30MG/ML, 2ML SINGLE DOSE VIAL",
+   "category": "drug",
+   "qty": 3,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "tropicamide-1",
+   "name": "TROPICAMIDE 1%",
+   "category": "drug",
+   "qty": 6,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "tylenol-acetaminophen-325-mg",
+   "name": "TYLENOL (ACETAMINOPHEN) 325 MG",
+   "category": "drug",
+   "qty": 250,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "valacyclovir-1-gm-tablet",
+   "name": "VALACYCLOVIR 1 GM TABLET",
+   "category": "drug",
+   "qty": 60,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "valium-diazepam-5-mg-ml-2-ml-syringe",
+   "name": "VALIUM (DIAZEPAM) 5 MG/ML, 2 ML SYRINGE",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "vicodin-hp-hydrocodone-acetaminophen-hp-10-mg-660-mg",
+   "name": "VICODIN HP (HYDROCODONE/ ACETAMINOPHEN HP) 10 MG/660 MG",
+   "category": "drug",
+   "qty": 30,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "water",
+   "name": "WATER",
+   "category": "fluid",
+   "qty": 1,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "zantac-ranitidine-150-mg",
+   "name": "ZANTAC (RANITIDINE) 150 MG",
+   "category": "drug",
+   "qty": 60,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ziprasidone-geodon-20mg-ml",
+   "name": "ZIPRASIDONE (GEODON 20MG/ML)",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "zithromax-azithromycin-250-mg",
+   "name": "ZITHROMAX (AZITHROMYCIN) 250 MG",
+   "category": "drug",
+   "qty": 18,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "zofran-ondansetron-8-mg-tablet",
+   "name": "ZOFRAN (ONDANSETRON) 8 MG TABLET",
+   "category": "drug",
+   "qty": 30,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "zoloft-sertraline-50-mg",
+   "name": "ZOLOFT (SERTRALINE) 50 MG",
+   "category": "drug",
+   "qty": 60,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "zyrtec-cetirizine-10-mg-tablet",
+   "name": "ZYRTEC (CETIRIZINE) 10 MG TABLET",
+   "category": "drug",
+   "qty": 30,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  }
+ ],
+ "capabilities": [
+  {
+   "id": "ultrasound",
+   "name": "Point-of-care ultrasound",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "defibrillation",
+   "name": "Defibrillation (AED)",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ecg_bp_monitoring",
+   "name": "ECG and blood pressure monitor",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "pulse_oximetry",
+   "name": "Pulse oximetry",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "bag_valve_mask",
+   "name": "Bag-valve-mask ventilation",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "advanced_airway",
+   "name": "Advanced airway (intubating LMA)",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "mechanical_ventilation",
+   "name": "Mechanical ventilation",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "oxygen",
+   "name": "Supplemental oxygen",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "iv_fluids",
+   "name": "IV fluid resuscitation",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "io_access",
+   "name": "Intraosseous access",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "suction",
+   "name": "Suction",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "wound_closure",
+   "name": "Wound closure (sutures, staples, glue)",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "urinary_catheter",
+   "name": "Urinary catheterization",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "urine_dipstick",
+   "name": "Urine dipstick",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental_extraction",
+   "name": "Dental extraction",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "eye_irrigation",
+   "name": "Eye irrigation",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "eye_exam",
+   "name": "Ophthalmoscopy",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "otoscopy",
+   "name": "Otoscopy",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "patient_restraint",
+   "name": "Crew Medical Restraint System",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "procedural_sedation",
+   "name": "Procedural sedation (ketamine)",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "pregnancy_test",
+   "name": "Urine pregnancy test",
+   "status": "available",
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "cpr_manual",
+   "name": "Manual CPR",
+   "status": "adapted",
+   "note": "Needs a restrained patient (CMRS) or the Evetts-Russomano or handstand method",
+   "source": {
+    "doc": "Hinkelbein J, et al. CPR during spaceflight: a guideline for CPR in microgravity. Scand J Trauma Resusc Emerg Med 2020;28:108",
+    "url": "https://doi.org/10.1186/s13049-020-00793-y"
+   }
+  },
+  {
+   "id": "gravity_iv_drip",
+   "name": "Gravity-fed IV drip",
+   "status": "unavailable",
+   "note": "No gravity to drive flow; use a pressure infuser",
+   "assumption": true
+  },
+  {
+   "id": "major_surgery",
+   "name": "Major surgery (e.g. appendectomy)",
+   "status": "unavailable",
+   "note": "Outside the exploration treatment scope in the IMM CLiFFs",
+   "source": {
+    "doc": "IMM CLiFF ICL8 Appendicitis (2023), Capability Resource Table overview",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ct_xray",
+   "name": "CT or X-ray imaging",
+   "status": "unavailable",
+   "note": "CT 'will likely not be available' per the IMM CLiFFs",
+   "source": {
+    "doc": "IMM CLiFF ICL8 Appendicitis (2023), Capability Resource Table overview",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "blood_labs",
+   "name": "Blood tests (CBC with differential, metabolic panel)",
+   "status": "unknown",
+   "note": "Not in the IMM kit lists; the 2023 CLiFFs assume these will be possible on exploration missions",
+   "source": {
+    "doc": "IMM CLiFF ICL8 Appendicitis (2023), Capability Resource Table overview",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "blood_transfusion",
+   "name": "Blood transfusion",
+   "status": "unavailable",
+   "note": "No blood products in any IMM kit list",
+   "assumption": false,
+   "source": {
+    "doc": "IMM Deep Space Habitat service request: modelled with the ISS MedCap",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  }
+ ],
+ "notes": "No published medical fit-out. The IMM modelled the Deep Space Habitat and Mars transit with the ISS medical capability and no resupply."
+}

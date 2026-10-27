@@ -1,0 +1,69 @@
+{
+ "schema_version": "0.1",
+ "drm_id": "imm-orion-21d",
+ "name": "Orion, 21 days, 4 crew, no EVAs",
+ "source": {
+  "doc": "IMM SR S-20180815-406 (Orion Medical Kit Contents)",
+  "url": "https://www.nasa.gov/integrated-medical-model-documentation/",
+  "locator": "Table 1"
+ },
+ "duration_days": 21,
+ "crew": [
+  {
+   "crew_id": "C1",
+   "sex": "M",
+   "crowns": true,
+   "eva": false,
+   "cac": true,
+   "contacts": true,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C2",
+   "sex": "M",
+   "crowns": false,
+   "eva": false,
+   "cac": false,
+   "contacts": true,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C3",
+   "sex": "M",
+   "crowns": false,
+   "eva": false,
+   "cac": false,
+   "contacts": false,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C4",
+   "sex": "F",
+   "crowns": false,
+   "eva": false,
+   "cac": true,
+   "contacts": false,
+   "prior_abd_surgery": true
+  }
+ ],
+ "phases": [
+  {
+   "id": "mission",
+   "name": "Orion mission",
+   "env": "T2",
+   "days": 21,
+   "habitats": [
+    "orion"
+   ],
+   "assumption": true,
+   "note": "The report does not say where the 21 days are flown; cislunar is our assumption."
+  }
+ ],
+ "resources": {
+  "state": "medcap",
+  "resupply": false,
+  "kit_mass_kg": 9.25,
+  "kit_volume_cm3": 23594,
+  "note": "20 lb optimized kit with no volume limit. The volume-limited alternative is 7.75 kg / 13,895 cm3 (the Orion habitat profile)"
+ }
+}

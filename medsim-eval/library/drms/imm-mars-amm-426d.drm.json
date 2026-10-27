@@ -1,0 +1,101 @@
+{
+ "schema_version": "0.1",
+ "drm_id": "imm-mars-amm-426d",
+ "name": "Accelerated Mars Mission, 426 days, 4 crew",
+ "source": {
+  "doc": "IMM SR S-20200303-423 (Medical Risk Assessment for an Accelerated and Standard Mars Mission)",
+  "url": "https://www.nasa.gov/integrated-medical-model-documentation/",
+  "locator": "Table 1"
+ },
+ "duration_days": 426,
+ "crew": [
+  {
+   "crew_id": "C1",
+   "sex": "M",
+   "crowns": true,
+   "eva": true,
+   "cac": false,
+   "contacts": false,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C2",
+   "sex": "M",
+   "crowns": false,
+   "eva": true,
+   "cac": true,
+   "contacts": false,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C3",
+   "sex": "F",
+   "crowns": false,
+   "eva": true,
+   "cac": false,
+   "contacts": true,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C4",
+   "sex": "F",
+   "crowns": false,
+   "eva": true,
+   "cac": false,
+   "contacts": false,
+   "prior_abd_surgery": true
+  }
+ ],
+ "phases": [
+  {
+   "id": "outbound",
+   "name": "Outbound transit",
+   "env": "T4",
+   "days": 180,
+   "habitats": [
+    "deep-space-habitat"
+   ],
+   "assumption": true
+  },
+  {
+   "id": "surface",
+   "name": "Mars surface",
+   "env": "T5",
+   "days": 30,
+   "habitats": [
+    "mars-surface-habitat"
+   ],
+   "assumption": true,
+   "eva": {
+    "crew": [
+     "C1",
+     "C2",
+     "C3",
+     "C4"
+    ],
+    "count": 30,
+    "window_days": [
+     180,
+     210
+    ],
+    "note": "30 four-person EVAs, one a day, days 181–210"
+   }
+  },
+  {
+   "id": "return",
+   "name": "Return transit",
+   "env": "T4",
+   "days": 216,
+   "habitats": [
+    "deep-space-habitat"
+   ],
+   "assumption": true
+  }
+ ],
+ "resources": {
+  "state": "medcap",
+  "resupply": false,
+  "note": "ISS medical capability (sized for the ISS with 6-month resupply), no resupply during the mission"
+ },
+ "notes": "The report gives only the EVA days (181–210); the transit/surface split around them is our assumption."
+}

@@ -1,0 +1,52 @@
+{
+ "schema_version": "0.1",
+ "environments": [
+  {
+   "env": "T1",
+   "name": "Low Earth orbit",
+   "gravity_g": 0.0,
+   "one_way_delay_s": [0.25, 1.0],
+   "evacuation": "hours to a day",
+   "hazards": ["microgravity", "trapped-belt and South Atlantic Anomaly radiation"],
+   "note": "Delay is relay-satellite latency, not light time. Design values, approximate."
+  },
+  {
+   "env": "T2",
+   "name": "Cislunar space",
+   "gravity_g": 0.0,
+   "one_way_delay_s": [1.2, 1.4],
+   "evacuation": "days",
+   "hazards": ["microgravity", "solar particle events outside the magnetosphere", "galactic cosmic rays"],
+   "note": "Earth-Moon light time is about 1.3 s each way. Design values, approximate."
+  },
+  {
+   "env": "T3",
+   "name": "Lunar surface",
+   "gravity_g": 0.166,
+   "one_way_delay_s": [1.2, 1.4],
+   "evacuation": "days",
+   "hazards": ["1/6 g", "lunar dust", "solar particle events", "EVA injuries", "far-side or polar comm gaps"],
+   "note": "Design values, approximate."
+  },
+  {
+   "env": "T4",
+   "name": "Deep space / Mars transit",
+   "gravity_g": 0.0,
+   "one_way_delay_s": [3.0, 1380.0],
+   "evacuation": "none; months to Earth",
+   "hazards": ["microgravity", "solar particle events", "galactic cosmic rays", "growing comm delay", "solar conjunction blackout"],
+   "sources": [{"doc": "McBrayer KT, Chai PR, Judd EL. Communication Delays, Disruptions, and Blackouts for Crewed Mars Missions. ASCEND 2022 (NTRS 20220013418)", "url": "https://ntrs.nasa.gov/citations/20220013418"}],
+   "note": "Delay grows from seconds near Earth to up to about 23 minutes near Mars. Every crewed Mars mission loses contact once for about two to three weeks around solar conjunction, at Mars or about two months after leaving it."
+  },
+  {
+   "env": "T5",
+   "name": "Mars surface",
+   "gravity_g": 0.38,
+   "one_way_delay_s": [180.0, 1380.0],
+   "evacuation": "none",
+   "hazards": ["3/8 g after long microgravity transit", "Martian dust and perchlorates", "dust storms", "solar particle events", "solar conjunction blackout of two to three weeks"],
+   "sources": [{"doc": "McBrayer KT, Chai PR, Judd EL. Communication Delays, Disruptions, and Blackouts for Crewed Mars Missions. ASCEND 2022 (NTRS 20220013418)", "url": "https://ntrs.nasa.gov/citations/20220013418"}],
+   "note": "One-way delay is about 3 to 23 minutes depending on planetary positions."
+  }
+ ]
+}

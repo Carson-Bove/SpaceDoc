@@ -1,0 +1,145 @@
+{
+  "$defs": {
+    "Environment": {
+      "additionalProperties": false,
+      "properties": {
+        "env": {
+          "enum": [
+            "T1",
+            "T2",
+            "T3",
+            "T4",
+            "T5"
+          ],
+          "title": "Env",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "gravity_g": {
+          "minimum": 0,
+          "title": "Gravity G",
+          "type": "number"
+        },
+        "one_way_delay_s": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "One Way Delay S",
+          "type": "array"
+        },
+        "evacuation": {
+          "description": "Rough time to definitive care, in words",
+          "title": "Evacuation",
+          "type": "string"
+        },
+        "hazards": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Hazards",
+          "type": "array"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Source"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "env",
+        "name",
+        "gravity_g",
+        "one_way_delay_s",
+        "evacuation"
+      ],
+      "title": "Environment",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "description": "Where a value came from. `doc` is a short citation; `url` is where to read it.",
+      "properties": {
+        "doc": {
+          "title": "Doc",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Table, page or section within the document",
+          "title": "Locator"
+        }
+      },
+      "required": [
+        "doc"
+      ],
+      "title": "Source",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "0.1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "environments": {
+      "items": {
+        "$ref": "#/$defs/Environment"
+      },
+      "title": "Environments",
+      "type": "array"
+    }
+  },
+  "required": [
+    "environments"
+  ],
+  "title": "EnvironmentSet",
+  "type": "object"
+}
