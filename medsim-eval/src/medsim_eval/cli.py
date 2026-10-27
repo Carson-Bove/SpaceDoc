@@ -67,5 +67,17 @@ def schema_cmd(
         typer.echo(f"wrote {out / name}")
 
 
+@app.command("build-form")
+def build_form_cmd(
+    out: Path = typer.Option(None, "--out", "-o", help="Where to write the HTML file"),
+    library: Path = LibraryOpt,
+) -> None:
+    """Build the offline scenario-authoring form (one HTML file with the library inside)."""
+    from medsim_eval.form import DEFAULT_OUT, build
+
+    path = build(out or DEFAULT_OUT, library)
+    typer.echo(f"wrote {path} ({path.stat().st_size // 1024} KB)")
+
+
 if __name__ == "__main__":
     app()

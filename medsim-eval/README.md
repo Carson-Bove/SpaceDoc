@@ -4,7 +4,7 @@ Simulation-based evaluation for crew medical digital assistants. It works with *
 
 > **Research prototype.** Not for clinical use. Design and rationale: [docs/11-evaluation-system.md](../docs/11-evaluation-system.md).
 
-**Status:** Phase A, scenario authoring. The file formats, validator, library and authoring form exist. The digital twin, runner and agents (Phases B–E) do not yet exist.
+**Status:** Phase A (scenario authoring) is built: the file formats, validator, library and the offline Scenario Builder. The digital twin, runner and agents (Phases B–E) are not built yet.
 
 ## Install
 
@@ -39,6 +39,29 @@ The [`library/`](library/) folder holds the shared reference data:
 - **`habitats/`**: vehicle and base profiles. Every item carries a source or an `assumption` flag.
 - **`conditions/`**: the CLiFF index. Rebuild it with `python medsim-eval/scripts/build_cliff_index.py`, which always picks the most recent CLiFF version.
 - **`rubrics/`**: base rubrics. A new version is a new file (`general-0.2.base-rubric.json`), and each scenario rubric pins the version it was written against, so updating the rubric never silently changes old scores.
+
+## Scenario Builder (the authoring form)
+
+[`dist/scenario-builder.html`](dist/scenario-builder.html) is one self-contained HTML file. Clerks download it and double-click it; it needs no internet. The DRMs, conditions, habitats and base rubric are built into the file. See the [guide for clerks](../docs/scenario-builder-guide.md).
+
+Rebuild it after any library change (a test fails if the committed copy is stale):
+
+```bash
+medsim build-form
+```
+
+The source is [`form/template.html`](form/template.html).
+
+## Updating the library from NASA
+
+```bash
+python medsim-eval/scripts/extract_imm_kits.py    # kit tables -> library/sources/imm-medkits.json
+python medsim-eval/scripts/build_habitats.py      # kit tables + specs -> library/habitats/
+python medsim-eval/scripts/build_cliff_index.py   # NASA page + 2023 CLiFFs -> library/conditions/
+medsim build-form && medsim schema && pytest medsim-eval
+```
+
+These need `pdftotext` (poppler-utils) and network access. Habitat files are generated: edit `PROFILES` in `build_habitats.py`, not the JSON. DRM files are maintained by hand.
 
 ## Validate
 

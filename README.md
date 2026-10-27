@@ -40,6 +40,7 @@ SpaceDoc supports the Crew Medical Officer (CMO) and the rest of the crew on lon
 | 11 | [Evaluation system](docs/11-evaluation-system.md) | Design proposal: DRM-based scenarios, digital twin, scoring and judging agents, works with any assistant |
 | — | [Getting started (Phase 1)](docs/phase1-getting-started.md) | Install, demo mode, real models, bench |
 | — | [SpaceOSCE authoring guide](docs/spaceosce-authoring-guide.md) | For clinicians writing evaluation cases |
+| — | [Scenario Builder guide](docs/scenario-builder-guide.md) | For clerks writing MedSim Eval scenarios in the offline form |
 | — | [Glossary](docs/glossary.md) · [References](docs/references.md) · [Research backlog](docs/research-backlog.md) | Terms, sources, and sources awaiting full-text review |
 
 Each document ends with a **"How this works in AI systems"** section. These explain the underlying AI or ML concept for an engineer who is new to machine learning.

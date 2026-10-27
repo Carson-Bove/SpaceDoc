@@ -1,6 +1,6 @@
 # 11 — Evaluation System: Simulated Missions, Scored at Scale
 
-> **Status: design proposal for sign-off.** Nothing here is built yet. Sections marked **Decision needed** list the choices to settle before Phase A starts. Working name for the package: **MedSim Eval** (placeholder).
+> **Status:** design signed off. Phase A (scenario authoring) is built in [`medsim-eval/`](../medsim-eval/): file formats, validator, NASA-sourced library and the offline Scenario Builder ([guide for clerks](scenario-builder-guide.md)). Phases B–E are designed but not built. Sections marked **Decision needed** are still open. Working name: **MedSim Eval** (to be replaced by a better name later).
 
 **The problem.** [08](08-validation-framework.md) defines how to put numbers on clinical performance with SpaceOSCE: static cases, a single-turn presentation and human raters. That is a sound base, but it misses three things a crew medical officer actually faces:
 
@@ -111,7 +111,8 @@ Seed library, all from public IMM sources:
 | `imm-artemis-7.5d` | T3 | 7.5 | 2 | 2 crew × 4 | 2.37 kg / 6,430 cm³ | 2024 Lunar [[R38](references.md#r38)] |
 | `imm-artemis-27.5d` | T3 | 27.5 | 4 | 2 crew × 4 | 10.12 kg / 20,326 cm³ | 2024 Lunar [[R38](references.md#r38)] |
 | `imm-artemis-32d` | T2/T3 | 32 | 4 | 2 crew × 4 | 27.7 lb (HLS 7.7 + Orion 20) | Artemis 32-day DRM [[R38](references.md#r38)] |
-| `imm-cislunar-{21d,42d,1y,2y}` | T2 | 21–730 | 4 | 0 | ISS MedCap | Five Cis-lunar Missions [[R38](references.md#r38)] |
+| `imm-cislunar-14d` | T2 | 14 | 7 | 3 crew × 2 | ISS MedCap | Five Cis-lunar Missions [[R38](references.md#r38)] |
+| `imm-cislunar-{21d,42d,1y,2y}` | T2 | 21–730 | 4 | 0 | ISS MedCap | same |
 | `imm-dsh-350d` | T4 | 350 | 4 | 0 | Treated / MedCap | Deep Space Habitat [[R38](references.md#r38)] |
 | `imm-mars-amm-426d` | T4/T5 | 426 | 4 | 30 four-person | MedCap | Accelerated & Standard Mars [[R38](references.md#r38)] |
 | `imm-mars-smm-923d` | T4/T5 | 923 | 4 | 401 four-person | MedCap | same |
@@ -119,32 +120,27 @@ Seed library, all from public IMM sources:
 | `imm-mars-as-1030d` | T4/T5 | 1030 (90 / 200 / 500 / 200 / 40) | 4 | 2 crew × 15 | MedCap | same |
 | `imm-mars-boc-1224d` | T4/T5 | 1224 (90 / 429 / 365 / 300 / 40) | 4 | 4 crew, 94 | MedCap | same |
 
+That is 17 DRM files in [`medsim-eval/library/drms/`](../medsim-eval/library/drms/). The reports give crew, length and EVAs, but often not where each part of the mission happens. Where we had to split a mission into phases ourselves (for example the lunar surface days inside the 27.5-day Artemis DRM, or the surface stay around the EVA days in the accelerated Mars mission), the phase carries `"assumption": true` and a note saying why.
+
 The IMM models three resource states, and the DRM records which one it assumes: **Fully treated** (continuous resupply, like ISS), **MedCap** (a fixed kit, no resupply, the closest to an exploration mission) and **Untreated** [[R38](references.md#r38)].
 
-Sketch:
+Excerpt from [`imm-mars-pod-860d.drm.json`](../medsim-eval/library/drms/imm-mars-pod-860d.drm.json):
 
 ```json
 {
-  "schema_version": "0.1",
-  "drm_id": "imm-mars-pod-860d",
-  "name": "Mars Point of Departure (860 days)",
-  "source": {"doc": "IMM SR S-20210809-441", "url": "https://www.nasa.gov/integrated-medical-model-documentation/"},
-  "crew": [
-    {"crew_id": "C1", "sex": "M", "crowns": true,  "cac": false, "contacts": false, "prior_abd_surgery": false},
-    {"crew_id": "C2", "sex": "M", "crowns": false, "cac": true,  "contacts": false, "prior_abd_surgery": false}
-  ],
-  "phases": [
-    {"id": "launch",   "env": "T1", "days": 90,  "habitat": ["…"]},
-    {"id": "outbound", "env": "T4", "days": 305, "habitat": ["mars-transit-hab"]},
-    {"id": "loiter",   "env": "T5", "days": 50,  "habitat": ["mars-surface-hab"],
-     "eva": {"crew": ["C2", "C4"], "count": 15, "window_days": [405, 429]}},
-    {"id": "return",   "env": "T4", "days": 375, "habitat": ["mars-transit-hab"]},
-    {"id": "staging",  "env": "T1", "days": 40,  "habitat": ["…"]}
-  ],
-  "resources": {"state": "MedCap", "resupply": false},
-  "comms": {"one_way_delay_s": [180, 1320], "blackouts": [{"cause": "solar_conjunction", "days": 14}]},
-  "definitive_care": {"return_time_days": "…"},
-  "notes": "Free text"
+ "drm_id": "imm-mars-pod-860d",
+ "source": {"doc": "IMM SR S-20210809-441 (HSRB Additional Mars DRMs)", "locator": "Segment tables and Table 1"},
+ "duration_days": 860,
+ "crew": [{"crew_id": "C2", "sex": "M", "cac": true, "eva": true, "crowns": false, "contacts": false, "prior_abd_surgery": false}, "…"],
+ "phases": [
+  {"id": "initial",  "env": "T2", "days": 90,  "habitats": ["deep-space-habitat"], "assumption": true},
+  {"id": "outbound", "env": "T4", "days": 305, "habitats": ["deep-space-habitat"]},
+  {"id": "loiter",   "env": "T5", "days": 50,  "habitats": ["mars-surface-habitat"],
+   "eva": {"crew": ["C2", "C4"], "count": 15, "window_days": [405, 429]}},
+  {"id": "return",   "env": "T4", "days": 375, "habitats": ["deep-space-habitat"]},
+  {"id": "staging",  "env": "T2", "days": 40,  "habitats": ["deep-space-habitat"], "assumption": true}
+ ],
+ "resources": {"state": "medcap", "resupply": false}
 }
 ```
 
@@ -154,79 +150,64 @@ Clerks pick a DRM; they do not normally write one. New or edited DRMs are an eng
 
 A habitat profile describes one vehicle or base element: its gravity, its medical kit and equipment, and a **capability matrix** that says, for each procedure, whether it is available, available only in adapted form, unavailable, or unknown, **in that gravity**. Every entry carries a source or an explicit `"assumption": true`.
 
-```json
-{
-  "profile_id": "iss",
-  "name": "International Space Station (US segment)",
-  "gravity_g": 0.0,
-  "medical": {
-    "equipment_ref": "CHeCS Medical Hardware Catalog v10",
-    "formulary_ref": "iss",
-    "kit": {"mass_kg": 115.25, "volume_cm3": 526418, "source": "IMM SR S-20180815-406 baseline"}
-  },
-  "capabilities": [
-    {"id": "cpr_manual", "status": "adapted",
-     "note": "Patient on the Crew Medical Restraint System; Evetts-Russomano or handstand method", "source": "R9"},
-    {"id": "gravity_iv_drip", "status": "unavailable", "note": "Use a pressure infuser", "assumption": true},
-    {"id": "suction_gravity_separated", "status": "unavailable",
-     "note": "Devices that rely on gravity to separate gas from fluid do not work in 0 g", "source": "TBD"}
-  ]
-}
-```
+**What the profiles contain.** The IMM reports publish full medical kit tables: the ISS reference quantities for about 226 drugs, supplies and devices, and the optimized Orion and 7.5-day lunar kits picked from them [[R38](references.md#r38)]. These are modelling inputs and optimizer outputs, not flight manifests, but they are NASA's own numbers. The eight profiles in [`medsim-eval/library/habitats/`](../medsim-eval/library/habitats/) are built from them:
 
-**Research so far.** Public detail is uneven, so I recommend a dedicated research pass (Phase A, step A2) before profiles are used in scoring:
+| Profile | Gravity | Kit | Basis |
+|---|---|---|---|
+| `iss` | 0 g | ISS reference set: 84 drugs and fluids, 142 other items; 115 kg baseline | IMM 2024 Lunar report, Table 3 |
+| `orion` | 0 g | IMM optimized kit, 7.75 kg: 55 drugs, 62 items. **No ultrasound, AED, oxygen, IV fluid or restraint system** | IMM Orion Medical Kit Contents, Table 2 |
+| `lunar-lander` | 0.166 g | IMM 7.5-day lunar kit, 2.37 kg: 35 drugs, 23 items | IMM 2024 Lunar, Table 3. Assigning it to the lander is our assumption |
+| `cislunar-orbiter` | 0 g | ISS set, as the IMM modelled cislunar missions | IMM Five Cis-lunar Missions. No Gateway medical inventory is published |
+| `deep-space-habitat` | 0 g | ISS set, no resupply | IMM Deep Space Habitat and Mars DRMs |
+| `mars-surface-habitat` | 0.38 g | ISS set, no resupply | IMM Mars DRMs |
+| `lunar-surface-habitat` | 0.166 g | none published | Artemis Base Camp: 2–4 crew, 1–2 month stays, "medical" among its functions [[R40](references.md#r40)] |
+| `lunar-pressurized-rover` | 0.166 g | none published | Artemis Base Camp: "treatment of injuries" among its functions [[R40](references.md#r40)] |
 
-| Element | What is public | Gap |
-|---|---|---|
-| **ISS** | Full hardware catalog already in the corpus (CHeCS v10). Ultrasound with ground guidance. IMM "ISS MedCap" baseline kit 115 kg / 526,418 cm³ [[R38](references.md#r38)] | Current (post-2011) inventory |
-| **Orion** | IMM optimized kit: ~9.25 kg (mass-only constraint) or 7.75 kg (mass + volume). Volume-constrained kit drops IV fluid, SAM splint and the variable oxygen system [[R38](references.md#r38)] | Flown kit contents |
-| **Gateway / HALO** | HALO with Orion supports 4 crew for up to 30 days. No published medical inventory found | Medical inventory; Gateway's programme status should be re-checked |
-| **Lunar surface (Artemis Base Camp)** | Surface habitat (2–4 crew) lists "medical" among its functions. Pressurized rover lists "treatment of injuries" [NASA concept papers] | Everything specific. Concept stage only |
-| **Mars transit habitat** | Concept studies (DRA 5.0, 2022 transit-habitat paper) | Medical fit-out |
-| **Mars surface habitat** | DRA 5.0 surface habitat concept | Medical fit-out |
-| **Gravity effects** | CPR in 0 g needs restraint or special positions [[R9](references.md#r9)][[R10](references.md#r10)]; hypogravity CPR studies at lunar/Mars g; gravity-dependent fluid devices fail in 0 g | Systematic procedure × gravity table |
+Each profile's **capability matrix** (about 27 entries) follows from its kit: ultrasound is available only if an ultrasound machine is aboard, and so on. Gravity adds the entries that don't depend on the kit:
 
-Since Revision B, NASA-STD-3001 sets onboard medical capability from probabilistic risk assessment and mission parameters, not from the old Levels of Care. The 2017 Levels of Care interpretation is still a useful checklist of what each level can do [[R35](references.md#r35)]. The research pass will use it to fill in profiles where flight-specific detail is missing, and mark those entries as assumptions.
+- **CPR:** in 0 g it needs a restrained patient or the Evetts-Russomano or handstand method [[R9](references.md#r9)]. In lunar and Mars gravity, compressions often fall short of guideline depth, more so for lighter rescuers, so rescuers should change over in under a minute [[R41](references.md#r41)].
+- **Gravity-fed IV:** unavailable in 0 g; slower but possible in partial gravity (our assumption).
+- **Known gaps from the CLiFFs:** no major surgery and no CT; blood tests are "unknown" because the 2023 CLiFFs assume they will be possible but no IMM kit lists the equipment.
+
+The table and profiles are regenerated by `scripts/extract_imm_kits.py` and `scripts/build_habitats.py` when NASA updates its documents.
+
+Since Revision B, NASA-STD-3001 sets onboard medical capability from probabilistic risk assessment and mission parameters, not from the old Levels of Care. The 2017 Levels of Care interpretation is still a useful checklist of what each level can do [[R35](references.md#r35)]. Where flight-specific detail is missing (the lunar surface habitat and the rover), profiles will be filled from it, and those entries marked as assumptions.
 
 The existing `data/environments/T1–T5.yaml` equipment lists become a fallback for SpaceDoc only. The eval system uses habitat profiles.
 
 ### 4.3 Scenario
 
-One medical event, inside one DRM phase, for one crewmember.
+One medical event, inside one DRM phase, for one crewmember. Abridged from the worked example [`MSE-0001.scenario.json`](../medsim-eval/examples/MSE-0001.scenario.json):
 
 ```json
 {
-  "schema_version": "0.1",
-  "scenario_id": "MSE-0007",
-  "title": "Right lower quadrant pain, Mars outbound transit",
-  "status": "draft",
-  "authors": ["clerk:jdoe"], "reviewers": [], "physiology_review": "requested",
+  "scenario_id": "MSE-0001",
+  "title": "Right lower quadrant pain, Mars outbound transit day 212",
+  "status": "draft", "authors": ["…"], "physiology_review": "requested",
   "drm": "imm-mars-pod-860d", "phase": "outbound", "mission_day": 212, "crewmember": "C2",
-  "condition": {"cliff_id": "ICL8_Appendicitis", "course": "auto"},
-  "patient_overrides": {"age": 41, "weight_kg": 80, "allergies": ["penicillin"]},
-  "presentation": "C2 reports belly pain since last night that has moved to the lower right…",
+  "condition": {"cliff_id": "appendicitis", "course": "auto"},
+  "patient": {"age": 44, "weight_kg": 81, "allergies": ["penicillin (rash as a child)"]},
+  "presentation": "Hey, C2 isn't feeling great. He's had a stomach ache since last night…",
   "timeline": [
-    {"t": "T+0",     "kind": "symptom", "text": "Periumbilical pain, anorexia"},
-    {"t": "T+8h",    "kind": "keyframe", "state": {"temp_c": 38.1, "hr": 104}, "if": "untreated"},
-    {"t": "T+30h",   "kind": "keyframe", "state": {"peritonitis": true}, "if": "untreated", "note": "perforation"}
+    {"t": "T+6h",  "kind": "symptom",  "text": "Pain moves to the right lower quadrant…"},
+    {"t": "T+12h", "kind": "keyframe", "when": "untreated", "state": {"temp_c": 38.2, "hr": 104, "pain_0_10": 7}},
+    {"t": "T+36h", "kind": "finding",  "when": "untreated", "text": "Diffuse guarding and rigidity…"}
   ],
   "events": [
-    {"t": "T+6h", "kind": "solar_particle_event", "duration": "10h", "effects": ["crew_to_shelter"]},
-    {"t": "T+6h", "kind": "comm_blackout", "duration": "10h"}
+    {"t": "T+4h", "kind": "solar_particle_event", "duration": "10h", "text": "Crew ordered to the storm shelter…"},
+    {"t": "T+4h", "kind": "comm_degraded",        "duration": "10h", "text": "Text only to the ground while sheltered…"}
   ],
   "branches": [
-    {"when": "antibiotic_started_before:T+12h", "then": {"course_bias": "best_case"}},
-    {"when": "no_antibiotic_by:T+24h",          "then": {"course": "worst_case"}}
+    {"id": "B1", "when": {"type": "action_by", "action": {"kind": "treatment", "text": "Any antibiotic regimen active against gut bacteria"}, "by": "T+8h"},
+     "then": {"course_bias": 0.5}},
+    {"id": "B2", "when": {"type": "no_action_by", "action": {"kind": "treatment", "text": "…"}, "by": "T+24h"},
+     "then": {"course": "worst_case"}}
   ],
-  "complicators": "Penicillin allergy. The only other medical-trained crewmember is on the same shelter shift…",
-  "user_agent": {
-    "role": "crew", "knowledge": "basic first aid",
-    "facts": {"pain_onset": "last night", "vomiting": "once"},
-    "behaviour": "Downplays pain; will do any exam if told exactly how"
-  },
-  "ground_truth": {"primary_dx": "Appendicitis", "must_not_miss": ["Perforation"], "acceptable_differential": ["Renal colic", "Gastroenteritis"]},
-  "rubric": "MSE-0007.rubric.json",
-  "notes_for_physiologist": "Free text"
+  "complicators": "Penicillin allergy. The kit has only 6 ertapenem 1 g vials… Surgery is not possible aboard.",
+  "user_agent": {"role": "crew", "name": "C1", "knowledge": "Backup crew medical officer…", "facts": {"onset": "Last night…"}, "behaviour": "…"},
+  "ground_truth": {"primary_dx": "Appendicitis", "acceptable_differential": ["Nephrolithiasis", "Gastroenteritis"], "must_not_miss": ["Perforated appendicitis"]},
+  "rubric": "MSE-0001.rubric.json",
+  "duration": "4d"
 }
 ```
 
@@ -236,9 +217,17 @@ How your answers shaped this:
 - **Keyframes optional (Q8).** With `course: "auto"`, the twin infers the course from the CLiFF (§7.2). A clerk adds `keyframe` entries only where something specific must happen.
 - **Free text (Q6).** `complicators`, `presentation`, user-agent `behaviour` and the notes are free text. Conditions, equipment, drugs, DRMs and crewmembers are picked from controlled lists.
 
+### 4.4 Condition index
+
+NASA's page has two CLiFF lists. The **100-condition list** is the baseline behind every IMM run so far. The **119-condition list (2023)** is the next phase for deep-space and Mars modelling: it splits broad categories into specific diagnoses [[R38](references.md#r38)]. We use the most recent: [`imm.conditions.json`](../medsim-eval/library/conditions/imm.conditions.json) indexes the 118 conditions of the 2023 list that have a CLiFF posted, and links the matching older CLiFF and the peer review where one exists.
+
+Some link labels on NASA's page point at a different condition's file. The index therefore takes each condition's code and name (e.g. `ICL8 Appendicitis`) from inside the PDF. For each condition it also stores the course from the CLiFF's Table 4: for each of the four courses, the share of cases, phase durations, task impairment, removal to definitive care and death. These feed the twin (§7.2). They were read automatically, pass consistency checks (best and worst shares add to 100%, ranges ordered and within 0–100%), and match a hand check of appendicitis. They stay marked `reviewed_by: null` until the physiologist checks them. Incidence is kept as NASA wrote it, because its units and format vary between conditions; the twin doesn't need it, since a scenario starts with the condition already present.
+
+`scripts/build_cliff_index.py` rebuilds the index from NASA's page.
+
 ## 5. The generalized rubric (v0 draft)
 
-You asked for help here, because a general rubric is hard to design. This is a proposal for the clinical lead to tear apart. It combines what has been shown to work in three places:
+You asked for help here, because a general rubric is hard to design. This is a proposal for the clinical lead to tear apart. It is in the library as [`general@0.1`](../medsim-eval/library/rubrics/general-0.1.base-rubric.json). A new version is a new file, and each scenario rubric pins the version it was written against, so revising the rubric never silently changes old scores. It combines what has been shown to work in three places:
 
 - **OSCE practice.** A systematic review found global rating scales at least as reliable as checklists and better at capturing expertise. Checklists are still the clearest way to record specific omissions, so many simulation assessments pair the two [[R39](references.md#r39)].
 - **HealthBench.** Case-specific criteria with positive *and negative* point values. A grader model judges each criterion independently [[R2](references.md#r2)].
@@ -321,12 +310,14 @@ If a true desktop app is still wanted later, the same HTML can be wrapped in a d
 
 What it does:
 
-1. **Pick, don't type, where it matters.** Choose the DRM → phase → crewmember → condition (from the 100 CLiFF conditions). Equipment and drugs come from the habitat profile. All lists are built into the file at build time.
+1. **Pick, don't type, where it matters.** Choose the DRM → phase → crewmember → condition (from the 118 conditions in the 2023 CLiFF list). Equipment and drugs come from the habitat profile. All lists are built into the file at build time.
 2. **Free text where it helps:** presentation, complicators, user-agent behaviour, notes.
 3. **Timeline and branch editor:** add timed events and keyframes; add "if the assistant does X by T+Y, then…" rules from a menu of trigger types.
 4. **Rubric builder:** the universal gates and domains are pre-filled and read-only. The clerk adds checklist items with a weight, a deadline and a domain. Live warnings flag items worded as "appropriately…" or ones with no observable behaviour.
-5. **Validate and export:** checks the file against the JSON Schema, then downloads `MSE-xxxx.scenario.json` + `.rubric.json`. Also produces a **printable review sheet** (print to PDF) for the peer reviewer and the physiologist.
+5. **Validate and export:** runs the same checks as `medsim validate` as you type, then downloads `MSE-xxxx.scenario.json` + `.rubric.json`. Also produces a **printable review sheet** (print to PDF) for the peer reviewer and the physiologist.
 6. **Re-open and edit:** load an existing JSON file to revise it. Drafts autosave in the browser.
+
+**Built:** [`medsim-eval/dist/scenario-builder.html`](../medsim-eval/dist/scenario-builder.html), about 340 KB, regenerated with `medsim build-form`. A browser test imported the worked example, downloaded it again unchanged, and filled a new scenario from scratch that passed `medsim validate`. A side panel shows the selected phase's environment, its capability matrix, and a searchable list of everything aboard.
 
 **Submission (git is the store).** Clerks don't need git. They upload exported files through the GitHub web page into `scenarios/inbox/`, or send them to a coordinator. A validator command (`medsim validate`) checks every file and is the gate for moving a scenario to `scenarios/approved/`. Status moves `draft → in_review → physiology_review (if flagged) → approved → retired`, recorded in the file itself.
 
@@ -421,24 +412,32 @@ A **separate package in this repository**, e.g. `medsim-eval/` with its own `pyp
 
 | Phase | Builds | Done when |
 |---|---|---|
-| **A1** | JSON Schemas and Python models for DRM, habitat, scenario and rubric; `medsim validate`; two worked examples | The examples validate; schemas are documented |
-| **A2** | Library seeding: the 13 IMM DRMs above; a CLiFF index of the 100 conditions with key numbers extracted; a **habitat research pass** producing the first profiles with sources and assumption flags | Physiologist and clinical lead have reviewed the CLiFF numbers and profiles |
-| **A3** | Offline HTML authoring tool with export and a printable review sheet | A clerk with no briefing builds a valid scenario |
-| **A4** | Generalized rubric v1 (after clinical-lead review) and a clerk authoring guide | Anchors have example transcripts |
+| **A1** ✅ | JSON Schemas and Python models for DRM, habitat, scenario and rubric; `medsim validate`; two worked examples | The examples validate; schemas are documented |
+| **A2** ✅ (review pending) | Library seeding: 17 IMM DRMs; the 118-condition 2023 CLiFF index with Table 4 courses; 8 habitat profiles from the IMM kit tables, with sources and assumption flags | Physiologist and clinical lead have reviewed the CLiFF numbers and profiles |
+| **A3** ✅ | Offline HTML authoring tool with export and a printable review sheet | A clerk with no briefing builds a valid scenario |
+| **A4** (guide done) | Generalized rubric v1 (after clinical-lead review) and a [clerk guide](scenario-builder-guide.md) | Anchors have example transcripts |
 | **A5** | Pilot: 3–5 clerks write one scenario each | Time per scenario is measured; the form is revised from their feedback |
 | B | Adapter interface + SpaceDoc adapter; MCP world server (static twin); user agent; runner (N seeds) | One scenario runs 20× end to end, locally |
 | C | Scorer, judge, viewer | Judge report with working anomaly links |
 | D | Twin v1 (CLiFF course model, effect table, events, clock); paper doll after | The outcome distribution over seeds matches the CLiFF within tolerance |
 | E | Feedback agent, medical + technical reports; scorer validation study | Scorer–human κ reported per item |
 
-## 12. Open questions
+## 12. Decisions and open questions
 
-1. **Package name.** "MedSim Eval" is a placeholder.
-2. **Rubric (§5.6).** The clinical lead needs to review the domains, anchors, gates and dose tolerance.
-3. **Which CLiFF version.** Several conditions have both an IMM CLiFF and a 2023 revision. Some CLiFFs had errors flagged by external peer review, and those reviews are published alongside them. Proposal: use the 2023 version where one exists, and record which version each number came from.
-4. **Habitat assumptions.** Lunar and Mars medical fit-outs are not public. Is it acceptable to fill gaps from the Levels of Care interpretation [[R35](references.md#r35)], clearly marked as assumptions?
-5. **Local model budget.** Which machine runs batches (the desktop from [02](02-local-inference.md)?), and how long a batch can take (overnight?).
-6. **CMO-DA interface** (§8).
+Decided:
+
+- **Name:** "MedSim Eval" for now; a better name later.
+- **Rubric:** start from `general@0.1` as drafted; it is versioned so it can be revised.
+- **CLiFF version:** always the most recent (the 2023 list).
+- **Habitat gaps:** fill from the Levels of Care interpretation, marked as assumptions.
+- **Compute:** batches run overnight on the current laptop until more compute is available. Phase B will size the local models to it.
+
+Still open:
+
+1. **CMO-DA interface** (§8). You will try to get the spec.
+2. **Clinical-lead review** of the rubric's gates, domains, anchors and dose tolerance (§5.6).
+3. **Physiologist review** of the CLiFF course numbers (§4.4) and of any scenario with physiology review requested.
+4. **Automated checks.** The repository's existing automated checks (GitHub Actions) lint the new package, but they don't run its tests or `medsim validate scenarios/`. Adding that is a change to the automation, so it waits for your go-ahead.
 
 ---
 

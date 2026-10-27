@@ -149,3 +149,21 @@ def test_cli_exit_codes(tmp_path):
     bad = runner.invoke(app, ["validate", str(write_pair(tmp_path, sc, RUBRIC))])
     assert bad.exit_code == 1
     assert "unknown DRM" in bad.output
+
+
+def test_committed_form_is_current():
+    from medsim_eval.form import DEFAULT_OUT, render
+
+    assert DEFAULT_OUT.read_text(encoding="utf-8") == render(), (
+        "dist/scenario-builder.html is stale: run `medsim build-form`"
+    )
+
+
+def test_form_bundle_has_the_library():
+    from medsim_eval.form import bundle
+
+    b = bundle()
+    assert len(b["conditions"]) == 118
+    assert {d["drm_id"] for d in b["drms"]} >= {"imm-mars-pod-860d", "imm-artemis-7.5d"}
+    assert b["base_rubrics"][-1]["ref"] == "general@0.1"
+    assert "solar_particle_event" in b["enums"]["event_kinds"]

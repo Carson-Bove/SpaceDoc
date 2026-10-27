@@ -51,6 +51,10 @@ Citation conventions:
 
 <a id="r38"></a>**R38.** NASA. Integrated Medical Model Documentation: Clinical Finding Forms (CLiFFs) for each IMM condition, their peer reviews, and IMM service-request reports (Artemis 32-day DRM, 2024 Lunar, Orion Medical Kit Contents, Medical Risk for Five Cis-lunar Missions, Deep Space Habitat, Accelerated and Standard Mars Mission, Additional Mars DRMs, ISS 180-day PRA update, and others). https://www.nasa.gov/integrated-medical-model-documentation/ (accessed Oct 2026)
 
+<a id="r40"></a>**R40.** Ruttley T, Call N, Besha P, et al. Back to Stay: NASA's Campaign to Sustainably Return Humans to the Moon. 72nd International Astronautical Congress, IAC-21,B3,1,6,x62781, 2021. NTRS 20210022242. https://ntrs.nasa.gov/citations/20210022242
+
+<a id="r41"></a>**R41.** Overbeek R, Schmitz J, Rehnberg L, Benyoucef Y, Dusse F, Russomano T, Hinkelbein J. Effectiveness of CPR in Hypogravity Conditions: A Systematic Review. *Life (Basel)* 2022;12(12):1958. doi:10.3390/life12121958. PMCID: PMC9785883.
+
 ## 3. Grounding, hallucination and uncertainty
 
 <a id="r15"></a>**R15.** Lewis P, Perez E, Piktus A, et al. Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. arXiv:2005.11401v4 [preprint], 2021. The arXiv record notes acceptance at NeurIPS 2020. https://arxiv.org/abs/2005.11401
