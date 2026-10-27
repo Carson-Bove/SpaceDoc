@@ -19,6 +19,8 @@ Citation conventions:
 
 <a id="r34"></a>**R34.** Nelson AM, Al A, Lemery J, Hilmers D. Objective Structured Clinical Evaluation of an Artificial Intelligence Clinical Decision Support System Tool. Abstract, Aerospace Medical Association Annual Meeting, 2025. NASA Johnson Space Center; NTRS 20240012747. https://ntrs.nasa.gov/citations/20240012747. Read with the two slide decks from the same project: Nelson A, Al A, Anderson A, et al., AsMA 95th Annual Meeting, June 2025 (NTRS 20250002755), and Nelson A, Al A, Garcia M, et al., HRP Investigators' Workshop, February 2025 (NTRS 20250000051), and the workshop abstract (NTRS 20240011677). Only abstracts and slides are public, and they describe the model differently: the AsMA abstract calls it an 8B model reduced from the 80B OpenBio LLM, while the slides name Llama 3.1 8B and Gemma 2 27B.
 
+<a id="r39"></a>**R39.** Ilgen JS, Ma IWY, Hatala R, Cook DA. A systematic review of validity evidence for checklists versus global rating scales in simulation-based assessment. *Med Educ* 2015;49(2):161–173. doi:10.1111/medu.12621.
+
 ## 2. Space medicine and standards
 
 <a id="r5"></a>**R5.** NASA. NASA-STD-3001, Volume 1, Revision C: NASA Space Flight Human-System Standard — Crew Health. Office of the Chief Health and Medical Officer; approved 15 Sep 2023. https://www.nasa.gov/wp-content/uploads/2023/11/nasa-std-3001-vol-1-rev-c-with-signature.pdf
@@ -44,6 +46,10 @@ Citation conventions:
 <a id="r35"></a>**R35.** Hailey M, Urbina M, Reyes D, Antonsen E. Interpretation of NASA-STD-3001 Levels of Care for Exploration Medical System Development. NASA/TM-2017-219290, Johnson Space Center, April 2017. NTRS 20170004345. https://ntrs.nasa.gov/citations/20170004345. (Interprets the five Levels of Care, which NASA-STD-3001 Vol 1 Rev B later replaced; see [R5].)
 
 <a id="r36"></a>**R36.** McBrayer KT, Chai PR, Judd EL. Communication Delays, Disruptions, and Blackouts for Crewed Mars Missions. ASCEND 2022, NASA Langley Research Center. NTRS 20220013418. https://ntrs.nasa.gov/citations/20220013418
+
+<a id="r37"></a>**R37.** Antonsen EL, Myers JG, Boley L, Arellano J, Kerstman E, Kadwa B, Buckland DM, Van Baalen M. Estimating medical risk in human spaceflight. *npj Microgravity* 2022;8:8. doi:10.1038/s41526-022-00193-9. PMCID: PMC8971481.
+
+<a id="r38"></a>**R38.** NASA. Integrated Medical Model Documentation: Clinical Finding Forms (CLiFFs) for each IMM condition, their peer reviews, and IMM service-request reports (Artemis 32-day DRM, 2024 Lunar, Orion Medical Kit Contents, Medical Risk for Five Cis-lunar Missions, Deep Space Habitat, Accelerated and Standard Mars Mission, Additional Mars DRMs, ISS 180-day PRA update, and others). https://www.nasa.gov/integrated-medical-model-documentation/ (accessed Oct 2026)
 
 ## 3. Grounding, hallucination and uncertainty
 
