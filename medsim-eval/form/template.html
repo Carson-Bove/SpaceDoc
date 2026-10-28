@@ -30,7 +30,7 @@ header.top h1 { font-size: 17px; margin: 0 auto 0 0; }
 header.top .status { font-size: 13px; color: var(--muted); }
 @media (max-width: 600px) { header.top { position: static; } }
 main { max-width: 1240px; margin: 0 auto; padding: 16px; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; }
-@media (max-width: 1000px) { main { grid-template-columns: 1fr; } aside { position: static !important; max-height: none !important; } }
+@media (max-width: 1000px) { main { grid-template-columns: minmax(0, 1fr); } aside { position: static !important; max-height: none !important; } }
 section.card, aside .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
 section.card h2 { font-size: 16px; margin: 0 0 4px; }
 .help { color: var(--muted); font-size: 13px; margin: 0 0 10px; }
@@ -63,7 +63,7 @@ button.on { background: var(--sel); border-color: var(--accent); font-weight: 60
 .picker .menu div { padding: 5px 8px; font-size: 13px; cursor: pointer; }
 .picker .menu div:hover, .picker .menu div.act { background: var(--sel); }
 table { border-collapse: collapse; width: 100%; font-size: 13px; }
-th, td { text-align: left; border-bottom: 1px solid var(--line); padding: 4px 6px; vertical-align: top; }
+th, td { text-align: left; border-bottom: 1px solid var(--line); padding: 4px 6px; vertical-align: top; overflow-wrap: anywhere; }
 th { color: var(--muted); font-weight: 600; }
 aside { position: sticky; top: 64px; align-self: start; max-height: calc(100vh - 80px); overflow: auto; }
 aside h3 { font-size: 14px; margin: 0 0 6px; }
@@ -89,9 +89,9 @@ details summary { cursor: pointer; font-weight: 600; font-size: 13px; margin: 6p
 </head>
 <body>
 <header class="top">
-  <h1>Scenario Builder <span class="muted" style="font-weight:400;font-size:13px">MedSim Eval · offline</span></h1>
+  <h1>Scenario Builder <span class="muted" style="font-weight:400;font-size:13px">MedSim Eval</span></h1>
   <span class="status" id="savestate"></span>
-  <button id="btn-check">Check</button>
+  <button id="btn-check">Case check</button>
   <button class="primary" id="btn-export">Download files</button>
 </header>
 <main>
@@ -118,8 +118,9 @@ const VAGUE = /\b(appropriate(ly)?|adequate(ly)?|proper(ly)?|reasonabl[ey]|suffi
 const OFFSET = /^T\+(?:(\d+(?:\.\d+)?)d)?(?:(\d+(?:\.\d+)?)h)?(?:(\d+(?:\.\d+)?)m)?(?:(\d+(?:\.\d+)?)s)?$/i;
 const DURATION = /^(?:(\d+(?:\.\d+)?)d)?(?:(\d+(?:\.\d+)?)h)?(?:(\d+(?:\.\d+)?)m)?(?:(\d+(?:\.\d+)?)s)?$/i;
 const ALL_ENVS = ["T1", "T2", "T3", "T4", "T5"];
-const QUALITY = ["Clear and accurate", "Mostly clear, small gaps", "Noticeably unclear", "Poor: hard to use", "Very poor"];
-const TRAINING = { physician: "Physician", cmo: "Non-physician CMO (standard training)", basic: "Basic crew training" };
+const QUALITY = ["Reliable historian", "Generally reliable; minor omissions", "Partially reliable", "Poor historian", "Unreliable historian"];
+const PROBLEM_LABELS = { vague: "imprecise", wrong_terms: "incorrect terminology", missing_details: "omits details", misread_numbers: "misreports values", contradictory: "inconsistent history", panicked: "acutely distressed" };
+const TRAINING = { physician: "Physician", cmo: "Non-physician CMO", basic: "Crew (first aid / CPR)" };
 const BG = { military_test_pilot: "Military test pilot", military_aviator: "Military aviator", military_other: "Military", physician: "Physician", scientist: "Scientist", engineer: "Engineer" };
 
 // ---------- state ----------
@@ -219,7 +220,7 @@ function strList(arr, placeholder) {
     wrap.replaceChildren(...arr.map((v, i) => h("div", { class: "kv", style: "grid-template-columns:1fr auto" },
       h("input", { type: "text", value: v, placeholder, oninput: e => { arr[i] = e.target.value; changed(); } }),
       h("button", { class: "small danger", type: "button", onclick: () => { arr.splice(i, 1); changed(); draw(); } }, "×"))),
-      h("button", { class: "small", type: "button", onclick: () => { arr.push(""); draw(); } }, "+ add"));
+      h("button", { class: "small", type: "button", onclick: () => { arr.push(""); draw(); } }, "+ Add"));
   };
   draw();
   return wrap;
@@ -259,7 +260,7 @@ function render() {
   document.getElementById("form").replaceChildren(
     renderAbout(), renderCondition(), renderWhere(), renderPatient(), renderConversation(),
     renderTimeline(), renderTimeCritical(), renderAnswer(), renderRubric(),
-    card("10. Complicators", "Free text: anything that makes this case harder (other crew busy, unusual history, limited stock…).",
+    card("10. Complicating factors", "Confounders and constraints, e.g. atypical presentation, limited stock, competing crew duties.",
       area(sc, "complicators", { rows: 3 })),
     renderAdvanced(), renderReview());
   refreshSide();
@@ -272,14 +273,14 @@ function renderAbout() {
     h("input", { type: "text", value: a.contact, placeholder: "Email or phone", oninput: e => { a.contact = e.target.value; changed(); } }),
     h("button", { class: "small danger", type: "button", onclick: () => { sc.authors.splice(i, 1); changed(); render(); } }, "×")));
   const symptoms = LIB.symptoms.map(s => ({ value: s.code, label: `${s.code} ${s.name}`, search: `${s.code} ${s.name} ${s.group}` }));
-  return card("1. About this scenario", "Ask the coordinator for the next id (MSE-0123).",
+  return card("1. Case information", "Case ID is assigned by the coordinator.",
     h("div", { class: "grid" },
-      field("Scenario id", text(sc, "scenario_id", { placeholder: "MSE-0123" })),
-      field("Chief complaint", text(sc, "title", { placeholder: "e.g. Belly pain moving to the right lower quadrant" }), "In a few words; this is the scenario's title")),
-    h("div", { class: "lbl" }, "Authors"), ...authors,
-    h("button", { class: "small", type: "button", onclick: () => { sc.authors.push({ name: "", contact: "" }); render(); } }, "+ add an author"),
-    h("div", { class: "lbl" }, "Symptoms"),
-    h("p", { class: "help" }, "Standard symptom tags from ICD-10-CM (codes R00–R69). Type a word or a code."),
+      field("Case ID", text(sc, "scenario_id", { placeholder: "MSE-0123" })),
+      field("Chief complaint", text(sc, "title", { placeholder: "e.g. Abdominal pain, 10 hours" }), "Brief, in clinical terms; used as the case title")),
+    h("div", { class: "lbl" }, "Case authors"), ...authors,
+    h("button", { class: "small", type: "button", onclick: () => { sc.authors.push({ name: "", contact: "" }); render(); } }, "+ Add author"),
+    h("div", { class: "lbl" }, "Presenting symptoms (ICD-10-CM)"),
+    h("p", { class: "help" }, "Search by term or code: R00–R69, with selected musculoskeletal, eye and ear codes."),
     picker(sc.symptoms, symptoms, { placeholder: "e.g. abdominal pain, nausea, R10.31" }));
 }
 
@@ -287,7 +288,7 @@ function renderCondition() {
   const p = P(), c = cond();
   const groups = {};
   for (const x of LIB.conditions) (groups[x.category] ||= []).push([x.cliff_id, `${x.name} (${x.icl})`]);
-  const body = [field("Condition", sel(p, "condition", [], { rerender: true, placeholder: "choose from the 118 IMM conditions…",
+  const body = [field("Condition", sel(p, "condition", [], { rerender: true, placeholder: "Select condition…",
     groups: Object.entries(groups).sort(), onchange: onCondition }))];
   if (c) {
     const co = c.course || {};
@@ -296,12 +297,12 @@ function renderCondition() {
       h("td", {}, r(x.cp2_hours, " h")), h("td", {}, r(x.rtdc_pct, "%")), h("td", {}, r(x.locl_pct, "%"))) : null;
     body.push(
       c.summary ? h("p", { class: "help", style: "margin-top:8px" }, c.summary) : null,
-      h("p", { class: "help" }, `${c.icl} · ${c.category} · `, h("a", { href: c.cliff.url, target: "_blank", rel: "noopener" }, "open the CLiFF (2023)")),
-      h("table", {}, h("thead", {}, h("tr", {}, ...["Course (CLiFF Table 4)", "Share", "Treatment phase", "Removal to definitive care", "Death"].map(x => h("th", {}, x)))),
+      h("p", { class: "help" }, `${c.icl} · ${c.category} · `, h("a", { href: c.cliff.url, target: "_blank", rel: "noopener" }, "CLiFF (2023)")),
+      h("table", {}, h("thead", {}, h("tr", {}, ...["Clinical course (CLiFF Table 4)", "Probability", "Treatment duration", "RTDC", "Mortality (LOCL)"].map(x => h("th", {}, x)))),
         h("tbody", {}, row("Treated, best case", co.treated_best), row("Treated, worst case", co.treated_worst), row("Untreated, best case", co.untreated_best), row("Untreated, worst case", co.untreated_worst))),
-      h("p", { class: "help" }, "Every scenario is run in both the best and the worst case, plus a few runs at the CLiFF's own odds. The numbers were read automatically and haven't been checked by the physiologist yet."));
+      h("p", { class: "help" }, "Each case is run under both best- and worst-case courses, plus runs at CLiFF probabilities. RTDC: removal to definitive care. Values extracted automatically; pending physiology review."));
   }
-  return card("2. Condition", "Conditions come from NASA's Integrated Medical Model (the 2023 list).", ...body);
+  return card("2. Condition", "NASA Integrated Medical Model condition list (2023 CLiFFs).", ...body);
 }
 function onCondition() {
   const c = cond(), p = P();
@@ -316,33 +317,33 @@ function renderWhere() {
       S.ui.envsTouched = true;
       sc.environments = e.target.checked ? ALL_ENVS.filter(x => x === env || sc.environments.includes(x)) : sc.environments.filter(x => x !== env);
       changed(); render(); } }),
-    `${env} · ${ENV[env].name}`, app && !app.envs.includes(env) ? h("span", { class: "muted" }, " (not expected per the CLiFF)") : null,
+    `${env} · ${ENV[env].name}`, app && !app.envs.includes(env) ? h("span", { class: "muted" }, " (outside CLiFF incidence)") : null,
     ENV[env].default_run ? h("span", { class: "chip" }, "default run") : null));
-  return card("3. Where can this happen?", "The runner tests the case in each environment you tick, using that environment's NASA mission, kit and comm delay. Default runs use LEO, deep-space transit and the Mars surface, where ticked.",
+  return card("3. Mission environment", "Select each environment in which this presentation is plausible. Each is simulated with its own medical kit, gravity and communication delay. Default runs: LEO, deep-space transit, Mars surface.",
     ...boxes,
-    app ? h("p", { class: "help", style: "margin-top:6px" }, `From the CLiFF: segment "${app.segment || "All"}"${app.timing === "early_flight" ? ", in the first days of flight" : app.timing === "surface_arrival" ? ", on arrival at a surface" : ""}${app.eva ? ", during or after an EVA" : ""}${app.sex !== "any" ? `, ${app.sex} crewmembers only` : ""}. Pre-filled from that until you change it.`) : null);
+    app ? h("p", { class: "help", style: "margin-top:6px" }, `CLiFF incidence segment: ${app.segment || "All"}${app.timing === "early_flight" ? "; onset in the first days of flight" : app.timing === "surface_arrival" ? "; onset on arrival at a planetary surface" : ""}${app.eva ? "; EVA-related" : ""}${app.sex !== "any" ? `; ${app.sex === "F" ? "female" : "male"} crewmembers only` : ""}. Pre-filled from the CLiFF.`) : null);
 }
 
 function renderPatient() {
   const p = P(), twin = CREW[p.crew_id], ch = p.chart;
-  const body = [field("Crewmember", sel(p, "crew_id", LIB.crew.map(c => [c.crew_id, crewLabel(c)]), { rerender: true, placeholder: "choose from the roster…", onchange: onPatient }))];
+  const body = [field("Patient", sel(p, "crew_id", LIB.crew.map(c => [c.crew_id, crewLabel(c)]), { rerender: true, placeholder: "Select crewmember…", onchange: onPatient }))];
   if (twin) {
     const b = twin.baseline;
     body.push(h("p", { class: "help", style: "margin-top:6px" },
-      `${twin.occupation}. ${twin.flights} flight(s), ${twin.days_in_space} days in space. ${twin.height_cm} cm, ${twin.weight_kg} kg. `,
-      `Normal baseline: HR ${b.hr}, BP ${b.sbp}/${b.dbp}, RR ${b.rr}, SpO₂ ${b.spo2}%, ${b.temp_c} °C, Hb ${b.hgb_g_dl}, WBC ${b.wbc_10e9_l}, glucose ${b.glucose_mmol_l} mmol/L. `,
-      "All roster crewmembers are fictional."),
-      h("p", { class: "help" }, "Their chart is filled in below. Change anything that should be different for this case.",
-        h("button", { class: "small", type: "button", style: "margin-left:8px", onclick: () => { p.chart = clone(twin.chart); changed(); render(); } }, "Reset to roster chart")),
+      `${twin.occupation}; ${twin.flights} flight(s), ${twin.days_in_space} days in space. Ht ${twin.height_cm} cm, Wt ${twin.weight_kg} kg. `,
+      `Baseline: HR ${b.hr}, BP ${b.sbp}/${b.dbp}, RR ${b.rr}, SpO₂ ${b.spo2}%, T ${b.temp_c} °C, Hb ${b.hgb_g_dl} g/dL, WBC ${b.wbc_10e9_l} ×10⁹/L, glucose ${b.glucose_mmol_l} mmol/L. `,
+      "Synthetic record."),
+      h("p", { class: "help" }, "History loaded from the crew record; edit for this case as needed.",
+        h("button", { class: "small", type: "button", style: "margin-left:8px", onclick: () => { p.chart = clone(twin.chart); changed(); render(); } }, "Reset to crew record")),
       h("div", { class: "lbl" }, "Past medical history"), strList(ch.past_medical, "e.g. seasonal allergic rhinitis"),
-      h("div", { class: "lbl" }, "Past surgical history"), strList(ch.past_surgical, "e.g. laparoscopic appendectomy 2010"),
+      h("div", { class: "lbl" }, "Past surgical history"), strList(ch.past_surgical, "e.g. laparoscopic appendectomy (2010)"),
       h("div", { class: "lbl" }, "Medications"), medsEditor(ch),
-      h("div", { class: "lbl" }, "Allergies"), check(ch, "nkda", "NKDA (no known drug allergies)", { rerender: true }), allergyEditor(ch),
+      h("div", { class: "lbl" }, "Allergies"), check(ch, "nkda", "NKDA", { rerender: true }), allergyEditor(ch),
       h("div", { class: "grid", style: "margin-top:8px" }, field("Social history", text(ch, "social_history"))),
       h("details", {}, h("summary", {}, `Family history (optional, ${ch.family_history.length})`), strList(ch.family_history, "e.g. father: MI at 64")),
-      h("details", {}, h("summary", {}, `Immunizations (${ch.immunizations.length})`), strList(ch.immunizations, "e.g. tetanus booster 2023")));
+      h("details", {}, h("summary", {}, `Immunizations (${ch.immunizations.length})`), strList(ch.immunizations, "e.g. Tdap 2023")));
   }
-  return card("4. Patient", "Pick the patient from the crew roster.", ...body);
+  return card("4. Patient history", "Select the patient from the crew roster.", ...body);
 }
 function onPatient() {
   const p = P(), twin = CREW[p.crew_id];
@@ -353,21 +354,21 @@ function onPatient() {
 function medsEditor(ch) {
   const wrap = h("div");
   const draw = () => wrap.replaceChildren(...ch.medications.map((m, i) => h("div", { class: "cols4" },
-      ...[["name", "Name"], ["form", "Form/route"], ["dose", "Dose"], ["frequency", "Frequency"]].map(([k, ph]) =>
+      ...[["name", "Drug"], ["form", "Route / form"], ["dose", "Dose"], ["frequency", "Frequency"]].map(([k, ph]) =>
         h("input", { type: "text", value: m[k] || "", placeholder: ph, oninput: e => { m[k] = e.target.value; changed(); } })),
       h("button", { class: "small danger", type: "button", onclick: () => { ch.medications.splice(i, 1); changed(); draw(); } }, "×"))),
-    h("button", { class: "small", type: "button", onclick: () => { ch.medications.push({ name: "", form: "", dose: "", frequency: "" }); draw(); } }, "+ add a medication"));
+    h("button", { class: "small", type: "button", onclick: () => { ch.medications.push({ name: "", form: "", dose: "", frequency: "" }); draw(); } }, "+ Add medication"));
   draw();
   return wrap;
 }
 function allergyEditor(ch) {
   const wrap = h("div");
   const draw = () => wrap.replaceChildren(...ch.allergies.map((a, i) => h("div", { class: "cols3" },
-      h("input", { type: "text", value: a.agent, placeholder: "Agent", oninput: e => { a.agent = e.target.value; changed(); } }),
+      h("input", { type: "text", value: a.agent, placeholder: "Allergen", oninput: e => { a.agent = e.target.value; changed(); } }),
       (() => { const s = h("select", { onchange: e => { a.kind = e.target.value; changed(); } }, ...["drug", "food", "environmental", "other"].map(k => h("option", { value: k, selected: a.kind === k }, k))); return s; })(),
       h("input", { type: "text", value: a.reaction || "", placeholder: "Reaction", oninput: e => { a.reaction = e.target.value; changed(); } }),
       h("button", { class: "small danger", type: "button", onclick: () => { ch.allergies.splice(i, 1); changed(); draw(); } }, "×"))),
-    h("button", { class: "small", type: "button", onclick: () => { ch.allergies.push({ agent: "", kind: "drug", reaction: "" }); draw(); } }, "+ add an allergy"));
+    h("button", { class: "small", type: "button", onclick: () => { ch.allergies.push({ agent: "", kind: "drug", reaction: "" }); draw(); } }, "+ Add allergy"));
   draw();
   return wrap;
 }
@@ -383,57 +384,57 @@ function renderConversation() {
   const pool = LIB.crew.filter(c => c.crew_id !== patient && (sp.role !== "cmo" || c.medical_training.level !== "basic"));
   const twin = CREW[sp.crew_id];
   const fam = (k, label) => h("div", { style: "margin:4px 0" }, h("div", { class: "lbl" }, label,
-      h("span", { class: "muted", style: "font-weight:400" }, twin ? `  roster: ${twin.familiarity[k]}` : "")),
+      h("span", { class: "muted", style: "font-weight:400" }, twin ? `  (record: ${twin.familiarity[k]})` : "")),
     scale([1, 2, 3, 4, 5], sp.familiarity[k] ?? (twin ? twin.familiarity[k] : null), v => { sp.familiarity[k] = twin && v === twin.familiarity[k] ? null : v; }, ["none", "a little", "some", "good", "expert"]));
   const hist = sp.additional_history.map((x, i) => h("div", { class: "kv" },
-    h("input", { type: "text", value: x.if_asked, placeholder: "If asked about… (e.g. whether the pain moves)", oninput: e => { x.if_asked = e.target.value; changed(); } }),
-    h("input", { type: "text", value: x.says, placeholder: "…they say (in their words)", oninput: e => { x.says = e.target.value; changed(); } }),
+    h("input", { type: "text", value: x.if_asked, placeholder: "Topic, e.g. migration of pain", oninput: e => { x.if_asked = e.target.value; changed(); } }),
+    h("input", { type: "text", value: x.says, placeholder: "Response, e.g. started at the umbilicus, now right lower", oninput: e => { x.says = e.target.value; changed(); } }),
     h("button", { class: "small danger", type: "button", onclick: () => { sp.additional_history.splice(i, 1); changed(); render(); } }, "×")));
-  return card("5. The conversation", "An AI plays the crewmember who talks to the assistant, using their roster entry. What you fill in depends on who is talking.",
-    field("Who is talking to the assistant", sel(sp, "role", [["patient", "The patient themself"], ["cmo", "The crew medical officer"], ["crew", "Another crewmember helping"]],
+  return card("5. Presentation", "The presenting crewmember is portrayed as a standardized patient from their crew record. Fields depend on who presents.",
+    field("Presenting party", sel(sp, "role", [["patient", "Patient (self-report)"], ["cmo", "Crew medical officer (CMO)"], ["crew", "Crewmember (bystander)"]],
       { rerender: true, onchange: role => { sp.crew_id = role === "patient" ? patient : suggestSpeaker(role); sp.familiarity = { medicine: null, equipment: null, assistant: null }; } })),
-    sp.role !== "patient" ? field("Speaker", sel(sp, "crew_id", pool.map(c => [c.crew_id, crewLabel(c)]), { rerender: true, placeholder: "choose…",
+    sp.role !== "patient" ? field("Presenting crewmember", sel(sp, "crew_id", pool.map(c => [c.crew_id, crewLabel(c)]), { rerender: true, placeholder: "Select…",
       onchange: () => { sp.familiarity = { medicine: null, equipment: null, assistant: null }; } })) : null,
-    twin ? h("p", { class: "help", style: "margin-top:6px" }, `${twin.name}: ${TRAINING[twin.medical_training.level]}${twin.medical_training.hours ? ` (about ${twin.medical_training.hours} h)` : ""}. ${twin.communication_style}`) : null,
-    field(sp.role === "patient" ? "Chief complaint, in their words" : "Opening question", area(sp, "opening", { rows: 3,
-      placeholder: sp.role === "patient" ? "e.g. My stomach has been hurting since last night…" : "e.g. Kenji has had belly pain since last night. Can you help me work out what's going on?" })),
+    twin ? h("p", { class: "help", style: "margin-top:6px" }, `${twin.name}. Medical training: ${TRAINING[twin.medical_training.level]}${twin.medical_training.hours ? `, ~${twin.medical_training.hours} h` : ""}. Communication: ${twin.communication_style}`) : null,
+    field(sp.role === "patient" ? "Chief complaint (patient's words)" : "Opening statement", area(sp, "opening", { rows: 3,
+      placeholder: sp.role === "patient" ? "e.g. My stomach has been hurting since last night…" : "e.g. Kenji has had abdominal pain since last night and isn't eating. What should I check?" })),
     h("div", { class: "grid", style: "margin-top:8px" },
-      h("div", {}, check(sp, "emergent", "Emergent: they act under time pressure (changes behaviour only)"))),
-    h("div", { class: "lbl" }, "Familiarity (1 none … 5 expert). Click to change it for this case."),
-    fam("medicine", "Medicine"), fam("equipment", "The onboard medical equipment"), fam("assistant", "Digital medical assistants"),
-    h("div", { class: "lbl" }, "Quality of their input"),
+      h("div", {}, check(sp, "emergent", "Emergent presentation (affects behaviour only)"))),
+    h("div", { class: "lbl" }, "Familiarity (1 = none, 5 = expert)"),
+    fam("medicine", "Medical knowledge"), fam("equipment", "Onboard medical equipment"), fam("assistant", "Clinical decision-support tools"),
+    h("div", { class: "lbl" }, "Historian reliability"),
     scale([1, 2, 3, 4, 5], sp.input_quality, v => { sp.input_quality = v; if (v === 1) sp.input_problems = []; }, QUALITY),
     h("p", { class: "help" }, `${sp.input_quality}: ${QUALITY[sp.input_quality - 1]}`),
     sp.input_quality > 1 ? h("div", { class: "chips" }, ...Object.entries(LIB.input_problems).map(([k, d]) => h("label", { class: "chip", title: d },
       h("input", { type: "checkbox", checked: sp.input_problems.includes(k), onchange: e => { sp.input_problems = e.target.checked ? [...sp.input_problems, k] : sp.input_problems.filter(x => x !== k); changed(); } }),
-      k.replaceAll("_", " ")))) : null,
-    field("How they act (optional)", area(sp, "behaviour", { rows: 2, placeholder: "e.g. plays the pain down and blames food" })),
-    h("div", { class: "lbl" }, "Additional history if asked"),
-    h("p", { class: "help" }, "Things they only say when the assistant asks. If asked about this → they say that."),
-    ...hist, h("button", { class: "small", type: "button", onclick: () => { sp.additional_history.push({ if_asked: "", says: "" }); render(); } }, "+ add"));
+      PROBLEM_LABELS[k] || k.replaceAll("_", " ")))) : null,
+    field("Affect and behaviour (optional)", area(sp, "behaviour", { rows: 2, placeholder: "e.g. minimizes pain; attributes it to food" })),
+    h("div", { class: "lbl" }, "History on direct questioning only"),
+    h("p", { class: "help" }, "Information given only when specifically asked."),
+    ...hist, h("button", { class: "small", type: "button", onclick: () => { sp.additional_history.push({ if_asked: "", says: "" }); render(); } }, "+ Add item"));
 }
 
 function renderTimeline() {
   const p = P();
   const rows = p.timeline.map((e, i) => rowBox(`At ${e.t || "…"}`, () => { p.timeline.splice(i, 1); changed(); render(); },
     h("div", { class: "grid" },
-      field("Time", timeInput(e, "t"), "T+0, T+30m, T+6h, T+1d6h"),
-      field("What", sel(e, "kind", [["symptom", "Symptom"], ["finding", "Exam finding"], ["keyframe", "Vital signs / values"], ["note", "Note"]], { rerender: true })),
-      field("Applies", sel(e, "when", [["always", "Always"], ["untreated", "Only if not treated by then"], ["treated", "Only if treated by then"]]))),
+      field("Time", timeInput(e, "t"), "From presentation: T+0, T+30m, T+6h, T+1d6h"),
+      field("Entry", sel(e, "kind", [["symptom", "Symptom"], ["finding", "Exam finding"], ["keyframe", "Vital signs / labs"], ["note", "Note"]], { rerender: true })),
+      field("Applies", sel(e, "when", [["always", "Always"], ["untreated", "If untreated by this time"], ["treated", "If treated by this time"]]))),
     e.kind === "keyframe" ? stateEditor(e) : field("Description", text(e, "text"))));
-  return card("6. Medical timeline / course of illness (optional)", "How the illness unfolds. The simulation infers the course from the CLiFF; add entries only for things that must happen at a set time.",
-    ...rows, h("button", { type: "button", onclick: () => { p.timeline.push({ t: "", kind: "symptom", when: "always", text: "", state: {} }); changed(); render(); } }, "+ Add an entry"));
+  return card("6. Medical timeline / course of illness (optional)", "Timed symptoms, exam findings and vital signs. Otherwise the course follows the CLiFF; enter only events that must occur at a fixed time.",
+    ...rows, h("button", { type: "button", onclick: () => { p.timeline.push({ t: "", kind: "symptom", when: "always", text: "", state: {} }); changed(); render(); } }, "+ Add entry"));
 }
 function stateEditor(e) {
   const wrap = h("div");
   const rows = Object.entries(e.state || {});
   const commit = () => { e.state = Object.fromEntries(rows.filter(r => r[0]).map(([k, v]) => [k, coerce(v)])); changed(); };
   const draw = () => wrap.replaceChildren(...rows.map((r, i) => h("div", { class: "kv" },
-      h("select", { onchange: ev => { r[0] = ev.target.value; commit(); } }, h("option", { value: "" }, "choose…"),
+      h("select", { onchange: ev => { r[0] = ev.target.value; commit(); } }, h("option", { value: "" }, "Select…"),
         ...Object.entries(LIB.state_vars).map(([k, d]) => h("option", { value: k, selected: r[0] === k }, `${k} (${d})`))),
       h("input", { type: "text", value: r[1] ?? "", placeholder: "value", oninput: ev => { r[1] = ev.target.value; commit(); } }),
       h("button", { class: "small danger", type: "button", onclick: () => { rows.splice(i, 1); commit(); draw(); } }, "×"))),
-    h("button", { class: "small", type: "button", onclick: () => { rows.push(["", ""]); draw(); } }, "+ add a value"));
+    h("button", { class: "small", type: "button", onclick: () => { rows.push(["", ""]); draw(); } }, "+ Add value"));
   draw();
   return wrap;
 }
@@ -442,13 +443,13 @@ function coerce(v) { const t = String(v).trim(); if (t === "true") return true; 
 function renderTimeCritical() {
   const p = P(), items = kitItems();
   const opts = items.map(i => ({ value: i.id, label: i.name.toLowerCase(), search: i.name, envs: i.envs }));
-  const rows = p.time_critical.map((tc, i) => rowBox(`Time-critical ${i + 1}`, () => { p.time_critical.splice(i, 1); changed(); render(); },
-    field("What counts (in words)", text(tc.action, "text", { placeholder: "e.g. an antibiotic regimen covering gut bacteria" })),
-    h("div", { class: "lbl" }, "Kit items that count (any one of them)"),
-    picker(tc.action.refs, opts, { placeholder: "Search the kit…", label: o => `${o.label} (${[...o.envs].join(", ")})` }),
-    h("div", { class: "grid", style: "margin-top:6px" }, field("By", timeInput(tc, "by", "T+8h")))));
-  return card("7. Time-critical treatment (optional)", "The standard rule: if the assistant gets this done by the deadline, the case leans to the best course; if not, to the worst.",
-    ...rows, h("button", { type: "button", onclick: () => { p.time_critical.push({ action: { kind: "treatment", refs: [], text: "" }, by: "" }); changed(); render(); } }, "+ Add a time-critical treatment"));
+  const rows = p.time_critical.map((tc, i) => rowBox(`Intervention ${i + 1}`, () => { p.time_critical.splice(i, 1); changed(); render(); },
+    field("Intervention", text(tc.action, "text", { placeholder: "e.g. antibiotics with enteric gram-negative and anaerobic coverage" })),
+    h("div", { class: "lbl" }, "Qualifying kit items (any one)"),
+    picker(tc.action.refs, opts, { placeholder: "Search formulary and equipment…", label: o => `${o.label} (${[...o.envs].join(", ")})` }),
+    h("div", { class: "grid", style: "margin-top:6px" }, field("Deadline", timeInput(tc, "by", "T+8h")))));
+  return card("7. Time-critical intervention (optional)", "Timely intervention shifts the course toward the best case; delay or omission shifts it toward the worst case.",
+    ...rows, h("button", { type: "button", onclick: () => { p.time_critical.push({ action: { kind: "treatment", refs: [], text: "" }, by: "" }); changed(); render(); } }, "+ Add intervention"));
 }
 
 function renderAnswer() {
@@ -460,24 +461,24 @@ function renderAnswer() {
       h("button", { class: "small", type: "button", title: "Move up", onclick: () => { if (i) { [g.differential[i - 1], g.differential[i]] = [g.differential[i], g.differential[i - 1]]; changed(); drawDiff(); } } }, "↑"),
       h("button", { class: "small", type: "button", title: "Move down", onclick: () => { if (i < g.differential.length - 1) { [g.differential[i + 1], g.differential[i]] = [g.differential[i], g.differential[i + 1]]; changed(); drawDiff(); } } }, "↓"),
       h("button", { class: "small danger", type: "button", onclick: () => { g.differential.splice(i, 1); changed(); drawDiff(); } }, "×"))),
-    h("button", { class: "small", type: "button", onclick: () => { g.differential.push(""); drawDiff(); } }, "+ add"));
+    h("button", { class: "small", type: "button", onclick: () => { g.differential.push(""); drawDiff(); } }, "+ Add"));
   drawDiff();
   const syn = Object.entries(g.synonyms || {}).map(([k, v]) => [k, v.join("; ")]);
   const synWrap = h("div");
   const commitSyn = () => { g.synonyms = Object.fromEntries(syn.filter(r => r[0]).map(([k, v]) => [k, String(v).split(";").map(x => x.trim()).filter(Boolean)])); changed(); };
   const drawSyn = () => synWrap.replaceChildren(...syn.map((r, i) => h("div", { class: "kv" },
-      h("input", { type: "text", value: r[0], placeholder: "diagnosis or etiology", oninput: e => { r[0] = e.target.value; commitSyn(); } }),
-      h("input", { type: "text", value: r[1], placeholder: "other names that count, separated by ;", oninput: e => { r[1] = e.target.value; commitSyn(); } }),
+      h("input", { type: "text", value: r[0], placeholder: "Diagnosis or etiology", oninput: e => { r[0] = e.target.value; commitSyn(); } }),
+      h("input", { type: "text", value: r[1], placeholder: "Accepted terms, separated by ;", oninput: e => { r[1] = e.target.value; commitSyn(); } }),
       h("button", { class: "small danger", type: "button", onclick: () => { syn.splice(i, 1); commitSyn(); drawSyn(); } }, "×"))),
-    h("button", { class: "small", type: "button", onclick: () => { syn.push(["", ""]); drawSyn(); } }, "+ add"));
+    h("button", { class: "small", type: "button", onclick: () => { syn.push(["", ""]); drawSyn(); } }, "+ Add"));
   drawSyn();
-  return card("8. Correct answer", "Full credit needs the diagnosis and the etiology; the diagnosis alone gets partial credit.",
+  return card("8. Diagnosis and differential", "Full credit requires the diagnosis and its etiology; the diagnosis alone earns partial credit.",
     h("div", { class: "grid" },
-      field("Diagnosis", text(g, "diagnosis", { placeholder: c ? c.name : "choose a condition first" }), "From the IMM condition; reword if needed"),
-      field("Etiology (the cause)", text(g, "etiology", { placeholder: "e.g. obstruction of the appendix lumen by an appendicolith" }))),
-    h("div", { class: "lbl" }, "Differential, most likely first"), diff,
-    h("div", { class: "lbl" }, "Must not miss"), strList(g.must_not_miss, "e.g. perforated appendicitis"),
-    h("details", {}, h("summary", {}, "Other names that count as a match"), synWrap));
+      field("Diagnosis", text(g, "diagnosis", { placeholder: c ? c.name : "Select a condition first" }), "From the IMM condition; edit the wording if needed"),
+      field("Etiology", text(g, "etiology", { placeholder: "e.g. appendiceal luminal obstruction (appendicolith)" }))),
+    h("div", { class: "lbl" }, "Differential diagnosis (ranked)"), diff,
+    h("div", { class: "lbl" }, "Can't-miss diagnoses"), strList(g.must_not_miss, "e.g. perforated appendicitis"),
+    h("details", {}, h("summary", {}, "Accepted synonyms"), synWrap));
 }
 
 function renderRubric() {
@@ -487,20 +488,20 @@ function renderRubric() {
   const equipment = kitItems().filter(i => i.category === "equipment").map(i => ({ value: i.id, label: i.name.toLowerCase(), envs: i.envs }));
   const items = rb.items.map((it, i) => {
     const sign = it.weight < 0 ? -1 : 1, size = Math.abs(it.weight) || 3;
-    return rowBox(`${it.id}${it.weight < 0 ? " · should NOT do" : " · should do"}${it.from_library ? ` · from ${it.from_library}` : ""}`, () => { rb.items.splice(i, 1); changed(); render(); },
-      field("What an observer would see", text(it, "text", { placeholder: it.weight < 0 ? "e.g. Tells the crew to operate as the plan" : "e.g. Starts an antibiotic that covers gut bacteria" })),
-      h("div", { class: "lbl" }, "Points"),
+    return rowBox(`${it.id}${it.weight < 0 ? " · error" : " · expected action"}${it.from_library ? " · from library" : ""}`, () => { rb.items.splice(i, 1); changed(); render(); },
+      field("Observable behaviour", text(it, "text", { placeholder: it.weight < 0 ? "e.g. Directs the crew to perform an appendectomy" : "e.g. Initiates antibiotics with enteric coverage" })),
+      h("div", { class: "lbl" }, "Weight"),
       h("div", { class: "btnbar", style: "align-items:center" },
-        h("div", { class: "scale" }, h("button", { type: "button", class: sign > 0 ? "on" : "", onclick: () => { it.weight = size; changed(); render(); } }, "+ do"),
-          h("button", { type: "button", class: sign < 0 ? "on" : "", onclick: () => { it.weight = -size; it.type = "binary"; delete it.anchors; changed(); render(); } }, "− don't")),
+        h("div", { class: "scale" }, h("button", { type: "button", class: sign > 0 ? "on" : "", onclick: () => { it.weight = size; changed(); render(); } }, "+ Expected"),
+          h("button", { type: "button", class: sign < 0 ? "on" : "", onclick: () => { it.weight = -size; it.type = "binary"; delete it.anchors; changed(); render(); } }, "− Error")),
         scale([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], size, v => { it.weight = sign * v; })),
       h("div", { class: "grid", style: "margin-top:6px" },
-        field("Type", sel(it, "type", sign > 0 ? [["binary", "Yes / no"], ["rating", "Rated 1–5"]] : [["binary", "Yes / no"]], { rerender: true })),
+        field("Scoring", sel(it, "type", sign > 0 ? [["binary", "Done / not done"], ["rating", "Rated 1–5"]] : [["binary", "Done / not done"]], { rerender: true })),
         field("Deadline (optional)", timeInput(it, "by", "T+8h")),
         field("Domain", sel(it, "domain", domains))),
-      it.type === "rating" ? h("div", { class: "grid" }, ...["1", "3", "5"].map(k => field(`What a ${k} looks like`,
+      it.type === "rating" ? h("div", { class: "grid" }, ...["1", "3", "5"].map(k => field(`Anchor for ${k}`,
         h("input", { type: "text", value: (it.anchors || {})[k] || "", oninput: e => { (it.anchors ||= {})[k] = e.target.value; changed(); } })))) : null,
-      h("details", {}, h("summary", {}, `Only applies when this equipment is aboard (${(it.requires || []).length})`),
+      h("details", {}, h("summary", {}, `Requires equipment (${(it.requires || []).length}); not applicable where it is absent`),
         picker(it.requires ||= [], equipment, { placeholder: "Search equipment…", label: o => `${o.label} (${[...o.envs].join(", ")})` })));
   });
   const lib = h("div");
@@ -512,30 +513,30 @@ function renderRubric() {
       h("span", { style: "font-size:13px" }, x.text), h("span", { class: "chip" }, `${x.domain} ${x.weight > 0 ? "+" : ""}${x.weight}`),
       h("button", { class: "small", type: "button", disabled: rb.items.some(i => i.from_library === x.id), onclick: () => {
         rb.items.push({ id: nextId(x.weight < 0 ? "N" : "I"), text: x.text, type: "binary", weight: x.weight, by: "", domain: x.domain, requires: [], from_library: x.id });
-        changed(); render(); } }, rb.items.some(i => i.from_library === x.id) ? "added" : "Add"))));
+        changed(); render(); } }, rb.items.some(i => i.from_library === x.id) ? "Added" : "Add"))));
   };
   drawLib();
-  const gates = rb.gates.map((g, i) => rowBox(g.id, () => { rb.gates.splice(i, 1); changed(); render(); }, field("Never event", text(g, "text"))));
-  return card("9. Rubric", `Scored against the general rubric ${b.ref}. Its safety gates and 1–5 domains apply to every scenario. Rule of thumb: if two people could answer yes or no from the transcript, it's a checklist item; if it's "how well", the domains already cover it.`,
-    h("div", { class: "lbl" }, "Scored in every scenario"),
+  const gates = rb.gates.map((g, i) => rowBox(g.id, () => { rb.gates.splice(i, 1); changed(); render(); }, field("Critical error", text(g, "text"))));
+  return card("9. Scoring checklist", `General rubric ${b.ref}: critical errors and 1–5 global ratings apply to every case. List case-specific actions that can be scored as done or not done from the transcript; quality of performance is covered by the global ratings.`,
+    h("div", { class: "lbl" }, "Standard items (every case)"),
     ...(b.standard_items || []).map(s => h("div", { class: "std" }, h("b", {}, `${s.id} +${s.weight} (${s.domain}) `), s.text, s.depends_on ? h("span", { class: "muted" }, ` · only with ${s.depends_on}`) : null)),
-    h("details", {}, h("summary", {}, `Safety gates (${b.gates.length}) and domains (${b.domains.length})`),
+    h("details", {}, h("summary", {}, `Critical errors (${b.gates.length}) and global rating domains (${b.domains.length})`),
       h("ul", {}, ...b.gates.map(g => h("li", {}, h("b", {}, g.id), " ", g.text))),
       h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "Domain"), h("th", {}, "1"), h("th", {}, "3"), h("th", {}, "5"))),
         h("tbody", {}, ...b.domains.map(d => h("tr", {}, h("td", {}, h("b", {}, `${d.id} ${d.name}`)), h("td", {}, d.anchors["1"]), h("td", {}, d.anchors["3"]), h("td", {}, d.anchors["5"])))))),
-    h("details", { open: !rb.items.length }, h("summary", {}, `Add common items with one click (${b.item_library.length})`),
+    h("details", { open: !rb.items.length }, h("summary", {}, `Common checklist items (${b.item_library.length})`),
       h("div", { class: "grid" },
         h("input", { type: "search", placeholder: "Filter…", oninput: e => { libFilter.q = e.target.value; drawLib(); } }),
         (() => { const s = h("select", { onchange: e => { libFilter.domain = e.target.value; drawLib(); } }, h("option", { value: "" }, "All domains"), ...domains.map(([v, l]) => h("option", { value: v }, l))); return s; })()),
       lib),
-    h("div", { class: "lbl", style: "margin-top:10px" }, `This scenario's items (${rb.items.length})`),
+    h("div", { class: "lbl", style: "margin-top:10px" }, `Case-specific items (${rb.items.length})`),
     ...items,
     h("div", { class: "btnbar" },
-      h("button", { type: "button", onclick: () => { rb.items.push({ id: nextId("I"), text: "", type: "binary", weight: 3, by: "", domain: "D3", requires: [] }); changed(); render(); } }, "+ Something it should do"),
-      h("button", { type: "button", onclick: () => { rb.items.push({ id: nextId("N"), text: "", type: "binary", weight: -5, by: "", domain: "D3", requires: [] }); changed(); render(); } }, "+ Something it should NOT do")),
-    h("details", { style: "margin-top:10px" }, h("summary", {}, `Extra never events for this scenario (${rb.gates.length})`), ...gates,
-      h("button", { class: "small", type: "button", onclick: () => { rb.gates.push({ id: nextId("SG"), text: "" }); changed(); render(); } }, "+ Add a never event")),
-    h("div", { style: "margin-top:8px" }, check(rb, "must_not_miss_tested", "Also score whether each must-not-miss diagnosis was considered or excluded")));
+      h("button", { type: "button", onclick: () => { rb.items.push({ id: nextId("I"), text: "", type: "binary", weight: 3, by: "", domain: "D3", requires: [] }); changed(); render(); } }, "+ Expected action"),
+      h("button", { type: "button", onclick: () => { rb.items.push({ id: nextId("N"), text: "", type: "binary", weight: -5, by: "", domain: "D3", requires: [] }); changed(); render(); } }, "+ Error")),
+    h("details", { style: "margin-top:10px" }, h("summary", {}, `Case-specific critical errors (${rb.gates.length})`), ...gates,
+      h("button", { class: "small", type: "button", onclick: () => { rb.gates.push({ id: nextId("SG"), text: "" }); changed(); render(); } }, "+ Add critical error")),
+    h("div", { style: "margin-top:8px" }, check(rb, "must_not_miss_tested", "Score whether each can't-miss diagnosis was considered or excluded")));
 }
 
 function renderAdvanced() {
@@ -544,30 +545,30 @@ function renderAdvanced() {
     h("div", { class: "grid" },
       field("Time", timeInput(e, "t", "T+4h")),
       field("Inject", sel(e, "kind", LIB.enums.event_kinds.map(k => [k, k.replaceAll("_", " ")]))),
-      field("Lasts", text(e, "duration", { placeholder: "10h" }), "Optional"),
-      field("Affects (optional)", text(e, "target", { placeholder: "crew id or kit item" }))),
+      field("Duration", text(e, "duration", { placeholder: "10h" }), "Optional"),
+      field("Target (optional)", text(e, "target", { placeholder: "Crew ID or kit item" }))),
     field("Description", text(e, "text"))));
-  return card("11. Advanced", null,
-    h("div", { class: "grid" }, field("Simulate for", text(sc, "duration", { placeholder: "3d" }), "How long a run lasts, e.g. 3d or 36h")),
+  return card("11. Simulation settings", null,
+    h("div", { class: "grid" }, field("Case duration", text(sc, "duration", { placeholder: "3d" }), "Simulated time, e.g. 3d or 36h")),
     h("details", { open: S.ui.showInjects, ontoggle: e => { S.ui.showInjects = e.target.open; save(); } },
-      h("summary", {}, `Injects (${sc.injects.length}) · for later, once CMO-DA is running`),
-      h("p", { class: "help" }, "Mission events dropped into the run, as in launch-readiness sims: space weather, dust storms, comm blackouts, equipment failures."),
-      ...rows, h("button", { class: "small", type: "button", onclick: () => { sc.injects.push({ t: "", kind: "comm_blackout", duration: "", text: "" }); changed(); render(); } }, "+ Add an inject")));
+      h("summary", {}, `Injects (${sc.injects.length}) · reserved for CMO-DA integration`),
+      h("p", { class: "help" }, "Scripted mission events, as in launch-readiness simulations: space weather, dust storms, communication blackout, equipment failure."),
+      ...rows, h("button", { class: "small", type: "button", onclick: () => { sc.injects.push({ t: "", kind: "comm_blackout", duration: "", text: "" }); changed(); render(); } }, "+ Add inject")));
 }
 
 function renderReview() {
   const r = S.scenario.review;
-  return card("12. Review and save", "Check finds problems before review. Download saves two files (the scenario and its rubric) to send to the coordinator or upload to the scenarios inbox.",
+  return card("12. Review and submission", "Resolve all errors under Case check before submission. Download produces the case file and its scoring checklist; send both to the coordinator or upload them to scenarios/inbox.",
     h("div", { class: "grid" },
-      field("Status", sel(r, "status", [["draft", "Draft"], ["in_review", "Ready for review"]])),
-      h("div", {}, check({ get v() { return r.physiology_review === "requested"; }, set v(x) { r.physiology_review = x ? "requested" : "not_needed"; } }, "v", "Ask the physiologist to review this case", { rerender: true }))),
-    r.physiology_review === "requested" ? field("Notes for the physiologist", area(r, "notes_for_physiologist", { rows: 2 })) : null,
-    field("Other notes", area(r, "notes", { rows: 2 })),
+      field("Status", sel(r, "status", [["draft", "Draft"], ["in_review", "Ready for peer review"]])),
+      h("div", {}, check({ get v() { return r.physiology_review === "requested"; }, set v(x) { r.physiology_review = x ? "requested" : "not_needed"; } }, "v", "Request physiology review", { rerender: true }))),
+    r.physiology_review === "requested" ? field("Notes for physiology reviewer", area(r, "notes_for_physiologist", { rows: 2 })) : null,
+    field("Reviewer notes", area(r, "notes", { rows: 2 })),
     h("div", { class: "btnbar", style: "margin-top:10px" },
       h("button", { class: "primary", type: "button", onclick: exportFiles }, "Download files"),
       h("button", { type: "button", onclick: printSheet }, "Print review sheet"),
-      h("button", { type: "button", onclick: () => document.getElementById("file-import").click() }, "Open existing files"),
-      h("button", { class: "danger", type: "button", onclick: startNew }, "Start a new scenario")));
+      h("button", { type: "button", onclick: () => document.getElementById("file-import").click() }, "Open case files"),
+      h("button", { class: "danger", type: "button", onclick: startNew }, "New case")));
 }
 
 // ---------- side panel ----------
@@ -575,11 +576,11 @@ function refreshSide() {
   const side = document.getElementById("side");
   const issues = runChecks();
   const by = l => issues.filter(i => i.level === l);
-  const parts = [h("div", { class: "card" }, h("h3", {}, "Check"),
+  const parts = [h("div", { class: "card" }, h("h3", {}, "Case check"),
     issues.filter(i => i.level !== "info").length
       ? h("ul", { class: "issues" }, ...["error", "warning", "info"].flatMap(l => by(l).map(i => h("li", { class: l }, i.msg))))
-      : h("p", { class: "ok" }, "No problems found."),
-    h("p", { class: "help" }, `${by("error").length} to fix, ${by("warning").length} to look at. The coordinator runs the full check (medsim validate) on submission.`))];
+      : h("p", { class: "ok" }, "No issues."),
+    h("p", { class: "help" }, `${by("error").length} error(s), ${by("warning").length} warning(s). Full validation is run on submission.`))];
   parts.push(encyclopediaCard());
   const envs = S.scenario.environments;
   if (!envs.includes(S.ui.habEnv)) S.ui.habEnv = envs[0] || "";
@@ -587,7 +588,7 @@ function refreshSide() {
   if (env) {
     const pickEnv = h("select", { onchange: e => { S.ui.habEnv = e.target.value; refreshSide(); } }, ...envs.map(x => h("option", { value: x, selected: x === S.ui.habEnv }, `${x} · ${ENV[x].name}`)));
     const habCards = habsFor(env.env).map(hab => {
-      const filt = h("input", { type: "search", placeholder: "Search what's aboard…" });
+      const filt = h("input", { type: "search", placeholder: "Search formulary and equipment…" });
       const tbl = h("table");
       const drawItems = () => {
         const q = filt.value.toLowerCase();
@@ -596,14 +597,14 @@ function refreshSide() {
       };
       filt.addEventListener("input", drawItems); drawItems();
       return h("div", {}, h("p", { style: "font-weight:600;font-size:13px;margin:8px 0 2px" }, hab.name),
-        h("details", {}, h("summary", {}, "What medicine is possible here"),
+        h("details", {}, h("summary", {}, "Medical capabilities"),
           h("table", {}, h("tbody", {}, ...hab.capabilities.map(c => h("tr", { title: c.note || "" }, h("td", {}, c.name), h("td", { class: `st-${c.status}` }, c.status + (c.assumption ? " *" : "")))))),
-          h("p", { class: "help" }, "* our assumption, not NASA's. Hover a row for notes.")),
-        h("details", {}, h("summary", {}, `What's aboard (${hab.formulary.filter(i => i.qty > 0).length} drugs, ${hab.equipment.filter(i => i.qty > 0).length} items)`), filt, tbl));
+          h("p", { class: "help" }, "* Assumed; not from a NASA source. Hover for notes.")),
+        h("details", {}, h("summary", {}, `Formulary and equipment (${hab.formulary.filter(i => i.qty > 0).length} drugs, ${hab.equipment.filter(i => i.qty > 0).length} items)`), filt, tbl));
     });
-    parts.push(h("div", { class: "card" }, h("h3", {}, "Where it runs"), pickEnv,
-      h("p", { class: "help", style: "margin-top:6px" }, `Gravity ${env.gravity_g} g · one-way delay ${fmtDelay(env.one_way_delay_s)} · evacuation: ${env.evacuation}`),
-      env.representative ? h("p", { class: "help" }, `Mission: ${env.representative.drm}, ${env.representative.phase}.`) : null,
+    parts.push(h("div", { class: "card" }, h("h3", {}, "Medical capability by environment"), pickEnv,
+      h("p", { class: "help", style: "margin-top:6px" }, `Gravity ${env.gravity_g} g · one-way comm delay ${fmtDelay(env.one_way_delay_s)} · time to definitive care: ${env.evacuation}`),
+      env.representative ? h("p", { class: "help" }, `Reference mission: ${env.representative.drm} (${env.representative.phase}).`) : null,
       ...habCards));
   }
   side.replaceChildren(...parts);
@@ -611,99 +612,99 @@ function refreshSide() {
 function fmtDelay([a, b]) { const f = s => s >= 60 ? `${Math.round(s / 60)} min` : `${s} s`; return a === b ? f(a) : `${f(a)}–${f(b)}`; }
 
 function encyclopediaCard() {
-  const input = h("input", { type: "search", placeholder: "Conditions, drugs, normal values, terms…", value: S.ui.encQuery });
+  const input = h("input", { type: "search", placeholder: "Search conditions, drugs, reference ranges, terms", value: S.ui.encQuery });
   const out = h("div");
-  const ranges = LIB.physiology.flatMap(p => p.ranges).map(r => ({ title: `Normal ${r.var}${r.sex ? ` (${r.sex})` : ""}`, text: `${r.low}–${r.high} ${r.unit}. ${r.note || ""}`, kind: "normal value" }));
-  const adapt = LIB.physiology.flatMap(p => p.adaptations).map(a => ({ title: `${a.var} in ${a.envs.join(", ")}`, text: `${a.change}.${a.note ? " " + a.note : ""}`, kind: "in flight" }));
+  const ranges = LIB.physiology.flatMap(p => p.ranges).map(r => ({ title: `Reference range: ${r.var}${r.sex ? ` (${r.sex})` : ""}`, text: `${r.low}–${r.high} ${r.unit}. ${r.note || ""}`, kind: "reference range" }));
+  const adapt = LIB.physiology.flatMap(p => p.adaptations).map(a => ({ title: `${a.var} in ${a.envs.join(", ")}`, text: `${a.change}.${a.note ? " " + a.note : ""}`, kind: "in-flight change" }));
   const conds = LIB.conditions.map(c => ({ title: `${c.name} (${c.icl})`, text: c.summary || "", kind: "condition", url: c.cliff.url }));
   const all = [...conds, ...LIB.encyclopedia.map(e => ({ title: e.title, text: e.text, kind: e.kind, url: e.source.url, src: e.source.doc })), ...ranges, ...adapt];
   const draw = () => {
     const q = input.value.toLowerCase().trim();
     S.ui.encQuery = input.value;
-    if (q.length < 2) { out.replaceChildren(h("p", { class: "help" }, "Type at least two letters.")); return; }
+    if (q.length < 2) { out.replaceChildren(h("p", { class: "help" }, "Enter at least two characters.")); return; }
     const hits = all.filter(x => x.title.toLowerCase().includes(q)).concat(all.filter(x => !x.title.toLowerCase().includes(q) && x.text.toLowerCase().includes(q))).slice(0, 12);
     out.replaceChildren(...(hits.length ? hits.map(x => h("div", { class: "enc" }, h("b", {}, x.title, " ", h("span", { class: "chip" }, x.kind)),
       x.text.length > 360 ? h("details", {}, h("summary", { style: "font-weight:400" }, x.text.slice(0, 200) + "…"), x.text) : x.text,
-      x.url ? h("div", {}, h("a", { href: x.url, target: "_blank", rel: "noopener" }, x.src ? "Source" : "Open the CLiFF")) : null))
-      : [h("p", { class: "help" }, "Nothing found.")]));
+      x.url ? h("div", {}, h("a", { href: x.url, target: "_blank", rel: "noopener" }, x.src ? "Source" : "CLiFF")) : null))
+      : [h("p", { class: "help" }, "No matches.")]));
   };
   input.addEventListener("input", draw);
   draw();
   return h("div", { class: "card" }, h("h3", {}, "Encyclopedia"), input, out,
-    h("p", { class: "help", style: "margin-top:6px" }, "CLiFF summaries (NASA), FDA drug labels (DailyMed), normal values and space terms. Reference only, not dosing advice."));
+    h("p", { class: "help", style: "margin-top:6px" }, "Sources: NASA CLiFFs, FDA labeling (DailyMed), reference ranges, SpaceDoc glossary. For case writing only; not dosing guidance."));
 }
 
 // ---------- checks (mirror medsim validate; it has the final say) ----------
 function runChecks() {
   const out = [], sc = S.scenario, rb = S.rubric, p = P(), c = cond(), sp = sc.speaker;
   const err = m => out.push({ level: "error", msg: m }), warn = m => out.push({ level: "warning", msg: m }), info = m => out.push({ level: "info", msg: m });
-  if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(sc.scenario_id) || sc.scenario_id === "MSE-") err("Give the scenario an id like MSE-0123.");
-  if (!sc.title.trim()) err("Write the chief complaint.");
-  if (!sc.authors.some(a => a.name.trim())) err("Add at least one author.");
-  sc.authors.forEach((a, i) => { if (a.name.trim() && !a.contact.trim()) err(`Author ${i + 1}: add an email or phone.`); });
-  if (!c) err("Choose a condition.");
-  if (!sc.environments.length) err("Tick at least one environment.");
+  if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(sc.scenario_id) || sc.scenario_id === "MSE-") err("Case ID required (format MSE-0123).");
+  if (!sc.title.trim()) err("Chief complaint required.");
+  if (!sc.authors.some(a => a.name.trim())) err("At least one author required.");
+  sc.authors.forEach((a, i) => { if (a.name.trim() && !a.contact.trim()) err(`Author ${i + 1}: contact required.`); });
+  if (!c) err("Condition required.");
+  if (!sc.environments.length) err("Select at least one environment.");
   if (c && c.applicability) {
     const outside = sc.environments.filter(e => !c.applicability.envs.includes(e));
-    if (outside.length) warn(`${c.name} is not expected in ${outside.join(", ")} per its CLiFF; untick those or say why in the complicators.`);
+    if (outside.length) warn(`${c.name}: ${outside.join(", ")} outside CLiFF incidence. Deselect, or justify under complicating factors.`);
   }
   const twin = CREW[p.crew_id];
-  if (!twin) err("Choose the patient.");
-  if (twin && c && c.applicability && c.applicability.sex !== "any" && twin.sex !== c.applicability.sex) err(`${c.name} only occurs in ${c.applicability.sex} crewmembers.`);
+  if (!twin) err("Patient required.");
+  if (twin && c && c.applicability && c.applicability.sex !== "any" && twin.sex !== c.applicability.sex) err(`${c.name} applies to ${c.applicability.sex === "F" ? "female" : "male"} patients only.`);
   for (const word of (LIB.ruled_out_by_surgery[p.condition] || [])) {
-    if ([...p.chart.past_surgical, ...(twin ? twin.chart.past_surgical : [])].some(x => x.toLowerCase().includes(word))) err(`${twin ? twin.name : "The patient"} has had an ${word}, so can't have this condition.`);
+    if ([...p.chart.past_surgical, ...(twin ? twin.chart.past_surgical : [])].some(x => x.toLowerCase().includes(word))) err(`Prior ${word} in the surgical history excludes this condition.`);
   }
-  if (p.chart.nkda && p.chart.allergies.some(a => a.kind === "drug" && a.agent.trim())) err("Marked NKDA but a drug allergy is listed.");
-  p.chart.medications.forEach((m, i) => { if (m.name.trim() && (!m.dose.trim() || !m.frequency.trim())) err(`Medication ${i + 1}: add the dose and frequency.`); });
-  p.chart.allergies.forEach((a, i) => { if (!a.agent.trim()) err(`Allergy ${i + 1}: name the agent.`); });
-  if (!CREW[sp.crew_id]) err("Choose who is talking.");
-  if (sp.role !== "patient" && sp.crew_id === p.crew_id) err("The speaker is the patient; set 'who is talking' to the patient.");
-  if (!sp.opening.trim()) err(sp.role === "patient" ? "Write the chief complaint in their words." : "Write the opening question.");
-  if (sp.input_quality > 1 && !sp.input_problems.length) warn("Input quality is above 1: tick what kind of poor input they give.");
-  sp.additional_history.forEach((x, i) => { if (!x.if_asked.trim() || !x.says.trim()) err(`Additional history ${i + 1}: fill in both sides.`); });
+  if (p.chart.nkda && p.chart.allergies.some(a => a.kind === "drug" && a.agent.trim())) err("NKDA conflicts with a listed drug allergy.");
+  p.chart.medications.forEach((m, i) => { if (m.name.trim() && (!m.dose.trim() || !m.frequency.trim())) err(`Medication ${i + 1}: dose and frequency required.`); });
+  p.chart.allergies.forEach((a, i) => { if (!a.agent.trim()) err(`Allergy ${i + 1}: allergen required.`); });
+  if (!CREW[sp.crew_id]) err("Presenting party required.");
+  if (sp.role !== "patient" && sp.crew_id === p.crew_id) err("The presenting crewmember is the patient; set the presenting party to Patient.");
+  if (!sp.opening.trim()) err(sp.role === "patient" ? "Chief complaint (patient's words) required." : "Opening statement required.");
+  if (sp.input_quality > 1 && !sp.input_problems.length) warn(`Historian reliability ${sp.input_quality}/5: specify how the history is unreliable.`);
+  sp.additional_history.forEach((x, i) => { if (!x.if_asked.trim() || !x.says.trim()) err(`Direct-questioning item ${i + 1}: topic and response required.`); });
   const end = durationSecs(sc.duration);
-  if (end == null) err(`"Simulate for" must be a duration like 3d or 36h.`);
+  if (end == null) err("Case duration must be a duration such as 3d or 36h.");
   const known = new Set(Object.keys(LIB.state_vars));
   p.timeline.forEach((e, i) => {
     const t = offsetSecs(e.t);
-    if (t == null) err(`Timeline entry ${i + 1}: time must look like T+6h.`);
-    else if (end != null && t > end) warn(`Timeline entry ${i + 1} is after the run ends.`);
-    if (e.kind === "keyframe" && !Object.keys(e.state || {}).length) err(`Timeline entry ${i + 1}: add at least one value.`);
-    if (e.kind !== "keyframe" && !(e.text || "").trim()) err(`Timeline entry ${i + 1}: add a description.`);
-    for (const k of Object.keys(e.state || {})) if (!known.has(k)) warn(`Timeline entry ${i + 1}: "${k}" is not a known value.`);
+    if (t == null) err(`Timeline entry ${i + 1}: time format T+6h.`);
+    else if (end != null && t > end) warn(`Timeline entry ${i + 1} falls after the case ends.`);
+    if (e.kind === "keyframe" && !Object.keys(e.state || {}).length) err(`Timeline entry ${i + 1}: at least one value required.`);
+    if (e.kind !== "keyframe" && !(e.text || "").trim()) err(`Timeline entry ${i + 1}: description required.`);
+    for (const k of Object.keys(e.state || {})) if (!known.has(k)) warn(`Timeline entry ${i + 1}: "${k}" is not a recognised variable.`);
   });
   const kit = kitItems();
   p.time_critical.forEach((tc, i) => {
-    if (offsetSecs(tc.by) == null) err(`Time-critical ${i + 1}: "By" must look like T+8h.`);
-    if (!tc.action.refs.length && !(tc.action.text || "").trim()) err(`Time-critical ${i + 1}: say what counts.`);
+    if (offsetSecs(tc.by) == null) err(`Intervention ${i + 1}: deadline format T+8h.`);
+    if (!tc.action.refs.length && !(tc.action.text || "").trim()) err(`Intervention ${i + 1}: describe the intervention.`);
     if (tc.action.refs.length) for (const env of sc.environments) {
-      if (habsFor(env).length && !kit.some(k => tc.action.refs.includes(k.id) && k.envs.has(env))) warn(`Time-critical ${i + 1}: none of the chosen items is aboard in ${env}.`);
+      if (habsFor(env).length && !kit.some(k => tc.action.refs.includes(k.id) && k.envs.has(env))) warn(`Intervention ${i + 1}: no qualifying item aboard in ${env}.`);
     }
   });
   sc.injects.forEach((e, i) => {
-    if (offsetSecs(e.t) == null) err(`Inject ${i + 1}: time must look like T+4h.`);
-    if (e.duration && durationSecs(e.duration) == null) err(`Inject ${i + 1}: "Lasts" must look like 10h.`);
+    if (offsetSecs(e.t) == null) err(`Inject ${i + 1}: time format T+4h.`);
+    if (e.duration && durationSecs(e.duration) == null) err(`Inject ${i + 1}: duration format 10h.`);
   });
   const g = p.ground_truth;
-  if (!g.etiology.trim()) err("Write the etiology.");
-  if (!g.differential.filter(x => x.trim()).length) warn("Add a differential.");
-  if (!rb.items.length) err("Add at least one rubric item.");
-  if (rb.items.length && !rb.items.some(i => i.weight > 0)) err("At least one rubric item needs positive points.");
+  if (!g.etiology.trim()) err("Etiology required.");
+  if (!g.differential.filter(x => x.trim()).length) warn("Differential diagnosis not entered.");
+  if (!rb.items.length) err("At least one checklist item required.");
+  if (rb.items.length && !rb.items.some(i => i.weight > 0)) err("At least one expected action required.");
   const ids = new Set();
-  [...rb.gates, ...rb.items].forEach(x => { if (ids.has(x.id)) err(`Duplicate rubric id ${x.id}.`); ids.add(x.id); });
+  [...rb.gates, ...rb.items].forEach(x => { if (ids.has(x.id)) err(`Duplicate checklist ID ${x.id}.`); ids.add(x.id); });
   rb.items.forEach(it => {
-    if (!(it.text || "").trim()) err(`Rubric ${it.id}: describe what an observer would see.`);
-    if (!it.weight || it.weight < -10 || it.weight > 10) err(`Rubric ${it.id}: points must be between −10 and 10, and not 0.`);
-    if (it.by && offsetSecs(it.by) == null) err(`Rubric ${it.id}: deadline must look like T+8h.`);
-    else if (it.by && end != null && offsetSecs(it.by) > end) warn(`Rubric ${it.id}: deadline is after the run ends.`);
+    if (!(it.text || "").trim()) err(`${it.id}: observable behaviour required.`);
+    if (!it.weight || it.weight < -10 || it.weight > 10) err(`${it.id}: weight must be 1–10 (expected) or −1 to −10 (error).`);
+    if (it.by && offsetSecs(it.by) == null) err(`${it.id}: deadline format T+8h.`);
+    else if (it.by && end != null && offsetSecs(it.by) > end) warn(`${it.id}: deadline falls after the case ends.`);
     if (it.type === "rating") {
-      if (!it.anchors || !["1", "3", "5"].every(k => (it.anchors[k] || "").trim())) err(`Rubric ${it.id}: describe what a 1, a 3 and a 5 look like.`);
-    } else if (VAGUE.test(it.text || "")) warn(`Rubric ${it.id}: "${(it.text.match(VAGUE) || [""])[0]}" is a judgment call; say what an observer would see.`);
+      if (!it.anchors || !["1", "3", "5"].every(k => (it.anchors[k] || "").trim())) err(`${it.id}: anchors for 1, 3 and 5 required.`);
+    } else if (VAGUE.test(it.text || "")) warn(`${it.id}: "${(it.text.match(VAGUE) || [""])[0]}" is not observable; state the specific action.`);
     if ((it.requires || []).length) for (const env of sc.environments) {
-      if (habsFor(env).length && !kit.some(k => it.requires.includes(k.id) && k.envs.has(env))) info(`Rubric ${it.id}: not applicable in ${env} (nothing it requires is aboard).`);
+      if (habsFor(env).length && !kit.some(k => it.requires.includes(k.id) && k.envs.has(env))) info(`${it.id}: not applicable in ${env} (required equipment not aboard).`);
     }
   });
-  rb.gates.forEach(x => { if (!(x.text || "").trim()) err(`Never event ${x.id}: describe it.`); });
+  rb.gates.forEach(x => { if (!(x.text || "").trim()) err(`Critical error ${x.id}: description required.`); });
   return out;
 }
 
@@ -751,7 +752,7 @@ function download(name, obj) {
 }
 function exportFiles() {
   const errs = runChecks().filter(i => i.level === "error");
-  if (errs.length && !confirm(`${errs.length} problem(s) still need fixing (see Check). Download anyway as a draft?`)) return;
+  if (errs.length && !confirm(`${errs.length} unresolved error(s) under Case check. Download as a draft?`)) return;
   const [s, r] = exportDocs();
   download(`${s.scenario_id}.scenario.json`, s);
   setTimeout(() => download(`${s.scenario_id}.rubric.json`, r), 300);
@@ -761,10 +762,10 @@ document.getElementById("file-import").addEventListener("change", async e => {
   for (const f of e.target.files) {
     try {
       const doc = JSON.parse(await f.text());
-      if (doc.schema_version === "0.1" && doc.presentation !== undefined) { alert(`${f.name} is an older (v0.1) scenario. Ask the coordinator to convert it with "medsim migrate", then open it again.`); return; }
+      if (doc.schema_version === "0.1" && doc.presentation !== undefined) { alert(`${f.name} uses the earlier v0.1 format. The coordinator converts it with "medsim migrate"; open it again afterwards.`); return; }
       if (f.name.endsWith(".scenario.json") || doc.patients) next.scenario = merge(next.scenario, doc);
       else if (f.name.endsWith(".rubric.json") || doc.items) next.rubric = merge(next.rubric, doc);
-    } catch (err) { alert(`${f.name} is not a scenario or rubric file: ${err.message}`); return; }
+    } catch (err) { alert(`${f.name} is not a case or checklist file: ${err.message}`); return; }
   }
   const p = next.scenario.patients[0];
   p.chart = merge(emptyChart(), p.chart || {});
@@ -782,7 +783,7 @@ function merge(a, b) {
   for (const [k, v] of Object.entries(b)) o[k] = v && typeof v === "object" && !Array.isArray(v) && a[k] && typeof a[k] === "object" && !Array.isArray(a[k]) ? merge(a[k], v) : v;
   return o;
 }
-function startNew() { if (confirm("Clear this form and start a new scenario? Download your files first if you want to keep them.")) { S = blank(); changed(); render(); } }
+function startNew() { if (confirm("Clear the form and start a new case? Unsaved work is lost unless downloaded.")) { S = blank(); changed(); render(); } }
 document.getElementById("btn-export").addEventListener("click", exportFiles);
 document.getElementById("btn-check").addEventListener("click", () => { refreshSide(); document.getElementById("side").scrollTop = 0; });
 
@@ -795,36 +796,37 @@ function printSheet() {
   pv.replaceChildren(
     h("h1", {}, `${s.scenario_id} · ${s.title || "(no chief complaint)"}`),
     h("p", {}, `Authors: ${(s.authors || []).map(a => `${a.name} (${a.contact})`).join(", ")} · Status: ${s.review.status} · Physiology review: ${s.review.physiology_review}`),
-    h("p", {}, `Symptoms: ${(s.symptoms || []).map(x => SYM[x] ? `${x} ${SYM[x].name}` : x).join("; ") || "none"}`),
-    h("h2", {}, "Condition and where"),
+    h("p", {}, `Presenting symptoms: ${(s.symptoms || []).map(x => SYM[x] ? `${x} ${SYM[x].name}` : x).join("; ") || "none"}`),
+    h("h2", {}, "Condition and mission environment"),
     h("p", {}, c ? `${c.name} (${c.icl}). CLiFF: ${c.cliff.url}` : "No condition chosen."),
     h("p", {}, `Environments: ${(s.environments || []).map(e => `${e} ${ENV[e].name}`).join(", ")}`),
-    h("h2", {}, "Patient"),
+    h("h2", {}, "Patient history"),
     h("p", {}, twin ? `${twin.name} (${twin.crew_id}), ${twin.sex}, ${twin.age}, ${twin.occupation}.` : "No patient chosen."),
     h("p", {}, `PMH: ${list(ch.past_medical)}. PSH: ${list(ch.past_surgical)}.`),
     h("p", {}, `Medications: ${(ch.medications || []).map(m => `${m.name} ${m.form || ""} ${m.dose} ${m.frequency}`.replace(/\s+/g, " ")).join("; ") || "none"}.`),
     h("p", {}, `Allergies: ${ch.nkda ? "NKDA" : ""}${(ch.allergies || []).map(a => ` ${a.agent} (${a.kind}${a.reaction ? `: ${a.reaction}` : ""})`).join(";")}. Social: ${ch.social_history || "—"}. Family: ${list(ch.family_history)}.`),
-    h("h2", {}, "Conversation"),
-    h("p", {}, `Speaker: ${spk ? `${spk.name} (${sp.role})` : sp.role}. Emergent: ${sp.emergent ? "yes" : "no"}. Input quality ${sp.input_quality}/5${(sp.input_problems || []).length ? ` (${sp.input_problems.join(", ")})` : ""}.`),
-    h("p", {}, h("b", {}, sp.role === "patient" ? "Chief complaint: " : "Opening question: "), sp.opening || ""),
-    sp.behaviour ? h("p", {}, `How they act: ${sp.behaviour}`) : null,
-    h("ul", {}, ...(sp.additional_history || []).map(x => h("li", {}, `If asked about ${x.if_asked} → ${x.says}`))),
-    h("h2", {}, "Course of illness"),
+    h("h2", {}, "Presentation"),
+    h("p", {}, `Presenting party: ${spk ? `${spk.name} (${sp.role === "patient" ? "patient" : sp.role === "cmo" ? "CMO" : "crewmember"})` : sp.role}. Emergent: ${sp.emergent ? "yes" : "no"}. Historian reliability ${sp.input_quality}/5 (${QUALITY[sp.input_quality - 1]})${(sp.input_problems || []).length ? `: ${sp.input_problems.map(k => PROBLEM_LABELS[k] || k).join(", ")}` : ""}.`),
+    h("p", {}, h("b", {}, sp.role === "patient" ? "Chief complaint: " : "Opening statement: "), sp.opening || ""),
+    sp.behaviour ? h("p", {}, `Affect and behaviour: ${sp.behaviour}`) : null,
+    (sp.additional_history || []).length ? h("p", {}, h("b", {}, "On direct questioning:")) : null,
+    h("ul", {}, ...(sp.additional_history || []).map(x => h("li", {}, `${x.if_asked}: ${x.says}`))),
+    h("h2", {}, "Medical timeline / course of illness"),
     h("table", {}, h("tbody", {}, ...(p.timeline || []).map(e => [e.t, e.kind, e.when || "always", e.text || Object.entries(e.state || {}).map(([k, v]) => `${k} ${v}`).join(", ")])
       .concat((s.injects || []).map(e => [e.t, `inject: ${e.kind}`, e.duration ? `lasts ${e.duration}` : "", e.text || ""]))
       .sort((x, y) => (offsetSecs(x[0]) ?? 0) - (offsetSecs(y[0]) ?? 0)).map(row => h("tr", {}, ...row.map(x => h("td", {}, x)))))),
-    h("p", {}, `Time-critical: ${(p.time_critical || []).map(tc => `${tc.action.text || tc.action.refs.join(", ")} by ${tc.by}`).join("; ") || "none"}`),
-    h("h2", {}, "Complicators"), h("p", {}, s.complicators || "—"),
-    h("h2", {}, "Correct answer"),
+    h("p", {}, `Time-critical interventions: ${(p.time_critical || []).map(tc => `${tc.action.text || tc.action.refs.join(", ")} by ${tc.by}`).join("; ") || "none"}`),
+    h("h2", {}, "Complicating factors"), h("p", {}, s.complicators || "—"),
+    h("h2", {}, "Diagnosis and differential"),
     h("p", {}, `Diagnosis: ${(p.ground_truth.diagnosis || (c && c.name) || "")}. Etiology: ${p.ground_truth.etiology || ""}.`),
-    h("p", {}, `Differential: ${(p.ground_truth.differential || []).map((d, i) => `${i + 1}. ${d}`).join("  ")}. Must not miss: ${list(p.ground_truth.must_not_miss)}.`),
-    h("h2", {}, `Rubric (base ${BASE.ref})`),
-    h("table", {}, h("thead", {}, h("tr", {}, ...["Id", "Item", "Points", "By", "Domain"].map(x => h("th", {}, x)))),
+    h("p", {}, `Differential: ${(p.ground_truth.differential || []).map((d, i) => `${i + 1}. ${d}`).join("  ")}. Can't-miss: ${list(p.ground_truth.must_not_miss)}.`),
+    h("h2", {}, `Scoring checklist (base ${BASE.ref})`),
+    h("table", {}, h("thead", {}, h("tr", {}, ...["ID", "Item", "Weight", "Deadline", "Domain"].map(x => h("th", {}, x)))),
       h("tbody", {}, ...(BASE.standard_items || []).map(x => h("tr", {}, h("td", {}, x.id), h("td", {}, x.text), h("td", {}, x.weight), h("td", {}, ""), h("td", {}, x.domain))),
         ...r.items.map(i => h("tr", {}, h("td", {}, i.id), h("td", {}, i.text, i.anchors ? h("div", {}, `1: ${i.anchors["1"]} · 3: ${i.anchors["3"]} · 5: ${i.anchors["5"]}`) : null), h("td", {}, i.weight), h("td", {}, i.by || ""), h("td", {}, i.domain))))),
-    r.gates.length ? h("p", {}, `Extra never events: ${r.gates.map(g => `${g.id} ${g.text}`).join("; ")}`) : null,
-    s.review.physiology_review === "requested" ? [h("h2", {}, "Notes for the physiologist"), h("p", {}, s.review.notes_for_physiologist || "—")] : null,
-    h("div", { class: "sign" }, h("div", {}, "Peer reviewer, date"), h("div", {}, "Physiology reviewer (if requested), date"))
+    r.gates.length ? h("p", {}, `Case-specific critical errors: ${r.gates.map(g => `${g.id} ${g.text}`).join("; ")}`) : null,
+    s.review.physiology_review === "requested" ? [h("h2", {}, "Notes for physiology reviewer"), h("p", {}, s.review.notes_for_physiologist || "—")] : null,
+    h("div", { class: "sign" }, h("div", {}, "Peer reviewer / date"), h("div", {}, "Physiology reviewer (if requested) / date"))
   );
   window.print();
 }

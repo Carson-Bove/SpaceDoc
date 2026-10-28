@@ -213,9 +213,9 @@ A medical case. Abridged from the worked example [`MSE-0001.scenario.json`](../m
 
 - **Patients are a list.** The form edits one patient today. The list is there so triage cases (two crew sick, an illness that spreads, the CMO as the patient) and decisions about who gets a scarce drug can be written later without changing the format.
 - **The chart** uses the history-and-physical layout: past medical and surgical history, medications as name, form, dose and frequency, allergies with an NKDA flag, optional family history, social history and immunizations. It starts as the crewmember's roster chart and can be changed for the case.
-- **The speaker** is a roster crewmember: the patient, the CMO or another crewmember. Their training and familiarity come from the roster; the clerk sets the emergent flag (behaviour only), an input-quality level from 1 (clear) to 5 (very poor), and which kinds of poor input (vague, wrong terms, missing details, misread numbers, contradictory, panicked).
+- **The speaker** is a roster crewmember: the patient, the CMO or another crewmember. Their training and familiarity come from the roster; the clerk sets the emergent flag (behaviour only), historian reliability from 1 (reliable) to 5 (unreliable), and how the history is unreliable (imprecise, incorrect terminology, omits details, misreports values, inconsistent history, acutely distressed). The form calls the speaker the *presenting party*.
 - **Time-critical treatment** replaces free-form branches: done by the deadline leans the run to the best course, late or missing to the worst.
-- **Correct answer:** the diagnosis is the IMM condition; the clerk adds the **etiology** and a ranked differential. Full credit needs both (§5).
+- **Diagnosis and differential:** the diagnosis is the IMM condition; the clerk adds the **etiology** and a ranked differential. Full credit needs both (§5).
 - **Injects** (mission events such as space weather) stay in the format but are hidden in the form until CMO-DA is running.
 
 ### 4.5 Crew roster
@@ -338,18 +338,19 @@ What it does:
 
 | Feedback | Change |
 |---|---|
-| Too many options; DRMs could be automated | Mission picking removed. "Where can this happen?" checkboxes, pre-filled from the CLiFF; the runner chooses the DRM |
+| Too many options; DRMs could be automated | Mission picking removed. "Mission environment" checkboxes, pre-filled from the CLiFF; the runner chooses the DRM |
 | Title → chief complaint; standardized, non-NASA symptom tags; clerk name and contact | Chief complaint as title; ICD-10-CM symptom picker; authors as name + contact |
 | Crewmember belongs in the patient section; digital twins of the astronaut class with history | 20-person roster with charts and baselines; patient picked in section 4 |
 | Run both best and worst case | Every environment runs both, plus a few at the CLiFF's odds; the course option is gone |
 | History in school format; medication type, dose, frequency; NKDA | Structured chart with NKDA; family history optional pending the next clerks |
 | What's filled in depends on who's talking; CMO is a non-physician with standard training; scales; levels of bad input; "additional history if asked" | Speaker from the roster with role-specific fields; 1–5 familiarity and input-quality scales; input-problem tags; if asked → says |
-| Rename timeline; injects later; branches too much | "Medical timeline / course of illness"; injects hidden under Advanced; one standard time-critical rule |
+| Rename timeline; injects later; branches too much | "Medical timeline / course of illness"; injects folded away under Simulation settings; one standard time-critical rule |
 | Physiologist notes at the bottom, only when requested | Review section at the bottom; the notes appear only when review is requested |
 | Etiology instead of only the IMM diagnosis; include differential | Etiology and ranked differential; standard items SDX and SET in the rubric |
 | Clickable rubric | Point chips and one-click common items. A separate scoring sheet for manual test runs is planned as its own tool |
 | Encyclopedia; normal physiology for each | Encyclopedia panel; roster baselines and an in-flight physiology table |
 | Cross-referencing crew, spaceflight triage, medication allocation | The format allows several patients and a shared kit; the form and research come later (§11) |
+| Form wording should read as clinical documentation | Section titles, labels, hints and check messages rewritten in clinical terms (case information, presenting party, historian reliability, can't-miss diagnoses, scoring checklist, observable behaviour) |
 
 
 **Submission (git is the store).** Clerks don't need git. They upload exported files through the GitHub web page into `scenarios/inbox/`, or send them to a coordinator. A validator command (`medsim validate`) checks every file and is the gate for moving a scenario to `scenarios/approved/`. Status moves `draft → in_review → physiology_review (if flagged) → approved → retired`, recorded in the file itself.

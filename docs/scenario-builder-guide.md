@@ -1,71 +1,71 @@
 # Scenario Builder Guide (for clerks)
 
-This guide is for the medical students and residents who write evaluation scenarios. The design behind it is in [11 — Evaluation system](11-evaluation-system.md).
+For the medical students and residents who write evaluation cases. The design behind it is in [11 — Evaluation system](11-evaluation-system.md).
 
-A **scenario** is one medical case: who gets sick, with what, how it unfolds, and what a good response looks like. You don't pick a mission. You say where the case could happen, and the system runs it in those mission environments for you, with each one's kit, gravity and comm delay. In every run, an AI plays the crewmember who talks to the assistant being tested, and a simulation plays the patient.
+Each case is a single clinical presentation: patient, condition, course of illness and the expected management. The author does not choose a mission. The author lists the environments in which the presentation is plausible, and each case is simulated in those environments with the local medical kit, gravity and communication delay. In each run, the presenting crewmember is portrayed as a standardized patient by an AI and the patient's physiology is simulated.
 
-## 1. Get the form
+## 1. Opening the form
 
-Download `medsim-eval/dist/scenario-builder.html` from the repository and double-click it. It opens in any browser and needs no internet, install or account.
+Download `medsim-eval/dist/scenario-builder.html` from the repository and open it in any browser. No internet connection, installation or account is needed.
 
-Your draft is saved in that browser as you type. That copy is a convenience only (a private window or cleared browser data loses it), so **use Download files to keep your work.**
+Drafts are saved in the browser as you type. This copy is not reliable (a private window or cleared browser data loses it); **use Download files to keep your work.**
 
-## 2. Fill it in, top to bottom
+## 2. Sections
 
-| Section | What to do |
+| Section | Instructions |
 |---|---|
-| 1. About | Get the next id from the coordinator (`MSE-0123`). Write the **chief complaint** in a few words; it becomes the title. Add your full name and an email or phone. Tag the **symptoms**: type a word or a code to search the standard ICD-10-CM list. |
-| 2. Condition | Pick from the 118 conditions in NASA's Integrated Medical Model. The panel shows the CLiFF's summary and its best- and worst-case courses. Every scenario is run in both courses, so you don't choose one. |
-| 3. Where can this happen? | Tick the environments where this case makes sense. They are pre-filled from the CLiFF (for example, lunar dust exposure only on the lunar surface) until you change them. |
-| 4. Patient | Pick a crewmember from the roster of 20 fictional astronauts. Their chart fills in: past medical and surgical history, medications (name, form, dose, frequency), allergies or NKDA, social history, and optional family history. Change anything that should be different for this case. |
-| 5. The conversation | Choose **who is talking** to the assistant: the patient, the CMO, or another crewmember. Their training and familiarity come from the roster; click a number to change them for this case. Write the **chief complaint** (patient) or **opening question** (CMO, crew). Set the **quality of their input** from 1 (clear) to 5 (very poor), and tick what kind: vague, wrong terms, missing details, misread numbers, contradictory, panicked. **Emergent** makes them act under time pressure. **Additional history if asked**: *if asked about X → they say Y*. |
-| 6. Medical timeline / course of illness | Optional. Add only things that **must** happen at a set time: a symptom that appears at T+6h, or vital signs at T+12h if untreated. The simulation infers the rest from the CLiFF. |
-| 7. Time-critical treatment | Optional. What counts (in words, plus kit items) and the deadline. On time leans the case to the best course; late or missing leans it to the worst. |
-| 8. Correct answer | The diagnosis comes from the condition. Write the **etiology** (the cause), a **differential** in rank order, and the must-not-miss diagnoses. |
-| 9. Rubric | Your checklist items (below). |
-| 10. Complicators | Free text: anything that makes the case harder. |
-| 11. Advanced | How long a run lasts. Injects (space weather, blackouts) are kept here for later. |
-| 12. Review and save | Set the status. Ask for physiology review if the case needs it; the notes for the physiologist appear when you do. Fix everything in red in the Check panel, then Download files. |
+| 1. Case information | Obtain the next case ID from the coordinator (`MSE-0123`). Enter the **chief complaint** in brief clinical terms; it is used as the case title. Enter each author's full name and email or phone. Code the **presenting symptoms** from the ICD-10-CM list (search by term or code). |
+| 2. Condition | Select from the 118 conditions in NASA's Integrated Medical Model (2023 CLiFFs). The CLiFF summary and its treated and untreated, best- and worst-case courses are shown. Every case is run under both courses; no selection is needed. |
+| 3. Mission environment | Select each environment in which the presentation is plausible. Selections are pre-filled from the CLiFF incidence data (e.g. lunar dust exposure on the lunar surface only). Justify any environment outside CLiFF incidence under complicating factors. |
+| 4. Patient history | Select the patient from the crew roster (20 synthetic astronaut records). The history loads from the record: PMH, PSH, medications (drug, route/form, dose, frequency), allergies or NKDA, social history and optional family history. Edit as needed for this case; **Reset to crew record** restores the original. |
+| 5. Presentation | Select the **presenting party**: the patient (self-report), the crew medical officer, or a bystander crewmember. Medical training and familiarity are taken from the crew record and can be adjusted for this case. Enter the **chief complaint** in the patient's words, or the CMO's or crewmember's opening statement. Grade **historian reliability** from 1 (reliable) to 5 (unreliable) and specify how: imprecise, incorrect terminology, omits details, misreports values, inconsistent history, acutely distressed. **Emergent presentation** affects the crewmember's behaviour only. Under **History on direct questioning only**, enter each topic and the response given when asked. |
+| 6. Medical timeline / course of illness | Optional. Enter only events that must occur at a fixed time, e.g. new symptom at T+6h, or vital signs at T+12h if untreated. Otherwise the course follows the CLiFF. |
+| 7. Time-critical intervention | Optional. Describe the intervention, select the qualifying kit items (any one counts) and set the deadline. Timely intervention shifts the course toward the best case; delay or omission toward the worst case. |
+| 8. Diagnosis and differential | The diagnosis is taken from the IMM condition and can be reworded. Enter the **etiology**, a ranked **differential diagnosis** and the **can't-miss diagnoses**. Add accepted synonyms where the wording varies. |
+| 9. Scoring checklist | Case-specific checklist items (see §3). |
+| 10. Complicating factors | Confounders and constraints, e.g. atypical presentation, limited stock, competing crew duties. |
+| 11. Simulation settings | Case duration in simulated time. Injects (space weather, communication blackout, equipment failure) are reserved for CMO-DA integration. |
+| 12. Review and submission | Set the status. Request physiology review if needed; a notes field for the physiology reviewer appears when requested. Resolve all errors under **Case check**, then **Download files**. |
 
-**Times** are written from the start of the scenario: `T+0`, `T+30m`, `T+6h`, `T+1d6h`.
+**Times** are measured from presentation: `T+0`, `T+30m`, `T+6h`, `T+1d6h`.
 
-**The side panel** has the live **Check**, an **Encyclopedia** search (condition summaries, kit drugs from FDA labels, normal values, space terms) and **Where it runs**, which shows for each ticked environment what medicine is possible and what's aboard.
+**Side panel.** **Case check** lists errors and warnings as you write. The **Encyclopedia** searches CLiFF summaries, kit drugs (FDA labeling), reference ranges and spaceflight terms. **Medical capability by environment** shows the capabilities, formulary and equipment aboard in each selected environment.
 
-## 3. Writing the rubric
+## 3. Scoring checklist
 
-Every scenario is scored against the **general rubric** (currently `general@0.2`):
+Every case is scored against the **general rubric** (currently `general@0.2`):
 
-- **safety gates**: never events that fail the run
-- **six 1–5 domains**: information gathering, diagnostic reasoning, management, safety and escalation, environment and resources, communication
-- **two standard items**, scored automatically from your correct answer: naming the diagnosis (+6) and naming the etiology (+4, only counted with the diagnosis)
+- **Critical errors**: any one fails the run.
+- **Six global rating domains, 1–5**: information gathering, diagnostic reasoning, management, safety and escalation, environment and resources, communication.
+- **Two standard items**, scored automatically from section 8: correct diagnosis (+6) and correct etiology (+4, counted only with the diagnosis).
 
-You add the **checklist items** specific to your case. The quickest way is **Add common items with one click**, then edit them. Or write your own.
+The author adds the **case-specific items**. Start from **Common checklist items** and edit them, or write new ones.
 
-**Yes/no or rated?** If two people could answer yes or no from the transcript alone, it's a yes/no item. If the question is "how well", the domains already cover it. Add a rated item only when this case needs a "how well" the domains don't capture, and then write what a 1, a 3 and a 5 look like.
+**Done / not done, or rated 1–5?** If two observers would agree from the transcript alone whether an action was done, score it done / not done. Quality of performance is covered by the global ratings. Use a rated item only when this case needs a quality judgment the domains do not capture, and write anchors for 1, 3 and 5.
 
-**Good items describe what an observer would see:**
+**Write each item as an observable behaviour:**
 
-| Instead of | Write |
+| Avoid | Use |
 |---|---|
-| Examines the abdomen appropriately | Directs an exam that checks right lower quadrant tenderness and rebound or guarding |
-| Gives adequate analgesia | Gives pain relief from the kit |
-| Manages the allergy properly | Asks what the penicillin reaction was, or chooses a regimen that avoids it and says why |
+| Examines the abdomen appropriately | Directs an exam for right lower quadrant tenderness, rebound or guarding |
+| Gives adequate analgesia | Gives analgesia from the kit |
+| Manages the allergy properly | Asks the nature of the penicillin reaction, or selects a regimen without cross-reactivity and states why |
 
-The Check panel flags words like *appropriately*, *adequate* and *properly*.
+Case check flags non-observable terms such as *appropriately*, *adequate* and *properly*.
 
-**Points.** Click **+ do** or **− don't**, then 1–10. Give more points to what matters more clinically: a missed time-critical treatment outweighs a missed history question. Give an item a **deadline** (`T+8h`) when doing it late is as bad as not doing it.
+**Weight.** Select **+ Expected** or **− Error**, then 1–10. Weight by clinical importance: a missed time-critical intervention outweighs a missed history question. Set a **deadline** (`T+8h`) when a late action is equivalent to an omitted one.
 
-**Domain.** Tag each item with its domain; reports group results by domain.
+**Domain.** Assign each item to a domain; results are reported by domain.
 
-**Equipment.** If an item only makes sense when a device is aboard (e.g. "uses the ultrasound"), add it under *Only applies when this equipment is aboard*. In environments without it, the item is not applicable rather than failed.
+**Requires equipment.** If an item depends on a device (e.g. point-of-care ultrasound), list it under **Requires equipment**. In environments without it, the item is scored not applicable rather than not done.
 
-## 4. Submit
+## 4. Submission
 
-1. Download files. This saves two files: `MSE-0123.scenario.json` and `MSE-0123.rubric.json`.
-2. Upload both into [`scenarios/inbox/`](../scenarios/inbox/) on GitHub (**Add file → Upload files**), or send them to the coordinator.
-3. Set the status to *Ready for review* when you want a second clerk to review it. Use **Print review sheet** to give them a paper or PDF copy.
+1. **Download files** saves two files: `MSE-0123.scenario.json` (the case) and `MSE-0123.rubric.json` (the scoring checklist).
+2. Upload both to [`scenarios/inbox/`](../scenarios/inbox/) on GitHub (**Add file → Upload files**), or send them to the coordinator.
+3. Set the status to *Ready for peer review* when the case is ready for a second clerk. **Print review sheet** produces a paper or PDF copy for the reviewer.
 
-To revise a scenario, use **Open existing files** and load both files. Files from the first version of the form need converting first: the coordinator runs `medsim migrate` on them.
+To revise a case, use **Open case files** and load both files. Files from the first version of the form are converted by the coordinator with `medsim migrate`.
 
 ## Lifecycle
 
@@ -73,4 +73,4 @@ To revise a scenario, use **Open existing files** and load both files. Files fro
 draft ──► in_review ──► physiology_review (if requested) ──► approved ──► retired
 ```
 
-The coordinator runs `medsim validate` on everything in the inbox. Approved scenarios move to `scenarios/approved/`. Approval needs at least one reviewer in the file.
+The coordinator runs `medsim validate` on all files in the inbox. Approved cases move to `scenarios/approved/`. Approval requires at least one named reviewer in the file.

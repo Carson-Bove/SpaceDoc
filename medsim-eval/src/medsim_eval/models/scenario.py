@@ -45,14 +45,14 @@ KNOWN_STATE_VARS = {
     "mental_status": "alert | confused | drowsy | unresponsive",
 }
 
-# What can be wrong with the speaker's input, for input_quality above 1.
+# How the speaker's history is unreliable, for input_quality above 1.
 INPUT_PROBLEMS = {
-    "vague": "describes things loosely",
-    "wrong_terms": "uses the wrong words for body parts, drugs or devices",
-    "missing_details": "leaves things out unless asked directly",
-    "misread_numbers": "reads or reports numbers wrongly",
-    "contradictory": "contradicts what they said earlier",
-    "panicked": "rushed, repeats themself, hard to keep on track",
+    "vague": "imprecise description of symptoms",
+    "wrong_terms": "incorrect anatomical, drug or equipment terms",
+    "missing_details": "omits pertinent history unless directly asked",
+    "misread_numbers": "misreads or misreports vital signs and readings",
+    "contradictory": "history inconsistent with earlier statements",
+    "panicked": "acutely distressed; pressured, repetitive, hard to redirect",
 }
 
 
