@@ -193,12 +193,22 @@ def check_rubric(rubric: ScenarioRubric, lib: Library, name: str) -> list[Issue]
         return [Issue("error", name, f"unknown base rubric {rubric.base!r} (known: {known})")]
     if base.status == "superseded":
         issues.append(
-            Issue("warning", name, f"base rubric {rubric.base} is superseded; consider migrating")
+            Issue(
+                "warning",
+                name,
+                f"base rubric {rubric.base} is superseded; update base to the current version",
+            )
         )
     domains = {d.id for d in base.domains}
     clash = {g.id for g in rubric.gates} & {g.id for g in base.gates}
     if clash:
-        issues.append(Issue("error", name, f"gate ids clash with the base rubric: {sorted(clash)}"))
+        issues.append(
+            Issue(
+                "error",
+                name,
+                f"critical-error (gate) ids duplicate the base rubric: {sorted(clash)}",
+            )
+        )
     for item in rubric.items:
         if item.domain not in domains:
             issues.append(
@@ -214,14 +224,14 @@ def check_rubric(rubric: ScenarioRubric, lib: Library, name: str) -> list[Issue]
                 Issue(
                     "warning",
                     name,
-                    f"item {item.id}: {word!r} is a judgment call; say what an observer would see",
+                    f"item {item.id}: {word!r} is not observable; state the specific action",
                 )
             )
     return issues
 
 
 def check_crew(roster: CrewRoster, lib: Library, name: str) -> list[Issue]:
-    """Every baseline should sit inside the normal ranges."""
+    """Every baseline should sit inside the reference ranges."""
     issues = []
     ranges = [r for p in lib.physiology for r in p.ranges]
     for c in roster.crew:
@@ -236,7 +246,7 @@ def check_crew(roster: CrewRoster, lib: Library, name: str) -> list[Issue]:
                         Issue(
                             "warning",
                             name,
-                            f"{c.crew_id}: baseline {var} {value:g} is outside the normal range "
+                            f"{c.crew_id}: baseline {var} {value:g} is outside the reference range "
                             f"{r.low:g}–{r.high:g} {r.unit}",
                         )
                     )
@@ -267,60 +277,63 @@ def check_scenario(
     for p in sc.patients:
         cond = lib.conditions.get(p.condition)
         if lib.conditions and cond is None:
-            err(f"{p.crew_id}: unknown condition {p.condition!r}; pick one from the CLiFF index")
+            err(f"{p.crew_id}: unknown condition {p.condition!r}; not in the IMM condition index")
         twin = lib.crew.get(p.crew_id)
         surgery = list(p.chart.past_surgical) + (list(twin.chart.past_surgical) if twin else [])
         for word in RULED_OUT_BY_SURGERY.get(p.condition, ()):
             if any(word in h.lower() for h in surgery):
-                err(f"{p.crew_id} has had an {word}, so can't have {p.condition}")
+                err(f"{p.crew_id}: prior {word} excludes {p.condition}")
         if p.ground_truth.etiology.startswith("TODO"):
-            warn(f"{p.crew_id}: the etiology still needs writing")
+            warn(f"{p.crew_id}: etiology not entered")
         if cond and cond.applicability:
             app = cond.applicability
             if twin and app.sex != "any" and twin.sex != app.sex:
-                err(f"{p.crew_id}: {cond.name} only occurs in {app.sex} crewmembers")
+                sex = {"F": "female", "M": "male"}[app.sex]
+                err(f"{p.crew_id}: {cond.name} applies to {sex} patients only")
             outside = [e for e in sc.environments if e not in app.envs]
             if outside:
                 warn(
-                    f"{cond.name} is not expected in {', '.join(outside)} per its CLiFF "
-                    f"(segment: {app.segment}); untick those environments or say why in complicators"
+                    f"{cond.name}: {', '.join(outside)} outside CLiFF incidence "
+                    f"(segment: {app.segment}); deselect, or justify under complicators"
                 )
         for e in p.timeline:
             if parse_offset(e.t) > end:
-                warn(f"{p.crew_id}: {e.kind} at {e.t} is after the scenario ends ({sc.duration})")
+                warn(f"{p.crew_id}: {e.kind} at {e.t} falls after the case ends ({sc.duration})")
             for var in e.state:
                 if var not in KNOWN_STATE_VARS:
-                    warn(f"{p.crew_id}: keyframe at {e.t}: {var!r} is not a known state variable")
+                    warn(
+                        f"{p.crew_id}: keyframe at {e.t}: {var!r} is not a recognised state variable"
+                    )
         for tc in p.time_critical:
             if parse_offset(tc.by) > end:
-                warn(f"{p.crew_id}: time-critical deadline {tc.by} is after the scenario ends")
+                warn(f"{p.crew_id}: time-critical deadline {tc.by} falls after the case ends")
             for env in sc.environments:
                 aboard = {i.id for h in lib.habitats_in(env) for i in [*h.equipment, *h.formulary]}
                 if tc.action.refs and lib.habitats_in(env) and not set(tc.action.refs) & aboard:
                     warn(
-                        f"{p.crew_id}: none of {tc.action.refs} is aboard in {env}, so the time-critical "
-                        "treatment can't be given there"
+                        f"{p.crew_id}: time-critical intervention not possible in {env}; "
+                        f"none of {tc.action.refs} is aboard"
                     )
 
     for inj in sc.injects:
         if parse_offset(inj.t) > end:
-            warn(f"inject {inj.kind} at {inj.t} is after the scenario ends ({sc.duration})")
+            warn(f"inject {inj.kind} at {inj.t} falls after the case ends ({sc.duration})")
 
     if sc.review.status == "approved":
         if not sc.review.reviewers:
-            err("approved scenarios need at least one reviewer")
+            err("status approved requires at least one named reviewer")
         if sc.review.physiology_review == "requested":
-            err("physiology review was requested but isn't done")
+            err("status approved, but the requested physiology review is not done")
 
     if rubric is not None:
         if rubric.scenario_id != sc.scenario_id:
-            err(f"rubric {sc.rubric} is for {rubric.scenario_id!r}, not {sc.scenario_id!r}")
+            err(f"rubric {sc.rubric} belongs to {rubric.scenario_id!r}, not {sc.scenario_id!r}")
         ids = {p.crew_id for p in sc.patients}
         for item in rubric.items:
             if item.by and parse_offset(item.by) > end:
-                warn(f"rubric item {item.id}: deadline {item.by} is after the scenario ends")
+                warn(f"rubric item {item.id}: deadline {item.by} falls after the case ends")
             if item.patient and item.patient not in ids:
-                err(f"rubric item {item.id}: {item.patient!r} is not a patient in this scenario")
+                err(f"rubric item {item.id}: {item.patient!r} is not a patient in this case")
             if item.requires:
                 for env in sc.environments:
                     aboard = {
@@ -331,7 +344,7 @@ def check_scenario(
                             Issue(
                                 "info",
                                 name,
-                                f"rubric item {item.id}: not applicable in {env} (nothing it requires is aboard)",
+                                f"rubric item {item.id}: not applicable in {env} (required equipment not aboard)",
                             )
                         )
     return issues

@@ -18,7 +18,7 @@ from medsim_eval.models.common import Id, Offset, Strict, Versioned, check_offse
 
 class Gate(Strict):
     id: Id
-    text: str = Field(description="A never event: any occurrence fails the run")
+    text: str = Field(description="Critical error (never event): any occurrence fails the run")
 
 
 class Anchors(Strict):
@@ -102,7 +102,7 @@ class BaseRubric(Versioned):
 
 class ChecklistItem(Strict):
     id: Id
-    text: str = Field(description="Observable behaviour, in plain words")
+    text: str = Field(description="Observable behaviour")
     type: Literal["binary", "rating"] = Field(
         "binary", description="binary: met / not met. rating: 1–5 against anchors you write"
     )
@@ -111,7 +111,7 @@ class ChecklistItem(Strict):
     )
     by: Offset | None = Field(None, description="Deadline in simulated time, e.g. T+2h")
     domain: Id = Field(description="Which base-rubric domain this informs, e.g. D3")
-    anchors: Anchors | None = Field(None, description="Required for rating items")
+    anchors: Anchors | None = Field(None, description="Required for rated items")
     requires: list[str] = Field(
         default=[],
         description="Kit item ids; if none of them is aboard in a run, the item is not applicable",
@@ -131,11 +131,11 @@ class ChecklistItem(Strict):
             raise ValueError("weight must not be 0")
         if self.type == "rating":
             if self.anchors is None:
-                raise ValueError("rating items need anchors for 1, 3 and 5")
+                raise ValueError("rated items require anchors for 1, 3 and 5")
             if self.weight < 0:
-                raise ValueError("rating items take a positive weight; write harms as binary items")
+                raise ValueError("rated items take a positive weight; score errors as binary items")
         elif self.anchors is not None:
-            raise ValueError("binary items do not take anchors")
+            raise ValueError("binary items take no anchors")
         return self
 
 
@@ -161,5 +161,5 @@ class ScenarioRubric(Versioned):
         if len(ids) != len(set(ids)):
             raise ValueError("gate and item ids must be unique")
         if not any(i.weight > 0 for i in self.items):
-            raise ValueError("at least one item needs a positive weight")
+            raise ValueError("at least one expected action (positive weight) required")
         return self

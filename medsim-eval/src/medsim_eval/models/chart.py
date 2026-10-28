@@ -41,5 +41,5 @@ class Chart(Strict):
     def _nkda(self) -> Chart:
         drugs = [a.agent for a in self.allergies if a.kind == "drug"]
         if self.nkda and drugs:
-            raise ValueError(f"marked NKDA but lists drug allergies: {drugs}")
+            raise ValueError(f"NKDA conflicts with listed drug allergies: {drugs}")
         return self

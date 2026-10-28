@@ -44,7 +44,7 @@ def test_library_and_examples_are_clean():
     assert messages(issues, "error") == [] and messages(issues, "warning") == [], issues
     # The lunar lander has no ultrasound, so the ultrasound item is noted as not applicable there.
     assert messages(issues, "info") == [
-        "rubric item I4: not applicable in T3 (nothing it requires is aboard)"
+        "rubric item I4: not applicable in T3 (required equipment not aboard)"
     ]
 
 
@@ -64,10 +64,10 @@ def p0(sc):
         (lambda s: p0(s).update(crew_id="C99"), "'C99' is not in the crew roster"),
         (lambda s: p0(s).update(condition="dragon-pox"), "unknown condition 'dragon-pox'"),
         (lambda s: s.update(symptoms=["R99.99"]), "'R99.99' is not in the ICD-10-CM symptom list"),
-        (lambda s: p0(s).update(crew_id="C09"), "C09 has had an appendectomy"),
+        (lambda s: p0(s).update(crew_id="C09"), "C09: prior appendectomy excludes appendicitis"),
         (
             lambda s: s["review"].update(status="approved"),
-            "approved scenarios need at least one reviewer",
+            "status approved requires at least one named reviewer",
         ),
         (
             lambda s: s.update(rubric="missing.rubric.json"),
@@ -75,22 +75,22 @@ def p0(sc):
         ),
         (
             lambda s: s["speaker"].update(crew_id="C10"),
-            "C10 is a patient; set the speaker's role to patient",
+            "C10 is a patient; set speaker.role to patient",
         ),
         (
             lambda s: s["speaker"].update(role="patient"),
-            "the speaker is the patient, so speaker.crew_id must be a patient",
+            "speaker.role is patient, but speaker.crew_id is not one of the patients",
         ),
         (
             lambda s: s["speaker"].update(input_quality=1),
-            "input quality 1 means clear input",
+            "input_quality 1 is a reliable historian",
         ),
-        (lambda s: s["speaker"].update(input_problems=["mumbles"]), "unknown input problems"),
+        (lambda s: s["speaker"].update(input_problems=["mumbles"]), "unknown input_problems"),
         (
             lambda s: p0(s)["chart"].update(nkda=True),
-            "marked NKDA but lists drug allergies: ['penicillin']",
+            "NKDA conflicts with listed drug allergies: ['penicillin']",
         ),
-        (lambda s: s.update(environments=["T1", "T1"]), "environments are listed twice"),
+        (lambda s: s.update(environments=["T1", "T1"]), "duplicate environments"),
         (lambda s: s.update(schema_version="0.1"), "this is a v0.1 scenario"),
     ],
 )
@@ -101,12 +101,12 @@ def test_scenario_errors(tmp_path, change, expected):
 
 def test_sex_specific_condition(tmp_path):
     issues = check(tmp_path, lambda s: p0(s).update(condition="prostatitis-acute", crew_id="C02"))
-    assert any("only occurs in M crewmembers" in m for m in messages(issues, "error"))
+    assert any("applies to male patients only" in m for m in messages(issues, "error"))
 
 
 def test_environment_outside_the_cliff_is_a_warning(tmp_path):
     issues = check(tmp_path, lambda s: p0(s).update(condition="dust-exposure-lunar-surface-eva"))
-    assert any("is not expected in T1, T2, T4, T5" in m for m in messages(issues, "warning"))
+    assert any("T1, T2, T4, T5 outside CLiFF incidence" in m for m in messages(issues, "warning"))
 
 
 def test_time_critical_treatment_not_aboard(tmp_path):
@@ -115,7 +115,8 @@ def test_time_critical_treatment_not_aboard(tmp_path):
 
     issues = check(tmp_path, change)
     assert any(
-        "none of ['ertapenem-1gm'] is aboard in T3" in m for m in messages(issues, "warning")
+        "intervention not possible in T3; none of ['ertapenem-1gm'] is aboard" in m
+        for m in messages(issues, "warning")
     )
 
 
@@ -138,7 +139,7 @@ def test_unknown_state_variable_is_a_warning(tmp_path):
     issues = check(tmp_path, lambda s: p0(s)["timeline"][1]["state"].update(heartrate=90))
     assert messages(issues, "error") == []
     assert any(
-        "'heartrate' is not a known state variable" in m for m in messages(issues, "warning")
+        "'heartrate' is not a recognised state variable" in m for m in messages(issues, "warning")
     )
 
 
@@ -154,16 +155,16 @@ def test_rubric_checks(tmp_path):
 
     issues = check(tmp_path, rubric_change=change)
     assert any("item I1: unknown domain 'D9'" in m for m in messages(issues, "error"))
-    assert any("is for 'MSE-0002'" in m for m in messages(issues, "error"))
+    assert any("belongs to 'MSE-0002'" in m for m in messages(issues, "error"))
     assert any("'C01' is not a patient" in m for m in messages(issues, "error"))
-    assert any("'appropriately' is a judgment call" in m for m in messages(issues, "warning"))
+    assert any("'appropriately' is not observable" in m for m in messages(issues, "warning"))
 
 
 @pytest.mark.parametrize(
     "item, expected",
     [
         ({"weight": 0}, "weight must not be 0"),
-        ({"type": "rating"}, "rating items need anchors"),
+        ({"type": "rating"}, "rated items require anchors"),
         ({"weight": 11}, "less than or equal to 10"),
     ],
 )
@@ -192,14 +193,15 @@ def test_habitat_items_need_a_source_or_assumption(tmp_path):
     assert any("give a source or set assumption: true" in m for m in messages(issues, "error"))
 
 
-def test_crew_baseline_outside_normal_range(tmp_path):
+def test_crew_baseline_outside_reference_range(tmp_path):
     roster = json.loads((DEFAULT_LIBRARY / "crew" / "active-corps.crew.json").read_text())
     roster["crew"] = roster["crew"][:1]
     roster["crew"][0]["baseline"]["hr"] = 130
     (tmp_path / "test.crew.json").write_text(json.dumps(roster))
     issues = validate([tmp_path])
     assert any(
-        "C01: baseline hr 130 is outside the normal range" in m for m in messages(issues, "warning")
+        "C01: baseline hr 130 is outside the reference range" in m
+        for m in messages(issues, "warning")
     )
 
 
@@ -216,7 +218,7 @@ def test_migrate_v01(tmp_path):
     assert new["patients"][0]["time_critical"][0]["by"] == "T+8h"
     issues = validate([tmp_path])
     assert messages(issues, "error") == [], issues
-    assert any("etiology still needs writing" in m for m in messages(issues, "warning"))
+    assert any("etiology not entered" in m for m in messages(issues, "warning"))
 
 
 def test_cli_exit_codes(tmp_path):

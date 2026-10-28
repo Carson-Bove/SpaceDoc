@@ -38,7 +38,7 @@
             }
           ],
           "default": null,
-          "description": "Plain-words description for reviewers",
+          "description": "Description of the intervention, for reviewers",
           "title": "Text"
         }
       },
@@ -294,12 +294,12 @@
       "additionalProperties": false,
       "properties": {
         "if_asked": {
-          "description": "e.g. whether the pain moves",
+          "description": "Topic, e.g. migration of pain",
           "title": "If Asked",
           "type": "string"
         },
         "says": {
-          "description": "e.g. it started around the belly button, now it's lower right",
+          "description": "Response, e.g. started around the belly button, now it's lower right",
           "title": "Says",
           "type": "string"
         }
@@ -557,7 +557,7 @@
           "type": "string"
         },
         "role": {
-          "description": "patient: the patient themself; cmo: the crew medical officer; crew: another crewmember helping",
+          "description": "patient: self-report; cmo: the crew medical officer; crew: a bystander crewmember",
           "enum": [
             "patient",
             "cmo",
@@ -567,19 +567,19 @@
           "type": "string"
         },
         "opening": {
-          "description": "Chief complaint (patient) or opening question (CMO, crew)",
+          "description": "Chief complaint in the patient's words, or the opening statement",
           "title": "Opening",
           "type": "string"
         },
         "emergent": {
           "default": false,
-          "description": "Acts under time pressure; changes behaviour only",
+          "description": "Emergent presentation; affects behaviour only",
           "title": "Emergent",
           "type": "boolean"
         },
         "input_quality": {
           "default": 1,
-          "description": "1 clear and accurate … 5 very poor",
+          "description": "Historian reliability: 1 reliable … 5 unreliable",
           "maximum": 5,
           "minimum": 1,
           "title": "Input Quality",
@@ -587,7 +587,7 @@
         },
         "input_problems": {
           "default": [],
-          "description": "Which kinds of poor input, see INPUT_PROBLEMS",
+          "description": "How the history is unreliable; see INPUT_PROBLEMS",
           "items": {
             "type": "string"
           },
@@ -731,7 +731,7 @@
       "type": "string"
     },
     "title": {
-      "description": "Chief complaint, in a few words",
+      "description": "Chief complaint, in brief clinical terms",
       "title": "Title",
       "type": "string"
     },
@@ -798,7 +798,7 @@
         }
       ],
       "default": null,
-      "description": "Free text: anything that makes this case harder",
+      "description": "Complicating factors: confounders and constraints",
       "title": "Complicators"
     },
     "rubric": {

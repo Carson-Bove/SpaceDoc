@@ -76,9 +76,9 @@ class TimelineEntry(Timed):
     @model_validator(mode="after")
     def _shape(self) -> TimelineEntry:
         if self.kind == "keyframe" and not self.state:
-            raise ValueError("a keyframe needs at least one state value")
+            raise ValueError("a keyframe requires at least one vital sign or lab value")
         if self.kind != "keyframe" and not self.text:
-            raise ValueError(f"a {self.kind} entry needs text")
+            raise ValueError(f"a {self.kind} entry requires a description")
         return self
 
 
@@ -125,7 +125,7 @@ class ActionRef(Strict):
         "other",
     ]
     refs: list[str] = Field(default=[], description="Kit item ids; any one of them counts")
-    text: str | None = Field(None, description="Plain-words description for reviewers")
+    text: str | None = Field(None, description="Description of the intervention, for reviewers")
 
 
 class TimeCritical(Strict):
@@ -142,7 +142,7 @@ class TimeCritical(Strict):
     @model_validator(mode="after")
     def _said(self) -> TimeCritical:
         if not self.action.refs and not self.action.text:
-            raise ValueError("say what counts: pick kit items or describe it")
+            raise ValueError("describe the intervention or list the qualifying kit items")
         return self
 
 
@@ -178,8 +178,10 @@ class Familiarity(Strict):
 
 
 class HistoryIfAsked(Strict):
-    if_asked: str = Field(description="e.g. whether the pain moves")
-    says: str = Field(description="e.g. it started around the belly button, now it's lower right")
+    if_asked: str = Field(description="Topic, e.g. migration of pain")
+    says: str = Field(
+        description="Response, e.g. started around the belly button, now it's lower right"
+    )
 
 
 class Speaker(Strict):
@@ -187,13 +189,17 @@ class Speaker(Strict):
 
     crew_id: Id
     role: Literal["patient", "cmo", "crew"] = Field(
-        description="patient: the patient themself; cmo: the crew medical officer; crew: another crewmember helping"
+        description="patient: self-report; cmo: the crew medical officer; crew: a bystander crewmember"
     )
-    opening: str = Field(description="Chief complaint (patient) or opening question (CMO, crew)")
-    emergent: bool = Field(False, description="Acts under time pressure; changes behaviour only")
-    input_quality: int = Field(1, ge=1, le=5, description="1 clear and accurate … 5 very poor")
+    opening: str = Field(
+        description="Chief complaint in the patient's words, or the opening statement"
+    )
+    emergent: bool = Field(False, description="Emergent presentation; affects behaviour only")
+    input_quality: int = Field(
+        1, ge=1, le=5, description="Historian reliability: 1 reliable … 5 unreliable"
+    )
     input_problems: list[str] = Field(
-        default=[], description="Which kinds of poor input, see INPUT_PROBLEMS"
+        default=[], description="How the history is unreliable; see INPUT_PROBLEMS"
     )
     familiarity: Familiarity = Field(
         default_factory=Familiarity, description="Overrides the roster"
@@ -206,11 +212,11 @@ class Speaker(Strict):
         unknown = set(self.input_problems) - set(INPUT_PROBLEMS)
         if unknown:
             raise ValueError(
-                f"unknown input problems {sorted(unknown)}; use {sorted(INPUT_PROBLEMS)}"
+                f"unknown input_problems {sorted(unknown)}; valid: {sorted(INPUT_PROBLEMS)}"
             )
         if self.input_quality == 1 and self.input_problems:
             raise ValueError(
-                "input quality 1 means clear input; remove the input problems or raise the level"
+                "input_quality 1 is a reliable historian; remove input_problems or raise input_quality"
             )
         return self
 
@@ -225,7 +231,7 @@ class Review(Strict):
 
 class Scenario(Versioned):
     scenario_id: Id
-    title: str = Field(description="Chief complaint, in a few words")
+    title: str = Field(description="Chief complaint, in brief clinical terms")
     authors: list[Author] = Field(min_length=1)
     symptoms: list[str] = Field(default=[], description="ICD-10-CM symptom codes, e.g. R10.31")
     environments: list[Env] = Field(
@@ -237,7 +243,7 @@ class Scenario(Versioned):
     speaker: Speaker
     injects: list[Inject] = []
     complicators: str | None = Field(
-        None, description="Free text: anything that makes this case harder"
+        None, description="Complicating factors: confounders and constraints"
     )
     rubric: str = Field(description="Rubric file name, relative to this file")
     duration: Duration = Field("3d", description="How long to simulate before the run ends")
@@ -252,14 +258,14 @@ class Scenario(Versioned):
     @model_validator(mode="after")
     def _consistent(self) -> Scenario:
         if len(set(self.environments)) != len(self.environments):
-            raise ValueError("environments are listed twice")
+            raise ValueError("duplicate environments")
         ids = [p.crew_id for p in self.patients]
         if len(ids) != len(set(ids)):
-            raise ValueError("each patient must be a different crewmember")
+            raise ValueError("patients must be different crewmembers")
         if self.speaker.role == "patient" and self.speaker.crew_id not in ids:
-            raise ValueError("the speaker is the patient, so speaker.crew_id must be a patient")
-        if self.speaker.role != "patient" and self.speaker.crew_id in ids:
             raise ValueError(
-                f"{self.speaker.crew_id} is a patient; set the speaker's role to patient"
+                "speaker.role is patient, but speaker.crew_id is not one of the patients"
             )
+        if self.speaker.role != "patient" and self.speaker.crew_id in ids:
+            raise ValueError(f"{self.speaker.crew_id} is a patient; set speaker.role to patient")
         return self

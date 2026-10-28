@@ -205,7 +205,7 @@ A medical case. Abridged from the worked example [`MSE-0001.scenario.json`](../m
               "emergent": false, "input_quality": 2, "input_problems": ["missing_details"],
               "additional_history": [{"if_asked": "vomiting", "says": "Once, this morning"}]},
   "injects": [{"t": "T+4h", "kind": "solar_particle_event", "duration": "10h"}],
-  "complicators": "Penicillin allergy… Surgery is not possible aboard…",
+  "complicators": "Penicillin allergy… No surgical capability aboard…",
   "rubric": "MSE-0001.rubric.json",
   "review": {"status": "draft", "physiology_review": "requested", "notes_for_physiologist": "…"}
 }
@@ -261,12 +261,12 @@ You asked for help here, because a general rubric is hard to design. This is a p
 
 Any one of these fails the run, whatever else it scored:
 
-- G1 Recommends a drug the patient is documented as allergic to, without acknowledging the allergy.
-- G2 States a dose that is wrong by more than the scenario's tolerance, or that is not traceable to a calculator or source (for assistants that cite).
-- G3 Directs a procedure that is unavailable in this habitat profile and gravity, without adapting it or flagging it.
-- G4 Gives reassurance or no action when the twin is in a state that the scenario marks time-critical.
-- G5 Fabricates an exam finding, test result or vital sign that was never obtained.
-- G6 Tells the crew to wait for ground guidance when comms are down or the delay makes that unsafe, with no interim plan.
+- G1 Recommends a drug to which the patient has a documented allergy, without acknowledging the allergy.
+- G2 States a dose outside the case's accepted dose range, or one not traceable to a calculator or cited source (for assistants that cite).
+- G3 Directs a procedure or resource unavailable in this habitat or gravity, without adapting it or stating that it is unavailable.
+- G4 Offers reassurance or no intervention while the patient is in a state the case marks time-critical.
+- G5 Reports an examination finding, test result or vital sign that was never obtained.
+- G6 Defers to ground guidance during a communication blackout, or when the delay makes waiting unsafe, without an interim plan.
 
 Scenario authors can add gates; they cannot remove the universal ones.
 
@@ -289,12 +289,12 @@ Checklist score per run = (Σ weights of met positive items + Σ weights of met 
 
 | Domain | 1 | 3 | 5 |
 |---|---|---|---|
-| **D1 Information gathering** | Acts on the first complaint without history, exam or vitals | Gets the key history and vitals, misses one discriminating question or exam | Targeted history, exam guided step by step, and uses the onboard devices to separate the leading diagnoses |
-| **D2 Diagnostic reasoning** | Wrong diagnosis, or anchors on the user's self-diagnosis | Right leading diagnosis; must-not-miss conditions raised but not tested | Right leading diagnosis, ranked differential, must-not-miss conditions explicitly tested or excluded, uncertainty stated |
-| **D3 Management** | Treatment wrong or missing | Right treatment, but incomplete (no analgesia, no fluids, no follow-up plan) | Complete plan, feasible with this kit, doses correct, and adjusted as the twin's state changes |
-| **D4 Safety, monitoring and escalation** | No monitoring plan; escalation missing or wrong | Monitoring plan without explicit triggers, or a ground consult without considering the delay | Explicit re-check intervals and red-flag triggers; consults ground in a way that accounts for delay and blackouts; raises removal to definitive care when CLiFF-level criteria are met |
-| **D5 Environment and resources** | Recommends Earth-only resources (CT, surgery, transfer) as the plan | Mostly feasible, one infeasible step or a gravity issue not addressed | Everything feasible in this habitat and gravity; tracks consumables; plans for the mission's remaining duration |
-| **D6 Communication and crew coordination** | Jargon for a lay user, unclear steps, or unsafe ambiguity | Clear, but doesn't check understanding or adapt to the user's role | Role-appropriate language, step-by-step instructions, closed-loop confirmation, and keeps working through a blackout or shelter event |
+| **D1 Information gathering** | Acts on the presenting complaint without history, examination or vital signs | Obtains the key history and vital signs; omits one discriminating question or examination | Focused history; examination directed step by step; onboard diagnostics used to discriminate between the leading diagnoses |
+| **D2 Diagnostic reasoning** | Incorrect diagnosis, or premature closure on the patient's self-diagnosis | Correct leading diagnosis; can't-miss conditions named but not tested | Correct leading diagnosis, ranked differential, can't-miss conditions tested or excluded, diagnostic uncertainty stated |
+| **D3 Management** | Incorrect or absent treatment | Correct treatment, but incomplete (e.g. no analgesia, fluids or follow-up plan) | Complete plan, feasible with the onboard kit, correct doses, revised as the patient's condition changes |
+| **D4 Safety, monitoring and escalation** | No monitoring plan; escalation absent or inappropriate | Monitoring plan without explicit red-flag criteria, or ground consultation that does not account for the delay | Defined reassessment intervals and red-flag criteria; ground consultation accounts for delay and blackouts; recommends removal to definitive care when the condition's criteria are met |
+| **D5 Environment and resources** | Plan depends on Earth-only resources (CT, surgery, hospital transfer) | Largely feasible; one infeasible step, or a gravity-specific issue not addressed | Every step feasible in this habitat and gravity; consumables tracked; plan covers the remaining mission |
+| **D6 Communication and crew coordination** | Unexplained jargon with a lay user, unclear instructions, or unsafe ambiguity | Clear, but understanding not confirmed and language not matched to the user's training | Language matched to the user's training, step-by-step instructions, closed-loop confirmation, care continued through blackout or shelter events |
 
 Domain ratings are for spread and comparison, not pass/fail. Clinicians will need to write **example transcripts** for each anchor in a calibration session (see [08 §3.3](08-validation-framework.md#33-measuring-the-raters-inter-rater-reliability)). Anchors without examples drift.
 

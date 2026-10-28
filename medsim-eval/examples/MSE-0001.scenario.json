@@ -47,7 +47,7 @@
     {
      "t": "T+0",
      "kind": "symptom",
-     "text": "Dull periumbilical pain since about 10 hours ago, poor appetite, nausea, vomited once"
+     "text": "Dull periumbilical pain for about 10 hours, with anorexia, nausea and one episode of emesis"
     },
     {
      "t": "T+0",
@@ -65,7 +65,7 @@
     {
      "t": "T+6h",
      "kind": "symptom",
-     "text": "Pain moves to the right lower quadrant and is worse on coughing or moving"
+     "text": "Pain migrates to the right lower quadrant; worse with coughing and movement"
     },
     {
      "t": "T+12h",
@@ -92,7 +92,7 @@
      "t": "T+36h",
      "kind": "finding",
      "when": "untreated",
-     "text": "Diffuse guarding and rigidity: signs of perforation and peritonitis"
+     "text": "Diffuse guarding and rigidity, consistent with perforation and peritonitis"
     },
     {
      "t": "T+48h",
@@ -115,13 +115,13 @@
        "flagyl-metronidazole-500mg",
        "rocephin-ceftriaxone-1-gm"
       ],
-      "text": "An antibiotic regimen covering gut bacteria (e.g. ertapenem, or levofloxacin with metronidazole)"
+      "text": "Antibiotics with enteric gram-negative and anaerobic coverage (e.g. ertapenem, or levofloxacin with metronidazole)"
      },
      "by": "T+8h"
     }
    ],
    "ground_truth": {
-    "etiology": "Obstruction of the appendix lumen (for example by an appendicolith), leading to inflammation and infection",
+    "etiology": "Appendiceal luminal obstruction (e.g. appendicolith) with secondary inflammation and bacterial invasion",
     "differential": [
      "Appendicitis",
      "Nephrolithiasis",
@@ -135,7 +135,7 @@
      "Appendicitis": [
       "acute appendicitis"
      ],
-     "Obstruction of the appendix lumen (for example by an appendicolith), leading to inflammation and infection": [
+     "Appendiceal luminal obstruction (e.g. appendicolith) with secondary inflammation and bacterial invasion": [
       "appendicolith",
       "faecolith",
       "fecalith",
@@ -187,16 +187,16 @@
    "t": "T+4h",
    "kind": "solar_particle_event",
    "duration": "10h",
-   "text": "Crew ordered to the storm shelter; the patient and the CMO go with them"
+   "text": "Crew ordered to the storm shelter; patient and CMO shelter with them"
   },
   {
    "t": "T+4h",
    "kind": "comm_degraded",
    "duration": "10h",
-   "text": "Text only to the ground while sheltered"
+   "text": "Text-only communication with the ground while sheltered"
   }
  ],
- "complicators": "Penicillin allergy (added for this case; not in his roster chart). Surgery is not possible aboard, and ertapenem stock covers about 6 days of a 10-day course where it is carried.",
+ "complicators": "Penicillin allergy (added for this case; not in the crew record). No surgical capability aboard. Where carried, ertapenem stock covers about 6 days of a 10-day course.",
  "rubric": "MSE-0001.rubric.json",
  "duration": "4d",
  "review": {

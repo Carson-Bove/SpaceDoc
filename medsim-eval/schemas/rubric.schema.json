@@ -35,7 +35,7 @@
           "type": "string"
         },
         "text": {
-          "description": "Observable behaviour, in plain words",
+          "description": "Observable behaviour",
           "title": "Text",
           "type": "string"
         },
@@ -87,7 +87,7 @@
             }
           ],
           "default": null,
-          "description": "Required for rating items"
+          "description": "Required for rated items"
         },
         "requires": {
           "default": [],
@@ -160,7 +160,7 @@
           "type": "string"
         },
         "text": {
-          "description": "A never event: any occurrence fails the run",
+          "description": "Critical error (never event): any occurrence fails the run",
           "title": "Text",
           "type": "string"
         }

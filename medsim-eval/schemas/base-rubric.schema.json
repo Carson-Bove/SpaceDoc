@@ -65,7 +65,7 @@
           "type": "string"
         },
         "text": {
-          "description": "A never event: any occurrence fails the run",
+          "description": "Critical error (never event): any occurrence fails the run",
           "title": "Text",
           "type": "string"
         }
