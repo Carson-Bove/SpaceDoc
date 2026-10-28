@@ -430,7 +430,11 @@ Decided:
 - **Rubric:** start from `general@0.1` as drafted; it is versioned so it can be revised.
 - **CLiFF version:** always the most recent (the 2023 list).
 - **Habitat gaps:** fill from the Levels of Care interpretation, marked as assumptions.
-- **Compute:** batches run overnight on the current laptop until more compute is available. Phase B will size the local models to it.
+- **Compute:** batches run on the MacBook Air M4 (16 GB) until more compute is available; the desktop in [02](02-local-inference.md) can be used later. Runs happen overnight or in unattended stretches during the day, and pause when the laptop is in use. Because SpaceDoc's own models fill most of the memory, a batch runs in stages: conversations, then scoring, then judging.
+- **Runs per scenario:** 10 by default.
+- **User agent:** a small model from a different family than the assistant under test. Code supplies the facts it may give; the model only words them.
+- **Scorer and judge:** an 8B model with reasoning on, to start. Trust per rubric item is measured against clerk scoring in Phase E.
+- **Before Phase B:** revise the Scenario Builder from the clerks' feedback.
 
 Still open:
 
