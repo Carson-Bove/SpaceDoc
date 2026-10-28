@@ -31,13 +31,13 @@ def validate_cmd(
 ) -> None:
     """Check scenario, rubric, DRM and habitat files against their schemas and each other."""
     issues = validate(paths, library)
+    colours = {"error": typer.colors.RED, "warning": typer.colors.YELLOW, "info": None}
     for issue in issues:
-        typer.secho(
-            str(issue), fg=typer.colors.RED if issue.level == "error" else typer.colors.YELLOW
-        )
+        typer.secho(str(issue), fg=colours[issue.level])
     errors = sum(i.level == "error" for i in issues)
-    warnings = len(issues) - errors
-    typer.echo(f"{errors} error(s), {warnings} warning(s)")
+    warnings = sum(i.level == "warning" for i in issues)
+    notes = len(issues) - errors - warnings
+    typer.echo(f"{errors} error(s), {warnings} warning(s), {notes} note(s)")
     if errors or (strict and warnings):
         raise typer.Exit(1)
 
@@ -65,6 +65,24 @@ def schema_cmd(
             json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
         )
         typer.echo(f"wrote {out / name}")
+
+
+@app.command("migrate")
+def migrate_cmd(
+    paths: list[Path] = typer.Argument(..., help="v0.1 .scenario.json files or folders"),
+    library: Path = LibraryOpt,
+) -> None:
+    """Convert v0.1 scenarios (and their rubrics) to v0.2 in place, keeping .v0.1.bak copies."""
+    from medsim_eval.migrate import migrate_file
+    from medsim_eval.validate import load_library
+
+    lib, _ = load_library(library)
+    latest = max(lib.base_rubrics, key=lambda r: tuple(int(x) for x in r.split("@")[1].split(".")))
+    files = [f for p in paths for f in (sorted(p.rglob("*.scenario.json")) if p.is_dir() else [p])]
+    for f in files:
+        for line in migrate_file(f, lib, latest):
+            typer.echo(line)
+    typer.echo("Run `medsim validate` on the migrated files and fill in what the notes ask for.")
 
 
 @app.command("build-form")

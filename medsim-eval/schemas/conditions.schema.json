@@ -1,5 +1,112 @@
 {
   "$defs": {
+    "Applicability": {
+      "additionalProperties": false,
+      "description": "Where and when the condition can happen, from the CLiFF's incidence model (Table 1).",
+      "properties": {
+        "incidence_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "As written: General, EVA, SAS…",
+          "title": "Incidence Type"
+        },
+        "segment": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "As written: All, EVA Surface, Space Adaptation…",
+          "title": "Segment"
+        },
+        "envs": {
+          "items": {
+            "enum": [
+              "T1",
+              "T2",
+              "T3",
+              "T4",
+              "T5"
+            ],
+            "type": "string"
+          },
+          "title": "Envs",
+          "type": "array"
+        },
+        "timing": {
+          "default": "any",
+          "enum": [
+            "any",
+            "early_flight",
+            "surface_arrival"
+          ],
+          "title": "Timing",
+          "type": "string"
+        },
+        "eva": {
+          "default": false,
+          "description": "Happens during or because of an EVA",
+          "title": "Eva",
+          "type": "boolean"
+        },
+        "sex": {
+          "default": "any",
+          "enum": [
+            "any",
+            "F",
+            "M"
+          ],
+          "title": "Sex",
+          "type": "string"
+        },
+        "onset_hours": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When it starts, for space adaptation",
+          "title": "Onset Hours"
+        },
+        "mapped": {
+          "const": "automatic",
+          "default": "automatic",
+          "description": "envs/timing were mapped from the segment by script, not by NASA",
+          "title": "Mapped",
+          "type": "string"
+        }
+      },
+      "required": [
+        "envs"
+      ],
+      "title": "Applicability",
+      "type": "object"
+    },
     "CaseCourse": {
       "additionalProperties": false,
       "description": "One row of a CLiFF's Table 4. TI = task impairment %; durations in hours.",
@@ -228,6 +335,30 @@
           ],
           "default": null
         },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The CLiFF's opening description",
+          "title": "Summary"
+        },
+        "applicability": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Applicability"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "course": {
           "anyOf": [
             {
@@ -362,7 +493,7 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "default": "0.1",
+      "default": "0.2",
       "title": "Schema Version",
       "type": "string"
     },

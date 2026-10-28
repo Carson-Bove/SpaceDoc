@@ -1,7 +1,8 @@
 """Rubrics (docs/11 §5).
 
-The *base rubric* (e.g. general@0.1) holds what is the same for every scenario: safety gates,
-the 1–5 domains with anchors, and the outcome measures. It is versioned; each scenario rubric
+The *base rubric* (e.g. general@0.2) holds what is the same for every scenario: safety gates,
+the 1–5 domains with anchors, the outcome measures, the standard items scored in every case
+(diagnosis and etiology), and a library of common items clerks can add with one click. It is versioned; each scenario rubric
 pins the base version it was written against, so updating the base never silently changes
 old scores. A *scenario rubric* adds scenario-specific gates and checklist items.
 """
@@ -44,6 +45,28 @@ class OutcomeMeasure(Strict):
     unit: str | None = None
 
 
+class StandardItem(Strict):
+    """Scored in every scenario, from the ground truth, without the clerk writing it."""
+
+    id: Id
+    text: str
+    weight: int = Field(gt=0, le=10)
+    domain: Id
+    depends_on: Id | None = Field(
+        None, description="Only scored if this other standard item was met (partial credit chain)"
+    )
+
+
+class LibraryItem(Strict):
+    """A common checklist item a clerk can add with one click, then adjust."""
+
+    id: Id
+    text: str
+    weight: int = Field(ge=-10, le=10)
+    domain: Id
+    tags: list[str] = Field(default=[], description="e.g. abdominal, trauma, any")
+
+
 class BaseRubric(Versioned):
     rubric_id: Id
     version: str = Field(pattern=r"^\d+\.\d+$")
@@ -52,6 +75,8 @@ class BaseRubric(Versioned):
     gates: list[Gate]
     domains: list[Domain]
     outcomes: list[OutcomeMeasure]
+    standard_items: list[StandardItem] = []
+    item_library: list[LibraryItem] = []
     changelog: list[str] = []
 
     @property
@@ -60,10 +85,18 @@ class BaseRubric(Versioned):
 
     @model_validator(mode="after")
     def _unique(self) -> BaseRubric:
-        for name in ("gates", "domains", "outcomes"):
+        for name in ("gates", "domains", "outcomes", "standard_items", "item_library"):
             ids = [x.id for x in getattr(self, name)]
             if len(ids) != len(set(ids)):
                 raise ValueError(f"{name}: ids must be unique")
+        domains = {d.id for d in self.domains}
+        for x in [*self.standard_items, *self.item_library]:
+            if x.domain not in domains:
+                raise ValueError(f"{x.id}: unknown domain {x.domain!r}")
+        std = {x.id for x in self.standard_items}
+        for x in self.standard_items:
+            if x.depends_on and x.depends_on not in std:
+                raise ValueError(f"{x.id}: depends on unknown standard item {x.depends_on!r}")
         return self
 
 
@@ -79,6 +112,12 @@ class ChecklistItem(Strict):
     by: Offset | None = Field(None, description="Deadline in simulated time, e.g. T+2h")
     domain: Id = Field(description="Which base-rubric domain this informs, e.g. D3")
     anchors: Anchors | None = Field(None, description="Required for rating items")
+    requires: list[str] = Field(
+        default=[],
+        description="Kit item ids; if none of them is aboard in a run, the item is not applicable",
+    )
+    patient: Id | None = Field(None, description="For several-patient cases: which crewmember")
+    from_library: Id | None = Field(None, description="Library item this was added from")
     rationale: str | None = None
 
     @field_validator("by")
@@ -104,7 +143,7 @@ class ScenarioRubric(Versioned):
     rubric_id: Id
     scenario_id: Id
     base: str = Field(
-        pattern=r"^[A-Za-z0-9._-]+@\d+\.\d+$", description="Base rubric, e.g. general@0.1"
+        pattern=r"^[A-Za-z0-9._-]+@\d+\.\d+$", description="Base rubric, e.g. general@0.2"
     )
     gates: list[Gate] = Field(
         default=[], description="Scenario-specific never events, added to the base gates"

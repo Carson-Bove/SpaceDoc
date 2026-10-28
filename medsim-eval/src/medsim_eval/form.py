@@ -1,7 +1,7 @@
 """Build the offline scenario-authoring form: one HTML file with the library inside it.
 
 The form needs no server and no internet. Rebuild it (`medsim build-form`) whenever the library
-changes, so clerks always pick from the current DRMs, conditions and habitats.
+changes, so clerks always pick from the current conditions, crew, kits and rubric.
 """
 
 from __future__ import annotations
@@ -11,8 +11,8 @@ import typing
 from pathlib import Path
 
 from medsim_eval import SCHEMA_VERSION
-from medsim_eval.models.scenario import KNOWN_STATE_VARS, ActionRef, EventKind
-from medsim_eval.validate import DEFAULT_LIBRARY, load_library
+from medsim_eval.models.scenario import INPUT_PROBLEMS, KNOWN_STATE_VARS, ActionRef, EventKind
+from medsim_eval.validate import DEFAULT_LIBRARY, RULED_OUT_BY_SURGERY, load_library
 
 PACKAGE_ROOT = Path(__file__).resolve().parents[2]
 TEMPLATE = PACKAGE_ROOT / "form" / "template.html"
@@ -33,7 +33,7 @@ def bundle(library_dir: Path = DEFAULT_LIBRARY) -> dict:
         )
 
     def item(i) -> dict:
-        return {"id": i.id, "name": i.name, "qty": i.qty}
+        return {"id": i.id, "name": i.name, "qty": i.qty, "category": i.category}
 
     habitats = []
     for h in lib.habitats.values():
@@ -60,21 +60,43 @@ def bundle(library_dir: Path = DEFAULT_LIBRARY) -> dict:
             }
         )
     bases = sorted(lib.base_rubrics.values(), key=lambda b: _version_key(b.ref))
+    environments = []
+    for e in lib.environments.values():
+        env = e.model_dump(mode="json", exclude_none=True)
+        env["habitats"] = [h.profile_id for h in lib.habitats_in(e.env)]
+        environments.append(env)
     return {
         "schema_version": SCHEMA_VERSION,
-        "environments": [e.model_dump(mode="json") for e in lib.environments.values()],
-        "drms": [d.model_dump(mode="json", exclude_none=True) for d in lib.drms.values()],
+        "environments": environments,
         "habitats": habitats,
         "conditions": [
             c.model_dump(mode="json", exclude_none=True) for c in lib.conditions.values()
         ],
+        "crew": [c.model_dump(mode="json", exclude_none=True) for c in lib.crew.values()],
+        "physiology": [p.model_dump(mode="json", exclude_none=True) for p in lib.physiology],
+        "symptoms": [s for doc in _symptom_docs(library_dir) for s in doc],
+        "encyclopedia": [
+            e.model_dump(mode="json", exclude_none=True)
+            for enc in lib.encyclopedia
+            for e in enc.entries
+        ],
         "base_rubrics": [b.model_dump(mode="json", by_alias=True) | {"ref": b.ref} for b in bases],
         "state_vars": KNOWN_STATE_VARS,
+        "input_problems": INPUT_PROBLEMS,
+        "ruled_out_by_surgery": RULED_OUT_BY_SURGERY,
         "enums": {
             "event_kinds": list(typing.get_args(EventKind)),
             "action_kinds": list(typing.get_args(ActionRef.model_fields["kind"].annotation)),
         },
     }
+
+
+def _symptom_docs(library_dir: Path) -> list[list[dict]]:
+    """Symptoms with their names (the Library keeps only the codes)."""
+    return [
+        json.loads(p.read_text(encoding="utf-8"))["symptoms"]
+        for p in sorted(library_dir.rglob("*.symptoms.json"))
+    ]
 
 
 def render(library_dir: Path = DEFAULT_LIBRARY) -> str:

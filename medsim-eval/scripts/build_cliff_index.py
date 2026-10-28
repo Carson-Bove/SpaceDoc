@@ -138,6 +138,64 @@ def course(text: str) -> dict | None:
     return out | {"extraction": "automatic", "reviewed_by": None}
 
 
+def summary(text: str) -> str | None:
+    """The CLiFF's opening description: the paragraph between the ICL title and the incidence data."""
+    m = re.search(r"ICL\d+[A-Z]?_[^\n]*\n(.*?)\n\s*INCIDENCE DATA", text, re.S)
+    if not m:
+        return None
+    para = re.sub(r"\s+", " ", m.group(1)).strip()
+    return para or None
+
+
+# Segment (CLiFF Table 1) -> where and when, in our five environments. EVAs happen at the ISS
+# and on the lunar and Mars surfaces; space adaptation happens in the first days of microgravity.
+SEGMENTS = {
+    "All": (["T1", "T2", "T3", "T4", "T5"], "any", False),
+    "EVA All": (["T1", "T3", "T5"], "any", True),
+    "EVA Surface": (["T3", "T5"], "any", True),
+    "EVA Habitat": (["T3", "T5"], "any", True),
+    "Space Adaptation": (["T1", "T2", "T4"], "early_flight", False),
+    "Surface": (["T3", "T5"], "any", False),
+    "Gravity Well Transition": (["T3", "T5"], "surface_arrival", False),
+}
+
+
+def applicability(text: str, name: str) -> dict:
+    start = text.find("TABLE 1. INCIDENCE MODEL")
+    block = text[start : text.find("TABLE 2", start)] if start >= 0 else ""
+    # One cell per line; drop page footers that land inside the table.
+    cells = [c.strip() for c in block.splitlines() if c.strip() and "page:" not in c]
+
+    def values(label: str) -> list[str]:
+        return [cells[i + 1] for i, c in enumerate(cells) if c == label and i + 1 < len(cells)]
+
+    segment = next(iter(values("Segment")), None)
+    kind = next(iter(values("Incidence Type")), None)
+    sexes = set(values("Sex"))
+    envs, timing, eva = SEGMENTS.get(segment or "All", SEGMENTS["All"])
+    if "lunar" in name.lower():
+        envs = ["T3"]
+    # A condition is sex-specific only when every incidence row names the same sex.
+    sex = {"Female": "F", "Male": "M"}.get(next(iter(sexes)), "any") if len(sexes) == 1 else "any"
+    out = {
+        "incidence_type": kind,
+        "segment": segment,
+        "envs": envs,
+        "timing": timing,
+        "eva": eva,
+        "sex": sex,
+        "mapped": "automatic",
+    }
+    onset = re.search(
+        r"Onset Timing \(Hours\).*?\(Min\):\s*([\d.]+).*?\(Max\):\s*([\d.]+)", block, re.S
+    )
+    if onset:
+        out["onset_hours"] = [float(onset.group(1)), float(onset.group(2))]
+        if out["onset_hours"][1] > 7 * 24:
+            out["timing"] = "any"  # e.g. SANS develops over weeks to months, not on arrival
+    return out
+
+
 def slug(s: str) -> str:
     return re.sub(r"-+", "-", re.sub(r"[^a-z0-9]+", "-", s.lower())).strip("-")
 
@@ -202,6 +260,8 @@ def main() -> None:
         )
         if rev:
             entry["peer_review"] = {"label": rev[2], "url": rev[1], "list": "cliff119_2023"}
+        entry["summary"] = summary(text)
+        entry["applicability"] = applicability(text, name)
         c = course(text)
         if c:
             entry["course"] = c

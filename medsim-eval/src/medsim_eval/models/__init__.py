@@ -1,9 +1,12 @@
 """File formats. Each top-level model is one file type; see FILE_TYPES."""
 
 from medsim_eval.models.condition import ConditionIndex
+from medsim_eval.models.crew import CrewRoster
 from medsim_eval.models.drm import DRM
 from medsim_eval.models.environment import EnvironmentSet
 from medsim_eval.models.habitat import Habitat
+from medsim_eval.models.physiology import Physiology
+from medsim_eval.models.reference import Encyclopedia, SymptomList
 from medsim_eval.models.rubric import BaseRubric, ScenarioRubric
 from medsim_eval.models.scenario import Scenario
 
@@ -16,6 +19,10 @@ FILE_TYPES = {
     ".base-rubric.json": BaseRubric,
     ".conditions.json": ConditionIndex,
     ".environments.json": EnvironmentSet,
+    ".crew.json": CrewRoster,
+    ".physiology.json": Physiology,
+    ".symptoms.json": SymptomList,
+    ".encyclopedia.json": Encyclopedia,
 }
 
 
@@ -29,10 +36,14 @@ __all__ = [
     "DRM",
     "BaseRubric",
     "ConditionIndex",
+    "CrewRoster",
+    "Encyclopedia",
     "EnvironmentSet",
     "FILE_TYPES",
     "Habitat",
+    "Physiology",
     "Scenario",
     "ScenarioRubric",
+    "SymptomList",
     "file_type",
 ]

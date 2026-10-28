@@ -14,7 +14,7 @@ from typing import Literal
 
 from pydantic import Field
 
-from medsim_eval.models.common import Id, Strict, Versioned
+from medsim_eval.models.common import Env, Id, Strict, Versioned
 
 Range = tuple[float, float]
 
@@ -64,6 +64,21 @@ class Course(Strict):
     )
 
 
+class Applicability(Strict):
+    """Where and when the condition can happen, from the CLiFF's incidence model (Table 1)."""
+
+    incidence_type: str | None = Field(None, description="As written: General, EVA, SAS…")
+    segment: str | None = Field(None, description="As written: All, EVA Surface, Space Adaptation…")
+    envs: list[Env]
+    timing: Literal["any", "early_flight", "surface_arrival"] = "any"
+    eva: bool = Field(False, description="Happens during or because of an EVA")
+    sex: Literal["any", "F", "M"] = "any"
+    onset_hours: Range | None = Field(None, description="When it starts, for space adaptation")
+    mapped: Literal["automatic"] = Field(
+        "automatic", description="envs/timing were mapped from the segment by script, not by NASA"
+    )
+
+
 class Condition(Strict):
     cliff_id: Id = Field(description="Stable id from the condition name, e.g. appendicitis")
     icl: str = Field(description="NASA's condition code, e.g. ICL8")
@@ -72,6 +87,8 @@ class Condition(Strict):
     cliff: CliffDoc
     legacy: CliffDoc | None = Field(None, description="Matching 100-condition CLiFF, if any")
     peer_review: CliffDoc | None = None
+    summary: str | None = Field(None, description="The CLiFF's opening description")
+    applicability: Applicability | None = None
     course: Course | None = None
 
 

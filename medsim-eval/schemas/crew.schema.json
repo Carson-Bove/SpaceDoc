@@ -1,0 +1,548 @@
+{
+  "$defs": {
+    "Allergy": {
+      "additionalProperties": false,
+      "properties": {
+        "agent": {
+          "description": "e.g. penicillin, tree pollen",
+          "title": "Agent",
+          "type": "string"
+        },
+        "kind": {
+          "default": "drug",
+          "enum": [
+            "drug",
+            "food",
+            "environmental",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "reaction": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. rash, hives, anaphylaxis",
+          "title": "Reaction"
+        }
+      },
+      "required": [
+        "agent"
+      ],
+      "title": "Allergy",
+      "type": "object"
+    },
+    "Baseline": {
+      "additionalProperties": false,
+      "description": "Normal preflight values. In-flight changes come from the physiology library.",
+      "properties": {
+        "hr": {
+          "title": "Hr",
+          "type": "number"
+        },
+        "sbp": {
+          "title": "Sbp",
+          "type": "number"
+        },
+        "dbp": {
+          "title": "Dbp",
+          "type": "number"
+        },
+        "rr": {
+          "title": "Rr",
+          "type": "number"
+        },
+        "spo2": {
+          "title": "Spo2",
+          "type": "number"
+        },
+        "temp_c": {
+          "title": "Temp C",
+          "type": "number"
+        },
+        "hgb_g_dl": {
+          "title": "Hgb G Dl",
+          "type": "number"
+        },
+        "wbc_10e9_l": {
+          "title": "Wbc 10E9 L",
+          "type": "number"
+        },
+        "glucose_mmol_l": {
+          "title": "Glucose Mmol L",
+          "type": "number"
+        }
+      },
+      "required": [
+        "hr",
+        "sbp",
+        "dbp",
+        "rr",
+        "spo2",
+        "temp_c",
+        "hgb_g_dl",
+        "wbc_10e9_l",
+        "glucose_mmol_l"
+      ],
+      "title": "Baseline",
+      "type": "object"
+    },
+    "Chart": {
+      "additionalProperties": false,
+      "properties": {
+        "past_medical": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Past Medical",
+          "type": "array"
+        },
+        "past_surgical": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Past Surgical",
+          "type": "array"
+        },
+        "medications": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Medication"
+          },
+          "title": "Medications",
+          "type": "array"
+        },
+        "allergies": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Allergy"
+          },
+          "title": "Allergies",
+          "type": "array"
+        },
+        "nkda": {
+          "default": false,
+          "description": "No known drug allergies",
+          "title": "Nkda",
+          "type": "boolean"
+        },
+        "family_history": {
+          "default": [],
+          "description": "Optional",
+          "items": {
+            "type": "string"
+          },
+          "title": "Family History",
+          "type": "array"
+        },
+        "social_history": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Social History"
+        },
+        "immunizations": {
+          "default": [],
+          "description": "e.g. tetanus booster 2023",
+          "items": {
+            "type": "string"
+          },
+          "title": "Immunizations",
+          "type": "array"
+        }
+      },
+      "title": "Chart",
+      "type": "object"
+    },
+    "CrewTwin": {
+      "additionalProperties": false,
+      "properties": {
+        "crew_id": {
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Crew Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "Fictional full name",
+          "title": "Name",
+          "type": "string"
+        },
+        "sex": {
+          "enum": [
+            "M",
+            "F"
+          ],
+          "title": "Sex",
+          "type": "string"
+        },
+        "age": {
+          "maximum": 70,
+          "minimum": 25,
+          "title": "Age",
+          "type": "integer"
+        },
+        "height_cm": {
+          "title": "Height Cm",
+          "type": "number"
+        },
+        "weight_kg": {
+          "title": "Weight Kg",
+          "type": "number"
+        },
+        "background": {
+          "enum": [
+            "military_test_pilot",
+            "military_aviator",
+            "military_other",
+            "physician",
+            "scientist",
+            "engineer"
+          ],
+          "title": "Background",
+          "type": "string"
+        },
+        "occupation": {
+          "description": "In plain words, e.g. Navy test pilot, emergency physician",
+          "title": "Occupation",
+          "type": "string"
+        },
+        "education": {
+          "enum": [
+            "bachelor",
+            "master",
+            "doctorate",
+            "md"
+          ],
+          "title": "Education",
+          "type": "string"
+        },
+        "selection_year": {
+          "title": "Selection Year",
+          "type": "integer"
+        },
+        "flights": {
+          "minimum": 0,
+          "title": "Flights",
+          "type": "integer"
+        },
+        "days_in_space": {
+          "minimum": 0,
+          "title": "Days In Space",
+          "type": "integer"
+        },
+        "eva_qualified": {
+          "title": "Eva Qualified",
+          "type": "boolean"
+        },
+        "medical_role": {
+          "description": "Default role on a mission; a scenario can still choose anyone",
+          "enum": [
+            "cmo",
+            "backup_cmo",
+            "crew"
+          ],
+          "title": "Medical Role",
+          "type": "string"
+        },
+        "medical_training": {
+          "$ref": "#/$defs/MedicalTraining"
+        },
+        "familiarity": {
+          "$ref": "#/$defs/Familiarity"
+        },
+        "communication_style": {
+          "description": "For the AI that plays them",
+          "title": "Communication Style",
+          "type": "string"
+        },
+        "imm": {
+          "$ref": "#/$defs/ImmTraits"
+        },
+        "chart": {
+          "$ref": "#/$defs/Chart"
+        },
+        "baseline": {
+          "$ref": "#/$defs/Baseline"
+        },
+        "synthetic": {
+          "const": true,
+          "default": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "crew_id",
+        "name",
+        "sex",
+        "age",
+        "height_cm",
+        "weight_kg",
+        "background",
+        "occupation",
+        "education",
+        "selection_year",
+        "flights",
+        "days_in_space",
+        "eva_qualified",
+        "medical_role",
+        "medical_training",
+        "familiarity",
+        "communication_style",
+        "imm",
+        "chart",
+        "baseline"
+      ],
+      "title": "CrewTwin",
+      "type": "object"
+    },
+    "Familiarity": {
+      "additionalProperties": false,
+      "description": "1 = none, 5 = expert.",
+      "properties": {
+        "medicine": {
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Medicine",
+          "type": "integer"
+        },
+        "equipment": {
+          "description": "The onboard medical equipment",
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Equipment",
+          "type": "integer"
+        },
+        "assistant": {
+          "description": "Digital medical assistants",
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Assistant",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "medicine",
+        "equipment",
+        "assistant"
+      ],
+      "title": "Familiarity",
+      "type": "object"
+    },
+    "ImmTraits": {
+      "additionalProperties": false,
+      "description": "The crew characteristics NASA's Integrated Medical Model conditions on.",
+      "properties": {
+        "cac": {
+          "description": "Coronary artery calcium present",
+          "title": "Cac",
+          "type": "boolean"
+        },
+        "crowns": {
+          "description": "Dental crowns",
+          "title": "Crowns",
+          "type": "boolean"
+        },
+        "contacts": {
+          "description": "Wears contact lenses",
+          "title": "Contacts",
+          "type": "boolean"
+        },
+        "prior_abd_surgery": {
+          "description": "History of abdominal surgery",
+          "title": "Prior Abd Surgery",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "cac",
+        "crowns",
+        "contacts",
+        "prior_abd_surgery"
+      ],
+      "title": "ImmTraits",
+      "type": "object"
+    },
+    "MedicalTraining": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "description": "physician; cmo: non-physician with standard CMO training; basic: first aid and CPR",
+          "enum": [
+            "physician",
+            "cmo",
+            "basic"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "hours": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Premission medical training hours, if known",
+          "title": "Hours"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "level",
+        "description"
+      ],
+      "title": "MedicalTraining",
+      "type": "object"
+    },
+    "Medication": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Generic name, e.g. loratadine",
+          "title": "Name",
+          "type": "string"
+        },
+        "form": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Form or route: tablet, capsule, IV, inhaler…",
+          "title": "Form"
+        },
+        "dose": {
+          "description": "e.g. 10 mg",
+          "title": "Dose",
+          "type": "string"
+        },
+        "frequency": {
+          "description": "e.g. once daily, as needed",
+          "title": "Frequency",
+          "type": "string"
+        },
+        "indication": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Indication"
+        }
+      },
+      "required": [
+        "name",
+        "dose",
+        "frequency"
+      ],
+      "title": "Medication",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "description": "Where a value came from. `doc` is a short citation; `url` is where to read it.",
+      "properties": {
+        "doc": {
+          "title": "Doc",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Table, page or section within the document",
+          "title": "Locator"
+        }
+      },
+      "required": [
+        "doc"
+      ],
+      "title": "Source",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "0.2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sources": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Source"
+      },
+      "title": "Sources",
+      "type": "array"
+    },
+    "method": {
+      "description": "How the roster was built, in plain words",
+      "title": "Method",
+      "type": "string"
+    },
+    "crew": {
+      "items": {
+        "$ref": "#/$defs/CrewTwin"
+      },
+      "minItems": 1,
+      "title": "Crew",
+      "type": "array"
+    }
+  },
+  "required": [
+    "method",
+    "crew"
+  ],
+  "title": "CrewRoster",
+  "type": "object"
+}

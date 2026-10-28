@@ -77,6 +77,51 @@
       "title": "Gate",
       "type": "object"
     },
+    "LibraryItem": {
+      "additionalProperties": false,
+      "description": "A common checklist item a clerk can add with one click, then adjust.",
+      "properties": {
+        "id": {
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "weight": {
+          "maximum": 10,
+          "minimum": -10,
+          "title": "Weight",
+          "type": "integer"
+        },
+        "domain": {
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Domain",
+          "type": "string"
+        },
+        "tags": {
+          "default": [],
+          "description": "e.g. abdominal, trauma, any",
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "weight",
+        "domain"
+      ],
+      "title": "LibraryItem",
+      "type": "object"
+    },
     "OutcomeMeasure": {
       "additionalProperties": false,
       "properties": {
@@ -114,12 +159,63 @@
       ],
       "title": "OutcomeMeasure",
       "type": "object"
+    },
+    "StandardItem": {
+      "additionalProperties": false,
+      "description": "Scored in every scenario, from the ground truth, without the clerk writing it.",
+      "properties": {
+        "id": {
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "weight": {
+          "exclusiveMinimum": 0,
+          "maximum": 10,
+          "title": "Weight",
+          "type": "integer"
+        },
+        "domain": {
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Domain",
+          "type": "string"
+        },
+        "depends_on": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Only scored if this other standard item was met (partial credit chain)",
+          "title": "Depends On"
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "weight",
+        "domain"
+      ],
+      "title": "StandardItem",
+      "type": "object"
     }
   },
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "default": "0.1",
+      "default": "0.2",
       "title": "Schema Version",
       "type": "string"
     },
@@ -167,6 +263,22 @@
         "$ref": "#/$defs/OutcomeMeasure"
       },
       "title": "Outcomes",
+      "type": "array"
+    },
+    "standard_items": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/StandardItem"
+      },
+      "title": "Standard Items",
+      "type": "array"
+    },
+    "item_library": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/LibraryItem"
+      },
+      "title": "Item Library",
       "type": "array"
     },
     "changelog": {

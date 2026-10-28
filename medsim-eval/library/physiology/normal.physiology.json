@@ -1,0 +1,179 @@
+{
+ "schema_version": "0.2",
+ "reviewed_by": null,
+ "ranges": [
+  {
+   "var": "hr",
+   "low": 40,
+   "high": 100,
+   "unit": "/min",
+   "assumption": true,
+   "note": "Resting; trained adults often sit at 40-60. Typical adult reference range; the physiologist should confirm or replace it."
+  },
+  {
+   "var": "sbp",
+   "low": 90,
+   "high": 129,
+   "unit": "mmHg",
+   "assumption": true,
+   "note": "Typical adult reference range; the physiologist should confirm or replace it."
+  },
+  {
+   "var": "dbp",
+   "low": 60,
+   "high": 84,
+   "unit": "mmHg",
+   "assumption": true,
+   "note": "Typical adult reference range; the physiologist should confirm or replace it."
+  },
+  {
+   "var": "rr",
+   "low": 12,
+   "high": 20,
+   "unit": "/min",
+   "assumption": true,
+   "note": "Typical adult reference range; the physiologist should confirm or replace it."
+  },
+  {
+   "var": "spo2",
+   "low": 95,
+   "high": 100,
+   "unit": "%",
+   "assumption": true,
+   "note": "Typical adult reference range; the physiologist should confirm or replace it."
+  },
+  {
+   "var": "temp_c",
+   "low": 36.1,
+   "high": 37.2,
+   "unit": "°C",
+   "assumption": true,
+   "note": "Oral. Typical adult reference range; the physiologist should confirm or replace it."
+  },
+  {
+   "var": "hgb_g_dl",
+   "low": 13.5,
+   "high": 17.5,
+   "unit": "g/dL",
+   "assumption": true,
+   "note": "Typical adult reference range; the physiologist should confirm or replace it.",
+   "sex": "M"
+  },
+  {
+   "var": "hgb_g_dl",
+   "low": 12.0,
+   "high": 15.5,
+   "unit": "g/dL",
+   "assumption": true,
+   "note": "Typical adult reference range; the physiologist should confirm or replace it.",
+   "sex": "F"
+  },
+  {
+   "var": "wbc_10e9_l",
+   "low": 4.0,
+   "high": 11.0,
+   "unit": "10^9/L",
+   "assumption": true,
+   "note": "Typical adult reference range; the physiologist should confirm or replace it."
+  },
+  {
+   "var": "glucose_mmol_l",
+   "low": 3.9,
+   "high": 5.5,
+   "unit": "mmol/L",
+   "assumption": true,
+   "note": "Fasting. Typical adult reference range; the physiologist should confirm or replace it."
+  }
+ ],
+ "adaptations": [
+  {
+   "envs": [
+    "T1",
+    "T2",
+    "T4"
+   ],
+   "var": "24-h mean arterial pressure",
+   "change": "-10 mmHg",
+   "after_days": 60,
+   "source": {
+    "doc": "Norsk P, Asmar A, Damgaard M, Christensen NJ. Fluid shifts, vasodilatation and ambulatory blood pressure reduction during long duration spaceflight. J Physiol 2015;593:573-584 (as summarized in Tank J, Jordan J. Mighty hearts in space. J Physiol 2015;593:485-486)",
+    "url": "https://doi.org/10.1113/jphysiol.2014.284869",
+    "locator": "8 male ISS astronauts, several months in flight, versus seated preflight"
+   },
+   "note": "Ground baseline was seated, which complicates the comparison. after_days is our reading of 'several months'."
+  },
+  {
+   "envs": [
+    "T1",
+    "T2",
+    "T4"
+   ],
+   "var": "cardiac output",
+   "change": "+41%",
+   "after_days": 60,
+   "source": {
+    "doc": "Norsk P, Asmar A, Damgaard M, Christensen NJ. Fluid shifts, vasodilatation and ambulatory blood pressure reduction during long duration spaceflight. J Physiol 2015;593:573-584 (as summarized in Tank J, Jordan J. Mighty hearts in space. J Physiol 2015;593:485-486)",
+    "url": "https://doi.org/10.1113/jphysiol.2014.284869",
+    "locator": "8 male ISS astronauts, several months in flight, versus seated preflight"
+   }
+  },
+  {
+   "envs": [
+    "T1",
+    "T2",
+    "T4"
+   ],
+   "var": "total peripheral resistance",
+   "change": "reduced (vasodilatation)",
+   "after_days": 60,
+   "source": {
+    "doc": "Norsk P, Asmar A, Damgaard M, Christensen NJ. Fluid shifts, vasodilatation and ambulatory blood pressure reduction during long duration spaceflight. J Physiol 2015;593:573-584 (as summarized in Tank J, Jordan J. Mighty hearts in space. J Physiol 2015;593:485-486)",
+    "url": "https://doi.org/10.1113/jphysiol.2014.284869",
+    "locator": "8 male ISS astronauts, several months in flight, versus seated preflight"
+   }
+  },
+  {
+   "envs": [
+    "T1",
+    "T2",
+    "T4"
+   ],
+   "var": "hr",
+   "change": "no consistent change; studies disagree",
+   "assumption": true,
+   "note": "Reported both unchanged and increased versus supine baseline; needs a primary source."
+  },
+  {
+   "envs": [
+    "T1",
+    "T2",
+    "T4"
+   ],
+   "var": "plasma volume",
+   "change": "reduced after the early headward fluid shift; size to be sourced",
+   "after_days": 2,
+   "assumption": true
+  },
+  {
+   "envs": [
+    "T1",
+    "T2",
+    "T4"
+   ],
+   "var": "headward fluid shift",
+   "change": "facial puffiness, nasal congestion, thinner legs in the first days",
+   "after_days": 0,
+   "assumption": true
+  },
+  {
+   "envs": [
+    "T3",
+    "T5"
+   ],
+   "var": "all cardiovascular measures",
+   "change": "no in-flight data for partial gravity; treat as between Earth and microgravity",
+   "assumption": true,
+   "note": "Arrival on Mars follows months of microgravity transit, so deconditioning carries over."
+  }
+ ]
+}

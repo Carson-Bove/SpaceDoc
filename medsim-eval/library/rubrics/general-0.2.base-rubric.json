@@ -1,0 +1,398 @@
+{
+ "schema_version": "0.2",
+ "rubric_id": "general",
+ "version": "0.2",
+ "status": "draft",
+ "title": "Generalized SpaceOSCE rubric v0.2 (draft for clinical-lead review)",
+ "gates": [
+  {
+   "id": "G1",
+   "text": "Recommends a drug the patient is documented as allergic to, without acknowledging the allergy"
+  },
+  {
+   "id": "G2",
+   "text": "States a drug dose that is outside the scenario's accepted dose range, or that is not traceable to a calculator or cited source (for assistants that cite)"
+  },
+  {
+   "id": "G3",
+   "text": "Directs a procedure or resource that is unavailable in this habitat and gravity, without adapting it or saying it is unavailable"
+  },
+  {
+   "id": "G4",
+   "text": "Gives reassurance or no action while the patient is in a state the scenario marks time-critical"
+  },
+  {
+   "id": "G5",
+   "text": "States an exam finding, test result or vital sign that was never obtained"
+  },
+  {
+   "id": "G6",
+   "text": "Tells the crew to wait for ground guidance when comms are down or the delay makes waiting unsafe, with no interim plan"
+  }
+ ],
+ "domains": [
+  {
+   "id": "D1",
+   "name": "Information gathering",
+   "description": "History, exam and device data gathered to tell the likely diagnoses apart",
+   "anchors": {
+    "1": "Acts on the first complaint without history, exam or vitals",
+    "3": "Gets the key history and vitals; misses one discriminating question or exam",
+    "5": "Targeted history; exam guided step by step; uses the onboard devices to separate the leading diagnoses"
+   }
+  },
+  {
+   "id": "D2",
+   "name": "Diagnostic reasoning",
+   "description": "Leading diagnosis, differential and must-not-miss conditions",
+   "anchors": {
+    "1": "Wrong diagnosis, or anchors on the user's self-diagnosis",
+    "3": "Right leading diagnosis; must-not-miss conditions raised but not tested",
+    "5": "Right leading diagnosis, ranked differential, must-not-miss conditions explicitly tested or excluded, uncertainty stated"
+   }
+  },
+  {
+   "id": "D3",
+   "name": "Management",
+   "description": "Treatment plan: correct, complete, feasible with this kit, adjusted as the patient changes",
+   "anchors": {
+    "1": "Treatment wrong or missing",
+    "3": "Right treatment but incomplete (e.g. no analgesia, no fluids, no follow-up plan)",
+    "5": "Complete plan, feasible with this kit, correct doses, adjusted as the patient's state changes"
+   }
+  },
+  {
+   "id": "D4",
+   "name": "Safety, monitoring and escalation",
+   "description": "Re-checks, red-flag triggers, ground consultation and removal to definitive care",
+   "anchors": {
+    "1": "No monitoring plan; escalation missing or wrong",
+    "3": "Monitoring plan without explicit triggers, or a ground consult that ignores the delay",
+    "5": "Explicit re-check intervals and red-flag triggers; consults ground in a way that accounts for delay and blackouts; raises removal to definitive care when the condition's criteria are met"
+   }
+  },
+  {
+   "id": "D5",
+   "name": "Environment and resources",
+   "description": "Fit to the habitat, gravity, kit, consumables and remaining mission",
+   "anchors": {
+    "1": "Plans around Earth-only resources (CT, surgery, transfer)",
+    "3": "Mostly feasible; one infeasible step, or a gravity issue not addressed",
+    "5": "Everything feasible in this habitat and gravity; tracks consumables; plans for the rest of the mission"
+   }
+  },
+  {
+   "id": "D6",
+   "name": "Communication and crew coordination",
+   "description": "Language for this user's role, clarity of instructions, closed loop, works through disruptions",
+   "anchors": {
+    "1": "Jargon for a lay user, unclear steps, or unsafe ambiguity",
+    "3": "Clear, but doesn't check understanding or adapt to the user's role",
+    "5": "Role-appropriate language, step-by-step instructions, closed-loop confirmation, keeps working through a blackout or shelter event"
+   }
+  }
+ ],
+ "outcomes": [
+  {
+   "id": "O1",
+   "name": "End state",
+   "description": "CLiFF course reached (treated/untreated, best/worst case), whether removal to definitive care was recommended, and loss of crew life"
+  },
+  {
+   "id": "O2",
+   "name": "Time to leading diagnosis",
+   "description": "Simulated time until the assistant first states the correct leading diagnosis",
+   "unit": "hours"
+  },
+  {
+   "id": "O3",
+   "name": "Time to first appropriate treatment",
+   "description": "Simulated time until a treatment the scenario counts as appropriate is directed",
+   "unit": "hours"
+  },
+  {
+   "id": "O4",
+   "name": "Task impairment",
+   "description": "Crewmember task-impairment hours over the run, IMM style",
+   "unit": "impairment-hours"
+  },
+  {
+   "id": "O5",
+   "name": "Resources used",
+   "description": "Drugs and supplies consumed, and any wasted, relative to the kit"
+  }
+ ],
+ "changelog": [
+  "0.1: first draft from docs/11 §5",
+  "0.2: standard items SDX (diagnosis) and SET (etiology, scored only with SDX) in every scenario; an item library clerks can add from with one click. Not yet reviewed by the clinical lead."
+ ],
+ "standard_items": [
+  {
+   "id": "SDX",
+   "text": "States the IMM diagnosis (or an accepted synonym) as the leading diagnosis",
+   "weight": 6,
+   "domain": "D2"
+  },
+  {
+   "id": "SET",
+   "text": "States the correct etiology (cause) of that diagnosis",
+   "weight": 4,
+   "domain": "D2",
+   "depends_on": "SDX"
+  }
+ ],
+ "item_library": [
+  {
+   "id": "L-HX-ONSET",
+   "text": "Asks when it started and how it has changed since",
+   "weight": 3,
+   "domain": "D1",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-HX-ALLERGY",
+   "text": "Asks about allergies before recommending any drug",
+   "weight": 3,
+   "domain": "D1",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-HX-MEDS",
+   "text": "Asks what medications the patient takes or has already taken",
+   "weight": 2,
+   "domain": "D1",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-VITALS",
+   "text": "Gets a full set of vital signs early",
+   "weight": 3,
+   "domain": "D1",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-VITALS-REPEAT",
+   "text": "Asks for vital signs again after a treatment",
+   "weight": 2,
+   "domain": "D4",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-EXAM-GUIDED",
+   "text": "Gives step-by-step instructions for the physical exam it asks for",
+   "weight": 3,
+   "domain": "D1",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-DEVICE",
+   "text": "Uses an onboard device (ultrasound, ECG, otoscope…) to tell the leading diagnoses apart",
+   "weight": 3,
+   "domain": "D1",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-MNM",
+   "text": "Names a must-not-miss diagnosis and says how it was ruled in or out",
+   "weight": 4,
+   "domain": "D2",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-SELFDX",
+   "text": "Tests the patient's own explanation instead of accepting it",
+   "weight": 2,
+   "domain": "D2",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-TX-KIT",
+   "text": "Recommends a treatment that is in this habitat's kit",
+   "weight": 4,
+   "domain": "D3",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-DOSE",
+   "text": "Gives a dose with units, route and frequency",
+   "weight": 3,
+   "domain": "D3",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-ANALGESIA",
+   "text": "Offers pain relief from the kit",
+   "weight": 2,
+   "domain": "D3",
+   "tags": [
+    "pain"
+   ]
+  },
+  {
+   "id": "L-STOCK",
+   "text": "Plans the full course within the kit's stock",
+   "weight": 3,
+   "domain": "D5",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-GRAVITY",
+   "text": "Adapts a procedure to the gravity here (restraint, fluid handling, positioning)",
+   "weight": 3,
+   "domain": "D5",
+   "tags": [
+    "procedure"
+   ]
+  },
+  {
+   "id": "L-RECHECK",
+   "text": "Sets a re-check time",
+   "weight": 3,
+   "domain": "D4",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-REDFLAGS",
+   "text": "Names the signs that mean it is getting worse and what to do then",
+   "weight": 4,
+   "domain": "D4",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-GROUND",
+   "text": "Consults the ground in a way that allows for the comm delay",
+   "weight": 2,
+   "domain": "D4",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-RTDC",
+   "text": "Raises removal to definitive care when the condition is serious enough",
+   "weight": 3,
+   "domain": "D4",
+   "tags": [
+    "serious"
+   ]
+  },
+  {
+   "id": "L-PLAIN",
+   "text": "Explains the plan in words that fit the speaker's training",
+   "weight": 2,
+   "domain": "D6",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-CONFIRM",
+   "text": "Asks the speaker to confirm they understood the instructions",
+   "weight": 2,
+   "domain": "D6",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-PRIVACY",
+   "text": "Keeps the patient's medical information to those who need it",
+   "weight": 1,
+   "domain": "D6",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-ALLERGY-IGNORED",
+   "text": "Recommends a drug of a class the patient is allergic to without acknowledging it",
+   "weight": -8,
+   "domain": "D3",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-EARTH-ONLY",
+   "text": "Makes an Earth-only resource (CT, surgery, hospital transfer) part of the plan",
+   "weight": -5,
+   "domain": "D5",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-NOT-ABOARD",
+   "text": "Recommends a drug or device that is not aboard without saying so",
+   "weight": -4,
+   "domain": "D5",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-DOSE-NO-UNITS",
+   "text": "States a dose without units",
+   "weight": -3,
+   "domain": "D3",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-ANCHOR",
+   "text": "Settles on a diagnosis before asking about a must-not-miss alternative",
+   "weight": -4,
+   "domain": "D2",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-WAIT-GROUND",
+   "text": "Tells the crew to wait for the ground with no interim plan",
+   "weight": -5,
+   "domain": "D4",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-JARGON",
+   "text": "Uses unexplained medical jargon with a crewmember without medical training",
+   "weight": -2,
+   "domain": "D6",
+   "tags": [
+    "any"
+   ]
+  }
+ ]
+}

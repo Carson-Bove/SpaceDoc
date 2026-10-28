@@ -16,15 +16,18 @@ from typing import Literal
 from pydantic import BaseModel, ValidationError
 
 from medsim_eval.models import FILE_TYPES, file_type
-from medsim_eval.models.condition import ConditionIndex
+from medsim_eval.models.condition import Condition, ConditionIndex
+from medsim_eval.models.crew import CrewRoster, CrewTwin
 from medsim_eval.models.drm import DRM
-from medsim_eval.models.environment import EnvironmentSet
+from medsim_eval.models.environment import Environment, EnvironmentSet
 from medsim_eval.models.habitat import Habitat
+from medsim_eval.models.physiology import Physiology
+from medsim_eval.models.reference import Encyclopedia, SymptomList
 from medsim_eval.models.rubric import BaseRubric, ScenarioRubric
 from medsim_eval.models.scenario import KNOWN_STATE_VARS, Scenario
 from medsim_eval.simtime import parse_duration, parse_offset
 
-# The library that ships with the package (DRMs, habitats, conditions, base rubrics).
+# The library that ships with the package (DRMs, habitats, conditions, crew, base rubrics…).
 DEFAULT_LIBRARY = Path(__file__).resolve().parents[2] / "library"
 
 # Words that make a binary item a judgment call instead of an observation.
@@ -33,9 +36,16 @@ VAGUE = re.compile(
 )
 
 
+# Conditions a crewmember can't have after a given operation: condition id -> surgery words.
+RULED_OUT_BY_SURGERY = {
+    "appendicitis": ("appendectomy",),
+    "cholelithiasis-biliary-colic-acute": ("cholecystectomy",),
+}
+
+
 @dataclass
 class Issue:
-    level: Literal["error", "warning"]
+    level: Literal["error", "warning", "info"]
     file: str
     message: str
 
@@ -48,8 +58,12 @@ class Library:
     drms: dict[str, DRM] = field(default_factory=dict)
     habitats: dict[str, Habitat] = field(default_factory=dict)
     base_rubrics: dict[str, BaseRubric] = field(default_factory=dict)
-    conditions: dict[str, object] = field(default_factory=dict)
-    environments: dict[str, object] = field(default_factory=dict)
+    conditions: dict[str, Condition] = field(default_factory=dict)
+    environments: dict[str, Environment] = field(default_factory=dict)
+    crew: dict[str, CrewTwin] = field(default_factory=dict)
+    physiology: list[Physiology] = field(default_factory=list)
+    symptoms: set[str] = field(default_factory=set)
+    encyclopedia: list[Encyclopedia] = field(default_factory=list)
 
     def add(self, model: BaseModel) -> None:
         if isinstance(model, DRM):
@@ -62,6 +76,23 @@ class Library:
             self.conditions.update({c.cliff_id: c for c in model.conditions})
         elif isinstance(model, EnvironmentSet):
             self.environments.update({e.env: e for e in model.environments})
+        elif isinstance(model, CrewRoster):
+            self.crew.update({c.crew_id: c for c in model.crew})
+        elif isinstance(model, Physiology):
+            self.physiology.append(model)
+        elif isinstance(model, SymptomList):
+            self.symptoms.update(s.code for s in model.symptoms)
+        elif isinstance(model, Encyclopedia):
+            self.encyclopedia.append(model)
+
+    def habitats_in(self, env: str) -> list[Habitat]:
+        """The habitats where a case runs in this environment (its representative DRM phase)."""
+        e = self.environments.get(env)
+        drm = self.drms.get(e.representative.drm) if e and e.representative else None
+        phase = (
+            next((p for p in drm.phases if p.id == e.representative.phase), None) if drm else None
+        )
+        return [self.habitats[h] for h in (phase.habitats if phase else []) if h in self.habitats]
 
 
 def _files(paths: list[Path]) -> list[Path]:
@@ -93,6 +124,14 @@ def load(path: Path) -> tuple[BaseModel | None, list[Issue]]:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as e:
         return None, [Issue("error", name, f"not readable JSON: {e}")]
+    if (
+        suffix == ".scenario.json"
+        and isinstance(data, dict)
+        and data.get("schema_version") == "0.1"
+    ):
+        return None, [
+            Issue("error", name, "this is a v0.1 scenario; convert it with `medsim migrate` first")
+        ]
     try:
         return FILE_TYPES[suffix].model_validate(data), []
     except ValidationError as e:
@@ -181,6 +220,29 @@ def check_rubric(rubric: ScenarioRubric, lib: Library, name: str) -> list[Issue]
     return issues
 
 
+def check_crew(roster: CrewRoster, lib: Library, name: str) -> list[Issue]:
+    """Every baseline should sit inside the normal ranges."""
+    issues = []
+    ranges = [r for p in lib.physiology for r in p.ranges]
+    for c in roster.crew:
+        for var, value in c.baseline.model_dump().items():
+            for r in ranges:
+                if (
+                    r.var == var
+                    and (r.sex is None or r.sex == c.sex)
+                    and not r.low <= value <= r.high
+                ):
+                    issues.append(
+                        Issue(
+                            "warning",
+                            name,
+                            f"{c.crew_id}: baseline {var} {value:g} is outside the normal range "
+                            f"{r.low:g}–{r.high:g} {r.unit}",
+                        )
+                    )
+    return issues
+
+
 def check_scenario(
     sc: Scenario, lib: Library, name: str, rubric: ScenarioRubric | None
 ) -> list[Issue]:
@@ -192,78 +254,87 @@ def check_scenario(
     def warn(msg: str) -> None:
         issues.append(Issue("warning", name, msg))
 
-    drm = lib.drms.get(sc.drm)
-    if drm is None:
-        err(f"unknown DRM {sc.drm!r}")
-    else:
-        phase = next((p for p in drm.phases if p.id == sc.phase), None)
-        if phase is None:
-            err(f"DRM {sc.drm} has no phase {sc.phase!r} (phases: {[p.id for p in drm.phases]})")
-        else:
-            start, end = drm.phase_window(sc.phase)
-            if not start <= sc.mission_day < end:
-                err(
-                    f"mission_day {sc.mission_day:g} is outside phase {sc.phase} (days {start:g} to {end:g})"
-                )
-            _check_refs(sc, [lib.habitats[h] for h in phase.habitats if h in lib.habitats], warn)
-        if sc.crewmember not in {c.crew_id for c in drm.crew}:
-            err(f"crewmember {sc.crewmember!r} is not in DRM {sc.drm}")
-
-    if lib.conditions and sc.condition.cliff_id not in lib.conditions:
-        err(f"unknown condition {sc.condition.cliff_id!r}; pick one from the CLiFF index")
-
     end = parse_duration(sc.duration)
-    for e in [*sc.timeline, *sc.events]:
-        if parse_offset(e.t) > end:
-            warn(f"{e.kind} at {e.t} is after the scenario ends ({sc.duration})")
-    for entry in sc.timeline:
-        for var in entry.state:
-            if var not in KNOWN_STATE_VARS:
-                warn(f"keyframe at {entry.t}: {var!r} is not a known state variable")
-    for b in sc.branches:
-        if b.when.type == "state" and b.when.var not in KNOWN_STATE_VARS:
-            warn(f"branch {b.id}: {b.when.var!r} is not a known state variable")
+    people = {p.crew_id for p in sc.patients} | {sc.speaker.crew_id}
+    for cid in sorted(people):
+        if lib.crew and cid not in lib.crew:
+            err(f"{cid!r} is not in the crew roster")
+    if lib.symptoms:
+        for code in sc.symptoms:
+            if code not in lib.symptoms:
+                err(f"symptom code {code!r} is not in the ICD-10-CM symptom list")
 
-    if sc.status == "approved":
-        if not sc.reviewers:
+    for p in sc.patients:
+        cond = lib.conditions.get(p.condition)
+        if lib.conditions and cond is None:
+            err(f"{p.crew_id}: unknown condition {p.condition!r}; pick one from the CLiFF index")
+        twin = lib.crew.get(p.crew_id)
+        surgery = list(p.chart.past_surgical) + (list(twin.chart.past_surgical) if twin else [])
+        for word in RULED_OUT_BY_SURGERY.get(p.condition, ()):
+            if any(word in h.lower() for h in surgery):
+                err(f"{p.crew_id} has had an {word}, so can't have {p.condition}")
+        if p.ground_truth.etiology.startswith("TODO"):
+            warn(f"{p.crew_id}: the etiology still needs writing")
+        if cond and cond.applicability:
+            app = cond.applicability
+            if twin and app.sex != "any" and twin.sex != app.sex:
+                err(f"{p.crew_id}: {cond.name} only occurs in {app.sex} crewmembers")
+            outside = [e for e in sc.environments if e not in app.envs]
+            if outside:
+                warn(
+                    f"{cond.name} is not expected in {', '.join(outside)} per its CLiFF "
+                    f"(segment: {app.segment}); untick those environments or say why in complicators"
+                )
+        for e in p.timeline:
+            if parse_offset(e.t) > end:
+                warn(f"{p.crew_id}: {e.kind} at {e.t} is after the scenario ends ({sc.duration})")
+            for var in e.state:
+                if var not in KNOWN_STATE_VARS:
+                    warn(f"{p.crew_id}: keyframe at {e.t}: {var!r} is not a known state variable")
+        for tc in p.time_critical:
+            if parse_offset(tc.by) > end:
+                warn(f"{p.crew_id}: time-critical deadline {tc.by} is after the scenario ends")
+            for env in sc.environments:
+                aboard = {i.id for h in lib.habitats_in(env) for i in [*h.equipment, *h.formulary]}
+                if tc.action.refs and lib.habitats_in(env) and not set(tc.action.refs) & aboard:
+                    warn(
+                        f"{p.crew_id}: none of {tc.action.refs} is aboard in {env}, so the time-critical "
+                        "treatment can't be given there"
+                    )
+
+    for inj in sc.injects:
+        if parse_offset(inj.t) > end:
+            warn(f"inject {inj.kind} at {inj.t} is after the scenario ends ({sc.duration})")
+
+    if sc.review.status == "approved":
+        if not sc.review.reviewers:
             err("approved scenarios need at least one reviewer")
-        if sc.physiology_review == "requested":
+        if sc.review.physiology_review == "requested":
             err("physiology review was requested but isn't done")
 
     if rubric is not None:
         if rubric.scenario_id != sc.scenario_id:
             err(f"rubric {sc.rubric} is for {rubric.scenario_id!r}, not {sc.scenario_id!r}")
+        ids = {p.crew_id for p in sc.patients}
         for item in rubric.items:
             if item.by and parse_offset(item.by) > end:
                 warn(f"rubric item {item.id}: deadline {item.by} is after the scenario ends")
+            if item.patient and item.patient not in ids:
+                err(f"rubric item {item.id}: {item.patient!r} is not a patient in this scenario")
+            if item.requires:
+                for env in sc.environments:
+                    aboard = {
+                        i.id for h in lib.habitats_in(env) for i in [*h.equipment, *h.formulary]
+                    }
+                    if lib.habitats_in(env) and not set(item.requires) & aboard:
+                        issues.append(
+                            Issue(
+                                "info",
+                                name,
+                                f"rubric item {item.id}: not applicable in {env} (nothing it requires is aboard)",
+                            )
+                        )
     return issues
-
-
-def _check_refs(sc: Scenario, habitats: list[Habitat], warn) -> None:
-    """Treatments and equipment named in branches and events should exist aboard."""
-    if not habitats:
-        return
-    aboard = {i.id for h in habitats for i in [*h.equipment, *h.formulary]}
-    for b in sc.branches:
-        act = b.when.action
-        if (
-            act
-            and act.ref
-            and act.kind in ("treatment", "test", "imaging", "procedure")
-            and act.ref not in aboard
-        ):
-            warn(
-                f"branch {b.id}: {act.ref!r} is not in this phase's habitat equipment or formulary"
-            )
-    for e in sc.events:
-        if (
-            e.kind in ("equipment_failure", "consumable_loss")
-            and e.target
-            and e.target not in aboard
-        ):
-            warn(
-                f"event at {e.t}: {e.target!r} is not in this phase's habitat equipment or formulary"
-            )
 
 
 def validate(paths: list[Path], library_dir: Path = DEFAULT_LIBRARY) -> list[Issue]:
@@ -289,6 +360,8 @@ def validate(paths: list[Path], library_dir: Path = DEFAULT_LIBRARY) -> list[Iss
             issues += check_drm(model, lib, name)
         elif isinstance(model, ScenarioRubric):
             issues += check_rubric(model, lib, name)
+        elif isinstance(model, CrewRoster):
+            issues += check_crew(model, lib, name)
         elif isinstance(model, Scenario):
             rubric_path = f.parent / model.rubric
             rubric = None

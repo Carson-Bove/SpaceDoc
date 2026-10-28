@@ -1,13 +1,19 @@
-"""Scenario: one medical event, in one DRM phase, for one crewmember (docs/11 §4.3)."""
+"""Scenario: a medical case (docs/11 §4.3).
+
+A scenario no longer names a mission. It says where the case *can* happen; the runner places it
+in representative missions for those environments, so one case is tested across environments.
+"""
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Literal
 
 from pydantic import Field, field_validator, model_validator
 
+from medsim_eval.models.chart import Chart
 from medsim_eval.models.common import (
     Duration,
+    Env,
     Id,
     Offset,
     Strict,
@@ -18,6 +24,7 @@ from medsim_eval.models.common import (
 )
 
 Status = Literal["draft", "in_review", "physiology_review", "approved", "retired"]
+ALL_ENVS: list[Env] = ["T1", "T2", "T3", "T4", "T5"]
 
 # Twin state variables the validator knows. Others are allowed but warned about, so the
 # physiologist can decide whether to add them.
@@ -38,17 +45,25 @@ KNOWN_STATE_VARS = {
     "mental_status": "alert | confused | drowsy | unresponsive",
 }
 
+# What can be wrong with the speaker's input, for input_quality above 1.
+INPUT_PROBLEMS = {
+    "vague": "describes things loosely",
+    "wrong_terms": "uses the wrong words for body parts, drugs or devices",
+    "missing_details": "leaves things out unless asked directly",
+    "misread_numbers": "reads or reports numbers wrongly",
+    "contradictory": "contradicts what they said earlier",
+    "panicked": "rushed, repeats themself, hard to keep on track",
+}
 
-class Condition(Strict):
-    cliff_id: Id = Field(description="Condition id from the CLiFF index")
-    course: Literal["auto", "best_case", "worst_case"] = Field(
-        "auto",
-        description="auto: the twin picks best/worst case from the CLiFF probabilities and the "
-        "assistant's actions. Fixing it forces that course",
-    )
+
+class Author(Strict):
+    name: str = Field(description="Full name")
+    contact: str = Field(description="Email or phone")
 
 
 class TimelineEntry(Timed):
+    """One point in the course of illness."""
+
     kind: Literal["symptom", "finding", "keyframe", "note"]
     text: str | None = None
     state: dict[str, float | bool | str] = Field(
@@ -81,7 +96,9 @@ EventKind = Literal[
 ]
 
 
-class Event(Timed):
+class Inject(Timed):
+    """A mission event dropped into the run, as in a launch-readiness sim."""
+
     kind: EventKind
     duration: Duration | None = None
     target: str | None = Field(None, description="Equipment, drug or crew id affected, if any")
@@ -94,7 +111,7 @@ class Event(Timed):
 
 
 class ActionRef(Strict):
-    """Something the assistant can direct. `ref` names the drug, test or equipment when it matters."""
+    """Something the assistant can direct. `refs` names kit items when it matters (any of them)."""
 
     kind: Literal[
         "exam",
@@ -107,114 +124,125 @@ class ActionRef(Strict):
         "rtdc",
         "other",
     ]
-    ref: str | None = Field(None, description="e.g. a formulary or equipment id from the habitat")
+    refs: list[str] = Field(default=[], description="Kit item ids; any one of them counts")
     text: str | None = Field(None, description="Plain-words description for reviewers")
 
 
-class Trigger(Strict):
-    type: Literal["action_by", "no_action_by", "state"]
-    action: ActionRef | None = None
-    by: Offset | None = None
-    var: str | None = None
-    op: Literal["<", "<=", ">", ">=", "==", "!="] | None = None
-    value: float | bool | str | None = None
+class TimeCritical(Strict):
+    """The standard course rule: on time pushes toward the best case, late toward the worst."""
+
+    action: ActionRef
+    by: Offset
 
     @field_validator("by")
     @classmethod
-    def _by(cls, v: str | None) -> str | None:
-        return check_offset(v) if v is not None else v
+    def _by(cls, v: str) -> str:
+        return check_offset(v)
 
     @model_validator(mode="after")
-    def _shape(self) -> Trigger:
-        if self.type in ("action_by", "no_action_by"):
-            if self.action is None or self.by is None:
-                raise ValueError(f"{self.type} needs action and by")
-        elif self.var is None or self.op is None or self.value is None:
-            raise ValueError("state trigger needs var, op and value")
+    def _said(self) -> TimeCritical:
+        if not self.action.refs and not self.action.text:
+            raise ValueError("say what counts: pick kit items or describe it")
         return self
-
-
-class Effect(Strict):
-    course: Literal["best_case", "worst_case"] | None = Field(None, description="Force the course")
-    course_bias: float | None = Field(
-        None, ge=-1, le=1, description="Nudge toward best (+) or worst (-) case without forcing it"
-    )
-    event: Event | None = Field(None, description="Inject an event")
-    state: dict[str, float | bool | str] = Field(default={}, description="Set twin state values")
-    note: str | None = None
-
-    @model_validator(mode="after")
-    def _nonempty(self) -> Effect:
-        if (
-            self.course is None
-            and self.course_bias is None
-            and self.event is None
-            and not self.state
-        ):
-            raise ValueError("an effect must change something: course, course_bias, event or state")
-        return self
-
-
-class Branch(Strict):
-    id: Id
-    when: Trigger
-    then: Effect
-    note: str | None = None
-
-
-class UserAgent(Strict):
-    """The crewmember the assistant talks to, played by an LLM."""
-
-    role: Literal["cmo", "crew", "patient"] = Field(
-        description="cmo: the crew medical officer; crew: another crewmember helping; patient: the patient themself"
-    )
-    name: str | None = None
-    knowledge: str = Field(description="Medical training, in plain words")
-    facts: dict[str, str] = Field(
-        default={}, description="What the persona knows and will say if asked (history, timing, …)"
-    )
-    behaviour: str | None = Field(
-        None, description="How they act: reluctant, anxious, downplays pain, …"
-    )
 
 
 class GroundTruth(Strict):
-    primary_dx: str
-    synonyms: dict[str, list[str]] = {}
-    acceptable_differential: list[str] = []
+    diagnosis: str | None = Field(
+        None, description="Defaults to the IMM condition's name; set to word it differently"
+    )
+    etiology: str = Field(description="The cause, e.g. obstructing appendicolith")
+    differential: list[str] = Field(default=[], description="Ranked, most likely first")
     must_not_miss: list[str] = []
+    synonyms: dict[str, list[str]] = Field(
+        default={}, description="diagnosis or etiology -> other names that count as a match"
+    )
+
+
+class PatientCase(Strict):
+    crew_id: Id = Field(description="Crewmember from the roster")
+    condition: Id = Field(description="IMM condition id from the CLiFF index")
+    chart: Chart = Field(description="The chart as it stands for this case")
+    timeline: list[TimelineEntry] = Field(
+        default=[], description="Medical timeline / course of illness"
+    )
+    time_critical: list[TimeCritical] = []
+    ground_truth: GroundTruth
+
+
+class Familiarity(Strict):
+    """1 = none, 5 = expert."""
+
+    medicine: int | None = Field(None, ge=1, le=5)
+    equipment: int | None = Field(None, ge=1, le=5)
+    assistant: int | None = Field(None, ge=1, le=5)
+
+
+class HistoryIfAsked(Strict):
+    if_asked: str = Field(description="e.g. whether the pain moves")
+    says: str = Field(description="e.g. it started around the belly button, now it's lower right")
+
+
+class Speaker(Strict):
+    """The crewmember the assistant talks to, played by an AI from their roster entry."""
+
+    crew_id: Id
+    role: Literal["patient", "cmo", "crew"] = Field(
+        description="patient: the patient themself; cmo: the crew medical officer; crew: another crewmember helping"
+    )
+    opening: str = Field(description="Chief complaint (patient) or opening question (CMO, crew)")
+    emergent: bool = Field(False, description="Acts under time pressure; changes behaviour only")
+    input_quality: int = Field(1, ge=1, le=5, description="1 clear and accurate … 5 very poor")
+    input_problems: list[str] = Field(
+        default=[], description="Which kinds of poor input, see INPUT_PROBLEMS"
+    )
+    familiarity: Familiarity = Field(
+        default_factory=Familiarity, description="Overrides the roster"
+    )
+    behaviour: str | None = None
+    additional_history: list[HistoryIfAsked] = []
+
+    @model_validator(mode="after")
+    def _problems(self) -> Speaker:
+        unknown = set(self.input_problems) - set(INPUT_PROBLEMS)
+        if unknown:
+            raise ValueError(
+                f"unknown input problems {sorted(unknown)}; use {sorted(INPUT_PROBLEMS)}"
+            )
+        if self.input_quality == 1 and self.input_problems:
+            raise ValueError(
+                "input quality 1 means clear input; remove the input problems or raise the level"
+            )
+        return self
+
+
+class Review(Strict):
+    status: Status = "draft"
+    reviewers: list[str] = []
+    physiology_review: Literal["not_needed", "requested", "done"] = "not_needed"
+    notes_for_physiologist: str | None = None
+    notes: str | None = None
 
 
 class Scenario(Versioned):
     scenario_id: Id
-    title: str
-    status: Status = "draft"
-    authors: list[str] = Field(min_length=1)
-    reviewers: list[str] = []
-    physiology_review: Literal["not_needed", "requested", "done"] = "not_needed"
-    drm: Id
-    phase: Id
-    mission_day: float = Field(ge=0)
-    crewmember: Id
-    condition: Condition
-    patient: dict[str, Any] = Field(
-        default={},
-        description="Overrides and extras: age, weight_kg, allergies, medications, history",
+    title: str = Field(description="Chief complaint, in a few words")
+    authors: list[Author] = Field(min_length=1)
+    symptoms: list[str] = Field(default=[], description="ICD-10-CM symptom codes, e.g. R10.31")
+    environments: list[Env] = Field(
+        default_factory=lambda: list(ALL_ENVS), min_length=1, description="Where this can happen"
     )
-    presentation: str = Field(description="What the user agent says first")
-    timeline: list[TimelineEntry] = []
-    events: list[Event] = []
-    branches: list[Branch] = []
+    patients: list[PatientCase] = Field(
+        min_length=1, description="One today; several for triage later"
+    )
+    speaker: Speaker
+    injects: list[Inject] = []
     complicators: str | None = Field(
         None, description="Free text: anything that makes this case harder"
     )
-    user_agent: UserAgent
-    ground_truth: GroundTruth
     rubric: str = Field(description="Rubric file name, relative to this file")
     duration: Duration = Field("3d", description="How long to simulate before the run ends")
+    review: Review = Field(default_factory=Review)
     tags: list[str] = []
-    notes_for_physiologist: str | None = None
-    notes: str | None = None
 
     @field_validator("duration")
     @classmethod
@@ -222,8 +250,16 @@ class Scenario(Versioned):
         return check_duration(v)
 
     @model_validator(mode="after")
-    def _ids(self) -> Scenario:
-        ids = [b.id for b in self.branches]
+    def _consistent(self) -> Scenario:
+        if len(set(self.environments)) != len(self.environments):
+            raise ValueError("environments are listed twice")
+        ids = [p.crew_id for p in self.patients]
         if len(ids) != len(set(ids)):
-            raise ValueError("branch ids must be unique")
+            raise ValueError("each patient must be a different crewmember")
+        if self.speaker.role == "patient" and self.speaker.crew_id not in ids:
+            raise ValueError("the speaker is the patient, so speaker.crew_id must be a patient")
+        if self.speaker.role != "patient" and self.speaker.crew_id in ids:
+            raise ValueError(
+                f"{self.speaker.crew_id} is a patient; set the speaker's role to patient"
+            )
         return self

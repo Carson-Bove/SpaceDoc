@@ -89,6 +89,45 @@
           "default": null,
           "description": "Required for rating items"
         },
+        "requires": {
+          "default": [],
+          "description": "Kit item ids; if none of them is aboard in a run, the item is not applicable",
+          "items": {
+            "type": "string"
+          },
+          "title": "Requires",
+          "type": "array"
+        },
+        "patient": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For several-patient cases: which crewmember",
+          "title": "Patient"
+        },
+        "from_library": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Library item this was added from",
+          "title": "From Library"
+        },
         "rationale": {
           "anyOf": [
             {
@@ -137,7 +176,7 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "default": "0.1",
+      "default": "0.2",
       "title": "Schema Version",
       "type": "string"
     },
@@ -154,7 +193,7 @@
       "type": "string"
     },
     "base": {
-      "description": "Base rubric, e.g. general@0.1",
+      "description": "Base rubric, e.g. general@0.2",
       "pattern": "^[A-Za-z0-9._-]+@\\d+\\.\\d+$",
       "title": "Base",
       "type": "string"

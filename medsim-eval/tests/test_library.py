@@ -38,6 +38,54 @@ def test_condition_index_uses_the_2023_list():
     assert all(c["course"]["reviewed_by"] is None for c in conditions)
 
 
+def test_condition_applicability_from_the_cliffs():
+    idx = {c["cliff_id"]: c for c in load("conditions/imm.conditions.json")["conditions"]}
+    assert idx["appendicitis"]["applicability"]["envs"] == ["T1", "T2", "T3", "T4", "T5"]
+    assert idx["appendicitis"]["summary"].startswith("Appendicitis is acute inflammation")
+    assert idx["dust-exposure-lunar-surface-eva"]["applicability"]["envs"] == ["T3"]
+    assert idx["eva-related-decompression-sickness"]["applicability"]["eva"] is True
+    sms = idx["space-adaptation-space-motion-sickness"]["applicability"]
+    assert sms["timing"] == "early_flight" and sms["onset_hours"] == [1, 120]
+    # SANS is in the space-adaptation segment but develops over weeks.
+    assert (
+        idx["space-flight-associated-neuro-ocular-syndrome-sans"]["applicability"]["timing"]
+        == "any"
+    )
+    # Sex-specific only when every incidence row names the same sex.
+    assert idx["prostatitis-acute"]["applicability"]["sex"] == "M"
+    assert idx["anaphylaxis"]["applicability"]["sex"] == "any"
+
+
+def test_roster_matches_the_corps_shape():
+    crew = load("crew/active-corps.crew.json")["crew"]
+    assert len(crew) == 20
+    assert sum(c["sex"] == "F" for c in crew) == 8
+    assert sum(c["medical_training"]["level"] == "physician" for c in crew) == 3
+    for trait in ("cac", "crowns", "contacts", "prior_abd_surgery"):
+        assert sum(c["imm"][trait] for c in crew) == 5, trait
+    assert all(c["synthetic"] for c in crew)
+
+
+def test_every_environment_has_a_run_context():
+    envs = load("environments/missions.environments.json")["environments"]
+    assert all(e["representative"] for e in envs)
+    assert [e["env"] for e in envs if e["default_run"]] == ["T1", "T4", "T5"]
+
+
+def test_symptom_list_is_icd10cm_symptoms():
+    symptoms = load("symptoms/icd10cm.symptoms.json")["symptoms"]
+    codes = {s["code"] for s in symptoms}
+    assert {"R10.31", "R11.0", "R50.9", "M25.571", "H57.11"} <= codes
+    assert all(s["code"][0] in "RMH" for s in symptoms)
+
+
+def test_encyclopedia_drug_labels():
+    entries = {e["id"]: e for e in load("encyclopedia/reference.encyclopedia.json")["entries"]}
+    assert "dailymed" in entries["drug-ertapenem"]["source"]["url"]
+    assert "ranitidine" in entries["drug-famotidine"]["text"]  # the substitution is explained
+    assert any(e["kind"] == "term" for e in entries.values())
+
+
 def test_mars_point_of_departure_segments():
     drm = DRM.model_validate(load("drms/imm-mars-pod-860d.drm.json"))
     assert [p.days for p in drm.phases] == [90, 305, 50, 375, 40]

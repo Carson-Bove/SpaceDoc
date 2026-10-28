@@ -55,6 +55,12 @@ Citation conventions:
 
 <a id="r41"></a>**R41.** Overbeek R, Schmitz J, Rehnberg L, Benyoucef Y, Dusse F, Russomano T, Hinkelbein J. Effectiveness of CPR in Hypogravity Conditions: A Systematic Review. *Life (Basel)* 2022;12(12):1958. doi:10.3390/life12121958. PMCID: PMC9785883.
 
+<a id="r42"></a>**R42.** Jacobs S, Charvat J, Reitzel R, Wear M, Van Baalen M. Astronauts of the US National Aeronautics and Space Administration (NASA): cohort profile. *BMJ Open* 2026;16(6):e112490. doi:10.1136/bmjopen-2025-112490. PMCID: PMC13289012.
+
+<a id="r43"></a>**R43.** Norsk P, Asmar A, Damgaard M, Christensen NJ. Fluid shifts, vasodilatation and ambulatory blood pressure reduction during long duration spaceflight. *J Physiol* 2015;593:573–584. doi:10.1113/jphysiol.2014.284869. Numbers as summarized in Tank J, Jordan J. Mighty hearts in space. *J Physiol* 2015;593:485–486.
+
+<a id="r44"></a>**R44.** Blue RS, Bridge LM, Chough NG, Cushman J, Khpal M, Watkins S. Identification of Medical Training Methods for Exploration Missions. NASA/TM-2014-217384, Johnson Space Center, 2014. NTRS 20130013532. https://ntrs.nasa.gov/api/citations/20130013532/downloads/20130013532_Final.pdf
+
 ## 3. Grounding, hallucination and uncertainty
 
 <a id="r15"></a>**R15.** Lewis P, Perez E, Piktus A, et al. Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. arXiv:2005.11401v4 [preprint], 2021. The arXiv record notes acceptance at NeurIPS 2020. https://arxiv.org/abs/2005.11401

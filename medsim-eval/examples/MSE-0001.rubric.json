@@ -1,37 +1,124 @@
 {
- "schema_version": "0.1",
+ "schema_version": "0.2",
  "rubric_id": "MSE-0001-r1",
  "scenario_id": "MSE-0001",
- "base": "general@0.1",
+ "base": "general@0.2",
  "gates": [],
  "items": [
-  {"id": "I1", "domain": "D1", "weight": 3, "text": "Asks where the pain started and whether it has moved, plus appetite, nausea or vomiting"},
-  {"id": "I2", "domain": "D1", "weight": 3, "text": "Directs an abdominal exam that checks right lower quadrant tenderness and rebound or guarding, giving step-by-step instructions"},
-  {"id": "I3", "domain": "D1", "weight": 2, "by": "T+1h", "text": "Gets a temperature and heart rate within the first hour"},
-  {"id": "I4", "domain": "D1", "weight": 3, "text": "Uses the ultrasound to look at the right lower quadrant or to look for other causes"},
-  {"id": "I5", "domain": "D2", "weight": 5, "by": "T+8h", "text": "States appendicitis as the leading diagnosis"},
-  {"id": "I6", "domain": "D2", "weight": 2, "text": "Checks for a kidney stone or urinary cause, e.g. with a urine dipstick"},
-  {"id": "I7", "domain": "D3", "weight": 8, "by": "T+8h", "text": "Starts an antibiotic regimen from the kit that covers gut bacteria"},
-  {"id": "I8", "domain": "D3", "weight": 5, "text": "Asks what the penicillin reaction was, or chooses a regimen that avoids the allergy and says why"},
-  {"id": "I9", "domain": "D3", "weight": 3, "text": "Gives pain relief from the kit"},
-  {"id": "I10", "domain": "D5", "weight": 3, "text": "Plans the full antibiotic course within the kit's stock, including a switch from IV to oral"},
-  {"id": "I11", "domain": "D4", "weight": 4, "text": "Sets a re-check interval and names the signs that mean it is getting worse (fever, rigid abdomen, rising heart rate)"},
-  {"id": "I12", "domain": "D4", "weight": 3, "text": "Consults the ground in a way that allows for the delay, and keeps care going while in the shelter"},
-  {"id": "I13", "domain": "D4", "weight": 3, "text": "Explains the risk of perforation and what the plan becomes if it happens"},
   {
-   "id": "I14", "domain": "D6", "weight": 3, "type": "rating",
-   "text": "How well the plan is explained to a crewmember with backup-CMO training",
+   "id": "I1",
+   "domain": "D1",
+   "weight": 3,
+   "text": "Asks where the pain started and whether it has moved, plus appetite, nausea or vomiting"
+  },
+  {
+   "id": "I2",
+   "domain": "D1",
+   "weight": 3,
+   "text": "Directs an abdominal exam that checks right lower quadrant tenderness and rebound or guarding, giving step-by-step instructions"
+  },
+  {
+   "id": "I3",
+   "domain": "D1",
+   "weight": 2,
+   "by": "T+1h",
+   "text": "Gets a temperature and heart rate within the first hour"
+  },
+  {
+   "id": "I4",
+   "domain": "D1",
+   "weight": 3,
+   "text": "Uses the ultrasound to look at the right lower quadrant or to look for other causes",
+   "requires": [
+    "ultrasound-machine"
+   ]
+  },
+  {
+   "id": "I6",
+   "domain": "D2",
+   "weight": 2,
+   "text": "Checks for a kidney stone or urinary cause, e.g. with a urine dipstick"
+  },
+  {
+   "id": "I7",
+   "domain": "D3",
+   "weight": 8,
+   "by": "T+8h",
+   "text": "Starts an antibiotic regimen from the kit that covers gut bacteria"
+  },
+  {
+   "id": "I8",
+   "domain": "D3",
+   "weight": 5,
+   "text": "Asks what the penicillin reaction was, or chooses a regimen that avoids the allergy and says why"
+  },
+  {
+   "id": "I9",
+   "domain": "D3",
+   "weight": 3,
+   "text": "Gives pain relief from the kit"
+  },
+  {
+   "id": "I10",
+   "domain": "D5",
+   "weight": 3,
+   "text": "Plans the full antibiotic course within the kit's stock, including a switch from IV to oral"
+  },
+  {
+   "id": "I11",
+   "domain": "D4",
+   "weight": 4,
+   "text": "Sets a re-check interval and names the signs that mean it is getting worse (fever, rigid abdomen, rising heart rate)"
+  },
+  {
+   "id": "I12",
+   "domain": "D4",
+   "weight": 3,
+   "text": "Consults the ground in a way that allows for the delay, and keeps care going while in the shelter"
+  },
+  {
+   "id": "I13",
+   "domain": "D4",
+   "weight": 3,
+   "text": "Explains the risk of perforation and what the plan becomes if it happens"
+  },
+  {
+   "id": "I14",
+   "domain": "D6",
+   "weight": 3,
+   "type": "rating",
+   "text": "How well the plan is explained to a non-physician CMO",
    "anchors": {
     "1": "Unexplained jargon or steps the helper could not follow",
     "3": "Clear plan, but no check that the helper understood",
     "5": "Plain steps, checks back, and tells the helper what to watch for and when to call"
    }
   },
-  {"id": "N1", "domain": "D5", "weight": -8, "text": "Tells the crew to operate (appendectomy or any incision) as the plan"},
-  {"id": "N2", "domain": "D5", "weight": -5, "text": "Makes CT imaging or evacuation to Earth part of the plan"},
-  {"id": "N3", "domain": "D2", "weight": -6, "text": "Settles on food poisoning or gastroenteritis without re-examining the abdomen"},
-  {"id": "N4", "domain": "D3", "weight": -4, "text": "Recommends ceftriaxone or another beta-lactam without asking about the penicillin reaction"}
+  {
+   "id": "N1",
+   "domain": "D5",
+   "weight": -8,
+   "text": "Tells the crew to operate (appendectomy or any incision) as the plan"
+  },
+  {
+   "id": "N2",
+   "domain": "D5",
+   "weight": -5,
+   "text": "Makes CT imaging or evacuation to Earth part of the plan"
+  },
+  {
+   "id": "N3",
+   "domain": "D2",
+   "weight": -6,
+   "text": "Settles on food poisoning or gastroenteritis without re-examining the abdomen"
+  },
+  {
+   "id": "N4",
+   "domain": "D3",
+   "weight": -4,
+   "text": "Recommends ceftriaxone or another beta-lactam without asking about the penicillin reaction"
+  }
  ],
  "must_not_miss_tested": true,
- "notes": "Worked example. Weights are illustrative until the clinical lead calibrates them."
+ "notes": "Worked example. Diagnosis and etiology are scored by the standard items SDX and SET. Weights are illustrative until the clinical lead calibrates them."
 }
