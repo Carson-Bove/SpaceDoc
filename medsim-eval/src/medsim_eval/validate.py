@@ -264,6 +264,9 @@ def check_scenario(
     def warn(msg: str) -> None:
         issues.append(Issue("warning", name, msg))
 
+    def info(msg: str) -> None:
+        issues.append(Issue("info", name, msg))
+
     end = parse_duration(sc.duration)
     people = {p.crew_id for p in sc.patients} | {sc.speaker.crew_id}
     for cid in sorted(people):
@@ -314,6 +317,28 @@ def check_scenario(
                         f"{p.crew_id}: time-critical intervention not possible in {env}; "
                         f"none of {tc.action.refs} is aboard"
                     )
+        for cx in p.complications:
+            if cx.condition and lib.conditions and cx.condition not in lib.conditions:
+                err(f"complication {cx.id}: unknown condition {cx.condition!r}")
+            when = cx.by or cx.at
+            if when and parse_offset(when) > end:
+                warn(f"complication {cx.id}: {when} falls after the case ends ({sc.duration})")
+            for e in cx.findings:
+                for var in e.state:
+                    if var not in KNOWN_STATE_VARS:
+                        warn(f"complication {cx.id}: {var!r} is not a recognised state variable")
+            refs = cx.action.refs if cx.action else []
+            for env in sc.environments:
+                aboard = {i.id for h in lib.habitats_in(env) for i in [*h.equipment, *h.formulary]}
+                if refs and lib.habitats_in(env) and not set(refs) & aboard:
+                    if cx.trigger == "action":
+                        info(
+                            f"complication {cx.id}: cannot happen in {env}; none of {refs} is aboard"
+                        )
+                    else:
+                        warn(
+                            f"complication {cx.id}: cannot be prevented in {env}; none of {refs} is aboard"
+                        )
 
     for inj in sc.injects:
         if parse_offset(inj.t) > end:
@@ -329,8 +354,12 @@ def check_scenario(
         if rubric.scenario_id != sc.scenario_id:
             err(f"rubric {sc.rubric} belongs to {rubric.scenario_id!r}, not {sc.scenario_id!r}")
         ids = {p.crew_id for p in sc.patients}
+        complications = {c.id for p in sc.patients for c in p.complications}
         for item in rubric.items:
-            if item.by and parse_offset(item.by) > end:
+            if item.complication and item.complication not in complications:
+                err(f"rubric item {item.id}: unknown complication {item.complication!r}")
+            # A complication item's deadline counts from onset, so it can't be checked here.
+            if item.by and not item.complication and parse_offset(item.by) > end:
                 warn(f"rubric item {item.id}: deadline {item.by} falls after the case ends")
             if item.patient and item.patient not in ids:
                 err(f"rubric item {item.id}: {item.patient!r} is not a patient in this case")

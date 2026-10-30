@@ -95,6 +95,22 @@
    }
   },
   {
+   "id": "I15",
+   "domain": "D4",
+   "weight": 5,
+   "by": "T+2h",
+   "complication": "X1",
+   "text": "Recommends removal to definitive care once signs of peritonitis appear"
+  },
+  {
+   "id": "I16",
+   "domain": "D3",
+   "weight": 5,
+   "by": "T+30m",
+   "complication": "X2",
+   "text": "Stops the penicillin and gives an antihistamine from the kit"
+  },
+  {
    "id": "N1",
    "domain": "D5",
    "weight": -8,

@@ -67,7 +67,7 @@
             }
           ],
           "default": null,
-          "description": "Deadline in simulated time, e.g. T+2h",
+          "description": "Deadline in simulated time, e.g. T+2h; from onset if `complication` is set",
           "title": "By"
         },
         "domain": {
@@ -112,6 +112,21 @@
           "default": null,
           "description": "For several-patient cases: which crewmember",
           "title": "Patient"
+        },
+        "complication": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Only scored in runs where this complication happens",
+          "title": "Complication"
         },
         "from_library": {
           "anyOf": [

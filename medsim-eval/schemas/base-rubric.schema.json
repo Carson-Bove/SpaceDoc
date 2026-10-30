@@ -186,6 +186,16 @@
           "title": "Domain",
           "type": "string"
         },
+        "scope": {
+          "default": "scenario",
+          "description": "complication: scored once for each complication that happens in a run",
+          "enum": [
+            "scenario",
+            "complication"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
         "depends_on": {
           "anyOf": [
             {

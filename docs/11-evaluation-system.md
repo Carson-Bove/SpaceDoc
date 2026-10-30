@@ -194,17 +194,23 @@ A medical case. Abridged from the worked example [`MSE-0001.scenario.json`](../m
     "condition": "appendicitis",
     "chart": {"past_medical": [], "past_surgical": [], "medications": [],
               "allergies": [{"agent": "penicillin", "kind": "drug", "reaction": "rash as a child"}], "nkda": false, "…": "…"},
-    "timeline": [{"t": "T+6h", "kind": "symptom", "text": "Pain moves to the right lower quadrant…"},
+    "timeline": [{"t": "T+6h", "kind": "symptom", "text": "Pain migrates to the right lower quadrant…"},
                  {"t": "T+12h", "kind": "keyframe", "when": "untreated", "state": {"temp_c": 38.2, "hr": 104}}],
     "time_critical": [{"action": {"kind": "treatment", "refs": ["ertapenem-1gm", "…"],
-                       "text": "An antibiotic regimen covering gut bacteria"}, "by": "T+8h"}],
-    "ground_truth": {"etiology": "Obstruction of the appendix lumen…", "differential": ["Appendicitis", "Nephrolithiasis", "…"],
+                       "text": "Antibiotics with enteric gram-negative and anaerobic coverage…"}, "by": "T+8h"}],
+    "complications": [
+      {"id": "X1", "name": "Perforation with peritonitis", "trigger": "untreated",
+       "action": {"kind": "treatment", "refs": ["ertapenem-1gm", "…"], "text": "Antibiotics…"}, "by": "T+36h",
+       "findings": [{"t": "T+0", "kind": "finding", "text": "Diffuse guarding and rigidity…"}], "recognise_within": "2h"},
+      {"id": "X2", "name": "Allergic reaction to a penicillin", "condition": "allergic-reaction-mild-to-moderate",
+       "trigger": "action", "action": {"kind": "treatment", "refs": ["amoxicillin-500-mg-capsule"], "text": "Any penicillin…"},
+       "after": "30m", "chance": 0.5, "findings": ["…"], "recognise_within": "30m"}],
+    "ground_truth": {"etiology": "Appendiceal luminal obstruction…", "differential": ["Appendicitis", "Nephrolithiasis", "…"],
                      "must_not_miss": ["Perforated appendicitis"]}
   }],
   "speaker": {"crew_id": "C14", "role": "cmo", "opening": "Kenji has had a stomach ache since last night…",
               "emergent": false, "input_quality": 2, "input_problems": ["missing_details"],
               "additional_history": [{"if_asked": "vomiting", "says": "Once, this morning"}]},
-  "injects": [{"t": "T+4h", "kind": "solar_particle_event", "duration": "10h"}],
   "complicators": "Penicillin allergy… No surgical capability aboard…",
   "rubric": "MSE-0001.rubric.json",
   "review": {"status": "draft", "physiology_review": "requested", "notes_for_physiologist": "…"}
@@ -216,7 +222,8 @@ A medical case. Abridged from the worked example [`MSE-0001.scenario.json`](../m
 - **The speaker** is a roster crewmember: the patient, the CMO or another crewmember. Their training and familiarity come from the roster; the clerk sets the emergent flag (behaviour only), historian reliability from 1 (reliable) to 5 (unreliable), and how the history is unreliable (imprecise, incorrect terminology, omits details, misreports values, inconsistent history, acutely distressed). The form calls the speaker the *presenting party*.
 - **Time-critical treatment** replaces free-form branches: done by the deadline leans the run to the best course, late or missing to the worst.
 - **Diagnosis and differential:** the diagnosis is the IMM condition; the clerk adds the **etiology** and a ranked differential. Full credit needs both (§5).
-- **Injects** (mission events such as space weather) stay in the format but are hidden in the form until CMO-DA is running.
+- **Complication events** are clinical complications the run can introduce. Each is triggered one of three ways: **untreated** (it occurs at a deadline unless an intervention was given, e.g. perforation if antibiotics are not started by T+36h), **action** (it occurs after the assistant directs something, e.g. an allergic reaction 30 minutes after a penicillin), or **chance** (it occurs at a set time in a share of runs). Any trigger can be limited to a share of runs or to worst-course runs. A complication can link to its own IMM condition, so the twin follows that CLiFF's course; otherwise the clerk enters its findings and vital signs, timed from onset. Each one that occurs is scored by standard items (§5) plus any checklist items the clerk ties to it, with deadlines counted from onset.
+- **Mission events** (space weather, dust storms, communication blackouts, equipment failure; `injects` in the file) stay in the format as a later feature, folded away in the form and not yet simulated. Communication delay is not an event: it is a constant of each environment.
 
 ### 4.5 Crew roster
 
@@ -242,7 +249,7 @@ The index also records **where and when** each condition can happen, mapped from
 
 ## 5. The generalized rubric (v0 draft)
 
-You asked for help here, because a general rubric is hard to design. This is a proposal for the clinical lead to tear apart. It is in the library as [`general@0.2`](../medsim-eval/library/rubrics/general-0.2.base-rubric.json). Version 0.2 adds two **standard items** scored in every scenario from the ground truth (SDX: names the IMM diagnosis, +6; SET: names the correct etiology, +4, scored only with SDX, so the diagnosis alone earns partial credit) and a library of 28 common checklist items clerks add with one click. Items can name the equipment they need; where none of it is aboard, the item is not applicable. A new version is a new file, and each scenario rubric pins the version it was written against, so revising the rubric never silently changes old scores. It combines what has been shown to work in three places:
+You asked for help here, because a general rubric is hard to design. This is a proposal for the clinical lead to tear apart. It is in the library as [`general@0.2`](../medsim-eval/library/rubrics/general-0.2.base-rubric.json). Version 0.2 adds **standard items** the clerk doesn't write. Two complication items are scored once for each complication that occurs in a run: SCR (recognises it within the complication's recognition window, +5) and SCM (revises the plan or escalates, +5). Two more are scored in every scenario from the ground truth (SDX: names the IMM diagnosis, +6; SET: names the correct etiology, +4, scored only with SDX, so the diagnosis alone earns partial credit) and a library of 28 common checklist items clerks add with one click. Items can name the equipment they need; where none of it is aboard, the item is not applicable. A new version is a new file, and each scenario rubric pins the version it was written against, so revising the rubric never silently changes old scores. It combines what has been shown to work in three places:
 
 - **OSCE practice.** A systematic review found global rating scales at least as reliable as checklists and better at capturing expertise. Checklists are still the clearest way to record specific omissions, so many simulation assessments pair the two [[R39](references.md#r39)].
 - **HealthBench.** Case-specific criteria with positive *and negative* point values. A grader model judges each criterion independently [[R2](references.md#r2)].
@@ -279,6 +286,7 @@ Written by the clerk for each scenario. Each item has:
 | `text` | Observable behaviour, in plain words. No "appropriately" without saying what counts |
 | `weight` | +1 to +10 for things it should do, −1 to −10 for things it should not |
 | `by` | Optional deadline in simulated time, e.g. `T+2h` |
+| `complication` | Optional: the item is scored only in runs where that complication occurs, and `by` counts from its onset |
 | `domain` | Which Layer-C domain it informs (for the report) |
 
 Checklist score per run = (Σ weights of met positive items + Σ weights of met negative items) ÷ Σ positive weights. This is the HealthBench formula; it can go below 0 [[R2](references.md#r2)]. Report it raw, and clipped to 0–1.
@@ -378,7 +386,9 @@ Built in two layers, so that a useful version comes early:
 
 ### 7.3 Vehicle, environment and flight data
 
-- **Environment events:** solar particle events (crew to shelter, dose accrues), Mars dust storms (power and EVA limits, comm degradation), solar conjunction blackouts, and comm delay set by the DRM phase. Communication delays and blackouts follow [[R36](references.md#r36)].
+- **Complication events** (§4.3) are the twin's scripted events for now. When one is triggered, the twin switches that patient to the complication's course: its linked CLiFF, or the clerk's findings from onset.
+- **Communication delay** is a constant of each environment, set by the DRM phase [[R36](references.md#r36)].
+- **Mission events, later:** solar particle events (crew to shelter, dose accrues), Mars dust storms (power and EVA limits, comm degradation) and solar conjunction blackouts. The format already holds them; the twin will simulate them in a later phase.
 - **Vehicle state:** consumables (drug and supply counts drop as they are used), equipment status (an ultrasound probe can fail), cabin ppCO₂ / O₂ / pressure / temperature, and radiation dose.
 - **Flight data stream:** the twin publishes telemetry the assistant can read through MCP tools (§8), if the assistant supports it.
 
@@ -455,7 +465,7 @@ A **separate package in this repository**, e.g. `medsim-eval/` with its own `pyp
 | A7 | Manual scoring sheet, a separate tool for clerks testing cases by hand | Clerk scores feed the Phase E calibration set |
 | B | Adapter interface + SpaceDoc adapter; MCP world server (static twin); user agent; runner (8 runs per scenario) | One scenario runs end to end on the laptop overnight |
 | C | Scorer, judge, viewer | Judge report with working anomaly links |
-| D | Twin v1 (CLiFF course model, effect table, injects, clock); paper doll after | The outcome distribution over seeds matches the CLiFF within tolerance |
+| D | Twin v1 (CLiFF course model, effect table, complication events, clock); mission events and the paper doll after | The outcome distribution over seeds matches the CLiFF within tolerance |
 | E | Feedback agent, medical + technical reports; scorer validation study | Scorer–human κ reported per item |
 
 ## 12. Decisions and open questions
@@ -475,6 +485,7 @@ Decided:
 - **User agent:** a small model from a different family than the assistant under test. Code supplies the facts it may give; the model only words them.
 - **Scorer and judge:** an 8B model with reasoning on, to start. Trust per rubric item is measured against clerk scoring in Phase E.
 - **Before Phase B:** revise the Scenario Builder from the clerks' feedback.
+- **Complication events, not mission events, for now:** scenarios script clinical complications (untreated, action and chance triggers; optional IMM link; standard items SCR and SCM plus clerk items). Mission ("freak") events such as space weather stay in the format as a later feature. Communication delay is a constant per environment.
 
 Still open:
 

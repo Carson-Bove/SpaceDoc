@@ -129,7 +129,7 @@ function blank() {
     scenario: {
       schema_version: LIB.schema_version, scenario_id: "MSE-", title: "", authors: [{ name: "", contact: "" }],
       symptoms: [], environments: [...ALL_ENVS],
-      patients: [{ crew_id: "", condition: "", chart: emptyChart(), timeline: [], time_critical: [],
+      patients: [{ crew_id: "", condition: "", chart: emptyChart(), timeline: [], time_critical: [], complications: [],
         ground_truth: { diagnosis: "", etiology: "", differential: [], must_not_miss: [], synonyms: {} } }],
       speaker: { crew_id: "", role: "patient", opening: "", emergent: false, input_quality: 1, input_problems: [],
         familiarity: { medicine: null, equipment: null, assistant: null }, behaviour: "", additional_history: [] },
@@ -140,8 +140,17 @@ function blank() {
     ui: { envsTouched: false, showInjects: false, encQuery: "", habEnv: "" }
   };
 }
+function blankComplication(id) {
+  return { id, name: "", condition: "", trigger: "untreated", action: { kind: "treatment", refs: [], text: "" }, by: "", after: "", at: "",
+    chance: 1, worst_course_only: false, findings: [], recognise_within: "" };
+}
+// Fill fields a saved draft or an imported file may lack.
+function normalise(st) {
+  for (const p of st.scenario.patients) p.complications = (p.complications || []).map(x => merge(blankComplication(x.id), x));
+  return st;
+}
 function emptyChart() { return { past_medical: [], past_surgical: [], medications: [], allergies: [], nkda: false, family_history: [], social_history: "", immunizations: [] }; }
-let S = load() || blank();
+let S = normalise(load() || blank());
 const P = () => S.scenario.patients[0];
 
 function load() {
@@ -259,8 +268,8 @@ function render() {
   const sc = S.scenario;
   document.getElementById("form").replaceChildren(
     renderAbout(), renderCondition(), renderWhere(), renderPatient(), renderConversation(),
-    renderTimeline(), renderTimeCritical(), renderAnswer(), renderRubric(),
-    card("10. Complicating factors", "Confounders and constraints, e.g. atypical presentation, limited stock, competing crew duties.",
+    renderTimeline(), renderTimeCritical(), renderComplications(), renderAnswer(), renderRubric(),
+    card("11. Complicating factors", "Confounders and constraints, e.g. atypical presentation, limited stock, competing crew duties.",
       area(sc, "complicators", { rows: 3 })),
     renderAdvanced(), renderReview());
   refreshSide();
@@ -416,14 +425,18 @@ function renderConversation() {
 
 function renderTimeline() {
   const p = P();
-  const rows = p.timeline.map((e, i) => rowBox(`At ${e.t || "…"}`, () => { p.timeline.splice(i, 1); changed(); render(); },
-    h("div", { class: "grid" },
-      field("Time", timeInput(e, "t"), "From presentation: T+0, T+30m, T+6h, T+1d6h"),
-      field("Entry", sel(e, "kind", [["symptom", "Symptom"], ["finding", "Exam finding"], ["keyframe", "Vital signs / labs"], ["note", "Note"]], { rerender: true })),
-      field("Applies", sel(e, "when", [["always", "Always"], ["untreated", "If untreated by this time"], ["treated", "If treated by this time"]]))),
-    e.kind === "keyframe" ? stateEditor(e) : field("Description", text(e, "text"))));
+  const rows = p.timeline.map((e, i) => entryRow(p.timeline, i, { applies: true }));
   return card("6. Medical timeline / course of illness (optional)", "Timed symptoms, exam findings and vital signs. Otherwise the course follows the CLiFF; enter only events that must occur at a fixed time.",
     ...rows, h("button", { type: "button", onclick: () => { p.timeline.push({ t: "", kind: "symptom", when: "always", text: "", state: {} }); changed(); render(); } }, "+ Add entry"));
+}
+function entryRow(list, i, { applies = false, timeLabel = "Time", timeHint = "From presentation: T+0, T+30m, T+6h, T+1d6h", title = e => `At ${e.t || "…"}` } = {}) {
+  const e = list[i];
+  return rowBox(title(e), () => { list.splice(i, 1); changed(); render(); },
+    h("div", { class: "grid" },
+      field(timeLabel, timeInput(e, "t"), timeHint),
+      field("Entry", sel(e, "kind", [["symptom", "Symptom"], ["finding", "Exam finding"], ["keyframe", "Vital signs / labs"], ["note", "Note"]], { rerender: true })),
+      applies ? field("Applies", sel(e, "when", [["always", "Always"], ["untreated", "If untreated by this time"], ["treated", "If treated by this time"]])) : null),
+    e.kind === "keyframe" ? stateEditor(e) : field("Description", text(e, "text")));
 }
 function stateEditor(e) {
   const wrap = h("div");
@@ -452,6 +465,38 @@ function renderTimeCritical() {
     ...rows, h("button", { type: "button", onclick: () => { p.time_critical.push({ action: { kind: "treatment", refs: [], text: "" }, by: "" }); changed(); render(); } }, "+ Add intervention"));
 }
 
+const TRIGGERS = [["untreated", "If not treated by a deadline"], ["action", "After a specific action"], ["chance", "At a set time, in a share of runs"]];
+function renderComplications() {
+  const p = P();
+  const opts = kitItems().map(i => ({ value: i.id, label: i.name.toLowerCase(), search: i.name, envs: i.envs }));
+  const nextId = () => { let n = 1; while (p.complications.some(x => x.id === `X${n}`)) n++; return `X${n}`; };
+  const rows = p.complications.map((x, i) => rowBox(`${x.id}${x.name ? ` · ${x.name}` : ""}`, () => { p.complications.splice(i, 1); changed(); render(); },
+    h("div", { class: "grid" },
+      field("Complication", text(x, "name", { placeholder: "e.g. Perforation with peritonitis" })),
+      field("IMM condition (optional)", sel(x, "condition", LIB.conditions.map(c => [c.cliff_id, c.name]), { placeholder: "None: enter findings below" }), "If linked, its CLiFF course is used")),
+    field("Occurs", sel(x, "trigger", TRIGGERS, { rerender: true })),
+    ...triggerFields(x, opts),
+    h("div", { class: "grid", style: "margin-top:6px" },
+      field("Share of runs (%)", h("input", { type: "number", min: 1, max: 100, step: 1, value: Math.round((x.chance ?? 1) * 100),
+        oninput: e => { const v = Number(e.target.value); x.chance = v > 0 ? Math.min(v, 100) / 100 : 1; changed(); } })),
+      field("Recognised within (optional)", text(x, "recognise_within", { placeholder: "2h" }), "From onset; for standard item SCR"),
+      h("div", {}, check(x, "worst_course_only", "Worst-course runs only"))),
+    h("div", { class: "lbl" }, "Findings from onset"),
+    ...x.findings.map((e, j) => entryRow(x.findings, j, { timeLabel: "From onset", timeHint: "T+0 is onset", title: e => `Onset ${e.t || "…"}` })),
+    h("button", { class: "small", type: "button", onclick: () => { x.findings.push({ t: "T+0", kind: "finding", text: "", state: {} }); changed(); render(); } }, "+ Add finding")));
+  return card("8. Complication events (optional)", "Clinical complications the simulation can introduce, e.g. perforation if antibiotics are late, or an allergic reaction if a penicillin is given. Each one that occurs is scored by standard items SCR (recognition) and SCM (revised plan or escalation), plus any checklist items tied to it.",
+    ...rows, h("button", { type: "button", onclick: () => { p.complications.push(blankComplication(nextId())); changed(); render(); } }, "+ Add complication"));
+}
+function triggerFields(x, opts) {
+  const kit = () => [h("div", { class: "lbl" }, "Qualifying kit items (any one)"),
+    picker(x.action.refs, opts, { placeholder: "Search formulary and equipment…", label: o => `${o.label} (${[...o.envs].join(", ")})` })];
+  if (x.trigger === "untreated") return [field("Preventing intervention", text(x.action, "text", { placeholder: "e.g. antibiotics with enteric coverage" })), ...kit(),
+    h("div", { class: "grid", style: "margin-top:6px" }, field("Deadline", timeInput(x, "by", "T+36h"), "Occurs at this time unless the intervention was given"))];
+  if (x.trigger === "action") return [field("Triggering action", text(x.action, "text", { placeholder: "e.g. any penicillin" })), ...kit(),
+    h("div", { class: "grid", style: "margin-top:6px" }, field("Onset after", text(x, "after", { placeholder: "30m" }), "Time from the action; empty: at once"))];
+  return [h("div", { class: "grid" }, field("Onset", timeInput(x, "at", "T+12h")))];
+}
+
 function renderAnswer() {
   const g = P().ground_truth, c = cond();
   const diff = h("div");
@@ -472,7 +517,7 @@ function renderAnswer() {
       h("button", { class: "small danger", type: "button", onclick: () => { syn.splice(i, 1); commitSyn(); drawSyn(); } }, "×"))),
     h("button", { class: "small", type: "button", onclick: () => { syn.push(["", ""]); drawSyn(); } }, "+ Add"));
   drawSyn();
-  return card("8. Diagnosis and differential", "Full credit requires the diagnosis and its etiology; the diagnosis alone earns partial credit.",
+  return card("9. Diagnosis and differential", "Full credit requires the diagnosis and its etiology; the diagnosis alone earns partial credit.",
     h("div", { class: "grid" },
       field("Diagnosis", text(g, "diagnosis", { placeholder: c ? c.name : "Select a condition first" }), "From the IMM condition; edit the wording if needed"),
       field("Etiology", text(g, "etiology", { placeholder: "e.g. appendiceal luminal obstruction (appendicolith)" }))),
@@ -486,9 +531,10 @@ function renderRubric() {
   const domains = b.domains.map(d => [d.id, `${d.id} ${d.name}`]);
   const nextId = prefix => { let n = 1; while (rb.items.some(x => x.id === `${prefix}${n}`) || rb.gates.some(x => x.id === `${prefix}${n}`)) n++; return `${prefix}${n}`; };
   const equipment = kitItems().filter(i => i.category === "equipment").map(i => ({ value: i.id, label: i.name.toLowerCase(), envs: i.envs }));
+  const cxs = S.scenario.patients.flatMap(p => p.complications);
   const items = rb.items.map((it, i) => {
     const sign = it.weight < 0 ? -1 : 1, size = Math.abs(it.weight) || 3;
-    return rowBox(`${it.id}${it.weight < 0 ? " · error" : " · expected action"}${it.from_library ? " · from library" : ""}`, () => { rb.items.splice(i, 1); changed(); render(); },
+    return rowBox(`${it.id}${it.weight < 0 ? " · error" : " · expected action"}${it.complication ? ` · if ${it.complication} occurs` : ""}${it.from_library ? " · from library" : ""}`, () => { rb.items.splice(i, 1); changed(); render(); },
       field("Observable behaviour", text(it, "text", { placeholder: it.weight < 0 ? "e.g. Directs the crew to perform an appendectomy" : "e.g. Initiates antibiotics with enteric coverage" })),
       h("div", { class: "lbl" }, "Weight"),
       h("div", { class: "btnbar", style: "align-items:center" },
@@ -497,8 +543,9 @@ function renderRubric() {
         scale([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], size, v => { it.weight = sign * v; })),
       h("div", { class: "grid", style: "margin-top:6px" },
         field("Scoring", sel(it, "type", sign > 0 ? [["binary", "Done / not done"], ["rating", "Rated 1–5"]] : [["binary", "Done / not done"]], { rerender: true })),
-        field("Deadline (optional)", timeInput(it, "by", "T+8h")),
+        field(it.complication ? "Deadline from onset (optional)" : "Deadline (optional)", timeInput(it, "by", it.complication ? "T+2h" : "T+8h")),
         field("Domain", sel(it, "domain", domains))),
+      cxs.length || it.complication ? field("Applies to", sel(it, "complication", [["", "Every run"], ...cxs.map(c => [c.id, `Only runs where ${c.id}${c.name ? ` (${c.name})` : ""} occurs`])], { rerender: true })) : null,
       it.type === "rating" ? h("div", { class: "grid" }, ...["1", "3", "5"].map(k => field(`Anchor for ${k}`,
         h("input", { type: "text", value: (it.anchors || {})[k] || "", oninput: e => { (it.anchors ||= {})[k] = e.target.value; changed(); } })))) : null,
       h("details", {}, h("summary", {}, `Requires equipment (${(it.requires || []).length}); not applicable where it is absent`),
@@ -517,9 +564,10 @@ function renderRubric() {
   };
   drawLib();
   const gates = rb.gates.map((g, i) => rowBox(g.id, () => { rb.gates.splice(i, 1); changed(); render(); }, field("Critical error", text(g, "text"))));
-  return card("9. Scoring checklist", `General rubric ${b.ref}: critical errors and 1–5 global ratings apply to every case. List case-specific actions that can be scored as done or not done from the transcript; quality of performance is covered by the global ratings.`,
-    h("div", { class: "lbl" }, "Standard items (every case)"),
-    ...(b.standard_items || []).map(s => h("div", { class: "std" }, h("b", {}, `${s.id} +${s.weight} (${s.domain}) `), s.text, s.depends_on ? h("span", { class: "muted" }, ` · only with ${s.depends_on}`) : null)),
+  return card("10. Scoring checklist", `General rubric ${b.ref}: critical errors and 1–5 global ratings apply to every case. List case-specific actions that can be scored as done or not done from the transcript; quality of performance is covered by the global ratings.`,
+    h("div", { class: "lbl" }, "Standard items"),
+    ...(b.standard_items || []).map(s => h("div", { class: "std" }, h("b", {}, `${s.id} +${s.weight} (${s.domain}) `), s.text, s.depends_on ? h("span", { class: "muted" }, ` · only with ${s.depends_on}`) : null,
+      h("span", { class: "muted" }, s.scope === "complication" ? " · once for each complication that occurs" : " · every run"))),
     h("details", {}, h("summary", {}, `Critical errors (${b.gates.length}) and global rating domains (${b.domains.length})`),
       h("ul", {}, ...b.gates.map(g => h("li", {}, h("b", {}, g.id), " ", g.text))),
       h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "Domain"), h("th", {}, "1"), h("th", {}, "3"), h("th", {}, "5"))),
@@ -548,17 +596,17 @@ function renderAdvanced() {
       field("Duration", text(e, "duration", { placeholder: "10h" }), "Optional"),
       field("Target (optional)", text(e, "target", { placeholder: "Crew ID or kit item" }))),
     field("Description", text(e, "text"))));
-  return card("11. Simulation settings", null,
+  return card("12. Simulation settings", null,
     h("div", { class: "grid" }, field("Case duration", text(sc, "duration", { placeholder: "3d" }), "Simulated time, e.g. 3d or 36h")),
     h("details", { open: S.ui.showInjects, ontoggle: e => { S.ui.showInjects = e.target.open; save(); } },
-      h("summary", {}, `Injects (${sc.injects.length}) · reserved for CMO-DA integration`),
-      h("p", { class: "help" }, "Scripted mission events, as in launch-readiness simulations: space weather, dust storms, communication blackout, equipment failure."),
+      h("summary", {}, `Mission events (${sc.injects.length}) · later feature, not yet simulated`),
+      h("p", { class: "help" }, "Scripted mission events, as in launch-readiness simulations: space weather, dust storms, communication blackout, equipment failure. Communication delay is set by the environment and needs no event."),
       ...rows, h("button", { class: "small", type: "button", onclick: () => { sc.injects.push({ t: "", kind: "comm_blackout", duration: "", text: "" }); changed(); render(); } }, "+ Add inject")));
 }
 
 function renderReview() {
   const r = S.scenario.review;
-  return card("12. Review and submission", "Resolve all errors under Case check before submission. Download produces the case file and its scoring checklist; send both to the coordinator or upload them to scenarios/inbox.",
+  return card("13. Review and submission", "Resolve all errors under Case check before submission. Download produces the case file and its scoring checklist; send both to the coordinator or upload them to scenarios/inbox.",
     h("div", { class: "grid" },
       field("Status", sel(r, "status", [["draft", "Draft"], ["in_review", "Ready for peer review"]])),
       h("div", {}, check({ get v() { return r.physiology_review === "requested"; }, set v(x) { r.physiology_review = x ? "requested" : "not_needed"; } }, "v", "Request physiology review", { rerender: true }))),
@@ -681,6 +729,36 @@ function runChecks() {
       if (habsFor(env).length && !kit.some(k => tc.action.refs.includes(k.id) && k.envs.has(env))) warn(`Intervention ${i + 1}: no qualifying item aboard in ${env}.`);
     }
   });
+  const cxIds = new Set();
+  p.complications.forEach((x, i) => {
+    const n = x.id || `Complication ${i + 1}`;
+    if (cxIds.has(x.id)) err(`${n}: duplicate complication ID.`);
+    cxIds.add(x.id);
+    if (!x.name.trim()) err(`${n}: name required.`);
+    if (x.trigger !== "chance" && !x.action.refs.length && !x.action.text.trim()) err(`${n}: describe the ${x.trigger === "untreated" ? "preventing intervention" : "triggering action"}.`);
+    const when = x.trigger === "untreated" ? x.by : x.trigger === "chance" ? x.at : null;
+    if (when != null) {
+      const t = offsetSecs(when);
+      if (t == null) err(`${n}: time format ${x.trigger === "untreated" ? "T+36h" : "T+12h"}.`);
+      else if (end != null && t > end) warn(`${n}: occurs after the case ends.`);
+    }
+    if (x.trigger === "action" && x.after && durationSecs(x.after) == null) err(`${n}: onset delay format 30m.`);
+    if (x.trigger === "chance" && (x.chance ?? 1) >= 1 && !x.worst_course_only) err(`${n}: set a share of runs below 100% or worst-course runs only; enter events that always occur in the medical timeline.`);
+    if (x.recognise_within && durationSecs(x.recognise_within) == null) err(`${n}: recognition window format 2h.`);
+    if (!x.condition && !x.findings.length) err(`${n}: link an IMM condition or enter findings.`);
+    x.findings.forEach((e, j) => {
+      if (offsetSecs(e.t) == null) err(`${n} finding ${j + 1}: time from onset format T+30m.`);
+      if (e.kind === "keyframe" && !Object.keys(e.state || {}).length) err(`${n} finding ${j + 1}: at least one value required.`);
+      if (e.kind !== "keyframe" && !(e.text || "").trim()) err(`${n} finding ${j + 1}: description required.`);
+      for (const k of Object.keys(e.state || {})) if (!known.has(k)) warn(`${n} finding ${j + 1}: "${k}" is not a recognised variable.`);
+    });
+    if (x.trigger !== "chance" && x.action.refs.length) for (const env of sc.environments) {
+      if (habsFor(env).length && !kit.some(k => x.action.refs.includes(k.id) && k.envs.has(env))) {
+        if (x.trigger === "action") info(`${n}: cannot occur in ${env} (triggering item not aboard).`);
+        else warn(`${n}: cannot be prevented in ${env} (no qualifying item aboard).`);
+      }
+    }
+  });
   sc.injects.forEach((e, i) => {
     if (offsetSecs(e.t) == null) err(`Inject ${i + 1}: time format T+4h.`);
     if (e.duration && durationSecs(e.duration) == null) err(`Inject ${i + 1}: duration format 10h.`);
@@ -695,8 +773,9 @@ function runChecks() {
   rb.items.forEach(it => {
     if (!(it.text || "").trim()) err(`${it.id}: observable behaviour required.`);
     if (!it.weight || it.weight < -10 || it.weight > 10) err(`${it.id}: weight must be 1–10 (expected) or −1 to −10 (error).`);
+    if (it.complication && !cxIds.has(it.complication)) err(`${it.id}: complication ${it.complication} not found.`);
     if (it.by && offsetSecs(it.by) == null) err(`${it.id}: deadline format T+8h.`);
-    else if (it.by && end != null && offsetSecs(it.by) > end) warn(`${it.id}: deadline falls after the case ends.`);
+    else if (it.by && !it.complication && end != null && offsetSecs(it.by) > end) warn(`${it.id}: deadline falls after the case ends.`);
     if (it.type === "rating") {
       if (!it.anchors || !["1", "3", "5"].every(k => (it.anchors[k] || "").trim())) err(`${it.id}: anchors for 1, 3 and 5 required.`);
     } else if (VAGUE.test(it.text || "")) warn(`${it.id}: "${(it.text.match(VAGUE) || [""])[0]}" is not observable; state the specific action.`);
@@ -731,6 +810,14 @@ function exportDocs() {
   sc.speaker.additional_history = sc.speaker.additional_history.filter(x => x.if_asked.trim() || x.says.trim());
   p.chart.medications = p.chart.medications.filter(m => m.name.trim());
   p.chart.allergies = p.chart.allergies.filter(a => a.agent.trim());
+  for (const x of p.complications) {
+    if (x.trigger === "chance") delete x.action;
+    if (x.trigger !== "untreated") delete x.by;
+    if (x.trigger !== "action") delete x.after;
+    if (x.trigger !== "chance") delete x.at;
+    if (!x.worst_course_only) delete x.worst_course_only;
+    if ((x.chance ?? 1) >= 1) delete x.chance;
+  }
   rb.scenario_id = sc.scenario_id;
   rb.rubric_id ||= `${sc.scenario_id}-r1`;
   rb.items.forEach(it => { if (it.type !== "rating") delete it.anchors; if (it.type === "binary") delete it.type; if (!(it.requires || []).length) delete it.requires; });
@@ -776,7 +863,7 @@ document.getElementById("file-import").addEventListener("change", async e => {
   next.scenario.speaker = merge(blank().scenario.speaker, next.scenario.speaker);
   next.rubric.items.forEach(it => { it.type ||= "binary"; it.by ||= ""; it.requires ||= []; });
   next.ui.envsTouched = true;
-  S = next; e.target.value = ""; changed(); render();
+  S = normalise(next); e.target.value = ""; changed(); render();
 });
 function merge(a, b) {
   const o = { ...a };
@@ -788,6 +875,12 @@ document.getElementById("btn-export").addEventListener("click", exportFiles);
 document.getElementById("btn-check").addEventListener("click", () => { refreshSide(); document.getElementById("side").scrollTop = 0; });
 
 // ---------- printable review sheet ----------
+function triggerText(x) {
+  const what = x.action ? x.action.text || x.action.refs.join(", ") : "";
+  if (x.trigger === "untreated") return `if not treated (${what}) by ${x.by}`;
+  if (x.trigger === "action") return `${x.after ? `${x.after} after` : "on"} ${what}`;
+  return `at ${x.at}`;
+}
 function printSheet() {
   const [s, r] = exportDocs(), c = cond(), p = s.patients[0], twin = CREW[p.crew_id], sp = s.speaker, spk = CREW[sp.crew_id];
   const ch = p.chart || {};
@@ -816,14 +909,17 @@ function printSheet() {
       .concat((s.injects || []).map(e => [e.t, `inject: ${e.kind}`, e.duration ? `lasts ${e.duration}` : "", e.text || ""]))
       .sort((x, y) => (offsetSecs(x[0]) ?? 0) - (offsetSecs(y[0]) ?? 0)).map(row => h("tr", {}, ...row.map(x => h("td", {}, x)))))),
     h("p", {}, `Time-critical interventions: ${(p.time_critical || []).map(tc => `${tc.action.text || tc.action.refs.join(", ")} by ${tc.by}`).join("; ") || "none"}`),
+    h("h2", {}, "Complication events"),
+    (p.complications || []).length ? h("ul", {}, ...p.complications.map(x => h("li", {}, `${x.id} ${x.name}${x.condition && COND[x.condition] ? ` (IMM: ${COND[x.condition].name})` : ""}: ${triggerText(x)}${x.chance ? `; ${Math.round(x.chance * 100)}% of runs` : ""}${x.worst_course_only ? "; worst-course runs only" : ""}. Findings from onset: ${(x.findings || []).map(e => `${e.t} ${e.text || Object.entries(e.state || {}).map(([k, v]) => `${k} ${v}`).join(", ")}`).join("; ") || "per CLiFF"}.${x.recognise_within ? ` Recognition within ${x.recognise_within}.` : ""}`))) : h("p", {}, "None."),
     h("h2", {}, "Complicating factors"), h("p", {}, s.complicators || "—"),
     h("h2", {}, "Diagnosis and differential"),
     h("p", {}, `Diagnosis: ${(p.ground_truth.diagnosis || (c && c.name) || "")}. Etiology: ${p.ground_truth.etiology || ""}.`),
     h("p", {}, `Differential: ${(p.ground_truth.differential || []).map((d, i) => `${i + 1}. ${d}`).join("  ")}. Can't-miss: ${list(p.ground_truth.must_not_miss)}.`),
     h("h2", {}, `Scoring checklist (base ${BASE.ref})`),
     h("table", {}, h("thead", {}, h("tr", {}, ...["ID", "Item", "Weight", "Deadline", "Domain"].map(x => h("th", {}, x)))),
-      h("tbody", {}, ...(BASE.standard_items || []).map(x => h("tr", {}, h("td", {}, x.id), h("td", {}, x.text), h("td", {}, x.weight), h("td", {}, ""), h("td", {}, x.domain))),
-        ...r.items.map(i => h("tr", {}, h("td", {}, i.id), h("td", {}, i.text, i.anchors ? h("div", {}, `1: ${i.anchors["1"]} · 3: ${i.anchors["3"]} · 5: ${i.anchors["5"]}`) : null), h("td", {}, i.weight), h("td", {}, i.by || ""), h("td", {}, i.domain))))),
+      h("tbody", {}, ...(BASE.standard_items || []).map(x => h("tr", {}, h("td", {}, x.id), h("td", {}, x.text), h("td", {}, x.weight), h("td", {}, x.scope === "complication" ? "each complication" : ""), h("td", {}, x.domain))),
+        ...r.items.map(i => h("tr", {}, h("td", {}, i.id), h("td", {}, i.text, i.anchors ? h("div", {}, `1: ${i.anchors["1"]} · 3: ${i.anchors["3"]} · 5: ${i.anchors["5"]}`) : null), h("td", {}, i.weight),
+          h("td", {}, i.complication ? `if ${i.complication} occurs${i.by ? `: ${i.by} from onset` : ""}` : i.by || ""), h("td", {}, i.domain))))),
     r.gates.length ? h("p", {}, `Case-specific critical errors: ${r.gates.map(g => `${g.id} ${g.text}`).join("; ")}`) : null,
     s.review.physiology_review === "requested" ? [h("h2", {}, "Notes for physiology reviewer"), h("p", {}, s.review.notes_for_physiologist || "—")] : null,
     h("div", { class: "sign" }, h("div", {}, "Peer reviewer / date"), h("div", {}, "Physiology reviewer (if requested) / date"))

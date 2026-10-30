@@ -61,25 +61,43 @@ class Author(Strict):
     contact: str = Field(description="Email or phone")
 
 
-class TimelineEntry(Timed):
-    """One point in the course of illness."""
+class Entry(Strict):
+    """A symptom, exam finding, vital-sign / lab keyframe or note."""
 
     kind: Literal["symptom", "finding", "keyframe", "note"]
     text: str | None = None
     state: dict[str, float | bool | str] = Field(
         default={}, description="Twin state at this time (keyframes): e.g. {temp_c: 38.1, hr: 104}"
     )
-    when: Literal["always", "treated", "untreated"] = Field(
-        "always", description="Only applies if the patient has / has not been treated by then"
-    )
 
     @model_validator(mode="after")
-    def _shape(self) -> TimelineEntry:
+    def _shape(self) -> Entry:
         if self.kind == "keyframe" and not self.state:
             raise ValueError("a keyframe requires at least one vital sign or lab value")
         if self.kind != "keyframe" and not self.text:
             raise ValueError(f"a {self.kind} entry requires a description")
         return self
+
+
+class TimelineEntry(Entry, Timed):
+    """One point in the course of illness."""
+
+    when: Literal["always", "treated", "untreated"] = Field(
+        "always", description="Only applies if the patient has / has not been treated by then"
+    )
+
+
+class FromOnset(Strict):
+    t: str = Field(description="Time from the complication's onset, e.g. T+0, T+30m")
+
+    @field_validator("t")
+    @classmethod
+    def _t(cls, v: str) -> str:
+        return check_offset(v)
+
+
+class ComplicationEntry(Entry, FromOnset):
+    """A finding or vital-sign change, timed from the complication's onset."""
 
 
 EventKind = Literal[
@@ -97,7 +115,8 @@ EventKind = Literal[
 
 
 class Inject(Timed):
-    """A mission event dropped into the run, as in a launch-readiness sim."""
+    """A mission event dropped into the run, as in a launch-readiness sim. A later feature: kept
+    in the format, not yet offered in the form's main sections."""
 
     kind: EventKind
     duration: Duration | None = None
@@ -146,6 +165,75 @@ class TimeCritical(Strict):
         return self
 
 
+class Complication(Strict):
+    """A clinical complication the run can introduce (docs/11 §4.3).
+
+    It happens when its trigger fires, and then only in `chance` of runs (and only in worst-course
+    runs if `worst_course_only`). Every complication that happens is scored by the base rubric's
+    complication standard items, plus any checklist items tied to it.
+    """
+
+    id: Id = Field(description="e.g. X1; checklist items refer to it")
+    name: str = Field(description="e.g. Perforation with peritonitis")
+    condition: Id | None = Field(
+        None, description="IMM condition whose CLiFF course the twin follows, if one fits"
+    )
+    trigger: Literal["untreated", "action", "chance"] = Field(
+        description="untreated: at `by`, unless `action` was done by then; action: `after` the "
+        "assistant directs `action`; chance: at `at`, in a share of runs"
+    )
+    action: ActionRef | None = Field(None, description="untreated and action triggers")
+    by: Offset | None = Field(None, description="untreated trigger: the deadline")
+    after: Duration | None = Field(
+        None, description="action trigger: time from action to onset (default: at once)"
+    )
+    at: Offset | None = Field(None, description="chance trigger: onset time")
+    chance: float = Field(
+        1.0, gt=0, le=1, description="Share of runs in which it happens once triggered, e.g. 0.25"
+    )
+    worst_course_only: bool = Field(False, description="Only in runs on the worst-case course")
+    findings: list[ComplicationEntry] = Field(
+        default=[], description="Symptoms, exam findings and vital signs, timed from onset"
+    )
+    recognise_within: Duration | None = Field(
+        None,
+        description="Time from onset within which recognition earns the standard item; "
+        "empty: any time before the run ends",
+    )
+
+    @field_validator("by", "at")
+    @classmethod
+    def _offsets(cls, v: str | None) -> str | None:
+        return check_offset(v) if v is not None else v
+
+    @field_validator("after", "recognise_within")
+    @classmethod
+    def _durations(cls, v: str | None) -> str | None:
+        return check_duration(v) if v is not None else v
+
+    @model_validator(mode="after")
+    def _trigger(self) -> Complication:
+        needs = {"untreated": {"action", "by"}, "action": {"action"}, "chance": {"at"}}[
+            self.trigger
+        ]
+        for name in ("action", "by", "after", "at"):
+            given = getattr(self, name) is not None
+            if name in needs and not given:
+                raise ValueError(f"{self.id}: the {self.trigger} trigger requires {name}")
+            if given and name not in needs and not (name == "after" and self.trigger == "action"):
+                raise ValueError(f"{self.id}: {name} does not apply to the {self.trigger} trigger")
+        if self.action is not None and not self.action.refs and not self.action.text:
+            raise ValueError(f"{self.id}: describe the action or list the kit items")
+        if self.trigger == "chance" and self.chance == 1 and not self.worst_course_only:
+            raise ValueError(
+                f"{self.id}: a chance trigger needs a share of runs below 100% or worst-course "
+                "runs only; enter events that always happen in the medical timeline"
+            )
+        if self.condition is None and not self.findings:
+            raise ValueError(f"{self.id}: link an IMM condition or describe the findings")
+        return self
+
+
 class GroundTruth(Strict):
     diagnosis: str | None = Field(
         None, description="Defaults to the IMM condition's name; set to word it differently"
@@ -166,6 +254,7 @@ class PatientCase(Strict):
         default=[], description="Medical timeline / course of illness"
     )
     time_critical: list[TimeCritical] = []
+    complications: list[Complication] = []
     ground_truth: GroundTruth
 
 
@@ -262,6 +351,9 @@ class Scenario(Versioned):
         ids = [p.crew_id for p in self.patients]
         if len(ids) != len(set(ids)):
             raise ValueError("patients must be different crewmembers")
+        cx = [c.id for p in self.patients for c in p.complications]
+        if len(cx) != len(set(cx)):
+            raise ValueError("complication ids must be unique")
         if self.speaker.role == "patient" and self.speaker.crew_id not in ids:
             raise ValueError(
                 "speaker.role is patient, but speaker.crew_id is not one of the patients"

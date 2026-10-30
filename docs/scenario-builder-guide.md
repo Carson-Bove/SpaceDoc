@@ -21,11 +21,12 @@ Drafts are saved in the browser as you type. This copy is not reliable (a privat
 | 5. Presentation | Select the **presenting party**: the patient (self-report), the crew medical officer, or a bystander crewmember. Medical training and familiarity are taken from the crew record and can be adjusted for this case. Enter the **chief complaint** in the patient's words, or the CMO's or crewmember's opening statement. Grade **historian reliability** from 1 (reliable) to 5 (unreliable) and specify how: imprecise, incorrect terminology, omits details, misreports values, inconsistent history, acutely distressed. **Emergent presentation** affects the crewmember's behaviour only. Under **History on direct questioning only**, enter each topic and the response given when asked. |
 | 6. Medical timeline / course of illness | Optional. Enter only events that must occur at a fixed time, e.g. new symptom at T+6h, or vital signs at T+12h if untreated. Otherwise the course follows the CLiFF. |
 | 7. Time-critical intervention | Optional. Describe the intervention, select the qualifying kit items (any one counts) and set the deadline. Timely intervention shifts the course toward the best case; delay or omission toward the worst case. |
-| 8. Diagnosis and differential | The diagnosis is taken from the IMM condition and can be reworded. Enter the **etiology**, a ranked **differential diagnosis** and the **can't-miss diagnoses**. Add accepted synonyms where the wording varies. |
-| 9. Scoring checklist | Case-specific checklist items (see §3). |
-| 10. Complicating factors | Confounders and constraints, e.g. atypical presentation, limited stock, competing crew duties. |
-| 11. Simulation settings | Case duration in simulated time. Injects (space weather, communication blackout, equipment failure) are reserved for CMO-DA integration. |
-| 12. Review and submission | Set the status. Request physiology review if needed; a notes field for the physiology reviewer appears when requested. Resolve all errors under **Case check**, then **Download files**. |
+| 8. Complication events | Optional. Clinical complications the run can introduce. For each, choose when it occurs: **if not treated by a deadline** (e.g. perforation if antibiotics are not started by T+36h), **after a specific action** (e.g. an allergic reaction 30 minutes after a penicillin), or **at a set time in a share of runs**. Any of these can be limited to a share of runs or to worst-course runs. Link an IMM condition if one fits; otherwise enter the findings and vital signs, timed from onset (T+0 = onset). Set the recognition window if recognition is time-sensitive. |
+| 9. Diagnosis and differential | The diagnosis is taken from the IMM condition and can be reworded. Enter the **etiology**, a ranked **differential diagnosis** and the **can't-miss diagnoses**. Add accepted synonyms where the wording varies. |
+| 10. Scoring checklist | Case-specific checklist items (see §3). |
+| 11. Complicating factors | Confounders and constraints, e.g. atypical presentation, limited stock, competing crew duties. |
+| 12. Simulation settings | Case duration in simulated time. Mission events (space weather, communication blackout, equipment failure) are a later feature and are not yet simulated. |
+| 13. Review and submission | Set the status. Request physiology review if needed; a notes field for the physiology reviewer appears when requested. Resolve all errors under **Case check**, then **Download files**. |
 
 **Times** are measured from presentation: `T+0`, `T+30m`, `T+6h`, `T+1d6h`.
 
@@ -37,7 +38,7 @@ Every case is scored against the **general rubric** (currently `general@0.2`):
 
 - **Critical errors**: any one fails the run.
 - **Six global rating domains, 1–5**: information gathering, diagnostic reasoning, management, safety and escalation, environment and resources, communication.
-- **Two standard items**, scored automatically from section 8: correct diagnosis (+6) and correct etiology (+4, counted only with the diagnosis).
+- **Standard items**, scored automatically: correct diagnosis (+6) and correct etiology (+4, counted only with the diagnosis) from section 9; and, for each complication that occurs, recognition within its window (+5) and a revised plan or escalation (+5).
 
 The author adds the **case-specific items**. Start from **Common checklist items** and edit them, or write new ones.
 
@@ -56,6 +57,8 @@ Case check flags non-observable terms such as *appropriately*, *adequate* and *p
 **Weight.** Select **+ Expected** or **− Error**, then 1–10. Weight by clinical importance: a missed time-critical intervention outweighs a missed history question. Set a **deadline** (`T+8h`) when a late action is equivalent to an omitted one.
 
 **Domain.** Assign each item to a domain; results are reported by domain.
+
+**Applies to.** An item can be tied to a complication from section 8. It is then scored only in runs where that complication occurs, and its deadline counts from the complication's onset (e.g. "stops the penicillin and gives an antihistamine", within 30 minutes).
 
 **Requires equipment.** If an item depends on a device (e.g. point-of-care ultrasound), list it under **Requires equipment**. In environments without it, the item is scored not applicable rather than not done.
 

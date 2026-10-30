@@ -125,7 +125,8 @@
  "changelog": [
   "0.1: first draft from docs/11 §5",
   "0.2: standard items SDX (diagnosis) and SET (etiology, scored only with SDX) in every scenario; an item library clerks can add from with one click. Not yet reviewed by the clinical lead.",
-  "0.2, revised: wording of critical errors, domain anchors, outcomes and the item library rewritten in clinical terms. Ids, weights and domains unchanged."
+  "0.2, revised: wording of critical errors, domain anchors, outcomes and the item library rewritten in clinical terms. Ids, weights and domains unchanged.",
+  "0.2, revised: complication standard items SCR (recognition) and SCM (revised plan or escalation), scored once for each complication that happens in a run. Not yet reviewed by the clinical lead."
  ],
  "standard_items": [
   {
@@ -140,6 +141,20 @@
    "weight": 4,
    "domain": "D2",
    "depends_on": "SDX"
+  },
+  {
+   "id": "SCR",
+   "text": "Recognises the complication: names it, or names its key signs and acts on them, within the recognition window",
+   "weight": 5,
+   "domain": "D4",
+   "scope": "complication"
+  },
+  {
+   "id": "SCM",
+   "text": "Revises the treatment plan or escalates in response to the complication",
+   "weight": 5,
+   "domain": "D3",
+   "scope": "complication"
   }
  ],
  "item_library": [

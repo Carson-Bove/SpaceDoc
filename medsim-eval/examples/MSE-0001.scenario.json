@@ -78,23 +78,6 @@
      }
     },
     {
-     "t": "T+36h",
-     "kind": "keyframe",
-     "when": "untreated",
-     "state": {
-      "temp_c": 39.1,
-      "hr": 122,
-      "sbp": 104,
-      "pain_0_10": 9
-     }
-    },
-    {
-     "t": "T+36h",
-     "kind": "finding",
-     "when": "untreated",
-     "text": "Diffuse guarding and rigidity, consistent with perforation and peritonitis"
-    },
-    {
      "t": "T+48h",
      "kind": "keyframe",
      "when": "treated",
@@ -118,6 +101,72 @@
       "text": "Antibiotics with enteric gram-negative and anaerobic coverage (e.g. ertapenem, or levofloxacin with metronidazole)"
      },
      "by": "T+8h"
+    }
+   ],
+   "complications": [
+    {
+     "id": "X1",
+     "name": "Perforation with peritonitis",
+     "trigger": "untreated",
+     "action": {
+      "kind": "treatment",
+      "refs": [
+       "ertapenem-1gm",
+       "levaquin-levofloxacin-500mg",
+       "flagyl-metronidazole-500mg",
+       "rocephin-ceftriaxone-1-gm"
+      ],
+      "text": "Antibiotics with enteric gram-negative and anaerobic coverage (e.g. ertapenem, or levofloxacin with metronidazole)"
+     },
+     "by": "T+36h",
+     "findings": [
+      {
+       "t": "T+0",
+       "kind": "finding",
+       "text": "Diffuse guarding and rigidity, consistent with perforation and peritonitis"
+      },
+      {
+       "t": "T+0",
+       "kind": "keyframe",
+       "state": {
+        "temp_c": 39.1,
+        "hr": 122,
+        "sbp": 104,
+        "pain_0_10": 9
+       }
+      }
+     ],
+     "recognise_within": "2h"
+    },
+    {
+     "id": "X2",
+     "name": "Allergic reaction to a penicillin",
+     "condition": "allergic-reaction-mild-to-moderate",
+     "trigger": "action",
+     "action": {
+      "kind": "treatment",
+      "refs": [
+       "amoxicillin-500-mg-capsule"
+      ],
+      "text": "Any penicillin, e.g. amoxicillin"
+     },
+     "after": "30m",
+     "chance": 0.5,
+     "findings": [
+      {
+       "t": "T+0",
+       "kind": "symptom",
+       "text": "Generalised urticaria and pruritus"
+      },
+      {
+       "t": "T+0",
+       "kind": "keyframe",
+       "state": {
+        "hr": 108
+       }
+      }
+     ],
+     "recognise_within": "30m"
     }
    ],
    "ground_truth": {
@@ -203,7 +252,7 @@
   "status": "draft",
   "reviewers": [],
   "physiology_review": "requested",
-  "notes_for_physiologist": "Keyframe values are placeholders; please check the untreated trajectory against the CLiFF (worst case 22.5–37.4%, untreated phase 2 lasts 168–504 h).",
+  "notes_for_physiologist": "Keyframe values are placeholders; please check the untreated trajectory against the CLiFF (worst case 22.5–37.4%, untreated phase 2 lasts 168–504 h), and the onset of X1. X2's 50% reaction rate is illustrative; please set it.",
   "notes": "Worked example, not clinically reviewed."
  },
  "tags": [

@@ -99,6 +99,45 @@ def test_scenario_errors(tmp_path, change, expected):
     assert any(expected in m for m in messages(issues, "error")), messages(issues)
 
 
+def cx(s, n=0):
+    return p0(s)["complications"][n]
+
+
+@pytest.mark.parametrize(
+    "change, expected",
+    [
+        (lambda s: cx(s).pop("by"), "X1: the untreated trigger requires by"),
+        (lambda s: cx(s).update(at="T+2h"), "X1: at does not apply to the untreated trigger"),
+        (
+            lambda s: cx(s).update(trigger="chance", at="T+12h", by=None, action=None),
+            "X1: a chance trigger needs a share of runs below 100%",
+        ),
+        (lambda s: cx(s).update(findings=[]), "X1: link an IMM condition or describe the findings"),
+        (lambda s: cx(s, 1).update(condition="dragon-pox"), "complication X2: unknown condition"),
+        (lambda s: cx(s, 1).update(id="X1"), "complication ids must be unique"),
+    ],
+)
+def test_complication_errors(tmp_path, change, expected):
+    issues = check(tmp_path, change)
+    assert any(expected in m for m in messages(issues, "error")), messages(issues)
+
+
+def test_complication_in_a_share_of_runs(tmp_path):
+    def change(s):
+        cx(s).update(trigger="chance", at="T+12h", by=None, action=None, chance=0.25)
+
+    issues = check(tmp_path, change)
+    assert messages(issues, "error") == [], messages(issues)
+
+
+def test_checklist_item_for_an_unknown_complication(tmp_path):
+    def change(r):
+        next(i for i in r["items"] if i["id"] == "I15")["complication"] = "X9"
+
+    issues = check(tmp_path, rubric_change=change)
+    assert any("rubric item I15: unknown complication 'X9'" in m for m in messages(issues, "error"))
+
+
 def test_sex_specific_condition(tmp_path):
     issues = check(tmp_path, lambda s: p0(s).update(condition="prostatitis-acute", crew_id="C02"))
     assert any("applies to male patients only" in m for m in messages(issues, "error"))
@@ -250,3 +289,5 @@ def test_form_bundle_has_the_library():
     assert "solar_particle_event" in b["enums"]["event_kinds"]
     assert any(s["code"] == "R10.31" for s in b["symptoms"])
     assert any(e["id"] == "drug-ertapenem" for e in b["encyclopedia"])
+    scopes = {s["id"]: s.get("scope") for s in b["base_rubrics"][-1]["standard_items"]}
+    assert scopes["SCR"] == scopes["SCM"] == "complication"

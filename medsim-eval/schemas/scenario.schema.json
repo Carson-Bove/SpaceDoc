@@ -183,6 +183,205 @@
       "title": "Chart",
       "type": "object"
     },
+    "Complication": {
+      "additionalProperties": false,
+      "description": "A clinical complication the run can introduce (docs/11 §4.3).\n\nIt happens when its trigger fires, and then only in `chance` of runs (and only in worst-course\nruns if `worst_course_only`). Every complication that happens is scored by the base rubric's\ncomplication standard items, plus any checklist items tied to it.",
+      "properties": {
+        "id": {
+          "description": "e.g. X1; checklist items refer to it",
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "e.g. Perforation with peritonitis",
+          "title": "Name",
+          "type": "string"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "IMM condition whose CLiFF course the twin follows, if one fits",
+          "title": "Condition"
+        },
+        "trigger": {
+          "description": "untreated: at `by`, unless `action` was done by then; action: `after` the assistant directs `action`; chance: at `at`, in a share of runs",
+          "enum": [
+            "untreated",
+            "action",
+            "chance"
+          ],
+          "title": "Trigger",
+          "type": "string"
+        },
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ActionRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "untreated and action triggers"
+        },
+        "by": {
+          "anyOf": [
+            {
+              "description": "Simulated time from scenario start, e.g. T+0, T+30m, T+1d6h",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "untreated trigger: the deadline",
+          "title": "By"
+        },
+        "after": {
+          "anyOf": [
+            {
+              "description": "Simulated duration, e.g. 30m, 10h, 2d",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "action trigger: time from action to onset (default: at once)",
+          "title": "After"
+        },
+        "at": {
+          "anyOf": [
+            {
+              "description": "Simulated time from scenario start, e.g. T+0, T+30m, T+1d6h",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "chance trigger: onset time",
+          "title": "At"
+        },
+        "chance": {
+          "default": 1.0,
+          "description": "Share of runs in which it happens once triggered, e.g. 0.25",
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "title": "Chance",
+          "type": "number"
+        },
+        "worst_course_only": {
+          "default": false,
+          "description": "Only in runs on the worst-case course",
+          "title": "Worst Course Only",
+          "type": "boolean"
+        },
+        "findings": {
+          "default": [],
+          "description": "Symptoms, exam findings and vital signs, timed from onset",
+          "items": {
+            "$ref": "#/$defs/ComplicationEntry"
+          },
+          "title": "Findings",
+          "type": "array"
+        },
+        "recognise_within": {
+          "anyOf": [
+            {
+              "description": "Simulated duration, e.g. 30m, 10h, 2d",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Time from onset within which recognition earns the standard item; empty: any time before the run ends",
+          "title": "Recognise Within"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "trigger"
+      ],
+      "title": "Complication",
+      "type": "object"
+    },
+    "ComplicationEntry": {
+      "additionalProperties": false,
+      "description": "A finding or vital-sign change, timed from the complication's onset.",
+      "properties": {
+        "t": {
+          "description": "Time from the complication's onset, e.g. T+0, T+30m",
+          "title": "T",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "symptom",
+            "finding",
+            "keyframe",
+            "note"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "state": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "default": {},
+          "description": "Twin state at this time (keyframes): e.g. {temp_c: 38.1, hr: 104}",
+          "title": "State",
+          "type": "object"
+        }
+      },
+      "required": [
+        "t",
+        "kind"
+      ],
+      "title": "ComplicationEntry",
+      "type": "object"
+    },
     "Familiarity": {
       "additionalProperties": false,
       "description": "1 = none, 5 = expert.",
@@ -313,7 +512,7 @@
     },
     "Inject": {
       "additionalProperties": false,
-      "description": "A mission event dropped into the run, as in a launch-readiness sim.",
+      "description": "A mission event dropped into the run, as in a launch-readiness sim. A later feature: kept\nin the format, not yet offered in the form's main sections.",
       "properties": {
         "t": {
           "description": "Simulated time from scenario start, e.g. T+0, T+30m, T+1d6h",
@@ -470,6 +669,14 @@
             "$ref": "#/$defs/TimeCritical"
           },
           "title": "Time Critical",
+          "type": "array"
+        },
+        "complications": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Complication"
+          },
+          "title": "Complications",
           "type": "array"
         },
         "ground_truth": {

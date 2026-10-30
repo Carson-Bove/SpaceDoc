@@ -1,8 +1,9 @@
 """Rubrics (docs/11 §5).
 
 The *base rubric* (e.g. general@0.2) holds what is the same for every scenario: safety gates,
-the 1–5 domains with anchors, the outcome measures, the standard items scored in every case
-(diagnosis and etiology), and a library of common items clerks can add with one click. It is versioned; each scenario rubric
+the 1–5 domains with anchors, the outcome measures, the standard items (diagnosis and etiology in
+every run; recognition and response for each complication that happens), and a library of common
+items clerks can add with one click. It is versioned; each scenario rubric
 pins the base version it was written against, so updating the base never silently changes
 old scores. A *scenario rubric* adds scenario-specific gates and checklist items.
 """
@@ -52,6 +53,10 @@ class StandardItem(Strict):
     text: str
     weight: int = Field(gt=0, le=10)
     domain: Id
+    scope: Literal["scenario", "complication"] = Field(
+        "scenario",
+        description="complication: scored once for each complication that happens in a run",
+    )
     depends_on: Id | None = Field(
         None, description="Only scored if this other standard item was met (partial credit chain)"
     )
@@ -109,7 +114,10 @@ class ChecklistItem(Strict):
     weight: int = Field(
         ge=-10, le=10, description="+ for things to do, − for things not to do; not 0"
     )
-    by: Offset | None = Field(None, description="Deadline in simulated time, e.g. T+2h")
+    by: Offset | None = Field(
+        None,
+        description="Deadline in simulated time, e.g. T+2h; from onset if `complication` is set",
+    )
     domain: Id = Field(description="Which base-rubric domain this informs, e.g. D3")
     anchors: Anchors | None = Field(None, description="Required for rated items")
     requires: list[str] = Field(
@@ -117,6 +125,9 @@ class ChecklistItem(Strict):
         description="Kit item ids; if none of them is aboard in a run, the item is not applicable",
     )
     patient: Id | None = Field(None, description="For several-patient cases: which crewmember")
+    complication: Id | None = Field(
+        None, description="Only scored in runs where this complication happens"
+    )
     from_library: Id | None = Field(None, description="Library item this was added from")
     rationale: str | None = None
 
