@@ -40,7 +40,7 @@
     "drm": "imm-cislunar-42d",
     "phase": "orbit"
    },
-   "default_run": false
+   "default_run": true
   },
   {
    "env": "T3",
@@ -64,7 +64,7 @@
     "phase": "surface",
     "note": "Two crew on a ~week-long surface stay with the IMM 7.5-day kit"
    },
-   "default_run": false
+   "default_run": true
   },
   {
    "env": "T4",

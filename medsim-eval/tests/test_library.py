@@ -69,7 +69,7 @@ def test_roster_matches_the_corps_shape():
 def test_every_environment_has_a_run_context():
     envs = load("environments/missions.environments.json")["environments"]
     assert all(e["representative"] for e in envs)
-    assert [e["env"] for e in envs if e["default_run"]] == ["T1", "T4", "T5"]
+    assert [e["env"] for e in envs if e["default_run"]] == ["T1", "T2", "T3", "T4", "T5"]
 
 
 def test_symptom_list_is_icd10cm_symptoms():

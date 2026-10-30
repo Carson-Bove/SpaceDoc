@@ -327,8 +327,8 @@ function renderWhere() {
       sc.environments = e.target.checked ? ALL_ENVS.filter(x => x === env || sc.environments.includes(x)) : sc.environments.filter(x => x !== env);
       changed(); render(); } }),
     `${env} · ${ENV[env].name}`, app && !app.envs.includes(env) ? h("span", { class: "muted" }, " (outside CLiFF incidence)") : null,
-    ENV[env].default_run ? h("span", { class: "chip" }, "default run") : null));
-  return card("3. Mission environment", "Select each environment in which this presentation is plausible. Each is simulated with its own medical kit, gravity and communication delay. Default runs: LEO, deep-space transit, Mars surface.",
+    !ENV[env].default_run ? h("span", { class: "chip" }, "not in default batch") : null));
+  return card("3. Mission environment", "Select each environment in which this presentation is plausible. Each selected environment is run in its best- and worst-case course, with its own medical kit, gravity and communication delay.",
     ...boxes,
     app ? h("p", { class: "help", style: "margin-top:6px" }, `CLiFF incidence segment: ${app.segment || "All"}${app.timing === "early_flight" ? "; onset in the first days of flight" : app.timing === "surface_arrival" ? "; onset on arrival at a planetary surface" : ""}${app.eva ? "; EVA-related" : ""}${app.sex !== "any" ? `; ${app.sex === "F" ? "female" : "male"} crewmembers only` : ""}. Pre-filled from the CLiFF.`) : null);
 }

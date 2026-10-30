@@ -94,7 +94,7 @@ symptoms (ICD-10-CM), encyclopedia                    │
 base rubric (gates, domains, standard items)       Rubric ── checklist items for this case
 ```
 
-**A scenario no longer names a mission.** The clerks' main concern with v0.1 was too many options, and the DRM choice is something the system can do itself. A scenario says where the case *can* happen; the runner places it in each of those environments using that environment's representative DRM phase, its kit and its comm delay. One case is therefore tested in several environments without the clerk writing it several times. The default batch uses LEO, deep-space transit and the Mars surface (where the case allows); each environment is run in both the best and the worst course, plus 2 runs at the CLiFF's own odds: **8 runs per scenario**.
+**A scenario no longer names a mission.** The clerks' main concern with v0.1 was too many options, and the DRM choice is something the system can do itself. A scenario says where the case *can* happen; the runner places it in each of those environments using that environment's representative DRM phase, its kit and its comm delay. One case is therefore tested in several environments without the clerk writing it several times. By default every environment the scenario selects is run, in both the best and the worst course, plus 2 runs at the CLiFF's own odds: **up to 12 runs per scenario** when all five apply, fewer for conditions that occur only in some (4 for lunar dust exposure).
 
 Files are **JSON** (`*.scenario.json`, `*.rubric.json`, `*.drm.json`, `*.habitat.json`, `*.crew.json`, `*.physiology.json`, `*.conditions.json`, `*.symptoms.json`, `*.encyclopedia.json`, `*.environments.json`, `*.base-rubric.json`), each with a `schema_version`. `medsim migrate` converts v0.1 scenarios and writes what it had to guess into the scenario's review notes.
 
@@ -463,7 +463,7 @@ A **separate package in this repository**, e.g. `medsim-eval/` with its own `pyp
 | **A5** | Second clerk round on the v2 form | Time per scenario is measured; the form is revised again |
 | A6 | Several-patient scenarios in the form: triage, illness that spreads, the CMO as patient, allocating scarce drugs; research on spaceflight triage and drug storage | Clinical lead agrees the triage rules |
 | A7 | Manual scoring sheet, a separate tool for clerks testing cases by hand | Clerk scores feed the Phase E calibration set |
-| B | Adapter interface + SpaceDoc adapter; MCP world server (static twin); user agent; runner (8 runs per scenario) | One scenario runs end to end on the laptop overnight |
+| B | Adapter interface + SpaceDoc adapter; MCP world server (static twin); user agent; runner (up to 12 runs per scenario) | One scenario runs end to end on the laptop overnight |
 | C | Scorer, judge, viewer | Judge report with working anomaly links |
 | D | Twin v1 (CLiFF course model, effect table, complication events, clock); mission events and the paper doll after | The outcome distribution over seeds matches the CLiFF within tolerance |
 | E | Feedback agent, medical + technical reports; scorer validation study | Scorer–human κ reported per item |
@@ -477,7 +477,7 @@ Decided:
 - **CLiFF version:** always the most recent (the 2023 list).
 - **Habitat gaps:** fill from the Levels of Care interpretation, marked as assumptions.
 - **Compute:** batches run on the MacBook Air M4 (16 GB) until more compute is available; the desktop in [02](02-local-inference.md) can be used later. Runs happen overnight or in unattended stretches during the day, and pause when the laptop is in use. Because SpaceDoc's own models fill most of the memory, a batch runs in stages: conversations, then scoring, then judging.
-- **Runs per scenario:** 8 by default: LEO, transit and Mars surface (where the case allows) × best and worst course, plus 2 at the CLiFF's odds.
+- **Runs per scenario:** every environment the scenario selects (all five where the condition can occur) × best and worst course, plus 2 at the CLiFF's odds: up to 12. The lunar environments are part of the default batch; the lunar surface has the smallest kit of the five.
 - **Missions:** chosen by the runner, not the clerk.
 - **Crew roster:** 20 fictional crewmembers with full names, modelled on the active corps.
 - **Clerk details in files:** name and contact only.
