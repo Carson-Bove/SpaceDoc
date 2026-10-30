@@ -1,0 +1,439 @@
+{
+  "$defs": {
+    "Comms": {
+      "additionalProperties": false,
+      "properties": {
+        "one_way_delay_s": {
+          "description": "Minimum and maximum one-way delay",
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "One Way Delay S",
+          "type": "array"
+        },
+        "blackouts": {
+          "default": [],
+          "description": "Known blackout causes, e.g. solar conjunction",
+          "items": {
+            "type": "string"
+          },
+          "title": "Blackouts",
+          "type": "array"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "one_way_delay_s"
+      ],
+      "title": "Comms",
+      "type": "object"
+    },
+    "CrewMember": {
+      "additionalProperties": false,
+      "properties": {
+        "crew_id": {
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Crew Id",
+          "type": "string"
+        },
+        "sex": {
+          "enum": [
+            "M",
+            "F"
+          ],
+          "title": "Sex",
+          "type": "string"
+        },
+        "cac": {
+          "default": false,
+          "description": "Coronary artery calcium present",
+          "title": "Cac",
+          "type": "boolean"
+        },
+        "crowns": {
+          "default": false,
+          "description": "Dental crowns",
+          "title": "Crowns",
+          "type": "boolean"
+        },
+        "contacts": {
+          "default": false,
+          "description": "Wears contact lenses",
+          "title": "Contacts",
+          "type": "boolean"
+        },
+        "prior_abd_surgery": {
+          "default": false,
+          "description": "History of abdominal surgery",
+          "title": "Prior Abd Surgery",
+          "type": "boolean"
+        },
+        "eva": {
+          "default": false,
+          "description": "Assigned to EVAs in this DRM",
+          "title": "Eva",
+          "type": "boolean"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. CMO, commander; optional",
+          "title": "Role"
+        }
+      },
+      "required": [
+        "crew_id",
+        "sex"
+      ],
+      "title": "CrewMember",
+      "type": "object"
+    },
+    "EvaPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "crew": {
+          "items": {
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+            "type": "string"
+          },
+          "title": "Crew",
+          "type": "array"
+        },
+        "count": {
+          "description": "EVAs per crewmember in this phase (or total four-person EVAs; see note)",
+          "minimum": 0,
+          "title": "Count",
+          "type": "integer"
+        },
+        "window_days": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Mission days the EVAs fall in",
+          "title": "Window Days"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "crew",
+        "count"
+      ],
+      "title": "EvaPlan",
+      "type": "object"
+    },
+    "Phase": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "env": {
+          "enum": [
+            "T1",
+            "T2",
+            "T3",
+            "T4",
+            "T5"
+          ],
+          "title": "Env",
+          "type": "string"
+        },
+        "days": {
+          "exclusiveMinimum": 0,
+          "title": "Days",
+          "type": "number"
+        },
+        "habitats": {
+          "default": [],
+          "description": "Habitat profile ids in use during this phase",
+          "items": {
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+            "type": "string"
+          },
+          "title": "Habitats",
+          "type": "array"
+        },
+        "eva": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvaPlan"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "comms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Comms"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Overrides the environment's default comms"
+        },
+        "assumption": {
+          "default": false,
+          "description": "True if the phase split is ours, not the source's",
+          "title": "Assumption",
+          "type": "boolean"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "env",
+        "days"
+      ],
+      "title": "Phase",
+      "type": "object"
+    },
+    "Resources": {
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "description": "IMM resource state: continuous resupply, fixed kit, or none",
+          "enum": [
+            "fully_treated",
+            "medcap",
+            "untreated"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "resupply": {
+          "title": "Resupply",
+          "type": "boolean"
+        },
+        "kit_mass_kg": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kit Mass Kg"
+        },
+        "kit_volume_cm3": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kit Volume Cm3"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "state",
+        "resupply"
+      ],
+      "title": "Resources",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "description": "Where a value came from. `doc` is a short citation; `url` is where to read it.",
+      "properties": {
+        "doc": {
+          "title": "Doc",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Table, page or section within the document",
+          "title": "Locator"
+        }
+      },
+      "required": [
+        "doc"
+      ],
+      "title": "Source",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "0.2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "drm_id": {
+      "maxLength": 80,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Drm Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "duration_days": {
+      "exclusiveMinimum": 0,
+      "title": "Duration Days",
+      "type": "number"
+    },
+    "crew": {
+      "items": {
+        "$ref": "#/$defs/CrewMember"
+      },
+      "minItems": 1,
+      "title": "Crew",
+      "type": "array"
+    },
+    "phases": {
+      "items": {
+        "$ref": "#/$defs/Phase"
+      },
+      "minItems": 1,
+      "title": "Phases",
+      "type": "array"
+    },
+    "resources": {
+      "$ref": "#/$defs/Resources"
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "drm_id",
+    "name",
+    "source",
+    "duration_days",
+    "crew",
+    "phases",
+    "resources"
+  ],
+  "title": "DRM",
+  "type": "object"
+}

@@ -1,0 +1,906 @@
+{
+ "schema_version": "0.2",
+ "note": "Reference only, for writing scenarios. Drug text is from one US product label and may differ from the product in a flight kit; it is not dosing advice.",
+ "entries": [
+  {
+   "id": "drug-acetaminophen",
+   "kind": "drug",
+   "title": "acetaminophen",
+   "text": "In the IMM kits: Tylenol (Acetaminophen) 325 Mg: ISS 250, Orion 96, lunar lander 4. Uses: temporarily relieves minor aches and pains due to: headache toothache muscular aches backache the common cold minor pain from arthritis premenstrual and menstrual cramps temporarily reduces Dosage: do not take more than directed adults and children 12 years and over take 2 tablets every 6 hours while symptoms last do not take more than 6 tablets in 24 hours, unless directed by a doctor do not take for more than 10 days unless directed by a doctor children under 12 years: ask a",
+   "source": {
+    "doc": "FDA label via DailyMed: ACETAMINOPHEN EXTRA STRENGTH (ACETAMINOPHEN) TABLET, FILM COATED [CVS PHARMACY]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=64a1ebe7-af28-4b09-96e8-28fa4dcc52bd"
+   }
+  },
+  {
+   "id": "drug-acetazolamide",
+   "kind": "drug",
+   "title": "acetazolamide",
+   "text": "In the IMM kits: Diamox (Acetazolamide) 250 Mg Tablets: ISS 100, Orion 6. Uses: For adjunctive treatment of: edema due to congestive heart failure; drug-induced edema; centrencephalic epilepsies (petit mal, unlocalized seizures); chronic simple (open-angle) glaucoma, secondary glaucoma, and preoperatively in acute angle-closure glaucoma where delay of surgery is desired in order to lower intraocular pressure. Acetazolamide tablets, USP are also indicated for the prevention or amelioration of symptoms associated with acute mountain sickness in climbers attempting rapid ascent and in those who are very susceptible to acute mountain sickness despite gradual Contraindications: Hypersensitivity to acetazolamide or any excipients in the formulation. Since acetazolamide is a sulfonamide derivative, cross sensitivity between acetazolamide, sulfonamides and other sulfonamide derivatives is possible. Acetazolamide therapy is contraindicated in situations in which sodium and/or potassium blood serum levels are depressed, in cases of marked kidney and liver disease or dysfunction, in suprarenal gland failure, and in hyperchloremic acidosis. It is contraindicated in patients with cirrhosis because of the risk of development of hepatic encephalopathy. Long-term… Dosage: Glaucoma: Acetazolamide should be used as an adjunct to the usual therapy. The dosage employed in the treatment of chronic simple (open-angle) glaucoma ranges from 250 mg to 1 g of acetazolamide per 24 hours, usually in divided doses for amounts over 250 mg. It has usually been found that a dosage in excess of 1 g per 24 hours does not produce an increased effect. In all cases, the dosage should be adjusted with careful individual attention both to symptomatology and ocular tension. Continuous supervision by a physician is advisable. In treatment of secondary glaucoma and in the preoperative…",
+   "source": {
+    "doc": "FDA label via DailyMed: ACETAZOLAMIDE TABLET [AJANTA PHARMA USA INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=240ab24b-3124-4805-80c2-36dd1945e3b3"
+   }
+  },
+  {
+   "id": "drug-albuterol",
+   "kind": "drug",
+   "title": "albuterol",
+   "text": "In the IMM kits: Albuterol Inhaler (Proventil) 90 Mcg, 6.7 Gm: ISS 3, Orion 2. Uses: Albuterol sulfate inhalation aerosol is a beta 2 -adrenergic agonist indicated for: • Treatment or prevention of bronchospasm in patients 4 years of age and older with reversible obstructive airway disease. ( 1.1 ) • Prevention of exercise-induced bronchospasm in patients 4 years of age and older. ( 1.2 ) 1.1 Bronchospasm Albuterol sulfate inhalation aerosol is indicated for the treatment or prevention of bronchospasm in patients 4 years of age and older with reversible obstructive airway disease. 1.2 Exercise-Induced Bronchospasm Albuterol sulfate inhalation aerosol is indicated for the… Dosage: For oral inhalation only • Treatment or prevention of bronchospasm in adults and children 4 years of age and older: 2 inhalations every 4 to 6 hours. In some patients, one inhalation every 4 hours may be sufficient. ( 2.1 ) • Prevention of exercise-induced bronchospasm in adults and children 4 years of age and older: 2 inhalations 15 to 30 minutes before exercise. ( 2.2 ) • Priming information: Prime albuterol sulfate inhalation aerosol before using for the first time, or when the inhaler has not been used for more than 2 weeks. To prime albuterol sulfate inhalation aerosol, release 3 sprays… Contraindications: Albuterol sulfate inhalation aerosol is contraindicated in patients with a history of hypersensitivity to albuterol and any other albuterol sulfate inhalation aerosol components. Rare cases of hypersensitivity reactions, including urticaria, angioedema, and rash have been reported after the use of albuterol sulfate [see WARNINGS AND PRECAUTIONS ( 5.6 )] . Hypersensitivity to albuterol and any other albuterol sulfate inhalation aerosol Components. ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: ALBUTEROL SULFATE AEROSOL, METERED [A-S MEDICATION SOLUTIONS]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=52e209ac-7156-4496-ba5a-42ee59d45deb"
+   }
+  },
+  {
+   "id": "drug-amoxicillin",
+   "kind": "drug",
+   "title": "amoxicillin",
+   "text": "In the IMM kits: Amoxicillin 500 Mg Capsule: ISS 60, Orion 22, lunar lander 14. Uses: Adults and Pediatric Patients Upper Respiratory Tract Infections of the Ear, Nose, and Throat Amoxicillin is indicated in the treatment of infections due to susceptible (ONLY β-lactamase–negative) isolates of Streptococcus species. (α- and β-hemolytic isolates only), Streptococcus pneumoniae , Staphylococcus spp. , or Haemophilus influenzae. Infections of the Genitourinary Tract Amoxicillin is indicated in the treatment of infections due to susceptible (ONLY β-lactamase–negative) isolates of Escherichia coli, Proteus mirabilis, or Enterococcus faecalis. Infections of the Skin and Skin… Dosage: In Adults, 750 to1750 mg/day in divided doses every 8 to12 hours. In Pediatric Patients over 3 Months of Age, 20 to 45 mg/kg/day in divided doses every 8 to12 hours. Refer to full prescribing information for specific dosing regimens. ( 2.2 , 2.3 ) The upper dose for neonates and infants aged 3 months or younger is 30 mg/kg/day divided every 12 hours. ( 2.3 ) Dosing for H. pylori Infection (in Adults): Triple therapy: 1 gram amoxicillin, 500 mg clarithromycin, and 30 mg lansoprazole, all given twice daily (every 12 hours) for 14 days. Dual therapy: 1 gram amoxicillin and 30 mg lansoprazole,… Contraindications: Amoxicillin is contraindicated in patients who have experienced a serious hypersensitivity reaction (e.g., anaphylaxis or Stevens-Johnson syndrome) to amoxicillin or to other β-lactam antibacterial drugs (e.g., penicillins and cephalosporins). History of a serious hypersensitivity reaction (e.g., anaphylaxis or Stevens-Johnson syndrome) to amoxicillin or to other beta-lactams (e.g., penicillins or cephalosporins) ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: AMOXICILLIN CAPSULE [REMEDYREPACK INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=82c0c5d1-df2d-4352-bd12-99f955af569e"
+   }
+  },
+  {
+   "id": "drug-aripiprazole",
+   "kind": "drug",
+   "title": "aripiprazole",
+   "text": "In the IMM kits: Abilify (Aripiprazole) 5 Mg: ISS 60; Abilify (Aripiprazole) 7.5 Mg/Ml, 1.3 Ml: ISS 2. Uses: Aripiprazole Tablets are indicated for the treatment of: • Schizophrenia • Irritability Associated with Autistic Disorder • Treatment of Tourette’s Disorder Aripiprazole tablets are an atypical antipsychotic. Aripiprazole tablets are indicated for: • Schizophrenia. ( 14.1 ) • Irritability Associated with Autistic Disorder. ( 14.4 ) • Treatment of Tourette’s Disorder. ( 14.5 Dosage: • Administer once daily without regard to meals ( 2 ) Initial Dose Recommended Dose Maximum Dose Schizophrenia – adults (2.1) 10 to 15 mg/day 10 to 15 mg/day 30 mg/day Schizophrenia – adolescents (2.1) 2 mg/day 10 mg/day 30 mg/day Irritability associated with autistic disorder – pediatric patients (2.4) 2 mg/day 5 to 10 mg/day 15 mg/day Tourette’s Disorder – (2.5) Patients <50 kg 2 mg/day 5 mg/day 10 mg/day Patients ≥50 kg 2 mg/day 10 mg/day 20 mg/day • Known CYP2D6 poor metabolizers: Half of the usual dose. ( 2.6 ) 2.1 Schizophrenia Adults The recommended starting and target dose for… Contraindications: Aripiprazole tablets are contraindicated in patients with a history of a hypersensitivity reaction to aripiprazole. Reactions have ranged from pruritus/urticaria to anaphylaxis [see Adverse Reactions (6.2) ] . • Known hypersensitivity to aripiprazole. ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: ARIPIPRAZOLE TABLET [MAJOR PHARMACEUTICALS]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=573c6bb6-941f-4413-8c23-826025385864"
+   }
+  },
+  {
+   "id": "drug-aspirin",
+   "kind": "drug",
+   "title": "aspirin",
+   "text": "In the IMM kits: Aspirin 325Mg Tab.: ISS 120, Orion 1, lunar lander 3. Uses: temporarily relieves headache muscle pain toothache menstrual pain pain and fever of colds minor pain of Dosage: drink a full glass of water with each dose adults and children 12 years and over: take 1 or 2 tablets every 4 hours or 3 tablets every 6 hours, not to exceed 12 tablets in 24 hours children under 12 years: consult a",
+   "source": {
+    "doc": "FDA label via DailyMed: BAYER GENUINE ASPIRIN (ASPIRIN) TABLET [SELECT CONSUMER GROUP]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3ca776c2-47ed-5107-e063-6394a90ac5df"
+   }
+  },
+  {
+   "id": "drug-atropine",
+   "kind": "drug",
+   "title": "atropine",
+   "text": "In the IMM kits: Atropine 1 Mg, 10Ml Syringe.: ISS 2. Uses: Atropine Sulfate Injection, USP, is indicated for temporary blockade of severe or life threatening muscarinic effects, e.g., as an antisialagogue, an antivagal agent, an antidote for organophosphorus or muscarinic mushroom poisoning, and to treat bradyasystolic cardiac arrest. Atropine is a muscarinic antagonist indicated for temporary blockade of severe or life threatening muscarinic effects. ( 1 Dosage: For intravenous administration ( 2.1 ) Titrate according to heart rate, PR interval, blood pressure and symptoms ( 2.1 ) Adult dosage Antisialagogue or for antivagal effects: Initial single dose of 0.5 mg to 1 mg ( 2.2 ) Antidote for organophosphorus or muscarinic mushroom poisoning: Initial single dose of 2 mg to 3 mg, repeated every 20-30 minutes ( 2.2 ) Bradyasystolic cardiac arrest: 1 mg dose, repeated every 3-5 minutes if asystole persists ( 2.2 ) Patients with Coronary Artery Disease: Limit the total dose to 0.03 mg/kg to 0.04 mg/kg ( 2.4 ) 2.1 General Administration Parenteral drug… Contraindications: None. None. ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: ATROPINE SULFATE INJECTION, SOLUTION [ACCORD HEALTHCARE INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d5e07279-48ca-4f83-9633-299e65a7f821"
+   }
+  },
+  {
+   "id": "drug-azithromycin",
+   "kind": "drug",
+   "title": "azithromycin",
+   "text": "In the IMM kits: Zithromax (Azithromycin) 250 Mg: ISS 18, Orion 12, lunar lander 6. Uses: Azithromycin tablets are a macrolide antibacterial drug indicated for treatment of patients with mild to moderate infections caused by susceptible strains of the designated microorganisms in the specific conditions listed below: Acute bacterial exacerbations of chronic bronchitis in adults ( 1.1 ) Acute bacterial sinusitis in adults ( 1.1 ) Uncomplicated skin and skin structure infections in adults ( 1.1 ) Urethritis and cervicitis in adults ( 1.1 ) Genital ulcer disease in men ( 1.1 ) Acute otitis media in pediatric patients (6 months of age and older) ( 1.2 ) Community-acquired pneumonia in… Dosage: Recommended Dosage for Adult Patients ( 2.1 ) Infection Recommended Dose/Duration of Therapy Community-acquired pneumonia (mild severity) Pharyngitis/tonsillitis (second-line therapy) Skin/skin structure (uncomplicated) 500 mg as a single dose on Day 1, followed by 250 mg once daily on Days 2 through 5. Acute bacterial exacerbations of chronic bronchitis (mild to moderate) 500 mg as a single dose on Day 1, followed by 250 mg once daily on Days 2 through 5 or 500 mg once daily for 3 days. Acute bacterial sinusitis 500 mg once daily for 3 days. Genital ulcer disease (chancroid) Non-gonococcal… Contraindications: Patients with known hypersensitivity to azithromycin, erythromycin, any macrolide or ketolide drug. ( 4.1 ) Patients with a history of cholestatic jaundice/hepatic dysfunction associated with prior use of azithromycin. ( 4.2 ) 4.1 Hypersensitivity Azithromycin tablets are contraindicated in patients with known hypersensitivity to azithromycin, erythromycin, any macrolide or ketolide drug. 4.2 Hepatic Dysfunction Azithromycin tablets are contraindicated in patients with a history of cholestatic jaundice/hepatic dysfunction associated with prior use of",
+   "source": {
+    "doc": "FDA label via DailyMed: AZITHROMYCIN TABLET, FILM COATED [A-S MEDICATION SOLUTIONS]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3c4861f2-825e-4e3b-9907-9658a849079e"
+   }
+  },
+  {
+   "id": "drug-bacitracin",
+   "kind": "drug",
+   "title": "bacitracin",
+   "text": "In the IMM kits: Bacitracin 500 Units/Gm. 28 Gm Tube: ISS 1, Orion 1, lunar lander 1. Uses: First aid to help prevent infection in scrapes minor cuts Dosage: clean affected area apply a small amount of this product (an amount equal to the surface area of the tip of a finger) on the area 1 to 3 times daily may be covered with a sterile",
+   "source": {
+    "doc": "FDA label via DailyMed: BACITRACIN ZINC OINTMENT [UNIVERSAL DISTRIBUTION CENTER LLC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=186b2750-5bf6-1702-e063-6294a90a62b3"
+   }
+  },
+  {
+   "id": "drug-benzocaine",
+   "kind": "drug",
+   "title": "benzocaine",
+   "text": "In the IMM kits: Benzocaine Swab Stick Oral 20%, 0.15 Ml Swab: ISS 24. Uses: for temporary relief of pain associated with: canker sores minor irritation mouth Dosage: Adults and children age 5 and older: Affix one tablet as directed below and allow to slowly dissolve in the mouth. May be repeated every 2 hours as needed or directed by a doctor or dentist. This product may last over 2 hours. Placement: CankerMelts are bi-layered tablets with a dimple on the adhesive side and a pain reliever on the domed side marked CM. Place the adhesive side with a dimple against teeth or gums or braces or appliance. Place opposite or adjacent to the sore. Hold tablet in place with your cheek or tongue for 10 seconds to initiate adhesion. Adhesion will strengthen over the…",
+   "source": {
+    "doc": "FDA label via DailyMed: CANKERMELTS (BENZOCAINE) LOZENGE [QUEST PRODUCTS, LLC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=070dae82-14c2-66d2-e063-6394a90ab259"
+   }
+  },
+  {
+   "id": "drug-bisacodyl",
+   "kind": "drug",
+   "title": "bisacodyl",
+   "text": "In the IMM kits: Dulcolax (Bisacodyl) Tablet 5Mg: ISS 40, Orion 16, lunar lander 2. Uses: ▪ for temporary relief of occasional constipation and irregularity ▪ this product generally produces a bowel movement in 6 to 12 Dosage: take with a glass of water adults and children 12 years of age and over 1 to 3 tablets in a single daily dose children 6 to under 12 years of age 1 tablet in a single daily dose children under 6 years of age ask a",
+   "source": {
+    "doc": "FDA label via DailyMed: PUBLIX STIMULANT LAXATIVE (BISACODYL) TABLET, COATED [PUBLIX SUPER MARKETS, INC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=02e596a7-b8e5-4f55-9bc6-6d17e0fabda7"
+   }
+  },
+  {
+   "id": "drug-bismuth-subsalicylate",
+   "kind": "drug",
+   "title": "bismuth subsalicylate",
+   "text": "In the IMM kits: Pepto-Bismol 262Mg Chewable Tabs: ISS 80, Orion 6, lunar lander 4. Uses: relieves ▪ travelers' diarrhea ▪ diarrhea ▪ upset stomach due to overindulgence in food and drink, including ▪ heartburn ▪ indigestion ▪ nausea ▪ gas ▪ belching ▪ Dosage: ▪ chew or dissolve tablets in mouth ▪ adults and children 12 years and over: 2 tablets every 1/2 to 1 hour as needed ▪ do not exceed 8 doses (16 tablets) in 24 hours ▪ use until diarrhea stops but not more than 2 days ▪ drink plenty of clear fluids to help prevent dehydration caused by diarrhea ▪ children under 12 years: ask a",
+   "source": {
+    "doc": "FDA label via DailyMed: CHEWABLE STOMACH RELIEF (BISMUTH SUBSALICYLATE) TABLET, CHEWABLE [PUBLIX SUPER MARKETS INC,]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2a316e06-5c16-46b8-b9ac-71fe0f92c515"
+   }
+  },
+  {
+   "id": "drug-carbamide-peroxide",
+   "kind": "drug",
+   "title": "carbamide peroxide",
+   "text": "In the IMM kits: Debrox For Earwax (Carbamide Peroxide) 6.5% 15Ml Bottle: ISS 4. Uses: For occasional use as an aid to soften, loosen and remove excessive Dosage: FOR USE IN THE EAR ONLY Remove any earing aids before use Adults and children over 12 yrs of age: tilt head to the side and place 10 drops into the ear. Tip of applicator should not enter into the ear canal Keep drops in ear for several minutes by keeping head tilted sideways or placing cotton in the ear. Use twice daily for up to 4 days if needed, or as directed by a doctor. Any wax remaining after treatment may be removed by gently flushing the ear with warm water, using a soft rubber bulb ear syringe. Children under 12 yrs of age: Consult a",
+   "source": {
+    "doc": "FDA label via DailyMed: EAR DROPS (CARBAMIDE PEROXIDE 6.5%) LIQUID [BIONPHARMA INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e8bcf92c-ad32-49d5-e053-2995a90ae0c6"
+   }
+  },
+  {
+   "id": "drug-carboxymethylcellulose",
+   "kind": "drug",
+   "title": "carboxymethylcellulose",
+   "text": "In the IMM kits: Refresh Artificial Tears (Carboxymethylcellulose) 0.5%, 0.4Ml Bottle: ISS 40, Orion 6, lunar lander 3. Uses: As a lubricant to relieve dryness of the eye. As a protectant against further irritation of the eye. For temporary relief of burning, irritation, and discomfort including exposure to wind or Dosage: To open, twist tab completely off. Instill 1 or 2 drops in the affected eye(s) as",
+   "source": {
+    "doc": "FDA label via DailyMed: THERATEARS LUBRICANT (CARBOXYMETHYLCELLULOSE SODIUM) SOLUTION/ DROPS [MEDTECH PRODUCTS INC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=797b0394-2f0f-4733-8d20-ec5bdf3e085d"
+   }
+  },
+  {
+   "id": "drug-ceftriaxone",
+   "kind": "drug",
+   "title": "ceftriaxone",
+   "text": "In the IMM kits: Rocephin (Ceftriaxone) 1 Gm: ISS 3, Orion 1. Uses: Before instituting treatment with Ceftriaxone for Injection, USP, appropriate specimens should be obtained for isolation of the causative organism and for determination of its susceptibility to the drug. Therapy may be instituted prior to obtaining results of susceptibility testing. To reduce the development of drug-resistant bacteria and maintain the effectiveness of Ceftriaxone for Injection, USP and other antibacterial drugs, Ceftriaxone for Injection, USP should be used only to treat or prevent infections that are proven or strongly suspected to be caused by susceptible bacteria. When… Contraindications: Hypersensitivity Ceftriaxone is contraindicated in patients with known hypersensitivity to ceftriaxone, any of its excipients or to any other cephalosporin. Patients with previous hypersensitivity reactions to penicillin and other beta lactam antibacterial agents may be at greater risk of hypersensitivity to ceftriaxone (see WARNINGS – Hypersensitivity ). Neonates Premature neonates: Ceftriaxone is contraindicated in premature neonates up to a postmenstrual age of 41 weeks (gestational age + chronological age). Hyperbilirubinemic neonates: Hyperbilirubinemic neonates should not be treated… Dosage: Ceftriaxone may be administered intravenously or intramuscularly. Do not use diluents containing calcium, such as Ringer’s solution or Hartmann’s solution, to reconstitute ceftriaxone vials or to further dilute a reconstituted vial for IV administration because a precipitate can form. Precipitation of ceftriaxone-calcium can also occur when ceftriaxone is mixed with calcium-containing solutions in the same IV administration line. Ceftriaxone must not be administered simultaneously with calcium‑containing IV solutions, including continuous calcium-containing infusions such as parenteral…",
+   "source": {
+    "doc": "FDA label via DailyMed: CEFTRIAXONE INJECTION, POWDER, FOR SOLUTION CEFTRIAXONE INJECTION, POWDER, FOR SOLUTION [HIKMA PHARMACEUTICALS USA INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8351aa37-552d-471d-b293-c564dcb6ec29"
+   }
+  },
+  {
+   "id": "drug-cetirizine",
+   "kind": "drug",
+   "title": "cetirizine",
+   "text": "In the IMM kits: Zyrtec (Cetirizine) 10 Mg Tablet: ISS 30. Uses: temporarily relieves these symptoms due to hay fever or other upper respiratory allergies: ■ runny nose ■ sneezing ■ itchy, watery eyes ■ itching of the nose or Dosage: adults and children 6 years and over one 10 mg tablet once daily; do not take more than one 10 mg tablet in 24 hours. A 5 mg product may be appropriate for less severe symptoms. adults 65 years and over ask a doctor children under 6 years of age ask a doctor consumers with liver or kidney disease ask a",
+   "source": {
+    "doc": "FDA label via DailyMed: GOODMEDS ALL DAY ALLERGY RELIEF CETIRIZINE HCL (CETIRIZINE HYDROCHLORIDE) TABLET [CABINET HEALTH P.B.C.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cd13a70e-b9e2-41be-97ea-f022442b6460"
+   }
+  },
+  {
+   "id": "drug-ciprofloxacin-and-dexamethasone",
+   "kind": "drug",
+   "title": "ciprofloxacin and dexamethasone",
+   "text": "In the IMM kits: Ciprofloxacin And Dexamethasone (Ciprodex) 3%,7%, 7.5 Ml Bottle: ISS 2, Orion 1, lunar lander 1. Uses: Ciprofloxacin 0.3% and dexamethasone 0.1% otic suspension is indicated for the treatment of infections caused by susceptible isolates of the designated microorganisms in the specific conditions listed below: • Acute Otitis Media (AOM) in pediatric patients (age 6 months and older) with tympanostomy tubes due to Staphylococcus aureus , Streptococcus pneumoniae , Haemophilus influenzae , Moraxella catarrhalis , and Pseudomonas aeruginosa . • Acute Otitis Externa (AOE) in pediatric (age 6 months and older), adult and elderly patients due to Staphylococcus aureus and Pseudomonas aeruginosa .… Dosage: Ciprofloxacin 0.3% and dexamethasone 0.1% otic suspension is for otic use (ears) only, not for ophthalmic use, or for injection. ( 2.1 ) • Shake well immediately before use. ( 2.1 ) • Instill four drops into the affected ear twice daily, for seven days. ( 2 ) 2.1 Important Administration Instructions • Ciprofloxacin 0.3% and dexamethasone 0.1% otic suspension is for otic use (ears) only, and not for ophthalmic use, or for injection. • Shake well immediately before use. 2.2 Dosage For the Treatment of Acute Otitis Media in Pediatric Patients (age 6 months and older) With Tympanostomy Tubes The… Contraindications: • Ciprofloxacin 0.3% and dexamethasone 0.1% otic suspension is contraindicated in patients with a history of hypersensitivity to ciprofloxacin, to other quinolones, or to any of the components in this medication. • Use of this product is contraindicated in viral infections of the external canal, including herpes simplex infections and fungal otic infections. • Ciprofloxacin 0.3% and dexamethasone 0.1% otic suspension is contraindicated in patients with a history of hypersensitivity to ciprofloxacin, to other quinolones, or to any of the components in this medication. ( 4 ) • Use of this…",
+   "source": {
+    "doc": "FDA label via DailyMed: CIPROFLOXACIN AND DEXAMETHASONE SUSPENSION/ DROPS [ALEMBIC PHARMACEUTICALS LIMITED]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f69b7b6-6fb8-417a-bc0e-995419b952b7"
+   }
+  },
+  {
+   "id": "drug-clindamycin",
+   "kind": "drug",
+   "title": "clindamycin",
+   "text": "In the IMM kits: Cleocin (Clindamycin) 300Mg: ISS 60, Orion 21, lunar lander 14. Uses: Clindamycin hydrochloride capsules, USP are indicated in the treatment of serious infections caused by susceptible anaerobic bacteria. Clindamycin hydrochloride capsules, USP are also indicated in the treatment of serious infections due to susceptible strains of streptococci, pneumococci, and staphylococci. Its use should be reserved for penicillin-allergic patients or other patients for whom, in the judgment of the physician, a penicillin is inappropriate. Because of the risk of colitis, as described in the BOXED WARNING , before selecting clindamycin, the physician should consider the… Contraindications: Clindamycin hydrochloride capsules are contraindicated in individuals with a history of hypersensitivity to preparations containing clindamycin or Dosage: If significant diarrhea occurs during therapy, this antibacterial drug should be discontinued (See BOXED WARNING ). Administer clindamycin hydrochloride capsules with a full glass of water (6 to 8 ounces, approximately 200 to 250 mL) and at least 30 minutes before lying down to reduce the potential for esophageal irritation (See ADVERSE REACTIONS ). Adults: Serious infections —150 to 300 mg every 6 hours. More severe infections - 300 to 450 mg every 6 hours. Pediatric Patients (who are able to swallow capsules): Serious infections - 8 to 16 mg/kg/day (4 to 8 mg/lb/day) divided into three or…",
+   "source": {
+    "doc": "FDA label via DailyMed: CLINDAMYCIN HYDROCHLORIDE CAPSULE [SUN PHARMACEUTICAL INDUSTRIES, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1dbd8448-c1e5-46df-8060-50ef82380445"
+   }
+  },
+  {
+   "id": "drug-clotrimazole",
+   "kind": "drug",
+   "title": "clotrimazole",
+   "text": "In the IMM kits: Lotrimin Af Cream (Clotrimazole) 1%, 30Gm Tube: ISS 2, Orion 2, lunar lander 1. Uses: cures most athlete's foot, jock itch and ringworm. relieves itching, burning, cracking, scaling and discomfort which accompany these Dosage: wash the affected area and dry thoroughly; apply a thin layer over affected area twice daily, morning and night. for athlete's foot and ringworm, use daily for 4 weeks; for jock itch, use daily for 2 weeks. For athlete's foot, pay special attention to spaces between the toes, wear well-fitting ventilated shoes, and change shoes and socks at least once daily. If the condition persists longer, consult a doctor. This product is not effective on the scalp or nails. Supervise children in the use of this",
+   "source": {
+    "doc": "FDA label via DailyMed: ATHLETE S FOOT ANTIFUNGAL CREAM (CLOTRIMAZOLE) CREAM [YUNQI COSMETICS (SHENZHEN) CO., LTD]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5e3de4f6-1470-2c17-e063-6294a90a8f16"
+   }
+  },
+  {
+   "id": "drug-conjugated-estrogens",
+   "kind": "drug",
+   "title": "conjugated estrogens",
+   "text": "In the IMM kits: Estrogen 1.25 Mg Tablets: ISS 100, Orion 7, lunar lander 7. Uses: PREMARIN therapy is indicated in the: Treatment of moderate to severe vasomotor symptoms due to menopause. Treatment of moderate to severe symptoms of vulvar and vaginal atrophy due to menopause. When prescribing solely for the treatment of symptoms of vulvar and vaginal atrophy, topical vaginal products should be considered. Treatment of hypoestrogenism due to hypogonadism, castration or primary ovarian failure. Treatment of breast cancer (for palliation only) in appropriately selected women and men with metastatic disease. Treatment of advanced androgen-dependent carcinoma of the prostate… Contraindications: PREMARIN therapy should not be used in individuals with any of the following conditions: Undiagnosed abnormal genital bleeding. Known, suspected, or history of cancer of the breast except in appropriately selected patients being treated for metastatic disease. Known or suspected estrogen-dependent neoplasia. Active deep vein thrombosis, pulmonary embolism or a history of these conditions. Active or recent (within the past year) arterial thromboembolic disease (for example, stroke, myocardial infarction). Liver dysfunction or disease. Known hypersensitivity to any of the ingredients in… Dosage: When estrogen is prescribed for a postmenopausal woman with a uterus, progestin should also be initiated to reduce the risk of endometrial cancer. A woman without a uterus does not need progestin. Use of estrogen, alone or in combination with a progestin, should be with the lowest effective dose and for the shortest duration consistent with treatment goals and risks for the individual woman. Patients should be reevaluated periodically as clinically appropriate (for example at 3-month to 6-month intervals) to determine if treatment is still necessary (see BOXED WARNINGS and WARNINGS ). For…",
+   "source": {
+    "doc": "FDA label via DailyMed: PREMARIN (CONJUGATED ESTROGENS) TABLET, FILM COATED [PHYSICIANS TOTAL CARE, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b32fcb1b-fee4-44b8-a91c-10dfdd3f84ea"
+   }
+  },
+  {
+   "id": "drug-cyclopentolate",
+   "kind": "drug",
+   "title": "cyclopentolate",
+   "text": "In the IMM kits: Cyclopentolate 2% 15Ml Bottle.: ISS 1, Orion 1, lunar lander 1. Uses: : Cyclopentolate hydrochloride is used to produce mydriasis and Contraindications: : Should not be used if the patient is hypersensitive to any component of this Dosage: : Adults: Instill one or two drops of 0.5%, 1% or 2% solution in the eye which may be repeated in five to ten minutes if necessary. Complete recovery usually occurs in 24 hours. Complete recovery from mydriasis in some individuals may require several days. Children: Instill one or two drops of 0.5%, 1% or 2% solution in the eye which may be repeated five to ten minutes later by a second application of 0.5% or 1% solution if necessary. Small Infants: A single instillation of one drop of 0.5% in the eye. To minimize absorption, apply pressure over the nasolacrimal sac for two to three minutes.…",
+   "source": {
+    "doc": "FDA label via DailyMed: CYCLOGYL (CYCLOPENTOLATE HYDROCHLORIDE) SOLUTION/ DROPS [ALCON LABORATORIES, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1d008c76-7210-4ace-90fa-7cd22762e12e"
+   }
+  },
+  {
+   "id": "drug-dexamethasone",
+   "kind": "drug",
+   "title": "dexamethasone",
+   "text": "In the IMM kits: Dexamethasone (Decadron) 10Mg Injectable: ISS 20, Orion 1. Uses: A. Intravenous or Intramuscular Administration When oral therapy is not feasible and the strength, dosage form, and route of administration of the drug reasonably lend the preparation to the treatment of the condition, those products labeled for intravenous or intramuscular use are indicated as follows: 1. Endocrine Disorders Primary or secondary adrenocortical insufficiency (hydrocortisone or cortisone is the drug of choice; synthetic analogs may be used in conjunction with mineralocorticoids where applicable; in infancy, mineralocorticoid supplementation is of particular importance). Acute… Contraindications: Systemic fungal Dosage: A. Intravenous or Intramuscular Administration The initial dosage of dexamethasone sodium phosphate injection may vary from 0.50 mg/day to 9.0 mg/day depending on the specific disease entity being treated. In situations of less severity, lower doses will generally suffice while in selected patients higher initial doses may be required. Usually the parenteral dosage ranges are one-third to one-half the oral dose given every 12 hours. However, in certain overwhelming, acute, life-threatening situations, administration of dosages exceeding the usual dosages may be justified and may be in…",
+   "source": {
+    "doc": "FDA label via DailyMed: DEXAMETHASONE SODIUM PHOSPHATE INJECTION, SOLUTION [REMEDYREPACK INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=11f10a47-1c42-40e4-89d8-bb000fef497c"
+   }
+  },
+  {
+   "id": "drug-diazepam",
+   "kind": "drug",
+   "title": "diazepam",
+   "text": "In the IMM kits: Valium (Diazepam) 5 Mg/Ml, 2 Ml Syringe: ISS 2, Orion 1. Uses: Diazepam is indicated for the management of anxiety disorders or for the short-term relief of the symptoms of anxiety. Anxiety or tension associated with the stress of everyday life usually does not require treatment with an anxiolytic. In acute alcohol withdrawal, diazepam may be useful in the symptomatic relief of acute agitation, tremor, impending or acute delirium tremens and hallucinosis. As an adjunct prior to endoscopic procedures if apprehension, anxiety or acute stress reactions are present, and to diminish the patient's recall of the procedures. (See WARNINGS .) Diazepam is a useful… Contraindications: Diazepam injection is contraindicated in patients with a known hypersensitivity to this drug; acute narrow angle glaucoma; and open angle glaucoma unless patients are receiving appropriate Dosage: Dosage should be individualized for maximum beneficial effect. The usual recommended dose in older children and adults ranges from 2 mg to 20 mg intramuscular or intravenous, depending on the indication and its severity. In some conditions, e.g., tetanus, larger doses may be required. (See dosage for specific indications.) In acute conditions the injection may be repeated within one hour although an interval of 3 to 4 hours is usually satisfactory. Lower doses (usually 2 mg to 5 mg) and slow increase in dosage should be used for elderly or debilitated patients and when other sedative drugs…",
+   "source": {
+    "doc": "FDA label via DailyMed: DIAZEPAM INJECTION, SOLUTION [FRESENIUS KABI USA, LLC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ae52866a-0b9a-4baf-af1b-f9d5e00c0e56"
+   }
+  },
+  {
+   "id": "drug-diphenhydramine",
+   "kind": "drug",
+   "title": "diphenhydramine",
+   "text": "In the IMM kits: Benadryl 25 Mg Capsule: ISS 60, Orion 26, lunar lander 12; Benadryl 50 Mg/Ml, 1Ml Injectable: ISS 3, Orion 1. Uses: temporarily relieves these symptoms due to hay fever or other upper respiratory allergies: runny nose itchy, watery eyes sneezing itching of the nose or throat temporarily relieves these symptoms due to the common cold: runny nose Dosage: do not take more than directed take every 4 to 6 hours, or as directed by a doctor do not take more than 6 times in 24 hours adults and children 12 years and over 1 to 2 capsules children 6 to under 12 years 1 capsule children under 6 years do not",
+   "source": {
+    "doc": "FDA label via DailyMed: ALLERGY RELIEF (DIPHENHYDRAMINE HCL) CAPSULE [STRATEGIC SOURCING SERVICES LLC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5d628b09-c257-4369-8ddb-47554d83c0d8"
+   }
+  },
+  {
+   "id": "drug-epinephrine",
+   "kind": "drug",
+   "title": "epinephrine",
+   "text": "In the IMM kits: Adrenaline (Epinephrine 1:10000) 10Ml: ISS 2; Epipen 1:1000: ISS 3, Orion 1. Uses: Epinephrine injection, USP auto-injectors are indicated in the emergency treatment of allergic reactions (Type I) including anaphylaxis to stinging insects (e.g., order Hymenoptera, which include bees, wasps, hornets, yellow jackets and fire ants) and biting insects (e.g., triatoma, mosquitoes), allergen immunotherapy, foods, drugs, diagnostic testing substances (e.g., radiocontrast media) and other allergens, as well as idiopathic anaphylaxis or exercise-induced anaphylaxis. Epinephrine injection, USP auto-injectors are intended for immediate administration in patients who are determined to… Dosage: Patients greater than or equal to 30 kg (66 lbs): epinephrine injection, USP auto-injector , 0.3 mg ( 2 ) Patients 15 to 30 kg (33 lbs to 66 lbs): epinephrine injection, USP auto-injector, 0.15 mg ( 2 ) Inject intramuscularly or subcutaneously into the anterolateral aspect of the thigh, through clothing if necessary. Each device is a single-dose injection. ( 2 ) 2.1 Recommended Dosage According to Patient Body Weight Patients greater than or equal to 30 kg (approximately 66 pounds or more): epinephrine injection, USP auto-injector, 0.3 mg Patients 15 kg to 30 kg (33 pounds to 66 pounds):… Contraindications: None None ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: EPINEPHRINE INJECTION [SPORTPHARM LLC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a8e98483-9404-43bc-8800-b827c63c5134"
+   }
+  },
+  {
+   "id": "drug-ertapenem",
+   "kind": "drug",
+   "title": "ertapenem",
+   "text": "In the IMM kits: Ertapenem 1Gm: ISS 6, Orion 6. Uses: Ertapenem for injection is a penem antibacterial indicated in adult patients and pediatric patients (3 months of age and older) for the treatment of the following moderate to severe infections caused by susceptible bacteria: Complicated intra-abdominal infections. ( 1.1 ) Complicated skin and skin structure infections, including diabetic foot infections without osteomyelitis. ( 1.2 ) Community-acquired pneumonia. ( 1.3 ) Complicated urinary tract infections including pyelonephritis. ( 1.4 ) Acute pelvic infections including postpartum endomyometritis, septic abortion and post-surgical… Dosage: Do not mix or co-infuse Ertapenem for injection with other medications. Do not use diluents containing dextrose ( α –D–glucose) . ( 2.1 ) Ertapenem for injection should be infused over 30 minutes in both the Treatment and Prophylactic regimens. ( 2.1 ) Dosing considerations should be made in adults with advanced or end-stage renal impairment and those on hemodialysis. ( 2.4 , 2.5 ) Treatment regimen: Adults and pediatric patients 13 years of age and older. The dosage should be 1 gram once a day intravenously or intramuscularly. ( 2.2 ) Patients 3 months to 12 years of age should be… Contraindications: Ertapenem for injection is contraindicated in patients with known hypersensitivity to any component of this product or to other drugs in the same class or in patients who have demonstrated anaphylactic reactions to beta-lactams. Due to the use of Lidocaine HCl as a diluent, Ertapenem for injection administered intramuscularly is contraindicated in patients with a known hypersensitivity to local anesthetics of the amide type. Known hypersensitivity to product components or anaphylactic reactions to β-lactams. ( 4 ) Due to the use of Lidocaine HCl as a diluent, Ertapenem for injection…",
+   "source": {
+    "doc": "FDA label via DailyMed: ERTAPENEM (ERTAPENEM SODIUM) INJECTION [APOTEX CORP]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5b050245-aa03-4e28-e063-6394a90aeabc"
+   }
+  },
+  {
+   "id": "drug-erythromycin",
+   "kind": "drug",
+   "title": "erythromycin",
+   "text": "In the IMM kits: Erythromycin Ointment 0.5%, 3.5 Gm Tube: ISS 1, Orion 1. Uses: : For the treatment of superficial ocular infections involving the conjunctiva and/or cornea caused by organisms susceptible to erythromycin. For prophylaxis of ophthalmia neonatorum due to N. gonorrhoeae or C. trachomatis . The effectiveness of erythromycin in the prevention of ophthalmia caused by penicillinase-producing N.gonorrhoeae is not established. For infants born to mothers with clinically apparent gonorrhea, intravenous or intramuscular injections of aqueous crystalline penicillin G should be given; a single dose of 50,000 units for term infants or 20,000 units for infants of low… Contraindications: : This drug is contraindicated in patients with a history of hypersensitivity to Dosage: : In the treatment of superficial ocular infections, a ribbon approximately 1 cm in length of Erythromycin Opthalmic Ointment should be applied directly to the infected structure up to 6 times daily, depending on the severity of the infection. For prophylaxis of neonatal gonococcal or chlamydial conjunctivitis, a ribbon of ointment approximately 1 cm in length should be instilled into each lower conjunctival sac. The ointment should not be flushed from the eye following instillation. A new tube should be used for each",
+   "source": {
+    "doc": "FDA label via DailyMed: ERYTHROMYCIN OINTMENT [REDPHARM DRUG]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5ddd708a-9238-fea1-e063-6394a90a37b1"
+   }
+  },
+  {
+   "id": "drug-eugenol",
+   "kind": "drug",
+   "title": "eugenol",
+   "text": "In the IMM kits: Dental Eugenol Anesthetic 1Ml Oral Syringe: ISS 2, Orion 2, lunar lander 1. Uses: temporarily relieves throbbing, persistent toothache due to a cavity until a dentist can be Dosage: rinse tooth with water to remove any food particles from the cavity using tweezers, immerse cotton pellet in medication to prevent dripping , squeeze gently between fingers to remove excess liquid place pellet in tooth cavity for one minute without touching surrounding tissues , then remove supervise children using this product adults and children 12 years and over: use up to 4 times daily or as directed by a dentist or doctor children under 12 years: ask a dentist or",
+   "source": {
+    "doc": "FDA label via DailyMed: RED CROSS TOOTHACHE (EUGENOL) LIQUID [THE MENTHOLATUM COMPANY]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3537e599-65d9-48d6-8a46-d42312f71e84"
+   }
+  },
+  {
+   "id": "drug-famotidine",
+   "kind": "drug",
+   "title": "famotidine",
+   "text": "The IMM kit lists ranitidine (Zantac), which was withdrawn from the US market in 2020; the label shown is famotidine, a drug of the same class. In the IMM kits: Zantac (Ranitidine) 150 Mg: ISS 60, Orion 4, lunar lander 4. Uses: Famotidine tablets are indicated in adult and pediatric patients 40 kg and greater for the treatment of: • active duodenal ulcer (DU). • active gastric ulcer (GU). • symptomatic nonerosive gastroesophageal reflux disease (GERD). • erosive esophagitis due to GERD, diagnosed by biopsy. Famotidine tablets are indicated in adults for the: • treatment of pathological hypersecretory conditions (e.g., Zollinger-Ellison syndrome, multiple endocrine neoplasias). • reduction of the risk of duodenal ulcer recurrence. Famotidine tablets are a histamine-2 (H 2 ) receptor antagonist indicated ( 1 ): In… Dosage: Indication Recommended Dosage ( 2.1 ) Adult and Pediatric Patients 40 kg and greater Active DU 40 mg once daily; or 20 mg twice daily Active Gastric Ulcer 40 mg once daily GERD 20 mg twice daily Erosive Esophagitis 20 mg twice daily; or 40 mg twice daily Adults Pathological Hypersecretory Conditions 20 mg every 6 hours; adjust to patient needs; maximum 160 mg every 6 hours Risk Reduction of DU Recurrence 20 mg once daily • See full prescribing information for complete dosing information, including dosing in renal impairment, and recommended treatment duration. ( 2.1 , 2.2 ) Administration (… Contraindications: Famotidine tablets are contraindicated in patients with a history of serious hypersensitivity reactions (e.g., anaphylaxis) to famotidine or other histamine-2 (H 2 ) receptor antagonists. History of serious hypersensitivity reactions (e.g., anaphylaxis) to famotidine or other H 2 receptor antagonists. ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: FAMOTIDINE TABLET, FILM COATED [REDPHARM DRUG]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=55730918-d9e8-eaad-e063-6394a90aeda2"
+   }
+  },
+  {
+   "id": "drug-fluconazole",
+   "kind": "drug",
+   "title": "fluconazole",
+   "text": "In the IMM kits: Diflucan (Fluconazole) 150 Mg: ISS 150, Orion 1, lunar lander 1. Uses: Fluconazole tablets are indicated for the treatment of: Vaginal candidiasis (vaginal yeast infections due to Candida ). Oropharyngeal and esophageal candidiasis. In open noncomparative studies of relatively small numbers of patients, fluconazole tablets were also effective for the treatment of Candida urinary tract infections, peritonitis, and systemic Candida infections including candidemia, disseminated candidiasis, and pneumonia. Cryptococcal meningitis . Before prescribing fluconazole tablets for AIDS patients with cryptococcal meningitis , please see CLINICAL STUDIES section. Studies… Contraindications: Fluconazole tablets are contraindicated in patients who have shown hypersensitivity to fluconazole or to any of its excipients. There is no information regarding cross-hypersensitivity between fluconazole and other azole antifungal agents. Caution should be used in prescribing fluconazole tablets to patients with hypersensitivity to other azoles. Coadministration of other drugs known to prolong the QT interval and which are metabolized via the enzyme CYP3A4 such as erythromycin, pimozide, and quinidine are contraindicated in patients receiving fluconazole. (See CLINICAL PHARMACOLOGY: Drug… Dosage: Dosage and Administration in Adults: Single Dose Vaginal candidiasis: The recommended dosage of fluconazole tablets for vaginal candidiasis is 150 mg as a single oral dose. Multiple Dose SINCE ORAL ABSORPTION IS RAPID AND ALMOST COMPLETE, THE DAILY DOSE OF FLUCONAZOLE IS THE SAME FOR ORAL AND INTRAVENOUS ADMINISTRATION. In general, a loading dose of twice the daily dose is recommended on the first day of therapy to result in plasma concentrations close to steady-state by the second day of therapy. The daily dose of fluconazole tablets for the treatment of infections other than vaginal…",
+   "source": {
+    "doc": "FDA label via DailyMed: FLUCONAZOLE TABLET [SPORTPHARM LLC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=98ac5455-d26c-4780-a5a3-bf8d85917626"
+   }
+  },
+  {
+   "id": "drug-fluocinonide",
+   "kind": "drug",
+   "title": "fluocinonide",
+   "text": "In the IMM kits: Fluocinonide 0.05%, 30Gm Tube: ISS 2, Orion 1, lunar lander 1. Uses: Fluocinonide Cream, USP 0.05% is indicated for the relief of the inflammatory and pruritic manifestations of corticosteroid-responsive Contraindications: Fluocinonide cream is contraindicated in those patients with a history of hypersensitivity to any of the components of the Dosage: Fluocinonide cream 0.05% is generally applied to the affected area as a thin film from two to four times daily depending on the severity of the condition. Occlusive dressings may be used for the management of psoriasis or recalcitrant conditions. If an infection develops, the use of occlusive dressings should be discontinued and appropriate antimicrobial therapy",
+   "source": {
+    "doc": "FDA label via DailyMed: FLUOCINONIDE CREAM [PREFERRED PHARMACEUTICALS INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f5f39a14-005a-4124-9c00-500598e28012"
+   }
+  },
+  {
+   "id": "drug-fluorescein",
+   "kind": "drug",
+   "title": "fluorescein",
+   "text": "In the IMM kits: Fluorescein 1Mg Strips: ISS 20, Orion 6, lunar lander 3. Uses: FLUORESCITE ® Injection 10% is indicated in diagnostic fluorescein angiography or angioscopy of the retina and iris vasculature. FLUORESCITE ® Injection 10% is indicated in diagnostic fluorescein angiography or angioscopy of the retina and iris vasculature. Dosage: Adult Dose: The normal adult dose of FLUORESCITE® Injection 10% (100 mg/mL) is 500 mg via intravenous administration. (2.1) Pediatric Dose: For children, the dose should be calculated on the basis of 7.7 mg for each kg of actual body weight (or 35 mg for each 10 pounds of body weight) up to a maximum of 500 mg via intravenous administration. (2.1) Do not mix or dilute with other solutions or drugs (2.2) 2.1 Dosing Adult Dose The normal adult dose of FLUORESCITE ® Injection 10% (100 mg/mL) is 500 mg via intravenous administration. Pediatric Dose For children, the dose should be calculated on… Contraindications: FLUORESCITE ® Injection 10% is contraindicated in patients with known hypersensitivity to fluorescein or any other ingredients in this product (4.1) 4.1 Hypersensitivity FLUORESCITE ® Injection 10% is contraindicated in patients with known hypersensitivity to fluorescein or any other ingredients in this product. Rare cases of death due to anaphylaxis have been reported. [see Warnings and Precautions (5.1) and Adverse Reactions ( 6.3 , 6.4 )]. Fluorescein can induce serious intolerance reactions. These reactions of intolerance are always unpredictable but they are more frequent in patients who…",
+   "source": {
+    "doc": "FDA label via DailyMed: FLUORESCITE (FLUORESCEIN) INJECTION, SOLUTION [ALCON, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ebb3883c-71f6-4fd0-a7e6-0ba8e1136dd9"
+   }
+  },
+  {
+   "id": "drug-fluticasone-propionate",
+   "kind": "drug",
+   "title": "fluticasone propionate",
+   "text": "In the IMM kits: Fluticasone 220Mcg, 12Gm Inhaler: ISS 2. Uses: Fluticasone Propionate HFA is indicated for the maintenance treatment of asthma as prophylactic therapy in adult and pediatric patients aged 4 years and older. Limitations of Use Fluticasone Propionate HFA is not indicated for the relief of acute bronchospasm. Fluticasone Propionate HFA is an inhaled corticosteroid indicated for: • Maintenance treatment of asthma as prophylactic therapy in adult and pediatric patients aged 4 years and older. ( 1 ) Limitations of use: Not indicated for relief of acute bronchospasm. ( 1 Dosage: • For oral inhalation only. ( 2.1 ) • Starting dosage is based on prior asthma therapy and disease severity. ( 2.2 ) • Adult and adolescent patients aged 12 years and older: 88 mcg twice daily up to a maximum dosage of 880 mcg twice daily. ( 2.2 ) • Pediatric patients aged 4 to 11 years: 88 mcg twice daily. ( 2.2 ) 2.1 Administration Information Fluticasone Propionate HFA should be administered by the orally inhaled route only. After inhalation, rinse mouth with water without swallowing to help reduce the risk of oropharyngeal candidiasis. A valved holding chamber and mask may be used to… Contraindications: Fluticasone Propionate HFA is contraindicated in the following conditions: • Primary treatment of status asthmaticus or other acute episodes of asthma where intensive measures are required [see Warnings and Precautions ( 5.2 )] . • Hypersensitivity to any of the ingredients [see Warnings and Precautions ( 5.6 ), Adverse Reactions ( 6.2 ), Description ( 11 )] . • Primary treatment of status asthmaticus or acute episodes of asthma requiring intensive measures. ( 4 ) • Hypersensitivity to any ingredient. ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: FLUTICASONE PROPIONATE HFA (FLUTICASONE PROPIONATE) AEROSOL, METERED [PRASCO LABORATORIES]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=99249b31-bf0a-464f-8335-845279350dbe"
+   }
+  },
+  {
+   "id": "drug-glycopyrrolate",
+   "kind": "drug",
+   "title": "glycopyrrolate",
+   "text": "In the IMM kits: Robinul (Glycopyrrolate) 0.2Mg/Ml: ISS 5. Uses: Glycopyrrolate Injection is an anticholinergic indicated: in anesthesia (adult and pediatric patients) for reduction of salivary, tracheobronchial, and pharyngeal secretions, reduction of volume and acidity of gastric secretions, and blockade of cardiac inhibitory reflexes during induction of anesthesia and intubation. intraoperatively to counteract surgically or drug-induced or vagal reflex-associated arrhythmias. for protection against peripheral muscarinic effects of cholinergic agents. ( 1 ) in peptic ulcer (adults) To reduce symptoms of a peptic ulcer as an adjunct to treatment of peptic… Dosage: Glycopyrrolate injection may be administered intramuscularly (IM), or intravenously (IV) without dilution, in the following indications. ( 2.1 ): Adults ( 2.2 , 2.3 , 2.4 , 2.5 ) Preanesthetic Medication: 0.004 mg/kg IM, given 30 to 60 minutes prior to the anticipated time of induction of anesthesia Intraoperative Medication: single doses of 0.1 mg IV and repeated, as needed, at intervals of 2 to 3 minutes Reversal of Neuromuscular Blockade: 0.2 mg for each 1 mg of neostigmine or 5 mg of pyridostigmine Peptic Ulcer: 0.1 mg IV or IM at 4-hour intervals, 3 or 4 times daily Pediatric patients (… Contraindications: Glycopyrrolate injection is contraindicated in: patients with known hypersensitivity to glycopyrrolate injection or any of its inactive ingredients. peptic ulcer patients with the following concurrent conditions: glaucoma; obstructive uropathy (for example, bladder neck obstruction due to prostatic hypertrophy); obstructive disease of the gastrointestinal tract (as in achalasia, pyloroduodenal stenosis, etc.); paralytic ileus, intestinal atony of the elderly or debilitated patient; unstable cardiovascular status in acute hemorrhage; severe ulcerative colitis; toxic megacolon complicating…",
+   "source": {
+    "doc": "FDA label via DailyMed: GLYCOPYRROLATE INJECTION [MEITHEAL PHARMACEUTICALS INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=02541cfd-b209-49b9-a73f-13ef18dce06d"
+   }
+  },
+  {
+   "id": "drug-hydrocodone-bitartrate-and-acetaminophen",
+   "kind": "drug",
+   "title": "hydrocodone bitartrate and acetaminophen",
+   "text": "In the IMM kits: Vicodin Hp (Hydrocodone/ Acetaminophen Hp) 10 Mg/660 Mg: ISS 30, Orion 36, lunar lander 6. Uses: Hydrocodone Bitartrate and Acetaminophen Tablets are indicated for the management of pain severe enough to require an opioid analgesic and for which alternative treatments are inadequate. Limitations of Use • Because of the risks of addiction, abuse, misuse, overdose, and death, which can occur at any dosage or duration, and persist over the course of therapy [see WARNINGS ], reserve opioid analgesics, including Hydrocodone Bitartrate and Acetaminophen Tablets, for use in patients for whom alternative treatment options are ineffective, not tolerated, or would be otherwise inadequate to… Contraindications: Hydrocodone Bitartrate and Acetaminophen Tablets are contraindicated in patients with: • Significant respiratory depression [see WARNINGS ] • Acute or severe bronchial asthma in an unmonitored setting or in the absence of resuscitative equipment [see WARNINGS ] • Known or suspected gastrointestinal obstruction, including paralytic ileus [see WARNINGS ] • Hypersensitivity to hydrocodone or acetaminophen (e.g., anaphylaxis) [see WARNINGS , ADVERSE REACTIONS Dosage: Important Dosage and Administration Instructions Hydrocodone Bitartrate and Acetaminophen Tablets should be prescribed only by healthcare professionals who are knowledgeable about the use of opioids and how to mitigate the associated risks. Use the lowest effective dosage for the shortest duration of time consistent with individual patient treatment goals [see WARNINGS ]. Because the risk of overdose increases as opioid doses increase, reserve titration to higher doses of Hydrocodone Bitartrate and Acetaminophen Tablets for patients in whom lower doses are insufficiently effective and in whom…",
+   "source": {
+    "doc": "FDA label via DailyMed: HYDROCODONE BITARTRATE AND ACETAMINOPHEN TABLET [GRANULES PHARMACEUTICALS INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=136bbd47-7a54-493f-9158-a84d39221d6c"
+   }
+  },
+  {
+   "id": "drug-hydromorphone",
+   "kind": "drug",
+   "title": "hydromorphone",
+   "text": "In the IMM kits: Dilaudid (Hydromorphone) 2Mg/Ml, 1Ml Syringe: ISS 18, Orion 6. Uses: DILAUDID INJECTION is indicated for the management of pain severe enough to require an opioid analgesic and for which alternate treatments are inadequate. Limitations of Use: • Because of the risks of addiction, abuse, misuse, overdose, and death, which can occur at any dosage or duration, and persist over the course of therapy [see Warnings and Precautions ( 5.2 )] , reserve opioid analgesics, including DILAUDID INJECTION for use in patients for whom alternative treatment options are ineffective, not tolerated, or would be otherwise inadequate to provide sufficient management of pain.… Dosage: • DILAUDID INJECTION should be prescribed only by healthcare professionals who are knowledgeable about the use of opioids and how to mitigate the associated risks. ( 2.1 ) • Use the lowest effective dosage for the shortest duration of time consistent with individual patient treatment goals. Reserve titration to higher doses of Hydromorphone Hydrochloride Injection for patients in whom lower doses are insufficiently effective and in whom the expected benefits of using a higher dose opioid clearly outweigh the substantial risks. ( 2.1 , 5 ) • Many acute pain conditions (e.g., the pain that… Contraindications: DILAUDID INJECTION is contraindicated in patients with: • Significant respiratory depression [see Warnings and Precautions ( 5.2 )] • Acute or severe bronchial asthma in an unmonitored setting or in the absence of resuscitative equipment [see Warnings and Precautions ( 5.6 )] • Known or suspected gastrointestinal obstruction, including paralytic ileus [see Warnings and Precautions ( 5.10 )] • Hypersensitivity to hydromorphone, hydromorphone salts, any other components of the product, or sulfite containing medications (e.g., anaphylaxis) [see Warnings and Precautions ( 5.14 )] • Significant…",
+   "source": {
+    "doc": "FDA label via DailyMed: DILAUDID (HYDROMORPHONE HYDROCHLORIDE) INJECTION, SOLUTION [FRESENIUS KABI USA, LLC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9eebd88a-5632-460f-b7b6-26c8a180540d"
+   }
+  },
+  {
+   "id": "drug-ibuprofen",
+   "kind": "drug",
+   "title": "ibuprofen",
+   "text": "In the IMM kits: Motrin (Ibuprofen) 400Mg: ISS 500, Orion 55, lunar lander 15. Uses: Carefully consider the potential benefits and risks of Ibuprofen tablets and other treatment options before deciding to use ibuprofen. Use the lowest effective dose for the shortest duration consistent with individual patient treatment goals [see WARNINGS ]. Ibuprofen tablets are indicated for relief of the signs and symptoms of rheumatoid arthritis and osteoarthritis. Ibuprofen tablets are indicated for relief of mild to moderate pain. Ibuprofen tablets are also indicated for the treatment of primary dysmenorrhea. Controlled clinical trials to establish the safety and effectiveness of… Contraindications: Ibuprofen tablets are contraindicated in patients with known hypersensitivity to ibuprofen. Ibuprofen tablets should not be given to patients who have experienced asthma, urticaria, or allergic-type reactions after taking aspirin or other NSAIDs. Severe, rarely fatal, anaphylactic-like reactions to NSAIDs have been reported in such patients [see WARNINGS, Anaphylactoid Reactions , and PRECAUTIONS, Preexisting Asthma ]. Ibuprofen tablets are contraindicated in the setting of coronary artery bypass graft (CABG) surgery [see WARNINGS Dosage: Carefully consider the potential benefits and risks of Ibuprofen Tablets, USP and other treatment options before deciding to use Ibuprofen Tablets, USP. Use the lowest effective dose for the shortest duration consistent with individual patient treatment goals [see WARNINGS ]. After observing the response to initial therapy with Ibuprofen Tablets, USP, the dose and frequency should be adjusted to suit an individual patient’s needs. Do not exceed 3200 mg total daily dose. If gastrointestinal complaints occur, administer Ibuprofen tablets with meals or milk. Rheumatoid arthritis and…",
+   "source": {
+    "doc": "FDA label via DailyMed: IBUPROFEN TABLET, FILM COATED [PD-RX PHARMACEUTICALS, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0fa4cd66-66ad-4ec9-b38c-6b5840df39df"
+   }
+  },
+  {
+   "id": "drug-ketamine",
+   "kind": "drug",
+   "title": "ketamine",
+   "text": "In the IMM kits: Ketamine 50 Mg/Ml, 10 Ml Multi Dose Vial: ISS 4, Orion 1. Uses: Ketamine hydrochloride injection is indicated: as the sole anesthetic agent for diagnostic and surgical procedures that do not require skeletal muscle relaxation. for the induction of anesthesia prior to the administration of other general anesthetic agents. as a supplement to other anesthetic agents. Ketamine hydrochloride is a general anesthetic indicated: as the sole anesthetic agent for diagnostic and surgical procedures that do not require skeletal muscle relaxation ( 1 ) for the induction of anesthesia prior to the administration of other general anesthetic agents ( 1 ) as a supplement… Dosage: See Full Prescribing Information for important dosage and administration instructions. ( 2 ) Induction of anesthesia: -- Intravenous route : Initially, 1 to 4.5 mg/kg administered slowly (over a period of 60 seconds). Alternatively, administer a dose of 1 to 2 mg/kg at a rate of 0.5 mg/kg/min. ( 2.2 ) -- Intramuscular route : Initially, 6.5 to 13 mg/kg. ( 2.2 ) Maintenance of anesthesia: Increments of one-half to the full induction dose may be repeated as needed ( 2.2 ). Adjust the dose according to the patient's anesthetic needs and whether an additional anesthetic agent is employed. ( 2.2 )… Contraindications: Ketamine hydrochloride is contraindicated in patients for whom a significant elevation of blood pressure would constitute a serious hazard [see Warnings and Precautions (5.1) ]. Ketamine hydrochloride is contraindicated in patients with known hypersensitivity to ketamine or to any excipient [see Adverse Reactions (6) ] . In patients for whom a significant elevation of blood pressure would be a serious hazard ( 4 ). Known hypersensitivity to ketamine or to any excipient ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: KETAMINE HYDROCHLORIDE INJECTION [EUGIA US LLC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f8b01c77-620d-4734-a771-b8524b65bcca"
+   }
+  },
+  {
+   "id": "drug-ketorolac",
+   "kind": "drug",
+   "title": "ketorolac",
+   "text": "In the IMM kits: Toradol (Ketorolac) 30Mg/Ml, 2Ml Single Dose Vial: ISS 3, Orion 4, lunar lander 1. Uses: Carefully consider the potential benefits and risks of ketorolac tromethamine and other treatment options before deciding to use ketorolac. Use the lowest effective dose for the shortest duration consistent with individual patient treatment goals (see WARNINGS ). Acute Pain in Adult Patients Ketorolac tromethamine is indicated for the short-term (≤5 days) management of moderately severe acute pain that requires analgesia at the opioid level, usually in a postoperative setting. Therapy should always be initiated with intravenous or intramuscular dosing of ketorolac tromethamine, and oral… Contraindications: (see also Boxed WARNING ) Ketorolac Tromethamine is contraindicated in patients with previously demonstrated hypersensitivity to ketorolac tromethamine. Ketorolac tromethamine is contraindicated in patients with active peptic ulcer disease, in patients with recent gastrointestinal bleeding or perforation and in patients with a history of peptic ulcer disease or gastrointestinal bleeding. Ketorolac tromethamine should not be given to patients who have experienced asthma, urticaria, or allergic-type reactions after taking aspirin or other NSAIDs. Severe, rarely fatal, anaphylactic-like… Dosage: Carefully consider the potential benefits and risks of ketorolac tromethamine and other treatment options before deciding to use ketorolac tromethamine. Use the lowest effective dose for the shortest duration consistent with individual patient treatment goals. In adults, the combined duration of use of intravenous or intramuscular dosing of ketorolac tromethamine and oral ketorolac tromethamine is not to exceed 5 days. In adults, the use of oral ketorolac tromethamine is only indicated as continuation therapy to intravenous or intramuscular dosing of ketorolac tromethamine. See package insert…",
+   "source": {
+    "doc": "FDA label via DailyMed: KETOROLAC TROMETHAMINE INJECTION, SOLUTION KETROLAC TROMETHAMINE (KETOROLAC TROMETHAMINE) INJECTION, SOLUTION [ANTHEA PHARMA PRIVATE LIMITED]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7a7c8579-d423-4699-9435-69c4d127c654"
+   }
+  },
+  {
+   "id": "drug-levofloxacin",
+   "kind": "drug",
+   "title": "levofloxacin",
+   "text": "In the IMM kits: Levaquin (Levofloxacin) 500Mg: ISS 30. Uses: Levofloxacin tablets are a fluoroquinolone antibacterial indicated in adults (18 years of age and older) with infections caused by designated, susceptible bacteria and in pediatric patients where indicated ( 1 , 12.4 ). Pneumonia: Nosocomial ( 1.1 ) and Community Acquired ( 1.2, 1.3 ) Skin and Skin Structure Infections (SSSI): Complicated ( 1.4 ) and Uncomplicated ( 1.5 ) Chronic bacterial prostatitis ( 1.6 ) Inhalational Anthrax, Post-Exposure in adult and pediatric patients ( 1.7 ) Plague in adult and pediatric patients ( 1.8 ) Urinary Tract Infections (UTI): Complicated ( 1.9 , 1.10 ) and… Dosage: Administer levofloxacin tablets to pediatric patients weighing 30 kg and greater only (2.1 , 2.2 ). Levofloxacin tablets cannot be administered to pediatric patients who weigh less than 30 kg because of the limitations of the available strengths. Alternative formulations of levofloxacin may be considered for pediatric patients who weigh less than 30 kg (2.2 ). Dosage in Adult and Pediatric Patients with Creatinine Clearance greater than or equal to 50 mL/minute (2.1 . 2.2 ) Type of Infection Dose Every 24 hours Duration (days) Nosocomial Pneumonia (1.1) 750 mg 7 to 14 Community Acquired… Contraindications: Levofloxacin tablets are contraindicated in persons with known hypersensitivity to levofloxacin, or other quinolone antibacterials [see Warnings and Precautions (5.3) ]. Known hypersensitivity to levofloxacin tablets or other quinolones (4 ,",
+   "source": {
+    "doc": "FDA label via DailyMed: LEVOFLOXACIN TABLET, FILM COATED [PD-RX PHARMACEUTICALS, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b8defac4-9deb-433b-928e-0ef4ee0123a2"
+   }
+  },
+  {
+   "id": "drug-lidocaine",
+   "kind": "drug",
+   "title": "lidocaine",
+   "text": "In the IMM kits: Lidocaine (Xylocaine) Cardiac 2% (20Mg/Ml) 5Ml Syringe: ISS 2; Lidocaine (Xylocaine) Plain 1%, 10Ml Multi Dose Vial: ISS 3, Orion 1; Lidocaine Jelly 2% 30Ml Tube: ISS 3, Orion 2, lunar lander 1. Uses: Lidocaine Hydrochloride Injection is indicated in adult and pediatric patients for the production of local or regional anesthesia or analgesia for surgery, dental, and oral surgery procedures, diagnostic and therapeutic procedures, and for obstetrical procedures. Specific concentrations and presentations of Lidocaine Hydrochloride Injection is recommended for each type of block indicated to produce local or regional anesthesia or analgesia [see Dosage and Administration (2.2) ]. Lidocaine Hydrochloride Injection contains lidocaine, an amide local anesthetic is indicated in adult and pediatric… Dosage: See Full Prescribing Information for recommended dosages and administration information for adult and pediatric patients 2.1 Important Dosage and Administration Information Lidocaine Hydrochloride Injection is not recommended for intrathecal use. Avoid use of Lidocaine Hydrochloride Injection solutions containing antimicrobial preservatives (i.e., multiple-dose vials) for epidural or caudal anesthesia [see Warnings and Precautions (5.3) ]. Discard unused portions of solution not containing preservatives, i.e., those supplied in single-dose vials, following initial use. Visually inspect this… Contraindications: Lidocaine Hydrochloride Injection is contraindicated in patients with a known hypersensitivity to lidocaine or to any local anesthetics of the amide type or to other components of Lidocaine Hydrochloride Injection. Known hypersensitivity to any local anesthetic agent of the amide-type or to other components of Lidocaine Hydrochloride",
+   "source": {
+    "doc": "FDA label via DailyMed: LIDOCAINE (LIDOCAINE HYDROCHLORIDE) INJECTION, SOLUTION [A-S MEDICATION SOLUTIONS]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3b0282a6-9bfd-4052-b69c-2c68d488d009"
+   }
+  },
+  {
+   "id": "drug-lidocaine-and-epinephrine",
+   "kind": "drug",
+   "title": "lidocaine and epinephrine",
+   "text": "In the IMM kits: Lidocaine W/ Epinephrine (Xylocaine) 2 %, 2-Ml Units 1:100,000 Epi, 20 Ml. Multi Dose Vials.: ISS 2, Orion 1. Uses: Lidocaine and Epinephrine Injection, USP is indicated for the production of local anesthesia for dental procedures by nerve block or infiltration techniques. Only accepted procedures for these techniques as described in standard textbooks are Contraindications: Lidocaine and Epinephrine Injections is contraindicated in patients with a known history of hypersensitivity to local anesthetics of the amide type or to any components of the injectable Dosage: The dosage of Lidocaine and Epinephrine Injections, USP depends on the physical status of the patient, the area of the oral cavity to be anesthetized, the vascularity of the oral tissues, and the technique of anesthesia used. The least volume of solution that results in effective local anesthesia should be administered; time should be allowed between injections to observe the patient for manifestations of an adverse reaction. For specific techniques and procedures of a local anesthesia in the oral cavity, refer to standard textbooks. For most routine dental procedures, Lidocaine and…",
+   "source": {
+    "doc": "FDA label via DailyMed: LIDOCAINE (LIDOCAINE HYDROCHLORIDE AND EPINEPHRINE BITARTRATE) INJECTION, SOLUTION [SAFCO DENTAL SUPPLY CO]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6721c3ab-c37f-4504-aebc-0103c56ed567"
+   }
+  },
+  {
+   "id": "drug-loperamide",
+   "kind": "drug",
+   "title": "loperamide",
+   "text": "In the IMM kits: Imodium (Loperamide Hcl) 2 Mg Tablet: ISS 40, Orion 24, lunar lander 8. Uses: controls symptoms of diarrhea, including Travelers' Dosage: drink plenty of clear fluids to help prevent dehydration caused by diarrhea find right dose on chart. If possible, use weight to dose; otherwise, use age. adults and children 12 years and over 2 caplets after the first loose stool; 1 caplet after each subsequent loose stool; but no more than 4 caplets in 24 hours children 9-11 years (60-95 lbs) 1 caplet after the first loose stool; 1/2 caplet after each subsequent loose stool; but no more than 3 caplets in 24 hours children 6-8 years (48-59 lbs) 1 caplet after the first loose stool; 1/2 caplet after each subsequent loose stool; but no more…",
+   "source": {
+    "doc": "FDA label via DailyMed: ANTI-DIARRHEAL (LOPERAMIDE HCL) TABLET [BETTER LIVING BRANDS, LLC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8d3ccda2-3886-4ff7-ad10-6440fc4da6bf"
+   }
+  },
+  {
+   "id": "drug-loratadine",
+   "kind": "drug",
+   "title": "loratadine",
+   "text": "In the IMM kits: Claritin (Loratadine)10Mg Tablet: ISS 75. Uses: temporarily relieves these symptoms due to hay fever or other upper respiratory allergies: • runny nose • itchy, watery eyes • sneezing • itching of the nose or Dosage: adults and children 6 years and over 1 tablet daily; not more than 1 tablet in 24 hours children under 6 years of age ask a doctor consumers with liver or kidney disease ask a",
+   "source": {
+    "doc": "FDA label via DailyMed: EQUALINE ALLERGY RELIEF (LORATADINE) TABLET [UNITED NATURAL FOODS, INC. DBA UNFI]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=232053f0-737b-46b0-959f-9edb26d82cbf"
+   }
+  },
+  {
+   "id": "drug-lorazepam",
+   "kind": "drug",
+   "title": "lorazepam",
+   "text": "In the IMM kits: Ativan (Lorazepam) 1 Mg Tablet: ISS 60, Orion 42, lunar lander 6. Uses: Lorazepam is indicated for the management of anxiety disorders or for the short-term relief of the symptoms of anxiety or anxiety associated with depressive symptoms. Anxiety or tension associated with the stress of everyday life usually does not require treatment with an anxiolytic. The effectiveness of lorazepam in long-term use, that is, more than 4 months, has not been assessed by systematic clinical studies. The physician should periodically reassess the usefulness of the drug for the individual Contraindications: Lorazepam is contraindicated in patients with: hypersensitivity to benzodiazepines or to any components of the formulation acute narrow-angle Dosage: Lorazepam is administered orally. For optimal results, dose, frequency of administration, and duration of therapy should be individualized according to patient response. To facilitate this, 0.5 mg, 1 mg, and 2 mg tablets are available. The usual range is 2 to 6 mg/day given in divided doses, the largest dose being taken before bedtime, but the daily dosage may vary from 1 to 10 mg/day. For anxiety, most patients require an initial dose of 2 to 3 mg/day given two times a day or three times a day. For insomnia due to anxiety or transient situational stress, a single daily dose of 2 to 4 mg may…",
+   "source": {
+    "doc": "FDA label via DailyMed: LORAZEPAM TABLET [PD-RX PHARMACEUTICALS, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0681c8db-ff09-4258-a5e0-76a26b0ea0af"
+   }
+  },
+  {
+   "id": "drug-meclizine",
+   "kind": "drug",
+   "title": "meclizine",
+   "text": "In the IMM kits: Antivert (Meclizine) 25 Mg: ISS 20. Uses: Meclizine hydrochloride tablets are indicated for the treatment of vertigo associated with diseases affecting the vestibular system in adults. Meclizine hydrochloride tablets are indicated for the treatment of vertigo associated with diseases affecting the vestibular system in adults ( 1 Dosage: Recommended dosage: 25 mg to 100 mg daily, in divided doses ( 2.1 ). Tablets: Swallow whole ( 2.2 ). 2.1 Recommended Dosage The recommended dosage is 25 mg to 100 mg daily administered orally, in divided doses, depending upon clinical response. 2.2 Administration Instructions Tablets: Meclizine hydrochloride tablets must be swallowed Contraindications: Meclizine hydrochloride tablets are contraindicated in patients with a hypersensitivity to meclizine or any of the inactive ingredients [see Adverse Reactions (6) and Description (11) ]. Meclizine hydrochloride tablets are contraindicated in patients with hypersensitivity to meclizine or any of the inactive ingredients ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: MECLIZINE HYDROCHLORIDE (MECLIZINE) TABLET [ST. MARY'S MEDICAL PARK PHARMACY]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5d2ff762-041d-74ed-e063-6394a90ac588"
+   }
+  },
+  {
+   "id": "drug-metoprolol-tartrate",
+   "kind": "drug",
+   "title": "metoprolol tartrate",
+   "text": "In the IMM kits: Lopressor (Metoprolol) 50 Mg: ISS 100, Orion 62. Uses: Metoprolol tartrate tablets are a beta-adrenergic blocker indicated for the treatment of: Hypertension, to lower blood pressure. Lowering blood pressure reduces the risk of fatal and non-fatal cardiovascular events, primarily strokes and myocardial infarctions. ( 1.1 ) Angina Pectoris. ( 1.2 ) Myocardial Infarction, to reduce the risk of cardiovascular mortality when used in conjunction with intravenous metoprolol therapy in patients with definite or suspected acute myocardial infarction in hemodynamically stable patients. ( 1.3 ) 1.1 Hypertension Metoprolol tartrate tablets are indicated for… Dosage: Administer once daily with food or after a meal. Titrate at weekly or longer intervals as needed and tolerated. ( 2 ) Hypertension: Recommended starting dosage is 100 mg daily, in single or divided doses. ( 2.1 ) Angina Pectoris: Recommended starting dosage is 100 mg daily, given as two divided doses. ( 2.2 ) Myocardial Infarction: The starting dosage depends upon tolerance of intravenous metoprolol, see full prescribing information. ( 2.3 ) 2.1 Hypertension Individualize the dosage of metoprolol tartrate tablets. Metoprolol tartrate tablets should be taken with or immediately following… Contraindications: Metoprolol tartrate tablets are contraindicated in severe bradycardia, second- or third-degree heart block, cardiogenic shock, systolic blood pressure <100, decompensated heart failure, sick sinus syndrome (unless a permanent pacemaker is in place), and in patients who are hypersensitive to any component of this product. Known hypersensitivity to product components. ( 4 ) Severe bradycardia: Greater than first degree heart block, or sick sinus syndrome without a pacemaker. ( 4 ) Cardiogenic shock or decompensated heart failure. ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: METOPROLOL TARTRATE TABLET, FILM COATED [PD-RX PHARMACEUTICALS, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=39d822df-0fa4-4f06-a6f1-d313824c62df"
+   }
+  },
+  {
+   "id": "drug-metronidazole",
+   "kind": "drug",
+   "title": "metronidazole",
+   "text": "In the IMM kits: Flagyl (Metronidazole) 500Mg: ISS 60, Orion 30, lunar lander 21. Uses: Symptomatic Trichomoniasis. Metronidazole tablets, USP are indicated for the treatment of T. vaginalis infection in females and males when the presence of the trichomonad has been confirmed by appropriate laboratory procedures (wet smears and/or cultures). Asymptomatic Trichomoniasis. Metronidazole tablets, USP are indicated in the treatment of asymptomatic T. vaginalis infection in females when the organism is associated with endocervicitis, cervicitis, or cervical erosion. Since there is evidence that presence of the trichomonad can interfere with accurate assessment of abnormal cytological… Contraindications: Hypersensitivity Metronidazole tablets are contraindicated in patients with a prior history of hypersensitivity to metronidazole or other nitroimidazole derivatives. In patients with trichomoniasis, metronidazole tablets are contraindicated during the first trimester of pregnancy (see PRECAUTIONS ). Psychotic Reaction with Disulfiram Use of oral metronidazole is associated with psychotic reactions in alcoholic patients who were using disulfiram concurrently. Do not administer metronidazole to patients who have taken disulfiram within the last two weeks (see PRECAUTIONS, Drug Interactions ).… Dosage: Trichomoniasis In the Female: One-day treatment − two grams of metronidazole tablets, given either as a single dose or in two divided doses of one gram each, given in the same day. Seven-day course of treatment − 250 mg three times daily for seven consecutive days. There is some indication from controlled comparative studies that cure rates as determined by vaginal smears and signs and symptoms, may be higher after a seven-day course of treatment than after a one-day treatment regimen. The dosage regimen should be individualized. Single-dose treatment can assure compliance, especially if…",
+   "source": {
+    "doc": "FDA label via DailyMed: METRONIDAZOLE TABLET [PD-RX PHARMACEUTICALS, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8f1de4ca-a005-4ca9-a43a-380429c80d6f"
+   }
+  },
+  {
+   "id": "drug-mineral-oil-and-white-petrolatum",
+   "kind": "drug",
+   "title": "mineral oil and white petrolatum",
+   "text": "In the IMM kits: Refresh Eye Ointment (Petrolatum White And Mineral Oil) 42.5%; 57.3%, 3.5Gm: ISS 4. Uses: for the temporary relief of burning and irritation due to dryness of the eye for use as a lubricant to prevent further irritation or to relieve dryness of the Dosage: Pull down the lower lid of the affected eye and apply a small amount (one-fourth inch) of ointment to the inside of the",
+   "source": {
+    "doc": "FDA label via DailyMed: SYSTANE NIGHTTIME (MINERAL OIL AND WHITE PETROLATUM) OINTMENT [ALCON LABORATORIES, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4689c59c-5721-3f91-6c85-e41501998fd0"
+   }
+  },
+  {
+   "id": "drug-modafinil",
+   "kind": "drug",
+   "title": "modafinil",
+   "text": "In the IMM kits: Provigil (Modafinil) 200 Mg Tablets: ISS 30. Uses: Modafinil tablets are indicated to improve wakefulness in adult patients with excessive sleepiness associated with narcolepsy, obstructive sleep apnea (OSA), or shift work disorder (SWD). Limitations of Use In OSA, modafinil tablets are indicated to treat excessive sleepiness and not as treatment for the underlying obstruction. If continuous positive airway pressure (CPAP) is the treatment of choice for a patient, a maximal effort to treat with CPAP for an adequate period of time should be made prior to initiating and during treatment with modafinil tablets for excessive sleepiness. Modafinil… Dosage: The recommended dosage of modafinil tablets for each indication is as follows: Narcolepsy or OSA: 200 mg once a day in the morning. (2.1) SWD: 200 mg once a day, taken approximately one hour prior to start of the work shift. (2.2) Severe Hepatic Impairment: reduce dose to half the recommended dose. (2.3 , 12.3) Geriatric Patients: consider lower dose. (2.4 , 12.3) 2.1 Dosage in Narcolepsy and Obstructive Sleep Apnea (OSA) The recommended dosage of modafinil tablets for patients with narcolepsy or OSA is 200 mg taken orally once a day as a single dose in the morning. Doses up to 400 mg/day,… Contraindications: Modafinil tablets are contraindicated in patients with known hypersensitivity to modafinil or armodafinil or its inactive ingredients [see Warnings and Precautions (5.1 , 5.2 , 5.3) ] . Modafinil tablets are contraindicated in patients with known hypersensitivity to modafinil or armodafinil.",
+   "source": {
+    "doc": "FDA label via DailyMed: MODAFINIL TABLET [ASCLEMED USA INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bfe1b1b7-52ec-41b3-94d6-ac56036eea80"
+   }
+  },
+  {
+   "id": "drug-moxifloxacin",
+   "kind": "drug",
+   "title": "moxifloxacin",
+   "text": "In the IMM kits: Moxifloxacin (Avelox) 0.5%, 3Ml Bottle: ISS 4, Orion 1, lunar lander 1. Uses: Moxifloxacin ophthalmic solution is indicated for the treatment of bacterial conjunctivitis caused by susceptible strains of the following organisms: Corynebacterium species* Micrococcus luteus* Staphylococcus aureus Staphylococcus epidermidis Staphylococcus haemolyticus Staphylococcus hominis Staphylococcus warneri* Streptococcus pneumoniae Streptococcus viridans group Acinetobacter lwoffii* Haemophilus influenza Haemophilus parainfluenzae* Chlamydia trachomatis *Efficacy for this organism was studied in fewer than 10 infections. Moxifloxacin ophthalmic solution is a topical fluoroquinolone… Dosage: Instill one drop in the affected eye 3 times a day for 7 days. Moxifloxacin ophthalmic solution is for topical ophthalmic use. Instill one drop in the affected eye 3 times a day for 7 days. ( 2 Contraindications: Moxifloxacin ophthalmic solution is contraindicated in patients with a history of hypersensitivity to moxifloxacin, to other quinolones, or to any of the components in this medication. . Moxifloxacin ophthalmic solution is contraindicated in patients with a history of hypersensitivity to moxifloxacin, to other quinolones, or to any of the components in this medication. ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: MOXIFLOXACIN OPHTHALMIC SOLUTION (MOXIFLOXACIN) SOLUTION/ DROPS [REDPHARM DRUG]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4fb55f17-d9db-8148-e063-6394a90a8216"
+   }
+  },
+  {
+   "id": "drug-mupirocin",
+   "kind": "drug",
+   "title": "mupirocin",
+   "text": "In the IMM kits: Mupirocin (Bactroban) 2%, 22 Gm Tube: ISS 2, Orion 1, lunar lander 0.1. Uses: Mupirocin cream is indicated for the treatment of secondarily infected traumatic skin lesions (up to 10 cm in length or 100 cm 2 in area) due to susceptible isolates of Staphylococcus aureus (S. aureus) and Streptococcus pyogenes (S. pyogenes). Mupirocin cream is an RNA synthetase inhibitor antibacterial indicated for the treatment of secondarily infected traumatic skin lesions (up to 10 cm in length or 100 cm 2 in area) due to susceptible isolates of Staphylococcus aureus and Streptococcus pyogenes . ( (1) Dosage: For Topical Use Only. Apply a small amount of mupirocin cream, with a cotton swab or gauze pad, to the affected area 3 times daily for 10 days. Cover the treated area with gauze dressing if desired. Re-evaluate patients not showing a clinical response within 3 days to 5 days. Mupirocin cream is not for intranasal, ophthalmic or other mucosal use [see Warnings and Precautions ( 5.2 , 5.6 )]. Do not apply mupirocin cream concurrently with any other lotions, creams or ointments [see Clinical Pharmacology ( 12.3 )]. For Topical Use Only. ( 2 ) Apply a small amount of mupirocin cream, with a… Contraindications: Mupirocin cream is contraindicated in patients with known hypersensitivity to mupirocin or any of the excipients of mupirocin cream. Known hypersensitivity to mupirocin or any of the excipients of mupirocin cream. ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: MUPIROCIN CREAM [VIONA PHARMACEUTICALS INC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6db9b0f5-fbdb-4e2c-b8d9-3e949c48b4c9"
+   }
+  },
+  {
+   "id": "drug-nitroglycerin",
+   "kind": "drug",
+   "title": "nitroglycerin",
+   "text": "In the IMM kits: Nitroglycerin Tablet 0.4Mg: ISS 25, Orion 10, lunar lander 1. Uses: Nitroglycerin sublingual tablets are indicated for the acute relief of an attack or acute prophylaxis of angina pectoris due to coronary artery disease. Nitroglycerin is a nitrate vasodilator indicated for relief of an attack or prophylaxis of angina pectoris due to coronary artery disease. ( 1 Dosage: Administer one tablet under the tongue or in the buccal pouch at the first sign of an acute anginal attack. Allow tablet to dissolve without swallowing. One additional tablet may be administered every 5 minutes until relief is obtained. No more than three tablets are recommended within a 15-minute period. If the pain persists after a total of 3 tablets in a 15-minute period, or if the pain is different than is typically experienced, seek prompt medical attention. Nitroglycerin sublingual tablets may be used prophylactically 5 to 10 minutes prior to engaging in activities that might… Contraindications: Use of phosphodiesterase type 5 (PDE-5) inhibitors, such as avanafil, sildenafil, tadalafil, or vardenafil, or soluble guanylate cyclase (sGC) stimulators. ( 4.1 , 7.1 ) Severe anemia ( 4.2 ) Increased intracranial pressure ( 4.3 ) Hypersensitivity to nitroglycerin sublingual tablets or to other nitrates or nitrites or any excipient ( 4.4 ) Circulatory failure and shock ( 4.5 ) 4.1 PDE-5-Inhibitors and sGC-Stimulators Do not use nitroglycerin sublingual tablets in patients who are taking PDE-5 Inhibitors, such as avanafil, sildenafil, tadalafil, vardenafil hydrochloride. Concomitant use can…",
+   "source": {
+    "doc": "FDA label via DailyMed: NITROGLYCERIN TABLET [A-S MEDICATION SOLUTIONS]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e4642ae0-6a42-4a49-b6d9-d292a0294c77"
+   }
+  },
+  {
+   "id": "drug-norgestrel-and-ethinyl-estradiol",
+   "kind": "drug",
+   "title": "norgestrel and ethinyl estradiol",
+   "text": "In the IMM kits: Ethinyl Estradiol / Norgestrel 0.05 Mg/ 0.5 Mg: ISS 42. Uses: Cryselle is indicated for use by females of reproductive potential to prevent pregnancy. In a study of 1,287 women with a total of 11,085 cycles or 852.7 women-years of usage, the pregnancy rate in women age 15 to 40 years was approximately 1 pregnancy per 100 women-years of Contraindications: Cryselle is contraindicated in females who are known to have or develop the following conditions: A high risk of arterial or venous thrombotic diseases. Examples include women who are known to: Smoke, if over age 35 Have deep-vein thrombosis or pulmonary embolism, now or in the past Have inherited or acquired coagulopathies Have cerebrovascular disease Have coronary artery disease Have thrombogenic valvular or thrombogenic rhythm diseases of the heart (for example, subacute bacterial endocarditis with valvular disease or atrial fibrillation) Have uncontrolled hypertension Have diabetes…",
+   "source": {
+    "doc": "FDA label via DailyMed: CRYSELLE (NORGESTREL AND ETHINYL ESTRADIOL) KIT [TEVA PHARMACEUTICALS, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b5d48561-1aa1-4c9b-935f-6cf035225769"
+   }
+  },
+  {
+   "id": "drug-omeprazole",
+   "kind": "drug",
+   "title": "omeprazole",
+   "text": "In the IMM kits: Prilosec 20Mg: ISS 90. Uses: treats frequent heartburn (occurs 2 or more days a week) not intended for immediate relief of heartburn; this drug may take 1 to 4 days for full Dosage: for adults 18 years of age and older this product is to be used once a day (every 24 hours), every day for 14 days it may take 1 to 4 days for full effect; some people get complete relief of symptoms within 24 hours 14-Day Course of Treatment swallow 1 tablet with a glass of water before eating in the morning take every day for 14 days do not take more than 1 tablet a day do not use for more than 14 days unless directed by your doctor swallow whole. Do not chew or crush tablets. Repeated 14-Day Courses (if needed) you may repeat a 14-day course every 4 months do not take for more than 14 days…",
+   "source": {
+    "doc": "FDA label via DailyMed: ACID REDUCER (OMEPRAZOLE) TABLET, DELAYED RELEASE [CHAIN DRUG MARKETING ASSOCIATION, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5a5980fc-4296-4aa5-aaba-2357f68157bb"
+   }
+  },
+  {
+   "id": "drug-ondansetron",
+   "kind": "drug",
+   "title": "ondansetron",
+   "text": "In the IMM kits: Zofran (Ondansetron) 8 Mg Tablet: ISS 30, Orion 12, lunar lander 2. Uses: Ondansetron orally disintegrating tablets are indicated for the prevention of nausea and vomiting associated with: highly emetogenic cancer chemotherapy, including cisplatin greater than or equal to 50 mg/m 2 initial and repeat courses of moderately emetogenic cancer chemotherapy radiotherapy in patients receiving either total body irradiation, single high-dose fraction to the abdomen, or daily fractions to the abdomen Ondansetron orally disintegrating tablets also indicated for the prevention of postoperative nausea and/or vomiting. Ondansetron orally disintegrating tablets are a 5-HT 3… Dosage: See full prescribing information for the recommended dosage in adults and pediatrics. (2) Patients with severe hepatic impairment: do not exceed a total daily dose of 8 mg. ( 2.2 , 8.6 ) 2.1 Dosage The recommended dosage regimens for adult and pediatric patients are described in Table 1 and Table 2, respectively. Corresponding doses of ondansetron tablets, ondansetron orally disintegrating tablets and ondansetron oral solution may be used interchangeably. Table 1: Adult Recommended Dosage Regimen for Prevention of Nausea and Vomiting Indication Dosage Regimen Highly Emetogenic Cancer… Contraindications: Ondansetron orally disintegrating tablets are contraindicated in patients: known to have hypersensitivity (e.g., anaphylaxis) to ondansetron or any of the components of the formulation [see Adverse Reactions (6.2) ] receiving concomitant apomorphine due to the risk of profound hypotension and loss of consciousness Patients known to have hypersensitivity (e.g., anaphylaxis) to ondansetron or any components of the formulation. ( 4 ) Concomitant use of apomorphine. ( 4",
+   "source": {
+    "doc": "FDA label via DailyMed: ONDANSETRON TABLET, ORALLY DISINTEGRATING [SPORTPHARM LLC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3c4cda2f-13d9-42c5-b449-77deb06c8de5"
+   }
+  },
+  {
+   "id": "drug-oxymetazoline",
+   "kind": "drug",
+   "title": "oxymetazoline",
+   "text": "In the IMM kits: Afrin (Oxymetazoline) 0.05% 15Ml Bottle: ISS 12, Orion 1, lunar lander 2. Uses: for the temporarily relief of nasal congestion due to: ▪ common cold ▪ hay fever ▪ upper respiratory allergies ▪ temporarily relieves sinus congestion and pressure ▪ shrinks swollen nasal membranes so you can breathe more Dosage: • adults and children 6 to under 12 years of age (with adult supervision): 2 or 3 sprays in each nostril not more often than every 10 to 12 hours. Do not exceed 2 doses in any 24-hour period. • children under 6 years of age: ask a doctor Sake well before use: Before using the first time, remove the protective cap from the tip by pressing and twisting off the cap. Rotate the lock tab to align arrow marks to unlock the pump. Prime metered pump by depressing pump firmly several times. To spray, hold bottle with thumb at base and nozzle between first and second fingers. Without tilting head,…",
+   "source": {
+    "doc": "FDA label via DailyMed: PUBLIX (OXYMETAZOLINE HYDROCHLORIDE) SPRAY [PUBLIX SUPER MARKETS, INC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=283e42b9-173c-4deb-9377-ff649efc177f"
+   }
+  },
+  {
+   "id": "drug-phenytoin",
+   "kind": "drug",
+   "title": "phenytoin",
+   "text": "In the IMM kits: Dilantin (Phenytoin) 300Mg Capsules: ISS 30, Orion 6. Uses: Extended phenytoin sodium capsules are indicated for the treatment of tonic-clonic (grand mal) and psychomotor (temporal lobe) seizures and prevention and treatment of seizures occurring during or following neurosurgery. Extended phenytoin sodium capsules are indicated for the treatment of tonic-clonic (grand mal) and psychomotor (temporal lobe) seizures and prevention and treatment of seizures occurring during or following neurosurgery. ( 1 Dosage: • Adult starting dose in patients who have received no previous treatment is one 100 mg extended phenytoin sodium capsule three times a day, with dose adjustments as necessary. For most adults, the satisfactory maintenance dose will be one capsule three to four times a day. An increase, up to two capsules three times a day may be made, if necessary. ( 2.1 ) • Adult once-a-day dose: If seizure control is established with divided doses of three 100 mg extended phenytoin sodium capsules daily, once-a-day dosage with 300 mg extended phenytoin sodium capsules may be considered. ( 2.1 ) • Adult… Contraindications: Extended phenytoin sodium capsules are contraindicated in patients with: • A history of hypersensitivity to phenytoin, its inactive ingredients, or other hydantoins [see Warnings and Precautions (5.5) ] . Reactions have included angioedema. • A history of prior acute hepatotoxicity attributable to phenytoin [see Warnings and Precautions (5.8) ]. • Coadministration with delavirdine because of the potential for loss of virologic response and possible resistance to delavirdine or to the class of non-nucleoside reverse transcriptase inhibitors. • Hypersensitivity to phenytoin, its ingredients, or…",
+   "source": {
+    "doc": "FDA label via DailyMed: PHENYTOIN SODIUM CAPSULE, EXTENDED RELEASE [MAJOR PHARMACEUTICALS]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=46d5c0d1-a97b-46d9-8cf4-994780673337"
+   }
+  },
+  {
+   "id": "drug-prednisone",
+   "kind": "drug",
+   "title": "prednisone",
+   "text": "In the IMM kits: Prednisone 20 Mg: ISS 40, Orion 4. Uses: INDICATIONS Prednisone tablets are indicated in the following conditions: 1. Endocrine Disorders Primary or secondary adrenocortical insufficiency (hydrocortisone or cortisone is the first choice; synthetic analogs may be used in conjunction with mineralocorticoids where applicable; in infancy mineralocorticoid supplementation is of particular importance) Congenital adrenal hyperplasia Hypercalcemia associated with cancer Nonsuppurative thyroiditis 2. Rheumatic Disorders As adjunctive therapy for short-term administration (to tide the patient over an acute episode or exacerbation) in:… Contraindications: Systemic fungal infections and known hypersensitivity to Dosage: The initial dosage of prednisone may vary from 5 mg to 60 mg of prednisone per day depending on the specific disease entity being treated. In situations of less severity lower doses will generally suffice while in selected patients higher initial doses may be required. The initial dosage should be maintained or adjusted until a satisfactory response is noted. If after a reasonable period of time there is a lack of satisfactory clinical response, prednisone should be discontinued and the patient transferred to other appropriate therapy. IT SHOULD BE EMPHASIZED THAT DOSAGE REQUIREMENTS ARE…",
+   "source": {
+    "doc": "FDA label via DailyMed: PREDNISONE TABLET [BRYANT RANCH PREPACK]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2bb5bba8-60ae-4789-90eb-2d4a43e7a14b"
+   }
+  },
+  {
+   "id": "drug-promethazine",
+   "kind": "drug",
+   "title": "promethazine",
+   "text": "In the IMM kits: Phenergan (Promethazine Tablet) 25 Mg: ISS 30, Orion 4; Promethazine Injectable (Phenergan) 50Mg/Ml Single Dose Vial: ISS 12, Orion 2. Uses: Promethazine Hydrochloride, is useful orally for: Perennial and seasonal allergic rhinitis. Vasomotor rhinitis. Allergic conjunctivitis due to inhalant allergens and foods. Mild, uncomplicated allergic skin manifestations of urticaria and angioedema. Amelioration of allergic reactions to blood or plasma. Dermographism. Anaphylactic reactions, as adjunctive therapy to epinephrine and other standard measures, after the acute manifestations have been controlled. Preoperative, postoperative, or obstetric sedation. Prevention and control of nausea and vomiting associated with certain types of… Contraindications: Promethazine hydrochloride tablets, USP are contraindicated for use in pediatric patients less than two years of age. Promethazine hydrochloride tablets, USP are contraindicated in comatose states, and in individuals known to be hypersensitive or to have had an idiosyncratic reaction to promethazine or to other phenothiazines. Antihistamines are contraindicated for use in the treatment of lower respiratory tract symptoms including Dosage: Promethazine hydrochloride tablets, USP are contraindicated for children under 2 years of age (see WARNINGS-Black Box Warning and Use in Pediatric Patients ). Allergy The average oral dose is 25 mg taken before retiring; however, 12.5 mg may be taken before meals and on retiring, if necessary. Single 25-mg doses at bedtime or 6.25 to 12.5 mg taken three times daily will usually suffice. After initiation of treatment in children or adults, dosage should be adjusted to the smallest amount adequate to relieve symptoms. The administration of promethazine hydrochloride in 25-mg doses will control…",
+   "source": {
+    "doc": "FDA label via DailyMed: PROMETHAZINE HYDROCHLORIDE TABLET [REMEDYREPACK INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6728bb41-5d50-4abb-bb73-993dcc16ee66"
+   }
+  },
+  {
+   "id": "drug-proparacaine",
+   "kind": "drug",
+   "title": "proparacaine",
+   "text": "In the IMM kits: Proparacaine Eye Drops 0.5%, 15Ml Bottle: ISS 1. Uses: : ALCAINE™ ophthalmic solution is indicated for procedures in which a topical ophthalmic anesthetic is indicated: corneal anesthesia of short duration, e.g. tonometry, gonioscopy, removal of corneal foreign bodies, and for short corneal and conjunctival Contraindications: : ALCAINE™ ophthalmic solution should be considered contraindicated in patients with known hypersensitivity to any of the ingredients of this Dosage: : Usual Dosage: Removal of foreign bodies and sutures, and for tonometry: 1 to 2 drops (in single instillations) in each eye before operating. Short Corneal and Conjunctival Procedures: 1 drop in each eye every 5 to 10 minutes for 5 to 7 doses. NOTE: ALCAINE™ (proparacaine hydrochloride ophthalmic solution, USP) 0.5% should be clear to straw-color. If the solution becomes darker, discard the",
+   "source": {
+    "doc": "FDA label via DailyMed: ALCAINE (PROPARACAINE HYDROCHLORIDE) SOLUTION/ DROPS [ALCON LABORATORIES, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0c0fa0bf-977d-4539-b8dc-54c187c5b094"
+   }
+  },
+  {
+   "id": "drug-pseudoephedrine",
+   "kind": "drug",
+   "title": "pseudoephedrine",
+   "text": "In the IMM kits: Sudafed (Pseudoephedrine) 30Mg: ISS 100; Sudafed 12 Hour (Pseudoephedrine) 120 Mg: ISS 125, Orion 6, lunar lander 7. Uses: • temporarily relieves sinus congestion and pressure • temporarily relieves nasal congestion due to the common cold, hay fever or other upper respiratory Dosage: adults and children 12 years and over • take 2 tablets every 4 to 6 hours • do not take more than 8 tablets in 24 hours children ages 6 to 11 years • take 1 tablet every 4 to 6 hours • do not take more than 4 tablets in 24 hours children under 6 years do not use this product in children under 6 years of",
+   "source": {
+    "doc": "FDA label via DailyMed: NASAL DECONGESTANT (PSEUDOEPHEDRINE HCL) TABLET, FILM COATED [CVS PHARMACY]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bebe5e78-09ba-4d35-9d34-9f5e34341478"
+   }
+  },
+  {
+   "id": "drug-sertraline",
+   "kind": "drug",
+   "title": "sertraline",
+   "text": "In the IMM kits: Zoloft (Sertraline) 50 Mg: ISS 60, Orion 20. Uses: Sertraline Hydrochloride (HCl) Capsules is indicated for the treatment of the following [see Clinical Studies ( 14 )] : Major depressive disorder (MDD) in adults Obsessive-compulsive disorder (OCD) in adults and pediatric patients 6 years and older Sertraline Hydrochloride (HCl) Capsules is a selective serotonin reuptake inhibitor (SSRI) indicated for the treatment of ( 1 ): Major depressive disorder (MDD) in adults Obsessive-compulsive disorder (OCD) in adults and pediatric patients 6 years and Dosage: Do not initiate treatment with Sertraline HCl Capsules. Use another sertraline HCl product for initial dosage, titration, and dosages below 150 mg once daily ( 2.1 ) Recommended dosage is 150 mg or 200 mg once daily ( 2.1 ) Maximum recommended dosage is 200 mg once daily ( 2.1 ) Swallow capsules whole. Do not open, crush, or chew ( 2.2 ) When discontinuing Sertraline HCl Capsules, reduce dose gradually whenever possible. Gradual dosage reduction will require use of another sertraline HCl product ( 2.5 , 5.5 ) 2.1 Dosing in Patients with MDD and OCD Do not initiate treatment with Sertraline… Contraindications: Sertraline HCl Capsules are contraindicated in patients: Taking, or within 14 days of stopping, MAOIs, (including the MAOIs linezolid and intravenous methylene blue) because of an increased risk of serotonin syndrome [see Warnings and Precautions ( 5.2 ), Drug Interactions ( 7.1 )] . Taking pimozide [see Drug Interactions ( 7.1 )] . With known hypersensitivity to sertraline or the excipients in Sertraline HCl Capsules (e.g., anaphylaxis, angioedema) [see Adverse Reactions ( 6.1 , 6.2 )] . Concomitant use of monoamine oxidase inhibitors (MAOIs), or use within 14 days of stopping MAOIs ( 4 ,…",
+   "source": {
+    "doc": "FDA label via DailyMed: SERTRALINE HCL (SERTRALINE HYDROCHLORIDE) CAPSULE [BIOCON PHARMA INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=623b9672-b41e-4ec9-b2cc-f5bb383c39ba"
+   }
+  },
+  {
+   "id": "drug-silver-nitrate",
+   "kind": "drug",
+   "title": "silver nitrate",
+   "text": "In the IMM kits: Silver Nitrate Stick 75%/25%: ISS 10. Uses: INDICATIONS On the skin, applications of silver nitrate are recommended for cauterization of wounds and sluggish ulcers, also for removal of granulation tissue and warts. On mucous membranes, silver nitrate may be applied to small ulcers and aphthae in the mouth resulting from injury or stomatitis, to infected tonsils, to rectal fissures and fistulae, and to vaginal or cervical ulcerations or erosions. Epistaxis may be controlled by direct application to the site of hemorrhage within the Dosage: APPLICATION ARZOL may be applied direct to mucous membranes and other moist surfaces. In the case of dry skin, the applicator tip should be dipped in water immediately before use. Apply carefully to the area to be treated. DO NOT USE ON THE",
+   "source": {
+    "doc": "FDA label via DailyMed: SILVER NITRATE APPLICATORS STICK [ARZOL CHEMICAL COMPANY]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=23b83457-8cbc-26f1-e054-00144ff8d46c"
+   }
+  },
+  {
+   "id": "drug-sodium-chloride",
+   "kind": "drug",
+   "title": "sodium chloride",
+   "text": "In the IMM kits: Saline Nose Spray 22Ml Bottle: ISS 1. Uses: Moisturizes dry, irritated nasal passages due to: ■ Colds ■Dry air ■Smoke ■Air travel Dosage: Squeeze twice in each nostril as needed or as directed by physician. For children 3 years old and younger consult a physician before use. For infants , use drop application. Hold bottle upright for spray, horizontally for stream, and upside down for",
+   "source": {
+    "doc": "FDA label via DailyMed: PERSONAL CARE SALINE NASAL (SODIUM CHLORIDE) SPRAY [DELTA BRANDS INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5ccaf7a1-6891-eac4-e063-6294a90a829f"
+   }
+  },
+  {
+   "id": "drug-sulfamethoxazole-and-trimethoprim",
+   "kind": "drug",
+   "title": "sulfamethoxazole and trimethoprim",
+   "text": "In the IMM kits: Bactrim Ds (Sulfamethoxazole/Trimethoprim) 800 Mg/160 Mg Tablet: ISS 40, Orion 40, lunar lander 26. Uses: To reduce the development of drug-resistant bacteria and maintain the effectiveness of sulfamethoxazole and trimethoprim tablets and other antibacterial drugs, sulfamethoxazole and trimethoprim tablets should be used only to treat or prevent infections that are proven or strongly suspected to be caused by susceptible bacteria. When culture and susceptibility information are available, they should be considered in selecting or modifying antibacterial therapy. In the absence of such data, local epidemiology and susceptibility patterns may contribute to empiric selection of therapy. Urinary… Contraindications: Sulfamethoxazole and trimethoprim tablets are contraindicated in the following situations: known hypersensitivity to trimethoprim or sulfonamides history of drug-induced immune thrombocytopenia with use of trimethoprim and/or sulfonamides documented megaloblastic anemia due to folate deficiency pediatric patients less than 2 months of age marked hepatic damage severe renal insufficiency when renal function status cannot be monitored concomitant administration with dofetilide (see PRECAUTIONS Dosage: Sulfamethoxazole and trimethoprim tablets are contraindicated in pediatric patients less than 2 months of age. Urinary Tract Infections and Shigellosis in Adults and Pediatric Patients, and Acute Otitis Media in Children Adults: The usual adult dosage in the treatment of urinary tract infections is 1 sulfamethoxazole and trimethoprim DS (double strength) tablet or 2 sulfamethoxazole and trimethoprim tablets every 12 hours for 10 to 14 days. An identical daily dosage is used for 5 days in the treatment of shigellosis. Children: The recommended dose for children with urinary tract infections or…",
+   "source": {
+    "doc": "FDA label via DailyMed: SULFAMETHOXAZOLE AND TRIMETHOPRIM TABLET [PD-RX PHARMACEUTICALS, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3ef62512-0dc3-4821-9b60-6b375841c4c0"
+   }
+  },
+  {
+   "id": "drug-tamsulosin",
+   "kind": "drug",
+   "title": "tamsulosin",
+   "text": "In the IMM kits: Tamsulosin 0.4 Mg Tablet: ISS 10, Orion 10. Uses: Tamsulosin hydrochloride capsules are indicated for the treatment of the signs and symptoms of benign prostatic hyperplasia (BPH) [see Clinical Studies (14) ] . Tamsulosin hydrochloride capsules are not indicated for the treatment of hypertension. Tamsulosin hydrochloride capsules are an alpha 1 adrenoceptor antagonist indicated for treatment of the signs and symptoms of benign prostatic hyperplasia (1) Tamsulosin hydrochloride capsules are not indicated for the treatment of hypertension Dosage: Tamsulosin hydrochloride capsules 0.4 mg once daily is recommended as the dose for the treatment of the signs and symptoms of BPH. It should be administered approximately one-half hour following the same meal each day. Tamsulosin hydrochloride capsules should not be crushed, chewed or opened. For those patients who fail to respond to the 0.4 mg dose after 2 to 4 weeks of dosing, the dose of tamsulosin hydrochloride capsules can be increased to 0.8 mg once daily. Tamsulosin hydrochloride capsules 0.4 mg should not be used in combination with strong inhibitors of CYP3A4 (e.g., ketoconazole)… Contraindications: Tamsulosin hydrochloride capsules are contraindicated in patients known to be hypersensitive to tamsulosin hydrochloride or any component of tamsulosin hydrochloride capsules. Reactions have included skin rash, urticaria, pruritus, angioedema, and respiratory symptoms [see Adverse Reactions (6.2) ]. Contraindicated in patients known to be hypersensitive to tamsulosin hydrochloride or any component of tamsulosin hydrochloride capsules (4 ,",
+   "source": {
+    "doc": "FDA label via DailyMed: TAMSULOSIN HYDROCHLORIDE CAPSULE [ST. MARY'S MEDICAL PARK PHARMACY]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6142d7b6-e5ea-1af0-e053-2991aa0a00cd"
+   }
+  },
+  {
+   "id": "drug-tobramycin-and-dexamethasone",
+   "kind": "drug",
+   "title": "tobramycin and dexamethasone",
+   "text": "In the IMM kits: Tobramycin And Dexamethasone 0.3%; 0.1%, 10Ml Bottle: ISS 1. Uses: : Tobramycin and dexamethasone ophthalmic suspension is indicated for steroid-responsive inflammatory ocular conditions for which a corticosteroid is indicated and where superficial bacterial ocular infection or a risk of bacterial ocular infection exists. Ocular steroids are indicated in inflammatory conditions of the palpebral and bulbar conjunctiva, cornea and anterior segment of the globe where the inherent risk of steroid use in certain infective conjunctivitides is accepted to obtain a diminution in edema and inflammation. They are also indicated in chronic anterior uveitis and corneal… Contraindications: : Epithelial herpes simplex keratitis (dendritic keratitis), vaccinia, varicella, and many other viral diseases of the cornea and conjunctiva. Mycobacterial infection of the eye. Fungal diseases of ocular structures. Hypersensitivity to a component of the Dosage: : One or two drops instilled into the conjunctival sac(s) every four to six hours. During the initial 24 to 48 hours, the dosage may be increased to one or two drops every two (2) hours. Frequency should be decreased gradually as warranted by improvement in clinical signs. Care should be taken not to discontinue therapy prematurely. Not more than 20 mL should be prescribed initially and the prescription should not be refilled without further evaluation as outlined in PRECAUTIONS",
+   "source": {
+    "doc": "FDA label via DailyMed: TOBRAMYCIN AND DEXAMETHASONE SUSPENSION/ DROPS [SANDOZ INC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=05fd0c36-39b4-4a43-8490-eb8dfc0920ae"
+   }
+  },
+  {
+   "id": "drug-tropicamide",
+   "kind": "drug",
+   "title": "tropicamide",
+   "text": "In the IMM kits: Tropicamide 1%: ISS 6. Uses: For mydriasis and cycloplegia for diagnostic Contraindications: Contraindicated in persons showing hypersensitivity to any component of this Dosage: For refraction, instill one or two drops of 1% solution in the eye(s), repeated in five minutes. If patient is not seen within 20 to 30 minutes, an additional drop may be instilled to prolong mydriatic effect. For examination of fundus, instill one or two drops of 0.5% solution 15 or 20 minutes prior to examination. Individuals with heavily pigmented irides may require higher strength or more doses. Mydriasis will reverse spontaneously with time, typically in 4 to 8 hours. However, in some cases, complete recovery may take up to 24",
+   "source": {
+    "doc": "FDA label via DailyMed: MYDRIACYL (TROPICAMIDE) SOLUTION/ DROPS [ALCON LABORATORIES, INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0d4f4a2e-eb00-4c65-b3fa-baf5738d468d"
+   }
+  },
+  {
+   "id": "drug-valacyclovir",
+   "kind": "drug",
+   "title": "valacyclovir",
+   "text": "In the IMM kits: Valacyclovir 1 Gm Tablet: ISS 60, Orion 21, lunar lander 21. Uses: Valacyclovir hydrochloride is a deoxynucleoside analogue DNA polymerase inhibitor indicated for: Adult Patients (1.1) Cold Sores (Herpes Labialis) Genital Herpes Treatment in immunocompetent patients (initial or recurrent episode) Suppression in immunocompetent or HIV-infected patients Reduction of transmission Herpes Zoster Pediatric Patients (1.2) Cold Sores (Herpes Labialis) Chickenpox Limitations of Use (1.3) The efficacy and safety of valacyclovir tablets have not been established in immunocompromised patients other than for the suppression of genital herpes in HIV-infected patients. 1.1… Dosage: Valacyclovir tablets may be given without regard to meals. Valacyclovir oral suspension (25 mg/mL or 50 mg/mL) may be prepared extemporaneously from 500 mg valacyclovir tablets for use in pediatric patients for whom a solid dosage form is not appropriate [see Dosage and Administration (2.3) ]. Adult Dosage (2.1) Cold Sores 2 grams every 12 hours for 1 day Genital Herpes Initial episode 1 gram twice daily for 10 days Recurrent episodes 500 mg twice daily for 3 days Suppressive therapy Immunocompetent patients 1 gram once daily Alternate dose in patients with less than or equal to 9… Contraindications: Valacyclovir tablets are contraindicated in patients who have had a demonstrated clinically significant hypersensitivity reaction [e.g., anaphylaxis, severe cutaneous adverse reactions (SCARs)] to valacyclovir, acyclovir, or any component of the formulation [see Warnings and Precautions (5.4) , Adverse Reactions (6.3) ]. Hypersensitivity to valacyclovir (e.g., anaphylaxis), acyclovir, or any component of the formulation.",
+   "source": {
+    "doc": "FDA label via DailyMed: VALACYCLOVIR HYDROCHLORIDE TABLET, FILM COATED [AMERICAN HEALTH PACKAGING]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=23fb4162-2310-486c-ba9f-f7c94b793e56"
+   }
+  },
+  {
+   "id": "drug-venlafaxine",
+   "kind": "drug",
+   "title": "venlafaxine",
+   "text": "In the IMM kits: Effexor Xr (Venlafaxine Xr) 75 Mg Capsules: ISS 60. Uses: Venlafaxine hydrochloride extended-release capsules are indicated in adults for the treatment of: • Major Depressive Disorder (MDD) [see Clinical Studies (14.1) ] • Generalized Anxiety Disorder (GAD) [see Clinical Studies (14.2) ] • Social Anxiety Disorder (SAD) [see Clinical Studies (14.3) ] • Panic Disorder (PD) [see Clinical Studies (14.4) ] Venlafaxine hydrochloride extended-release capsules are a serotonin and norepinephrine reuptake inhibitor (SNRI) indicated for the treatment of adults with: • Major Depressive Disorder ( MDD ) ( 1 ) • Generalized Anxiety Disorder ( GAD ) ( 1 ) • Social… Dosage: Indication Starting Dose Target Dose Maximum Dose MDD ( 2.2 ) 37.5 to 75 mg/day 75 mg/day 225 mg/day GAD ( 2.3 ) 37.5 to 75 mg/day 75 mg/day 225 mg/day SAD ( 2.4 ) 75 mg/day 75 mg/day 75 mg/day PD ( 2.5 ) 37.5 mg/day 75 mg/day 225 mg/day • Take once daily with food. Capsules should be taken whole; do not divide, crush, chew, or dissolve ( 2.1 ). • When discontinuing treatment, reduce the dose gradually ( 2.10 , 5.7 ). • Renal impairment: reduce the total daily dose by 25% to 50% in patients with renal impairment. Reduce the total daily dose by 50% or more in patients undergoing dialysis or… Contraindications: Venlafaxine hydrochloride extended-release capsules are contraindicated in patients: • with known hypersensitivity to venlafaxine hydrochloride, desvenlafaxine succinate or to any excipients in the formulation [see Adverse Reactions (6.2) ] . • taking, or within 14 days of stopping, MAOIs (including the MAOIs linezolid and intravenous methylene blue) because of the risk of serotonin syndrome [see Dosage and Administration (2.11) , Warnings and Precautions (5.2) , and Drug Interactions (7.1) ] . • Hypersensitivity to venlafaxine hydrochloride, desvenlafaxine succinate, or any excipients in the…",
+   "source": {
+    "doc": "FDA label via DailyMed: VENLAFAXINE HYDROCHLORIDE CAPSULE, EXTENDED RELEASE [CARDINAL HEALTH 107, LLC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7588ffdc-034d-4baf-9889-9a0ded265be5"
+   }
+  },
+  {
+   "id": "drug-ziprasidone",
+   "kind": "drug",
+   "title": "ziprasidone",
+   "text": "In the IMM kits: Ziprasidone (Geodon 20Mg/Ml): ISS 2. Uses: Ziprasidone mesylate for injection is indicated for the treatment of schizophrenia, as monotherapy for the acute treatment of bipolar manic or mixed episodes, and as an adjunct to lithium or valproate for the maintenance treatment of bipolar disorder. Ziprasidone mesylate for injection intramuscular is indicated for acute agitation in schizophrenic patients. When deciding among the alternative treatments available for the condition needing treatment, the prescriber should consider the finding of ziprasidone's greater capacity to prolong the QT/QTc interval compared to several other… Dosage: Acute treatment of agitation associated with schizophrenia (intramuscular administration): 10 mg–20 mg up to a maximum dose of 40 mg per day. Doses of 10 mg may be administered every 2 hours. Doses of 20 mg may be administered every 4 hours. ( 2.4 ) 2.4 Acute Treatment of Agitation in Schizophrenia Intramuscular Dosing The recommended dose is 10 mg to 20 mg administered as required up to a maximum dose of 40 mg per day. Doses of 10 mg may be administered every two hours; doses of 20 mg may be administered every four hours up to a maximum of 40 mg/day. Intramuscular administration of… Contraindications: Do not use in patients with a known history of QT prolongation ( 4.1 ) Do not use in patients with recent acute myocardial infarction ( 4.1 ) Do not use in patients with uncompensated heart failure ( 4.1 ) Do not use in combination with other drugs that have demonstrated QT prolongation ( 4.1 ) Do not use in patients with known hypersensitivity to ziprasidone ( 4.2 ) Concomitant use of monoamine oxidase inhibitors (MAOIs) or use within 14 days of stopping MAOIs. ( 4.3 ) 4.1 QT Prolongation Because of ziprasidone's dose-related prolongation of the QT interval and the known association of fatal…",
+   "source": {
+    "doc": "FDA label via DailyMed: ZIPRASIDONE MESYLATE 20 MG/ML (ZIPRASIDONE MESYLATE) INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION [ARMAS PHARMACEUTICALS INC.]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c5c27f0f-4e45-4bca-bb9a-2d3f1c243348"
+   }
+  },
+  {
+   "id": "drug-zolpidem",
+   "kind": "drug",
+   "title": "zolpidem",
+   "text": "In the IMM kits: Ambien 10Mg Tablet: ISS 250, Orion 11, lunar lander 4. Uses: Zolpidem tartrate tablets, USP a gamma-amino butyric acid (GABA) A receptor positive modulator, is indicated for the short-term treatment of insomnia characterized by difficulties with sleep initiation. Zolpidem tartrate tablets, USP are indicated for the short-term treatment of insomnia characterized by difficulties with sleep initiation. Zolpidem tartrate tablets, USP have been shown to decrease sleep latency for up to 35 days in controlled clinical studies [ see Clinical Studies (14) ]. The clinical trials performed in support of efficacy were 4 to 5 weeks in duration with the final formal… Dosage: • Use the lowest dose effective for the patient and must not exceed a total of 10 mg daily ( 2.1 ) • Treatment should be as short as possible ( 2.1 ) • Recommended initial dose is a single dose of 5 mg for women and a single dose of 5 or 10 mg for men, immediately before bedtime with at least 7 to 8 hours remaining before the planned time of awakening ( 2.1 ) • Geriatric patients and patients with mild to moderate hepatic impairment: Recommended dose is 5 mg for men and women ( 2.2 ) • Lower doses of CNS depressants may be necessary when taken concomitantly with zolpidem tartrate tablets (… Contraindications: • Patients who have experienced complex sleep behaviors after taking zolpidem tartare tablets ( 4 ) • Known hypersensitivity to zolpidem ( 4 ) Zolpidem tartrate tablets are contraindicated in patients • who have experienced complex sleep behaviors after taking zolpidem tartrate tablets [see Warnings and Precautions ( 5.1 )] . • with known hypersensitivity to zolpidem. Observed reactions include anaphylaxis and angioedema [see Warnings and Precautions ( 5.4 )]",
+   "source": {
+    "doc": "FDA label via DailyMed: ZOLPIDEM TARTRATE TABLET [CARDINAL HEALTH 107, LLC]",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=83510333-f07d-4b81-a3ae-2801d114bd31"
+   }
+  },
+  {
+   "id": "term-als-bls",
+   "kind": "term",
+   "title": "ALS / BLS",
+   "text": "Advanced / Basic Life Support",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-checs",
+   "kind": "term",
+   "title": "CHeCS",
+   "text": "Crew Health Care System (ISS medical system)",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-cmo",
+   "kind": "term",
+   "title": "CMO",
+   "text": "Crew Medical Officer: the crewmember designated for medical care",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-cmrs",
+   "kind": "term",
+   "title": "CMRS",
+   "text": "Crew Medical Restraint System: restrains the patient for treatment in microgravity",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-conjunction",
+   "kind": "term",
+   "title": "Conjunction",
+   "text": "Mars and Earth on opposite sides of the Sun, which can black out communication",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-dcs",
+   "kind": "term",
+   "title": "DCS",
+   "text": "Decompression sickness",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-exmc",
+   "kind": "term",
+   "title": "ExMC",
+   "text": "Exploration Medical Capability (NASA HRP element)",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-eva",
+   "kind": "term",
+   "title": "EVA",
+   "text": "Extravehicular activity (spacewalk or surface excursion)",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-hrp",
+   "kind": "term",
+   "title": "HRP",
+   "text": "NASA Human Research Program",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-emcl",
+   "kind": "term",
+   "title": "EMCL",
+   "text": "Exploration Medical Condition List (also SMEMCL): NASA's list of 100 medical conditions of concern for exploration missions, the basis of the IMM",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-imm",
+   "kind": "term",
+   "title": "IMM",
+   "text": "Integrated Medical Model: NASA's Monte Carlo risk model of in-flight medical conditions",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-levels-of-care",
+   "kind": "term",
+   "title": "Levels of Care",
+   "text": "Former NASA-STD-3001 tiers of required onboard medical capability. Replaced in Revision B (2022) by the Health and Medical Care technical requirements, which scale capability with risk assessment and mission parameters",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-ochmo",
+   "kind": "term",
+   "title": "OCHMO",
+   "text": "NASA Office of the Chief Health & Medical Officer",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-osce",
+   "kind": "term",
+   "title": "OSCE",
+   "text": "Objective Structured Clinical Examination: station-based clinical skills assessment",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-pocus",
+   "kind": "term",
+   "title": "POCUS",
+   "text": "Point-of-care ultrasound",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-sans",
+   "kind": "term",
+   "title": "SANS",
+   "text": "Spaceflight Associated Neuro-ocular Syndrome",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  },
+  {
+   "id": "term-sbar",
+   "kind": "term",
+   "title": "SBAR",
+   "text": "Situation, Background, Assessment, Recommendation: a structured handoff format",
+   "source": {
+    "doc": "SpaceDoc glossary (docs/glossary.md)",
+    "url": null
+   }
+  }
+ ]
+}

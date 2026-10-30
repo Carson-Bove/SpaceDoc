@@ -1,0 +1,96 @@
+{
+ "schema_version": "0.1",
+ "drm_id": "imm-artemis-27.5d",
+ "name": "Artemis lunar mission, 27.5 days, 4 crew",
+ "source": {
+  "doc": "IMM SR S-20190528-412 (2024 Lunar)",
+  "url": "https://www.nasa.gov/integrated-medical-model-documentation/",
+  "locator": "Table 2"
+ },
+ "duration_days": 27.5,
+ "crew": [
+  {
+   "crew_id": "C1",
+   "sex": "M",
+   "crowns": true,
+   "eva": true,
+   "cac": true,
+   "contacts": true,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C2",
+   "sex": "M",
+   "crowns": false,
+   "eva": false,
+   "cac": false,
+   "contacts": true,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C3",
+   "sex": "M",
+   "crowns": false,
+   "eva": false,
+   "cac": false,
+   "contacts": false,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C4",
+   "sex": "F",
+   "crowns": false,
+   "eva": true,
+   "cac": true,
+   "contacts": false,
+   "prior_abd_surgery": true
+  }
+ ],
+ "phases": [
+  {
+   "id": "outbound",
+   "name": "Outbound and lunar orbit",
+   "env": "T2",
+   "days": 10,
+   "habitats": [
+    "orion"
+   ],
+   "assumption": true
+  },
+  {
+   "id": "surface",
+   "name": "Lunar surface (C1 and C4); C2 and C3 stay in orbit aboard Orion",
+   "env": "T3",
+   "days": 7.5,
+   "habitats": [
+    "lunar-lander"
+   ],
+   "assumption": true,
+   "eva": {
+    "crew": [
+     "C1",
+     "C4"
+    ],
+    "count": 4
+   }
+  },
+  {
+   "id": "return",
+   "name": "Lunar orbit and return",
+   "env": "T2",
+   "days": 10,
+   "habitats": [
+    "orion"
+   ],
+   "assumption": true
+  }
+ ],
+ "resources": {
+  "state": "medcap",
+  "resupply": false,
+  "kit_mass_kg": 10.12,
+  "kit_volume_cm3": 20326,
+  "note": "The Orion 7.75 kg kit plus the 7.5-day lunar 2.37 kg kit"
+ },
+ "notes": "Phase split inferred from the report: the 7.5-day DRM is the middle 7.5 days of this one. Which crew descend is inferred from the EVA assignments."
+}

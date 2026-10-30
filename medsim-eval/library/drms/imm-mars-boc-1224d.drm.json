@@ -1,0 +1,123 @@
+{
+ "schema_version": "0.1",
+ "drm_id": "imm-mars-boc-1224d",
+ "name": "Mars Basis of Comparison, 1224 days, 4 crew",
+ "source": {
+  "doc": "IMM SR S-20210809-441 (HSRB Additional Mars DRMs)",
+  "url": "https://www.nasa.gov/integrated-medical-model-documentation/",
+  "locator": "Segment tables and Table 1"
+ },
+ "duration_days": 1224,
+ "crew": [
+  {
+   "crew_id": "C1",
+   "sex": "M",
+   "crowns": true,
+   "eva": true,
+   "cac": false,
+   "contacts": false,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C2",
+   "sex": "M",
+   "crowns": false,
+   "eva": true,
+   "cac": true,
+   "contacts": false,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C3",
+   "sex": "F",
+   "crowns": false,
+   "eva": true,
+   "cac": false,
+   "contacts": true,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C4",
+   "sex": "F",
+   "crowns": false,
+   "eva": true,
+   "cac": false,
+   "contacts": false,
+   "prior_abd_surgery": true
+  }
+ ],
+ "phases": [
+  {
+   "id": "initial",
+   "name": "Initial launch and staging",
+   "env": "T2",
+   "days": 90,
+   "habitats": [
+    "deep-space-habitat"
+   ],
+   "assumption": true,
+   "note": "Environment and habitat for this segment are our assumption"
+  },
+  {
+   "id": "outbound",
+   "name": "Outbound transit",
+   "env": "T4",
+   "days": 429,
+   "habitats": [
+    "deep-space-habitat"
+   ],
+   "assumption": false
+  },
+  {
+   "id": "loiter",
+   "name": "Mars loiter with surface EVAs",
+   "env": "T5",
+   "days": 365,
+   "habitats": [
+    "mars-surface-habitat"
+   ],
+   "assumption": false,
+   "eva": {
+    "crew": [
+     "C1",
+     "C2",
+     "C3",
+     "C4"
+    ],
+    "count": 94,
+    "window_days": [
+     549,
+     846
+    ],
+    "note": "94 EVAs by all four crew, one a day, spread over 300 days"
+   }
+  },
+  {
+   "id": "return",
+   "name": "Return transit",
+   "env": "T4",
+   "days": 300,
+   "habitats": [
+    "deep-space-habitat"
+   ],
+   "assumption": false
+  },
+  {
+   "id": "staging",
+   "name": "Staging after return",
+   "env": "T2",
+   "days": 40,
+   "habitats": [
+    "deep-space-habitat"
+   ],
+   "assumption": true,
+   "note": "Environment and habitat for this segment are our assumption"
+  }
+ ],
+ "resources": {
+  "state": "medcap",
+  "resupply": false,
+  "note": "ISS medical capability (sized for the ISS with 6-month resupply), no resupply during the mission"
+ },
+ "notes": "Segments from the report. The loiter starts on day 519."
+}

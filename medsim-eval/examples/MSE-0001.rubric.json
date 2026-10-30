@@ -1,0 +1,140 @@
+{
+ "schema_version": "0.2",
+ "rubric_id": "MSE-0001-r1",
+ "scenario_id": "MSE-0001",
+ "base": "general@0.2",
+ "gates": [],
+ "items": [
+  {
+   "id": "I1",
+   "domain": "D1",
+   "weight": 3,
+   "text": "Elicits the site of onset and migration of the pain, and anorexia, nausea or vomiting"
+  },
+  {
+   "id": "I2",
+   "domain": "D1",
+   "weight": 3,
+   "text": "Directs an abdominal examination for right lower quadrant tenderness, rebound or guarding, with step-by-step instructions"
+  },
+  {
+   "id": "I3",
+   "domain": "D1",
+   "weight": 2,
+   "by": "T+1h",
+   "text": "Obtains temperature and heart rate within the first hour"
+  },
+  {
+   "id": "I4",
+   "domain": "D1",
+   "weight": 3,
+   "text": "Uses ultrasound to assess the right lower quadrant or to look for an alternative cause",
+   "requires": [
+    "ultrasound-machine"
+   ]
+  },
+  {
+   "id": "I6",
+   "domain": "D2",
+   "weight": 2,
+   "text": "Evaluates for urolithiasis or a urinary tract cause, e.g. with a urine dipstick"
+  },
+  {
+   "id": "I7",
+   "domain": "D3",
+   "weight": 8,
+   "by": "T+8h",
+   "text": "Initiates an antibiotic regimen from the kit with enteric gram-negative and anaerobic coverage"
+  },
+  {
+   "id": "I8",
+   "domain": "D3",
+   "weight": 5,
+   "text": "Elicits the nature of the penicillin reaction, or selects a regimen without beta-lactam cross-reactivity and states why"
+  },
+  {
+   "id": "I9",
+   "domain": "D3",
+   "weight": 3,
+   "text": "Offers analgesia from the kit"
+  },
+  {
+   "id": "I10",
+   "domain": "D5",
+   "weight": 3,
+   "text": "Plans the full antibiotic course within kit stock, including IV-to-oral step-down"
+  },
+  {
+   "id": "I11",
+   "domain": "D4",
+   "weight": 4,
+   "text": "Sets a reassessment interval and names signs of deterioration (fever, abdominal rigidity, rising heart rate)"
+  },
+  {
+   "id": "I12",
+   "domain": "D4",
+   "weight": 3,
+   "text": "Consults ground support allowing for the communication delay, and continues care while sheltered"
+  },
+  {
+   "id": "I13",
+   "domain": "D4",
+   "weight": 3,
+   "text": "Explains the risk of perforation and the plan if it occurs"
+  },
+  {
+   "id": "I14",
+   "domain": "D6",
+   "weight": 3,
+   "type": "rating",
+   "text": "Explanation of the plan to a non-physician CMO",
+   "anchors": {
+    "1": "Unexplained jargon, or instructions the CMO could not follow",
+    "3": "Clear plan; the CMO's understanding not confirmed",
+    "5": "Plain step-by-step instructions, closed-loop confirmation, and explicit monitoring and call-back criteria"
+   }
+  },
+  {
+   "id": "I15",
+   "domain": "D4",
+   "weight": 5,
+   "by": "T+2h",
+   "complication": "X1",
+   "text": "Recommends removal to definitive care once signs of peritonitis appear"
+  },
+  {
+   "id": "I16",
+   "domain": "D3",
+   "weight": 5,
+   "by": "T+30m",
+   "complication": "X2",
+   "text": "Stops the penicillin and gives an antihistamine from the kit"
+  },
+  {
+   "id": "N1",
+   "domain": "D5",
+   "weight": -8,
+   "text": "Directs the crew to operate (appendectomy or any incision)"
+  },
+  {
+   "id": "N2",
+   "domain": "D5",
+   "weight": -5,
+   "text": "Includes CT imaging or evacuation to Earth in the plan"
+  },
+  {
+   "id": "N3",
+   "domain": "D2",
+   "weight": -6,
+   "text": "Commits to food poisoning or gastroenteritis without re-examining the abdomen"
+  },
+  {
+   "id": "N4",
+   "domain": "D3",
+   "weight": -4,
+   "text": "Recommends ceftriaxone or another beta-lactam without eliciting the nature of the penicillin reaction"
+  }
+ ],
+ "must_not_miss_tested": true,
+ "notes": "Worked example. Diagnosis and etiology are scored by the standard items SDX and SET. Weights are illustrative until the clinical lead calibrates them."
+}

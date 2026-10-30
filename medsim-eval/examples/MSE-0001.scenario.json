@@ -1,0 +1,261 @@
+{
+ "schema_version": "0.2",
+ "scenario_id": "MSE-0001",
+ "title": "Belly pain moving to the right lower quadrant",
+ "authors": [
+  {
+   "name": "SpaceDoc engineering (worked example)",
+   "contact": "see repository"
+  }
+ ],
+ "symptoms": [
+  "R10.33",
+  "R10.31",
+  "R11.0",
+  "R63.0"
+ ],
+ "environments": [
+  "T1",
+  "T2",
+  "T3",
+  "T4",
+  "T5"
+ ],
+ "patients": [
+  {
+   "crew_id": "C10",
+   "condition": "appendicitis",
+   "chart": {
+    "past_medical": [],
+    "past_surgical": [],
+    "medications": [],
+    "allergies": [
+     {
+      "agent": "penicillin",
+      "kind": "drug",
+      "reaction": "rash as a child"
+     }
+    ],
+    "nkda": false,
+    "family_history": [],
+    "social_history": "Never smoker; rarely drinks; judo.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2022"
+    ]
+   },
+   "timeline": [
+    {
+     "t": "T+0",
+     "kind": "symptom",
+     "text": "Dull periumbilical pain for about 10 hours, with anorexia, nausea and one episode of emesis"
+    },
+    {
+     "t": "T+0",
+     "kind": "keyframe",
+     "state": {
+      "temp_c": 37.6,
+      "hr": 92,
+      "sbp": 124,
+      "dbp": 78,
+      "rr": 16,
+      "spo2": 98,
+      "pain_0_10": 5
+     }
+    },
+    {
+     "t": "T+6h",
+     "kind": "symptom",
+     "text": "Pain migrates to the right lower quadrant; worse with coughing and movement"
+    },
+    {
+     "t": "T+12h",
+     "kind": "keyframe",
+     "when": "untreated",
+     "state": {
+      "temp_c": 38.2,
+      "hr": 104,
+      "pain_0_10": 7
+     }
+    },
+    {
+     "t": "T+48h",
+     "kind": "keyframe",
+     "when": "treated",
+     "state": {
+      "temp_c": 37.4,
+      "hr": 88,
+      "pain_0_10": 3
+     }
+    }
+   ],
+   "time_critical": [
+    {
+     "action": {
+      "kind": "treatment",
+      "refs": [
+       "ertapenem-1gm",
+       "levaquin-levofloxacin-500mg",
+       "flagyl-metronidazole-500mg",
+       "rocephin-ceftriaxone-1-gm"
+      ],
+      "text": "Antibiotics with enteric gram-negative and anaerobic coverage (e.g. ertapenem, or levofloxacin with metronidazole)"
+     },
+     "by": "T+8h"
+    }
+   ],
+   "complications": [
+    {
+     "id": "X1",
+     "name": "Perforation with peritonitis",
+     "trigger": "untreated",
+     "action": {
+      "kind": "treatment",
+      "refs": [
+       "ertapenem-1gm",
+       "levaquin-levofloxacin-500mg",
+       "flagyl-metronidazole-500mg",
+       "rocephin-ceftriaxone-1-gm"
+      ],
+      "text": "Antibiotics with enteric gram-negative and anaerobic coverage (e.g. ertapenem, or levofloxacin with metronidazole)"
+     },
+     "by": "T+36h",
+     "findings": [
+      {
+       "t": "T+0",
+       "kind": "finding",
+       "text": "Diffuse guarding and rigidity, consistent with perforation and peritonitis"
+      },
+      {
+       "t": "T+0",
+       "kind": "keyframe",
+       "state": {
+        "temp_c": 39.1,
+        "hr": 122,
+        "sbp": 104,
+        "pain_0_10": 9
+       }
+      }
+     ],
+     "recognise_within": "2h"
+    },
+    {
+     "id": "X2",
+     "name": "Allergic reaction to a penicillin",
+     "condition": "allergic-reaction-mild-to-moderate",
+     "trigger": "action",
+     "action": {
+      "kind": "treatment",
+      "refs": [
+       "amoxicillin-500-mg-capsule"
+      ],
+      "text": "Any penicillin, e.g. amoxicillin"
+     },
+     "after": "30m",
+     "chance": 0.5,
+     "findings": [
+      {
+       "t": "T+0",
+       "kind": "symptom",
+       "text": "Generalised urticaria and pruritus"
+      },
+      {
+       "t": "T+0",
+       "kind": "keyframe",
+       "state": {
+        "hr": 108
+       }
+      }
+     ],
+     "recognise_within": "30m"
+    }
+   ],
+   "ground_truth": {
+    "etiology": "Appendiceal luminal obstruction (e.g. appendicolith) with secondary inflammation and bacterial invasion",
+    "differential": [
+     "Appendicitis",
+     "Nephrolithiasis",
+     "Gastroenteritis",
+     "Constipation"
+    ],
+    "must_not_miss": [
+     "Perforated appendicitis"
+    ],
+    "synonyms": {
+     "Appendicitis": [
+      "acute appendicitis"
+     ],
+     "Appendiceal luminal obstruction (e.g. appendicolith) with secondary inflammation and bacterial invasion": [
+      "appendicolith",
+      "faecolith",
+      "fecalith",
+      "luminal obstruction"
+     ]
+    }
+   }
+  }
+ ],
+ "speaker": {
+  "crew_id": "C14",
+  "role": "cmo",
+  "opening": "Kenji has had a stomach ache since last night, around his belly button, and didn't want breakfast. He thinks it's something he ate. Can you help me work out what's going on?",
+  "emergent": false,
+  "input_quality": 2,
+  "input_problems": [
+   "missing_details"
+  ],
+  "behaviour": "Practical and calm; reports vital signs as she gets them. Kenji plays the pain down and blames food.",
+  "additional_history": [
+   {
+    "if_asked": "when it started",
+    "says": "Last night, about ten hours before I called you"
+   },
+   {
+    "if_asked": "where it started",
+    "says": "Around his belly button"
+   },
+   {
+    "if_asked": "vomiting",
+    "says": "Once, this morning"
+   },
+   {
+    "if_asked": "bowels",
+    "says": "Normal yesterday, no diarrhoea"
+   },
+   {
+    "if_asked": "urine",
+    "says": "No burning, and he hasn't seen any blood"
+   },
+   {
+    "if_asked": "allergies",
+    "says": "Penicillin: he got a rash as a kid"
+   }
+  ]
+ },
+ "injects": [
+  {
+   "t": "T+4h",
+   "kind": "solar_particle_event",
+   "duration": "10h",
+   "text": "Crew ordered to the storm shelter; patient and CMO shelter with them"
+  },
+  {
+   "t": "T+4h",
+   "kind": "comm_degraded",
+   "duration": "10h",
+   "text": "Text-only communication with the ground while sheltered"
+  }
+ ],
+ "complicators": "Penicillin allergy (added for this case; not in the crew record). No surgical capability aboard. Where carried, ertapenem stock covers about 6 days of a 10-day course.",
+ "rubric": "MSE-0001.rubric.json",
+ "duration": "4d",
+ "review": {
+  "status": "draft",
+  "reviewers": [],
+  "physiology_review": "requested",
+  "notes_for_physiologist": "Keyframe values are placeholders; please check the untreated trajectory against the CLiFF (worst case 22.5–37.4%, untreated phase 2 lasts 168–504 h), and the onset of X1. X2's 50% reaction rate is illustrative; please set it.",
+  "notes": "Worked example, not clinically reviewed."
+ },
+ "tags": [
+  "worked-example"
+ ]
+}

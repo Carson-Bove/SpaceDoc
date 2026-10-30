@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scenario Builder</title>
+<style>
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --ink: #1c2330; --muted: #5d6778; --line: #d9dee6;
+  --accent: #2f5fd0; --accent-ink: #ffffff; --err: #b3261e; --warn: #8a5a00; --ok: #1f7a3a;
+  --chip: #eef2fb; --code: #f0f2f5; --sel: #dfe8ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151b; --panel: #1a1f27; --ink: #e6e9ef; --muted: #9aa4b5; --line: #2c3340;
+    --accent: #7ea2ff; --accent-ink: #0d1220; --err: #ff8a80; --warn: #f2c14e; --ok: #7bd88f;
+    --chip: #222a38; --code: #232a35; --sel: #2a3a60;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151b; --panel: #1a1f27; --ink: #e6e9ef; --muted: #9aa4b5; --line: #2c3340;
+  --accent: #7ea2ff; --accent-ink: #0d1220; --err: #ff8a80; --warn: #f2c14e; --ok: #7bd88f;
+  --chip: #222a38; --code: #232a35; --sel: #2a3a60;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+a { color: var(--accent); }
+header.top { position: sticky; top: 0; z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+header.top h1 { font-size: 17px; margin: 0 auto 0 0; }
+header.top .status { font-size: 13px; color: var(--muted); }
+@media (max-width: 600px) { header.top { position: static; } }
+main { max-width: 1240px; margin: 0 auto; padding: 16px; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; }
+@media (max-width: 1000px) { main { grid-template-columns: minmax(0, 1fr); } aside { position: static !important; max-height: none !important; } }
+section.card, aside .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+section.card h2 { font-size: 16px; margin: 0 0 4px; }
+.help { color: var(--muted); font-size: 13px; margin: 0 0 10px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px 12px; }
+label.f { display: flex; flex-direction: column; gap: 3px; font-size: 13px; font-weight: 600; }
+label.f span.hint { font-weight: 400; color: var(--muted); font-size: 12px; }
+.lbl { font-size: 13px; font-weight: 600; margin: 8px 0 3px; }
+input, select, textarea { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; width: 100%; min-width: 0; }
+input[type=checkbox] { width: auto; }
+textarea { min-height: 64px; resize: vertical; }
+input:focus, select:focus, textarea:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; }
+button { font: inherit; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button.small { padding: 2px 8px; font-size: 13px; }
+button.danger { color: var(--err); }
+button.on { background: var(--sel); border-color: var(--accent); font-weight: 600; }
+.row { border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin: 8px 0; background: var(--bg); }
+.row .head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
+.kv { display: grid; grid-template-columns: 1fr 1fr auto; gap: 6px; margin: 4px 0; }
+.cols4 { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr auto; gap: 6px; margin: 4px 0; }
+.cols3 { display: grid; grid-template-columns: 1.4fr 1fr 1.2fr auto; gap: 6px; margin: 4px 0; }
+@media (max-width: 600px) { .kv, .cols4, .cols3 { grid-template-columns: 1fr; } }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { background: var(--chip); border-radius: 999px; padding: 2px 10px; font-size: 12px; display: inline-flex; gap: 6px; align-items: center; }
+.chip button { border: 0; background: none; padding: 0; color: var(--muted); }
+.scale { display: flex; flex-wrap: wrap; gap: 4px; }
+.scale button { min-width: 34px; padding: 4px 6px; }
+.picker { position: relative; }
+.picker .menu { position: absolute; z-index: 4; left: 0; right: 0; max-height: 260px; overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; margin-top: 2px; }
+.picker .menu div { padding: 5px 8px; font-size: 13px; cursor: pointer; }
+.picker .menu div:hover, .picker .menu div.act { background: var(--sel); }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; border-bottom: 1px solid var(--line); padding: 4px 6px; vertical-align: top; overflow-wrap: anywhere; }
+th { color: var(--muted); font-weight: 600; }
+aside { position: sticky; top: 64px; align-self: start; max-height: calc(100vh - 80px); overflow: auto; }
+aside h3 { font-size: 14px; margin: 0 0 6px; }
+.issues li { margin: 3px 0; font-size: 13px; }
+.issues .error { color: var(--err); } .issues .warning { color: var(--warn); } .issues .info { color: var(--muted); }
+.ok { color: var(--ok); } .muted { color: var(--muted); }
+.st-available { color: var(--ok); } .st-unavailable { color: var(--err); } .st-adapted, .st-unknown { color: var(--warn); }
+details summary { cursor: pointer; font-weight: 600; font-size: 13px; margin: 6px 0; }
+.btnbar { display: flex; flex-wrap: wrap; gap: 8px; }
+.enc { font-size: 13px; border-bottom: 1px solid var(--line); padding: 6px 0; }
+.enc b { display: block; }
+.std { font-size: 13px; padding: 6px 8px; border-left: 3px solid var(--accent); background: var(--bg); margin: 6px 0; }
+#print-view { display: none; }
+@media print {
+  header.top, main { display: none !important; }
+  #print-view { display: block; color: #000; font-size: 11pt; }
+  #print-view h1 { font-size: 16pt; } #print-view h2 { font-size: 12.5pt; margin-top: 14pt; border-bottom: 1px solid #999; }
+  #print-view table { font-size: 9.5pt; } #print-view th, #print-view td { border-bottom: 1px solid #ccc; }
+  .sign { margin-top: 18pt; display: grid; grid-template-columns: 1fr 1fr; gap: 18pt; }
+  .sign div { border-top: 1px solid #000; padding-top: 4pt; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Scenario Builder <span class="muted" style="font-weight:400;font-size:13px">MedSim Eval</span></h1>
+  <span class="status" id="savestate"></span>
+  <button id="btn-check">Case check</button>
+  <button class="primary" id="btn-export">Download files</button>
+</header>
+<main>
+  <div id="form"></div>
+  <aside id="side"></aside>
+</main>
+<div id="print-view"></div>
+<input type="file" id="file-import" accept=".json,application/json" multiple hidden>
+
+<script id="library" type="application/json">__LIBRARY__</script>
+<script>
+"use strict";
+const LIB = JSON.parse(document.getElementById("library").textContent);
+const STORE_KEY = "medsim-scenario-builder-v2";
+const ENVS = LIB.environments;
+const ENV = Object.fromEntries(ENVS.map(e => [e.env, e]));
+const HAB = Object.fromEntries(LIB.habitats.map(h => [h.profile_id, h]));
+const CREW = Object.fromEntries(LIB.crew.map(c => [c.crew_id, c]));
+const COND = Object.fromEntries(LIB.conditions.map(c => [c.cliff_id, c]));
+const SYM = Object.fromEntries(LIB.symptoms.map(s => [s.code, s]));
+const BASES = LIB.base_rubrics;
+const BASE = BASES[BASES.length - 1];
+const VAGUE = /\b(appropriate(ly)?|adequate(ly)?|proper(ly)?|reasonabl[ey]|sufficient(ly)?|good)\b/i;
+const OFFSET = /^T\+(?:(\d+(?:\.\d+)?)d)?(?:(\d+(?:\.\d+)?)h)?(?:(\d+(?:\.\d+)?)m)?(?:(\d+(?:\.\d+)?)s)?$/i;
+const DURATION = /^(?:(\d+(?:\.\d+)?)d)?(?:(\d+(?:\.\d+)?)h)?(?:(\d+(?:\.\d+)?)m)?(?:(\d+(?:\.\d+)?)s)?$/i;
+const ALL_ENVS = ["T1", "T2", "T3", "T4", "T5"];
+const QUALITY = ["Reliable historian", "Generally reliable; minor omissions", "Partially reliable", "Poor historian", "Unreliable historian"];
+const PROBLEM_LABELS = { vague: "imprecise", wrong_terms: "incorrect terminology", missing_details: "omits details", misread_numbers: "misreports values", contradictory: "inconsistent history", panicked: "acutely distressed" };
+const TRAINING = { physician: "Physician", cmo: "Non-physician CMO", basic: "Crew (first aid / CPR)" };
+const BG = { military_test_pilot: "Military test pilot", military_aviator: "Military aviator", military_other: "Military", physician: "Physician", scientist: "Scientist", engineer: "Engineer" };
+
+// ---------- state ----------
+function blank() {
+  return {
+    scenario: {
+      schema_version: LIB.schema_version, scenario_id: "MSE-", title: "", authors: [{ name: "", contact: "" }],
+      symptoms: [], environments: [...ALL_ENVS],
+      patients: [{ crew_id: "", condition: "", chart: emptyChart(), timeline: [], time_critical: [], complications: [],
+        ground_truth: { diagnosis: "", etiology: "", differential: [], must_not_miss: [], synonyms: {} } }],
+      speaker: { crew_id: "", role: "patient", opening: "", emergent: false, input_quality: 1, input_problems: [],
+        familiarity: { medicine: null, equipment: null, assistant: null }, behaviour: "", additional_history: [] },
+      injects: [], complicators: "", rubric: "", duration: "3d",
+      review: { status: "draft", reviewers: [], physiology_review: "not_needed", notes_for_physiologist: "", notes: "" }, tags: []
+    },
+    rubric: { schema_version: LIB.schema_version, rubric_id: "", scenario_id: "", base: BASE.ref, gates: [], items: [], must_not_miss_tested: true, notes: "" },
+    ui: { envsTouched: false, showInjects: false, encQuery: "", habEnv: "" }
+  };
+}
+function blankComplication(id) {
+  return { id, name: "", condition: "", trigger: "untreated", action: { kind: "treatment", refs: [], text: "" }, by: "", after: "", at: "",
+    chance: 1, worst_course_only: false, findings: [], recognise_within: "" };
+}
+// Fill fields a saved draft or an imported file may lack.
+function normalise(st) {
+  for (const p of st.scenario.patients) p.complications = (p.complications || []).map(x => merge(blankComplication(x.id), x));
+  return st;
+}
+function emptyChart() { return { past_medical: [], past_surgical: [], medications: [], allergies: [], nkda: false, family_history: [], social_history: "", immunizations: [] }; }
+let S = normalise(load() || blank());
+const P = () => S.scenario.patients[0];
+
+function load() {
+  try { const raw = localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+}
+let saveTimer = null;
+function save() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); setSaveState("Draft saved in this browser"); }
+    catch (e) { setSaveState("Not saved in the browser: download your files to keep them"); }
+  }, 300);
+}
+function setSaveState(t) { document.getElementById("savestate").textContent = t; }
+function changed() { save(); refreshSide(); }
+
+// ---------- lookups ----------
+const cond = () => COND[P().condition];
+const habsFor = env => (ENV[env] ? ENV[env].habitats : []).map(h => HAB[h]).filter(Boolean);
+function kitItems() {
+  // Every kit item in the scenario's environments, with the environments it is aboard in.
+  const out = {};
+  for (const env of S.scenario.environments) for (const h of habsFor(env)) for (const i of [...h.formulary, ...h.equipment]) {
+    if (!(i.qty > 0)) continue;
+    (out[i.id] ||= { id: i.id, name: i.name, category: i.category, envs: new Set() }).envs.add(env);
+  }
+  return Object.values(out).sort((a, b) => a.name.localeCompare(b.name));
+}
+function secs(m) { if (!m) return null; const u = [86400, 3600, 60, 1]; return m.slice(1, 5).reduce((a, v, i) => a + (v ? parseFloat(v) * u[i] : 0), 0); }
+function offsetSecs(t) { const s = (t || "").replace(/\s+/g, ""); if (/^T\+0$/i.test(s)) return 0; const m = s.match(OFFSET); return m && m.slice(1).some(Boolean) ? secs(m) : null; }
+function durationSecs(t) { const s = (t || "").replace(/\s+/g, ""); if (s === "0") return 0; const m = s.match(DURATION); return m && m.slice(1).some(Boolean) ? secs(m) : null; }
+const clone = o => JSON.parse(JSON.stringify(o));
+
+// ---------- DOM helpers ----------
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k === "class") el.className = v;
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const k of kids.flat()) if (k != null && k !== false) el.append(k.nodeType ? k : document.createTextNode(String(k)));
+  return el;
+}
+function field(label, input, hint) { return h("label", { class: "f" }, label, input, hint ? h("span", { class: "hint" }, hint) : null); }
+function text(obj, key, attrs = {}) {
+  return h("input", { type: "text", value: obj[key] ?? "", ...attrs, oninput: e => { obj[key] = e.target.value; changed(); } });
+}
+function num(obj, key, attrs = {}) {
+  return h("input", { type: "number", value: obj[key] ?? "", ...attrs, oninput: e => { obj[key] = e.target.value === "" ? null : Number(e.target.value); changed(); } });
+}
+function area(obj, key, attrs = {}) {
+  const el = h("textarea", { ...attrs, oninput: e => { obj[key] = e.target.value; changed(); } }); el.value = obj[key] ?? ""; return el;
+}
+function sel(obj, key, options, { rerender = false, placeholder = null, groups = null, onchange = null } = {}) {
+  const el = h("select", { onchange: e => { obj[key] = e.target.value; if (onchange) onchange(e.target.value); changed(); if (rerender) render(); } });
+  if (placeholder != null) el.append(h("option", { value: "" }, placeholder));
+  const add = (parent, [v, label]) => parent.append(h("option", { value: v, selected: String(obj[key] ?? "") === String(v) }, label));
+  if (groups) for (const [g, opts] of groups) { const og = h("optgroup", { label: g }); opts.forEach(o => add(og, o)); el.append(og); }
+  else options.forEach(o => add(el, o));
+  return el;
+}
+function check(obj, key, label, { rerender = false } = {}) {
+  return h("label", { style: "display:flex;gap:8px;align-items:center;font-size:13px" },
+    h("input", { type: "checkbox", checked: !!obj[key], onchange: e => { obj[key] = e.target.checked; changed(); if (rerender) render(); } }), label);
+}
+function scale(values, current, onpick, labels = null) {
+  return h("div", { class: "scale" }, ...values.map((v, i) => h("button", { type: "button", class: v === current ? "on" : "", title: labels ? labels[i] : null,
+    onclick: () => { onpick(v); changed(); render(); } }, String(v))));
+}
+// A list of short strings, edited one per row.
+function strList(arr, placeholder) {
+  const wrap = h("div");
+  const draw = () => {
+    wrap.replaceChildren(...arr.map((v, i) => h("div", { class: "kv", style: "grid-template-columns:1fr auto" },
+      h("input", { type: "text", value: v, placeholder, oninput: e => { arr[i] = e.target.value; changed(); } }),
+      h("button", { class: "small danger", type: "button", onclick: () => { arr.splice(i, 1); changed(); draw(); } }, "×"))),
+      h("button", { class: "small", type: "button", onclick: () => { arr.push(""); draw(); } }, "+ Add"));
+  };
+  draw();
+  return wrap;
+}
+// Search-and-pick from a list; picked values show as chips.
+function picker(values, options, { placeholder = "Search…", label = o => o.label, onchange = null } = {}) {
+  const wrap = h("div", { class: "picker" });
+  const chips = h("div", { class: "chips", style: "margin-top:6px" });
+  const menu = h("div", { class: "menu", hidden: true });
+  const input = h("input", { type: "search", placeholder });
+  const byVal = Object.fromEntries(options.map(o => [o.value, o]));
+  const drawChips = () => chips.replaceChildren(...values.map((v, i) => h("span", { class: "chip" }, byVal[v] ? label(byVal[v]) : v,
+    h("button", { type: "button", title: "Remove", onclick: () => { values.splice(i, 1); drawChips(); changed(); if (onchange) onchange(); } }, "×"))));
+  const drawMenu = () => {
+    const q = input.value.toLowerCase().trim();
+    if (!q) { menu.hidden = true; return; }
+    const hits = options.filter(o => !values.includes(o.value) && (o.search || label(o)).toLowerCase().includes(q)).slice(0, 40);
+    menu.replaceChildren(...hits.map(o => h("div", { onmousedown: e => { e.preventDefault(); values.push(o.value); input.value = ""; menu.hidden = true; drawChips(); changed(); if (onchange) onchange(); } }, label(o))));
+    menu.hidden = !hits.length;
+  };
+  input.addEventListener("input", drawMenu);
+  input.addEventListener("blur", () => setTimeout(() => { menu.hidden = true; }, 150));
+  drawChips();
+  wrap.append(input, menu, chips);
+  return wrap;
+}
+function card(title, help, ...body) { return h("section", { class: "card" }, h("h2", {}, title), help ? h("p", { class: "help" }, help) : null, ...body); }
+function rowBox(title, onRemove, ...body) {
+  return h("div", { class: "row" }, h("div", { class: "head" }, title, onRemove ? h("button", { class: "small danger", type: "button", onclick: onRemove }, "Remove") : null), ...body);
+}
+function timeInput(obj, key, ph = "T+2h") { return text(obj, key, { placeholder: ph, style: "max-width:120px" }); }
+function crewLabel(c) { return `${c.name} (${c.crew_id}) · ${c.sex}, ${c.age} · ${BG[c.background]} · ${TRAINING[c.medical_training.level]}`; }
+
+// ---------- sections ----------
+function render() {
+  const sc = S.scenario;
+  document.getElementById("form").replaceChildren(
+    renderAbout(), renderCondition(), renderWhere(), renderPatient(), renderConversation(),
+    renderTimeline(), renderTimeCritical(), renderComplications(), renderAnswer(), renderRubric(),
+    card("11. Complicating factors", "Confounders and constraints, e.g. atypical presentation, limited stock, competing crew duties.",
+      area(sc, "complicators", { rows: 3 })),
+    renderAdvanced(), renderReview());
+  refreshSide();
+}
+
+function renderAbout() {
+  const sc = S.scenario;
+  const authors = sc.authors.map((a, i) => h("div", { class: "kv" },
+    h("input", { type: "text", value: a.name, placeholder: "Full name", oninput: e => { a.name = e.target.value; changed(); } }),
+    h("input", { type: "text", value: a.contact, placeholder: "Email or phone", oninput: e => { a.contact = e.target.value; changed(); } }),
+    h("button", { class: "small danger", type: "button", onclick: () => { sc.authors.splice(i, 1); changed(); render(); } }, "×")));
+  const symptoms = LIB.symptoms.map(s => ({ value: s.code, label: `${s.code} ${s.name}`, search: `${s.code} ${s.name} ${s.group}` }));
+  return card("1. Case information", "Case ID is assigned by the coordinator.",
+    h("div", { class: "grid" },
+      field("Case ID", text(sc, "scenario_id", { placeholder: "MSE-0123" })),
+      field("Chief complaint", text(sc, "title", { placeholder: "e.g. Abdominal pain, 10 hours" }), "Brief, in clinical terms; used as the case title")),
+    h("div", { class: "lbl" }, "Case authors"), ...authors,
+    h("button", { class: "small", type: "button", onclick: () => { sc.authors.push({ name: "", contact: "" }); render(); } }, "+ Add author"),
+    h("div", { class: "lbl" }, "Presenting symptoms (ICD-10-CM)"),
+    h("p", { class: "help" }, "Search by term or code: R00–R69, with selected musculoskeletal, eye and ear codes."),
+    picker(sc.symptoms, symptoms, { placeholder: "e.g. abdominal pain, nausea, R10.31" }));
+}
+
+function renderCondition() {
+  const p = P(), c = cond();
+  const groups = {};
+  for (const x of LIB.conditions) (groups[x.category] ||= []).push([x.cliff_id, `${x.name} (${x.icl})`]);
+  const body = [field("Condition", sel(p, "condition", [], { rerender: true, placeholder: "Select condition…",
+    groups: Object.entries(groups).sort(), onchange: onCondition }))];
+  if (c) {
+    const co = c.course || {};
+    const r = (v, unit) => v ? (v[0] === v[1] ? `${v[0]}${unit}` : `${v[0]}–${v[1]}${unit}`) : "—";
+    const row = (label, x) => x ? h("tr", {}, h("td", {}, label), h("td", {}, r(x.probability_pct, "%")),
+      h("td", {}, r(x.cp2_hours, " h")), h("td", {}, r(x.rtdc_pct, "%")), h("td", {}, r(x.locl_pct, "%"))) : null;
+    body.push(
+      c.summary ? h("p", { class: "help", style: "margin-top:8px" }, c.summary) : null,
+      h("p", { class: "help" }, `${c.icl} · ${c.category} · `, h("a", { href: c.cliff.url, target: "_blank", rel: "noopener" }, "CLiFF (2023)")),
+      h("table", {}, h("thead", {}, h("tr", {}, ...["Clinical course (CLiFF Table 4)", "Probability", "Treatment duration", "RTDC", "Mortality (LOCL)"].map(x => h("th", {}, x)))),
+        h("tbody", {}, row("Treated, best case", co.treated_best), row("Treated, worst case", co.treated_worst), row("Untreated, best case", co.untreated_best), row("Untreated, worst case", co.untreated_worst))),
+      h("p", { class: "help" }, "Each case is run under both best- and worst-case courses, plus runs at CLiFF probabilities. RTDC: removal to definitive care. Values extracted automatically; pending physiology review."));
+  }
+  return card("2. Condition", "NASA Integrated Medical Model condition list (2023 CLiFFs).", ...body);
+}
+function onCondition() {
+  const c = cond(), p = P();
+  if (c && !S.ui.envsTouched && c.applicability) S.scenario.environments = [...c.applicability.envs];
+  if (c) p.ground_truth.diagnosis = c.name;
+}
+
+function renderWhere() {
+  const sc = S.scenario, c = cond(), app = c && c.applicability;
+  const boxes = ALL_ENVS.map(env => h("label", { style: "display:flex;gap:8px;align-items:center;font-size:14px;margin:3px 0" },
+    h("input", { type: "checkbox", checked: sc.environments.includes(env), onchange: e => {
+      S.ui.envsTouched = true;
+      sc.environments = e.target.checked ? ALL_ENVS.filter(x => x === env || sc.environments.includes(x)) : sc.environments.filter(x => x !== env);
+      changed(); render(); } }),
+    `${env} · ${ENV[env].name}`, app && !app.envs.includes(env) ? h("span", { class: "muted" }, " (outside CLiFF incidence)") : null,
+    !ENV[env].default_run ? h("span", { class: "chip" }, "not in default batch") : null));
+  return card("3. Mission environment", "Select each environment in which this presentation is plausible. Each selected environment is run in its best- and worst-case course, with its own medical kit, gravity and communication delay.",
+    ...boxes,
+    app ? h("p", { class: "help", style: "margin-top:6px" }, `CLiFF incidence segment: ${app.segment || "All"}${app.timing === "early_flight" ? "; onset in the first days of flight" : app.timing === "surface_arrival" ? "; onset on arrival at a planetary surface" : ""}${app.eva ? "; EVA-related" : ""}${app.sex !== "any" ? `; ${app.sex === "F" ? "female" : "male"} crewmembers only` : ""}. Pre-filled from the CLiFF.`) : null);
+}
+
+function renderPatient() {
+  const p = P(), twin = CREW[p.crew_id], ch = p.chart;
+  const body = [field("Patient", sel(p, "crew_id", LIB.crew.map(c => [c.crew_id, crewLabel(c)]), { rerender: true, placeholder: "Select crewmember…", onchange: onPatient }))];
+  if (twin) {
+    const b = twin.baseline;
+    body.push(h("p", { class: "help", style: "margin-top:6px" },
+      `${twin.occupation}; ${twin.flights} flight(s), ${twin.days_in_space} days in space. Ht ${twin.height_cm} cm, Wt ${twin.weight_kg} kg. `,
+      `Baseline: HR ${b.hr}, BP ${b.sbp}/${b.dbp}, RR ${b.rr}, SpO₂ ${b.spo2}%, T ${b.temp_c} °C, Hb ${b.hgb_g_dl} g/dL, WBC ${b.wbc_10e9_l} ×10⁹/L, glucose ${b.glucose_mmol_l} mmol/L. `,
+      "Synthetic record."),
+      h("p", { class: "help" }, "History loaded from the crew record; edit for this case as needed.",
+        h("button", { class: "small", type: "button", style: "margin-left:8px", onclick: () => { p.chart = clone(twin.chart); changed(); render(); } }, "Reset to crew record")),
+      h("div", { class: "lbl" }, "Past medical history"), strList(ch.past_medical, "e.g. seasonal allergic rhinitis"),
+      h("div", { class: "lbl" }, "Past surgical history"), strList(ch.past_surgical, "e.g. laparoscopic appendectomy (2010)"),
+      h("div", { class: "lbl" }, "Medications"), medsEditor(ch),
+      h("div", { class: "lbl" }, "Allergies"), check(ch, "nkda", "NKDA", { rerender: true }), allergyEditor(ch),
+      h("div", { class: "grid", style: "margin-top:8px" }, field("Social history", text(ch, "social_history"))),
+      h("details", {}, h("summary", {}, `Family history (optional, ${ch.family_history.length})`), strList(ch.family_history, "e.g. father: MI at 64")),
+      h("details", {}, h("summary", {}, `Immunizations (${ch.immunizations.length})`), strList(ch.immunizations, "e.g. Tdap 2023")));
+  }
+  return card("4. Patient history", "Select the patient from the crew roster.", ...body);
+}
+function onPatient() {
+  const p = P(), twin = CREW[p.crew_id];
+  if (twin) p.chart = clone(twin.chart);
+  if (S.scenario.speaker.role === "patient") S.scenario.speaker.crew_id = p.crew_id;
+  else if (S.scenario.speaker.crew_id === p.crew_id) S.scenario.speaker.crew_id = suggestSpeaker(S.scenario.speaker.role);
+}
+function medsEditor(ch) {
+  const wrap = h("div");
+  const draw = () => wrap.replaceChildren(...ch.medications.map((m, i) => h("div", { class: "cols4" },
+      ...[["name", "Drug"], ["form", "Route / form"], ["dose", "Dose"], ["frequency", "Frequency"]].map(([k, ph]) =>
+        h("input", { type: "text", value: m[k] || "", placeholder: ph, oninput: e => { m[k] = e.target.value; changed(); } })),
+      h("button", { class: "small danger", type: "button", onclick: () => { ch.medications.splice(i, 1); changed(); draw(); } }, "×"))),
+    h("button", { class: "small", type: "button", onclick: () => { ch.medications.push({ name: "", form: "", dose: "", frequency: "" }); draw(); } }, "+ Add medication"));
+  draw();
+  return wrap;
+}
+function allergyEditor(ch) {
+  const wrap = h("div");
+  const draw = () => wrap.replaceChildren(...ch.allergies.map((a, i) => h("div", { class: "cols3" },
+      h("input", { type: "text", value: a.agent, placeholder: "Allergen", oninput: e => { a.agent = e.target.value; changed(); } }),
+      (() => { const s = h("select", { onchange: e => { a.kind = e.target.value; changed(); } }, ...["drug", "food", "environmental", "other"].map(k => h("option", { value: k, selected: a.kind === k }, k))); return s; })(),
+      h("input", { type: "text", value: a.reaction || "", placeholder: "Reaction", oninput: e => { a.reaction = e.target.value; changed(); } }),
+      h("button", { class: "small danger", type: "button", onclick: () => { ch.allergies.splice(i, 1); changed(); draw(); } }, "×"))),
+    h("button", { class: "small", type: "button", onclick: () => { ch.allergies.push({ agent: "", kind: "drug", reaction: "" }); draw(); } }, "+ Add allergy"));
+  draw();
+  return wrap;
+}
+
+function suggestSpeaker(role) {
+  const patient = P().crew_id;
+  const want = role === "cmo" ? c => c.medical_role === "cmo" || c.medical_training.level !== "basic" : c => c.medical_training.level === "basic";
+  const pick = LIB.crew.find(c => c.crew_id !== patient && want(c)) || LIB.crew.find(c => c.crew_id !== patient);
+  return pick ? pick.crew_id : "";
+}
+function renderConversation() {
+  const sp = S.scenario.speaker, patient = P().crew_id;
+  const pool = LIB.crew.filter(c => c.crew_id !== patient && (sp.role !== "cmo" || c.medical_training.level !== "basic"));
+  const twin = CREW[sp.crew_id];
+  const fam = (k, label) => h("div", { style: "margin:4px 0" }, h("div", { class: "lbl" }, label,
+      h("span", { class: "muted", style: "font-weight:400" }, twin ? `  (record: ${twin.familiarity[k]})` : "")),
+    scale([1, 2, 3, 4, 5], sp.familiarity[k] ?? (twin ? twin.familiarity[k] : null), v => { sp.familiarity[k] = twin && v === twin.familiarity[k] ? null : v; }, ["none", "a little", "some", "good", "expert"]));
+  const hist = sp.additional_history.map((x, i) => h("div", { class: "kv" },
+    h("input", { type: "text", value: x.if_asked, placeholder: "Topic, e.g. migration of pain", oninput: e => { x.if_asked = e.target.value; changed(); } }),
+    h("input", { type: "text", value: x.says, placeholder: "Response, e.g. started at the umbilicus, now right lower", oninput: e => { x.says = e.target.value; changed(); } }),
+    h("button", { class: "small danger", type: "button", onclick: () => { sp.additional_history.splice(i, 1); changed(); render(); } }, "×")));
+  return card("5. Presentation", "The presenting crewmember is portrayed as a standardized patient from their crew record. Fields depend on who presents.",
+    field("Presenting party", sel(sp, "role", [["patient", "Patient (self-report)"], ["cmo", "Crew medical officer (CMO)"], ["crew", "Crewmember (bystander)"]],
+      { rerender: true, onchange: role => { sp.crew_id = role === "patient" ? patient : suggestSpeaker(role); sp.familiarity = { medicine: null, equipment: null, assistant: null }; } })),
+    sp.role !== "patient" ? field("Presenting crewmember", sel(sp, "crew_id", pool.map(c => [c.crew_id, crewLabel(c)]), { rerender: true, placeholder: "Select…",
+      onchange: () => { sp.familiarity = { medicine: null, equipment: null, assistant: null }; } })) : null,
+    twin ? h("p", { class: "help", style: "margin-top:6px" }, `${twin.name}. Medical training: ${TRAINING[twin.medical_training.level]}${twin.medical_training.hours ? `, ~${twin.medical_training.hours} h` : ""}. Communication: ${twin.communication_style}`) : null,
+    field(sp.role === "patient" ? "Chief complaint (patient's words)" : "Opening statement", area(sp, "opening", { rows: 3,
+      placeholder: sp.role === "patient" ? "e.g. My stomach has been hurting since last night…" : "e.g. Kenji has had abdominal pain since last night and isn't eating. What should I check?" })),
+    h("div", { class: "grid", style: "margin-top:8px" },
+      h("div", {}, check(sp, "emergent", "Emergent presentation (affects behaviour only)"))),
+    h("div", { class: "lbl" }, "Familiarity (1 = none, 5 = expert)"),
+    fam("medicine", "Medical knowledge"), fam("equipment", "Onboard medical equipment"), fam("assistant", "Clinical decision-support tools"),
+    h("div", { class: "lbl" }, "Historian reliability"),
+    scale([1, 2, 3, 4, 5], sp.input_quality, v => { sp.input_quality = v; if (v === 1) sp.input_problems = []; }, QUALITY),
+    h("p", { class: "help" }, `${sp.input_quality}: ${QUALITY[sp.input_quality - 1]}`),
+    sp.input_quality > 1 ? h("div", { class: "chips" }, ...Object.entries(LIB.input_problems).map(([k, d]) => h("label", { class: "chip", title: d },
+      h("input", { type: "checkbox", checked: sp.input_problems.includes(k), onchange: e => { sp.input_problems = e.target.checked ? [...sp.input_problems, k] : sp.input_problems.filter(x => x !== k); changed(); } }),
+      PROBLEM_LABELS[k] || k.replaceAll("_", " ")))) : null,
+    field("Affect and behaviour (optional)", area(sp, "behaviour", { rows: 2, placeholder: "e.g. minimizes pain; attributes it to food" })),
+    h("div", { class: "lbl" }, "History on direct questioning only"),
+    h("p", { class: "help" }, "Information given only when specifically asked."),
+    ...hist, h("button", { class: "small", type: "button", onclick: () => { sp.additional_history.push({ if_asked: "", says: "" }); render(); } }, "+ Add item"));
+}
+
+function renderTimeline() {
+  const p = P();
+  const rows = p.timeline.map((e, i) => entryRow(p.timeline, i, { applies: true }));
+  return card("6. Medical timeline / course of illness (optional)", "Timed symptoms, exam findings and vital signs. Otherwise the course follows the CLiFF; enter only events that must occur at a fixed time.",
+    ...rows, h("button", { type: "button", onclick: () => { p.timeline.push({ t: "", kind: "symptom", when: "always", text: "", state: {} }); changed(); render(); } }, "+ Add entry"));
+}
+function entryRow(list, i, { applies = false, timeLabel = "Time", timeHint = "From presentation: T+0, T+30m, T+6h, T+1d6h", title = e => `At ${e.t || "…"}` } = {}) {
+  const e = list[i];
+  return rowBox(title(e), () => { list.splice(i, 1); changed(); render(); },
+    h("div", { class: "grid" },
+      field(timeLabel, timeInput(e, "t"), timeHint),
+      field("Entry", sel(e, "kind", [["symptom", "Symptom"], ["finding", "Exam finding"], ["keyframe", "Vital signs / labs"], ["note", "Note"]], { rerender: true })),
+      applies ? field("Applies", sel(e, "when", [["always", "Always"], ["untreated", "If untreated by this time"], ["treated", "If treated by this time"]])) : null),
+    e.kind === "keyframe" ? stateEditor(e) : field("Description", text(e, "text")));
+}
+function stateEditor(e) {
+  const wrap = h("div");
+  const rows = Object.entries(e.state || {});
+  const commit = () => { e.state = Object.fromEntries(rows.filter(r => r[0]).map(([k, v]) => [k, coerce(v)])); changed(); };
+  const draw = () => wrap.replaceChildren(...rows.map((r, i) => h("div", { class: "kv" },
+      h("select", { onchange: ev => { r[0] = ev.target.value; commit(); } }, h("option", { value: "" }, "Select…"),
+        ...Object.entries(LIB.state_vars).map(([k, d]) => h("option", { value: k, selected: r[0] === k }, `${k} (${d})`))),
+      h("input", { type: "text", value: r[1] ?? "", placeholder: "value", oninput: ev => { r[1] = ev.target.value; commit(); } }),
+      h("button", { class: "small danger", type: "button", onclick: () => { rows.splice(i, 1); commit(); draw(); } }, "×"))),
+    h("button", { class: "small", type: "button", onclick: () => { rows.push(["", ""]); draw(); } }, "+ Add value"));
+  draw();
+  return wrap;
+}
+function coerce(v) { const t = String(v).trim(); if (t === "true") return true; if (t === "false") return false; if (t !== "" && !isNaN(Number(t))) return Number(t); return t; }
+
+function renderTimeCritical() {
+  const p = P(), items = kitItems();
+  const opts = items.map(i => ({ value: i.id, label: i.name.toLowerCase(), search: i.name, envs: i.envs }));
+  const rows = p.time_critical.map((tc, i) => rowBox(`Intervention ${i + 1}`, () => { p.time_critical.splice(i, 1); changed(); render(); },
+    field("Intervention", text(tc.action, "text", { placeholder: "e.g. antibiotics with enteric gram-negative and anaerobic coverage" })),
+    h("div", { class: "lbl" }, "Qualifying kit items (any one)"),
+    picker(tc.action.refs, opts, { placeholder: "Search formulary and equipment…", label: o => `${o.label} (${[...o.envs].join(", ")})` }),
+    h("div", { class: "grid", style: "margin-top:6px" }, field("Deadline", timeInput(tc, "by", "T+8h")))));
+  return card("7. Time-critical intervention (optional)", "Timely intervention shifts the course toward the best case; delay or omission shifts it toward the worst case.",
+    ...rows, h("button", { type: "button", onclick: () => { p.time_critical.push({ action: { kind: "treatment", refs: [], text: "" }, by: "" }); changed(); render(); } }, "+ Add intervention"));
+}
+
+const TRIGGERS = [["untreated", "If not treated by a deadline"], ["action", "After a specific action"], ["chance", "At a set time, in a share of runs"]];
+function renderComplications() {
+  const p = P();
+  const opts = kitItems().map(i => ({ value: i.id, label: i.name.toLowerCase(), search: i.name, envs: i.envs }));
+  const nextId = () => { let n = 1; while (p.complications.some(x => x.id === `X${n}`)) n++; return `X${n}`; };
+  const rows = p.complications.map((x, i) => rowBox(`${x.id}${x.name ? ` · ${x.name}` : ""}`, () => { p.complications.splice(i, 1); changed(); render(); },
+    h("div", { class: "grid" },
+      field("Complication", text(x, "name", { placeholder: "e.g. Perforation with peritonitis" })),
+      field("IMM condition (optional)", sel(x, "condition", LIB.conditions.map(c => [c.cliff_id, c.name]), { placeholder: "None: enter findings below" }), "If linked, its CLiFF course is used")),
+    field("Occurs", sel(x, "trigger", TRIGGERS, { rerender: true })),
+    ...triggerFields(x, opts),
+    h("div", { class: "grid", style: "margin-top:6px" },
+      field("Share of runs (%)", h("input", { type: "number", min: 1, max: 100, step: 1, value: Math.round((x.chance ?? 1) * 100),
+        oninput: e => { const v = Number(e.target.value); x.chance = v > 0 ? Math.min(v, 100) / 100 : 1; changed(); } })),
+      field("Recognised within (optional)", text(x, "recognise_within", { placeholder: "2h" }), "From onset; for standard item SCR"),
+      h("div", {}, check(x, "worst_course_only", "Worst-course runs only"))),
+    h("div", { class: "lbl" }, "Findings from onset"),
+    ...x.findings.map((e, j) => entryRow(x.findings, j, { timeLabel: "From onset", timeHint: "T+0 is onset", title: e => `Onset ${e.t || "…"}` })),
+    h("button", { class: "small", type: "button", onclick: () => { x.findings.push({ t: "T+0", kind: "finding", text: "", state: {} }); changed(); render(); } }, "+ Add finding")));
+  return card("8. Complication events (optional)", "Clinical complications the simulation can introduce, e.g. perforation if antibiotics are late, or an allergic reaction if a penicillin is given. Each one that occurs is scored by standard items SCR (recognition) and SCM (revised plan or escalation), plus any checklist items tied to it.",
+    ...rows, h("button", { type: "button", onclick: () => { p.complications.push(blankComplication(nextId())); changed(); render(); } }, "+ Add complication"));
+}
+function triggerFields(x, opts) {
+  const kit = () => [h("div", { class: "lbl" }, "Qualifying kit items (any one)"),
+    picker(x.action.refs, opts, { placeholder: "Search formulary and equipment…", label: o => `${o.label} (${[...o.envs].join(", ")})` })];
+  if (x.trigger === "untreated") return [field("Preventing intervention", text(x.action, "text", { placeholder: "e.g. antibiotics with enteric coverage" })), ...kit(),
+    h("div", { class: "grid", style: "margin-top:6px" }, field("Deadline", timeInput(x, "by", "T+36h"), "Occurs at this time unless the intervention was given"))];
+  if (x.trigger === "action") return [field("Triggering action", text(x.action, "text", { placeholder: "e.g. any penicillin" })), ...kit(),
+    h("div", { class: "grid", style: "margin-top:6px" }, field("Onset after", text(x, "after", { placeholder: "30m" }), "Time from the action; empty: at once"))];
+  return [h("div", { class: "grid" }, field("Onset", timeInput(x, "at", "T+12h")))];
+}
+
+function renderAnswer() {
+  const g = P().ground_truth, c = cond();
+  const diff = h("div");
+  const drawDiff = () => diff.replaceChildren(...g.differential.map((d, i) => h("div", { class: "kv", style: "grid-template-columns:auto 1fr auto auto auto" },
+      h("span", { class: "muted" }, `${i + 1}.`),
+      h("input", { type: "text", value: d, oninput: e => { g.differential[i] = e.target.value; changed(); } }),
+      h("button", { class: "small", type: "button", title: "Move up", onclick: () => { if (i) { [g.differential[i - 1], g.differential[i]] = [g.differential[i], g.differential[i - 1]]; changed(); drawDiff(); } } }, "↑"),
+      h("button", { class: "small", type: "button", title: "Move down", onclick: () => { if (i < g.differential.length - 1) { [g.differential[i + 1], g.differential[i]] = [g.differential[i], g.differential[i + 1]]; changed(); drawDiff(); } } }, "↓"),
+      h("button", { class: "small danger", type: "button", onclick: () => { g.differential.splice(i, 1); changed(); drawDiff(); } }, "×"))),
+    h("button", { class: "small", type: "button", onclick: () => { g.differential.push(""); drawDiff(); } }, "+ Add"));
+  drawDiff();
+  const syn = Object.entries(g.synonyms || {}).map(([k, v]) => [k, v.join("; ")]);
+  const synWrap = h("div");
+  const commitSyn = () => { g.synonyms = Object.fromEntries(syn.filter(r => r[0]).map(([k, v]) => [k, String(v).split(";").map(x => x.trim()).filter(Boolean)])); changed(); };
+  const drawSyn = () => synWrap.replaceChildren(...syn.map((r, i) => h("div", { class: "kv" },
+      h("input", { type: "text", value: r[0], placeholder: "Diagnosis or etiology", oninput: e => { r[0] = e.target.value; commitSyn(); } }),
+      h("input", { type: "text", value: r[1], placeholder: "Accepted terms, separated by ;", oninput: e => { r[1] = e.target.value; commitSyn(); } }),
+      h("button", { class: "small danger", type: "button", onclick: () => { syn.splice(i, 1); commitSyn(); drawSyn(); } }, "×"))),
+    h("button", { class: "small", type: "button", onclick: () => { syn.push(["", ""]); drawSyn(); } }, "+ Add"));
+  drawSyn();
+  return card("9. Diagnosis and differential", "Full credit requires the diagnosis and its etiology; the diagnosis alone earns partial credit.",
+    h("div", { class: "grid" },
+      field("Diagnosis", text(g, "diagnosis", { placeholder: c ? c.name : "Select a condition first" }), "From the IMM condition; edit the wording if needed"),
+      field("Etiology", text(g, "etiology", { placeholder: "e.g. appendiceal luminal obstruction (appendicolith)" }))),
+    h("div", { class: "lbl" }, "Differential diagnosis (ranked)"), diff,
+    h("div", { class: "lbl" }, "Can't-miss diagnoses"), strList(g.must_not_miss, "e.g. perforated appendicitis"),
+    h("details", {}, h("summary", {}, "Accepted synonyms"), synWrap));
+}
+
+function renderRubric() {
+  const rb = S.rubric, b = BASE;
+  const domains = b.domains.map(d => [d.id, `${d.id} ${d.name}`]);
+  const nextId = prefix => { let n = 1; while (rb.items.some(x => x.id === `${prefix}${n}`) || rb.gates.some(x => x.id === `${prefix}${n}`)) n++; return `${prefix}${n}`; };
+  const equipment = kitItems().filter(i => i.category === "equipment").map(i => ({ value: i.id, label: i.name.toLowerCase(), envs: i.envs }));
+  const cxs = S.scenario.patients.flatMap(p => p.complications);
+  const items = rb.items.map((it, i) => {
+    const sign = it.weight < 0 ? -1 : 1, size = Math.abs(it.weight) || 3;
+    return rowBox(`${it.id}${it.weight < 0 ? " · error" : " · expected action"}${it.complication ? ` · if ${it.complication} occurs` : ""}${it.from_library ? " · from library" : ""}`, () => { rb.items.splice(i, 1); changed(); render(); },
+      field("Observable behaviour", text(it, "text", { placeholder: it.weight < 0 ? "e.g. Directs the crew to perform an appendectomy" : "e.g. Initiates antibiotics with enteric coverage" })),
+      h("div", { class: "lbl" }, "Weight"),
+      h("div", { class: "btnbar", style: "align-items:center" },
+        h("div", { class: "scale" }, h("button", { type: "button", class: sign > 0 ? "on" : "", onclick: () => { it.weight = size; changed(); render(); } }, "+ Expected"),
+          h("button", { type: "button", class: sign < 0 ? "on" : "", onclick: () => { it.weight = -size; it.type = "binary"; delete it.anchors; changed(); render(); } }, "− Error")),
+        scale([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], size, v => { it.weight = sign * v; })),
+      h("div", { class: "grid", style: "margin-top:6px" },
+        field("Scoring", sel(it, "type", sign > 0 ? [["binary", "Done / not done"], ["rating", "Rated 1–5"]] : [["binary", "Done / not done"]], { rerender: true })),
+        field(it.complication ? "Deadline from onset (optional)" : "Deadline (optional)", timeInput(it, "by", it.complication ? "T+2h" : "T+8h")),
+        field("Domain", sel(it, "domain", domains))),
+      cxs.length || it.complication ? field("Applies to", sel(it, "complication", [["", "Every run"], ...cxs.map(c => [c.id, `Only runs where ${c.id}${c.name ? ` (${c.name})` : ""} occurs`])], { rerender: true })) : null,
+      it.type === "rating" ? h("div", { class: "grid" }, ...["1", "3", "5"].map(k => field(`Anchor for ${k}`,
+        h("input", { type: "text", value: (it.anchors || {})[k] || "", oninput: e => { (it.anchors ||= {})[k] = e.target.value; changed(); } })))) : null,
+      h("details", {}, h("summary", {}, `Requires equipment (${(it.requires || []).length}); not applicable where it is absent`),
+        picker(it.requires ||= [], equipment, { placeholder: "Search equipment…", label: o => `${o.label} (${[...o.envs].join(", ")})` })));
+  });
+  const lib = h("div");
+  const libFilter = { q: "", domain: "" };
+  const drawLib = () => {
+    const q = libFilter.q.toLowerCase();
+    const hits = b.item_library.filter(x => (!libFilter.domain || x.domain === libFilter.domain) && (!q || x.text.toLowerCase().includes(q)));
+    lib.replaceChildren(...hits.map(x => h("div", { class: "kv", style: "grid-template-columns:1fr auto auto" },
+      h("span", { style: "font-size:13px" }, x.text), h("span", { class: "chip" }, `${x.domain} ${x.weight > 0 ? "+" : ""}${x.weight}`),
+      h("button", { class: "small", type: "button", disabled: rb.items.some(i => i.from_library === x.id), onclick: () => {
+        rb.items.push({ id: nextId(x.weight < 0 ? "N" : "I"), text: x.text, type: "binary", weight: x.weight, by: "", domain: x.domain, requires: [], from_library: x.id });
+        changed(); render(); } }, rb.items.some(i => i.from_library === x.id) ? "Added" : "Add"))));
+  };
+  drawLib();
+  const gates = rb.gates.map((g, i) => rowBox(g.id, () => { rb.gates.splice(i, 1); changed(); render(); }, field("Critical error", text(g, "text"))));
+  return card("10. Scoring checklist", `General rubric ${b.ref}: critical errors and 1–5 global ratings apply to every case. List case-specific actions that can be scored as done or not done from the transcript; quality of performance is covered by the global ratings.`,
+    h("div", { class: "lbl" }, "Standard items"),
+    ...(b.standard_items || []).map(s => h("div", { class: "std" }, h("b", {}, `${s.id} +${s.weight} (${s.domain}) `), s.text, s.depends_on ? h("span", { class: "muted" }, ` · only with ${s.depends_on}`) : null,
+      h("span", { class: "muted" }, s.scope === "complication" ? " · once for each complication that occurs" : " · every run"))),
+    h("details", {}, h("summary", {}, `Critical errors (${b.gates.length}) and global rating domains (${b.domains.length})`),
+      h("ul", {}, ...b.gates.map(g => h("li", {}, h("b", {}, g.id), " ", g.text))),
+      h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "Domain"), h("th", {}, "1"), h("th", {}, "3"), h("th", {}, "5"))),
+        h("tbody", {}, ...b.domains.map(d => h("tr", {}, h("td", {}, h("b", {}, `${d.id} ${d.name}`)), h("td", {}, d.anchors["1"]), h("td", {}, d.anchors["3"]), h("td", {}, d.anchors["5"])))))),
+    h("details", { open: !rb.items.length }, h("summary", {}, `Common checklist items (${b.item_library.length})`),
+      h("div", { class: "grid" },
+        h("input", { type: "search", placeholder: "Filter…", oninput: e => { libFilter.q = e.target.value; drawLib(); } }),
+        (() => { const s = h("select", { onchange: e => { libFilter.domain = e.target.value; drawLib(); } }, h("option", { value: "" }, "All domains"), ...domains.map(([v, l]) => h("option", { value: v }, l))); return s; })()),
+      lib),
+    h("div", { class: "lbl", style: "margin-top:10px" }, `Case-specific items (${rb.items.length})`),
+    ...items,
+    h("div", { class: "btnbar" },
+      h("button", { type: "button", onclick: () => { rb.items.push({ id: nextId("I"), text: "", type: "binary", weight: 3, by: "", domain: "D3", requires: [] }); changed(); render(); } }, "+ Expected action"),
+      h("button", { type: "button", onclick: () => { rb.items.push({ id: nextId("N"), text: "", type: "binary", weight: -5, by: "", domain: "D3", requires: [] }); changed(); render(); } }, "+ Error")),
+    h("details", { style: "margin-top:10px" }, h("summary", {}, `Case-specific critical errors (${rb.gates.length})`), ...gates,
+      h("button", { class: "small", type: "button", onclick: () => { rb.gates.push({ id: nextId("SG"), text: "" }); changed(); render(); } }, "+ Add critical error")),
+    h("div", { style: "margin-top:8px" }, check(rb, "must_not_miss_tested", "Score whether each can't-miss diagnosis was considered or excluded")));
+}
+
+function renderAdvanced() {
+  const sc = S.scenario;
+  const rows = sc.injects.map((e, i) => rowBox(`${(e.kind || "").replaceAll("_", " ")} at ${e.t || "…"}`, () => { sc.injects.splice(i, 1); changed(); render(); },
+    h("div", { class: "grid" },
+      field("Time", timeInput(e, "t", "T+4h")),
+      field("Inject", sel(e, "kind", LIB.enums.event_kinds.map(k => [k, k.replaceAll("_", " ")]))),
+      field("Duration", text(e, "duration", { placeholder: "10h" }), "Optional"),
+      field("Target (optional)", text(e, "target", { placeholder: "Crew ID or kit item" }))),
+    field("Description", text(e, "text"))));
+  return card("12. Simulation settings", null,
+    h("div", { class: "grid" }, field("Case duration", text(sc, "duration", { placeholder: "3d" }), "Simulated time, e.g. 3d or 36h")),
+    h("details", { open: S.ui.showInjects, ontoggle: e => { S.ui.showInjects = e.target.open; save(); } },
+      h("summary", {}, `Mission events (${sc.injects.length}) · later feature, not yet simulated`),
+      h("p", { class: "help" }, "Scripted mission events, as in launch-readiness simulations: space weather, dust storms, communication blackout, equipment failure. Communication delay is set by the environment and needs no event."),
+      ...rows, h("button", { class: "small", type: "button", onclick: () => { sc.injects.push({ t: "", kind: "comm_blackout", duration: "", text: "" }); changed(); render(); } }, "+ Add inject")));
+}
+
+function renderReview() {
+  const r = S.scenario.review;
+  return card("13. Review and submission", "Resolve all errors under Case check before submission. Download produces the case file and its scoring checklist; send both to the coordinator or upload them to scenarios/inbox.",
+    h("div", { class: "grid" },
+      field("Status", sel(r, "status", [["draft", "Draft"], ["in_review", "Ready for peer review"]])),
+      h("div", {}, check({ get v() { return r.physiology_review === "requested"; }, set v(x) { r.physiology_review = x ? "requested" : "not_needed"; } }, "v", "Request physiology review", { rerender: true }))),
+    r.physiology_review === "requested" ? field("Notes for physiology reviewer", area(r, "notes_for_physiologist", { rows: 2 })) : null,
+    field("Reviewer notes", area(r, "notes", { rows: 2 })),
+    h("div", { class: "btnbar", style: "margin-top:10px" },
+      h("button", { class: "primary", type: "button", onclick: exportFiles }, "Download files"),
+      h("button", { type: "button", onclick: printSheet }, "Print review sheet"),
+      h("button", { type: "button", onclick: () => document.getElementById("file-import").click() }, "Open case files"),
+      h("button", { class: "danger", type: "button", onclick: startNew }, "New case")));
+}
+
+// ---------- side panel ----------
+function refreshSide() {
+  const side = document.getElementById("side");
+  const issues = runChecks();
+  const by = l => issues.filter(i => i.level === l);
+  const parts = [h("div", { class: "card" }, h("h3", {}, "Case check"),
+    issues.filter(i => i.level !== "info").length
+      ? h("ul", { class: "issues" }, ...["error", "warning", "info"].flatMap(l => by(l).map(i => h("li", { class: l }, i.msg))))
+      : h("p", { class: "ok" }, "No issues."),
+    h("p", { class: "help" }, `${by("error").length} error(s), ${by("warning").length} warning(s). Full validation is run on submission.`))];
+  parts.push(encyclopediaCard());
+  const envs = S.scenario.environments;
+  if (!envs.includes(S.ui.habEnv)) S.ui.habEnv = envs[0] || "";
+  const env = ENV[S.ui.habEnv];
+  if (env) {
+    const pickEnv = h("select", { onchange: e => { S.ui.habEnv = e.target.value; refreshSide(); } }, ...envs.map(x => h("option", { value: x, selected: x === S.ui.habEnv }, `${x} · ${ENV[x].name}`)));
+    const habCards = habsFor(env.env).map(hab => {
+      const filt = h("input", { type: "search", placeholder: "Search formulary and equipment…" });
+      const tbl = h("table");
+      const drawItems = () => {
+        const q = filt.value.toLowerCase();
+        const all = [...hab.formulary, ...hab.equipment].filter(i => i.qty > 0 && (!q || i.name.toLowerCase().includes(q)));
+        tbl.replaceChildren(h("tbody", {}, ...all.slice(0, 300).map(i => h("tr", {}, h("td", {}, i.name), h("td", {}, i.qty ?? "")))));
+      };
+      filt.addEventListener("input", drawItems); drawItems();
+      return h("div", {}, h("p", { style: "font-weight:600;font-size:13px;margin:8px 0 2px" }, hab.name),
+        h("details", {}, h("summary", {}, "Medical capabilities"),
+          h("table", {}, h("tbody", {}, ...hab.capabilities.map(c => h("tr", { title: c.note || "" }, h("td", {}, c.name), h("td", { class: `st-${c.status}` }, c.status + (c.assumption ? " *" : "")))))),
+          h("p", { class: "help" }, "* Assumed; not from a NASA source. Hover for notes.")),
+        h("details", {}, h("summary", {}, `Formulary and equipment (${hab.formulary.filter(i => i.qty > 0).length} drugs, ${hab.equipment.filter(i => i.qty > 0).length} items)`), filt, tbl));
+    });
+    parts.push(h("div", { class: "card" }, h("h3", {}, "Medical capability by environment"), pickEnv,
+      h("p", { class: "help", style: "margin-top:6px" }, `Gravity ${env.gravity_g} g · one-way comm delay ${fmtDelay(env.one_way_delay_s)} · time to definitive care: ${env.evacuation}`),
+      env.representative ? h("p", { class: "help" }, `Reference mission: ${env.representative.drm} (${env.representative.phase}).`) : null,
+      ...habCards));
+  }
+  side.replaceChildren(...parts);
+}
+function fmtDelay([a, b]) { const f = s => s >= 60 ? `${Math.round(s / 60)} min` : `${s} s`; return a === b ? f(a) : `${f(a)}–${f(b)}`; }
+
+function encyclopediaCard() {
+  const input = h("input", { type: "search", placeholder: "Search conditions, drugs, reference ranges, terms", value: S.ui.encQuery });
+  const out = h("div");
+  const ranges = LIB.physiology.flatMap(p => p.ranges).map(r => ({ title: `Reference range: ${r.var}${r.sex ? ` (${r.sex})` : ""}`, text: `${r.low}–${r.high} ${r.unit}. ${r.note || ""}`, kind: "reference range" }));
+  const adapt = LIB.physiology.flatMap(p => p.adaptations).map(a => ({ title: `${a.var} in ${a.envs.join(", ")}`, text: `${a.change}.${a.note ? " " + a.note : ""}`, kind: "in-flight change" }));
+  const conds = LIB.conditions.map(c => ({ title: `${c.name} (${c.icl})`, text: c.summary || "", kind: "condition", url: c.cliff.url }));
+  const all = [...conds, ...LIB.encyclopedia.map(e => ({ title: e.title, text: e.text, kind: e.kind, url: e.source.url, src: e.source.doc })), ...ranges, ...adapt];
+  const draw = () => {
+    const q = input.value.toLowerCase().trim();
+    S.ui.encQuery = input.value;
+    if (q.length < 2) { out.replaceChildren(h("p", { class: "help" }, "Enter at least two characters.")); return; }
+    const hits = all.filter(x => x.title.toLowerCase().includes(q)).concat(all.filter(x => !x.title.toLowerCase().includes(q) && x.text.toLowerCase().includes(q))).slice(0, 12);
+    out.replaceChildren(...(hits.length ? hits.map(x => h("div", { class: "enc" }, h("b", {}, x.title, " ", h("span", { class: "chip" }, x.kind)),
+      x.text.length > 360 ? h("details", {}, h("summary", { style: "font-weight:400" }, x.text.slice(0, 200) + "…"), x.text) : x.text,
+      x.url ? h("div", {}, h("a", { href: x.url, target: "_blank", rel: "noopener" }, x.src ? "Source" : "CLiFF")) : null))
+      : [h("p", { class: "help" }, "No matches.")]));
+  };
+  input.addEventListener("input", draw);
+  draw();
+  return h("div", { class: "card" }, h("h3", {}, "Encyclopedia"), input, out,
+    h("p", { class: "help", style: "margin-top:6px" }, "Sources: NASA CLiFFs, FDA labeling (DailyMed), reference ranges, SpaceDoc glossary. For case writing only; not dosing guidance."));
+}
+
+// ---------- checks (mirror medsim validate; it has the final say) ----------
+function runChecks() {
+  const out = [], sc = S.scenario, rb = S.rubric, p = P(), c = cond(), sp = sc.speaker;
+  const err = m => out.push({ level: "error", msg: m }), warn = m => out.push({ level: "warning", msg: m }), info = m => out.push({ level: "info", msg: m });
+  if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(sc.scenario_id) || sc.scenario_id === "MSE-") err("Case ID required (format MSE-0123).");
+  if (!sc.title.trim()) err("Chief complaint required.");
+  if (!sc.authors.some(a => a.name.trim())) err("At least one author required.");
+  sc.authors.forEach((a, i) => { if (a.name.trim() && !a.contact.trim()) err(`Author ${i + 1}: contact required.`); });
+  if (!c) err("Condition required.");
+  if (!sc.environments.length) err("Select at least one environment.");
+  if (c && c.applicability) {
+    const outside = sc.environments.filter(e => !c.applicability.envs.includes(e));
+    if (outside.length) warn(`${c.name}: ${outside.join(", ")} outside CLiFF incidence. Deselect, or justify under complicating factors.`);
+  }
+  const twin = CREW[p.crew_id];
+  if (!twin) err("Patient required.");
+  if (twin && c && c.applicability && c.applicability.sex !== "any" && twin.sex !== c.applicability.sex) err(`${c.name} applies to ${c.applicability.sex === "F" ? "female" : "male"} patients only.`);
+  for (const word of (LIB.ruled_out_by_surgery[p.condition] || [])) {
+    if ([...p.chart.past_surgical, ...(twin ? twin.chart.past_surgical : [])].some(x => x.toLowerCase().includes(word))) err(`Prior ${word} in the surgical history excludes this condition.`);
+  }
+  if (p.chart.nkda && p.chart.allergies.some(a => a.kind === "drug" && a.agent.trim())) err("NKDA conflicts with a listed drug allergy.");
+  p.chart.medications.forEach((m, i) => { if (m.name.trim() && (!m.dose.trim() || !m.frequency.trim())) err(`Medication ${i + 1}: dose and frequency required.`); });
+  p.chart.allergies.forEach((a, i) => { if (!a.agent.trim()) err(`Allergy ${i + 1}: allergen required.`); });
+  if (!CREW[sp.crew_id]) err("Presenting party required.");
+  if (sp.role !== "patient" && sp.crew_id === p.crew_id) err("The presenting crewmember is the patient; set the presenting party to Patient.");
+  if (!sp.opening.trim()) err(sp.role === "patient" ? "Chief complaint (patient's words) required." : "Opening statement required.");
+  if (sp.input_quality > 1 && !sp.input_problems.length) warn(`Historian reliability ${sp.input_quality}/5: specify how the history is unreliable.`);
+  sp.additional_history.forEach((x, i) => { if (!x.if_asked.trim() || !x.says.trim()) err(`Direct-questioning item ${i + 1}: topic and response required.`); });
+  const end = durationSecs(sc.duration);
+  if (end == null) err("Case duration must be a duration such as 3d or 36h.");
+  const known = new Set(Object.keys(LIB.state_vars));
+  p.timeline.forEach((e, i) => {
+    const t = offsetSecs(e.t);
+    if (t == null) err(`Timeline entry ${i + 1}: time format T+6h.`);
+    else if (end != null && t > end) warn(`Timeline entry ${i + 1} falls after the case ends.`);
+    if (e.kind === "keyframe" && !Object.keys(e.state || {}).length) err(`Timeline entry ${i + 1}: at least one value required.`);
+    if (e.kind !== "keyframe" && !(e.text || "").trim()) err(`Timeline entry ${i + 1}: description required.`);
+    for (const k of Object.keys(e.state || {})) if (!known.has(k)) warn(`Timeline entry ${i + 1}: "${k}" is not a recognised variable.`);
+  });
+  const kit = kitItems();
+  p.time_critical.forEach((tc, i) => {
+    if (offsetSecs(tc.by) == null) err(`Intervention ${i + 1}: deadline format T+8h.`);
+    if (!tc.action.refs.length && !(tc.action.text || "").trim()) err(`Intervention ${i + 1}: describe the intervention.`);
+    if (tc.action.refs.length) for (const env of sc.environments) {
+      if (habsFor(env).length && !kit.some(k => tc.action.refs.includes(k.id) && k.envs.has(env))) warn(`Intervention ${i + 1}: no qualifying item aboard in ${env}.`);
+    }
+  });
+  const cxIds = new Set();
+  p.complications.forEach((x, i) => {
+    const n = x.id || `Complication ${i + 1}`;
+    if (cxIds.has(x.id)) err(`${n}: duplicate complication ID.`);
+    cxIds.add(x.id);
+    if (!x.name.trim()) err(`${n}: name required.`);
+    if (x.trigger !== "chance" && !x.action.refs.length && !x.action.text.trim()) err(`${n}: describe the ${x.trigger === "untreated" ? "preventing intervention" : "triggering action"}.`);
+    const when = x.trigger === "untreated" ? x.by : x.trigger === "chance" ? x.at : null;
+    if (when != null) {
+      const t = offsetSecs(when);
+      if (t == null) err(`${n}: time format ${x.trigger === "untreated" ? "T+36h" : "T+12h"}.`);
+      else if (end != null && t > end) warn(`${n}: occurs after the case ends.`);
+    }
+    if (x.trigger === "action" && x.after && durationSecs(x.after) == null) err(`${n}: onset delay format 30m.`);
+    if (x.trigger === "chance" && (x.chance ?? 1) >= 1 && !x.worst_course_only) err(`${n}: set a share of runs below 100% or worst-course runs only; enter events that always occur in the medical timeline.`);
+    if (x.recognise_within && durationSecs(x.recognise_within) == null) err(`${n}: recognition window format 2h.`);
+    if (!x.condition && !x.findings.length) err(`${n}: link an IMM condition or enter findings.`);
+    x.findings.forEach((e, j) => {
+      if (offsetSecs(e.t) == null) err(`${n} finding ${j + 1}: time from onset format T+30m.`);
+      if (e.kind === "keyframe" && !Object.keys(e.state || {}).length) err(`${n} finding ${j + 1}: at least one value required.`);
+      if (e.kind !== "keyframe" && !(e.text || "").trim()) err(`${n} finding ${j + 1}: description required.`);
+      for (const k of Object.keys(e.state || {})) if (!known.has(k)) warn(`${n} finding ${j + 1}: "${k}" is not a recognised variable.`);
+    });
+    if (x.trigger !== "chance" && x.action.refs.length) for (const env of sc.environments) {
+      if (habsFor(env).length && !kit.some(k => x.action.refs.includes(k.id) && k.envs.has(env))) {
+        if (x.trigger === "action") info(`${n}: cannot occur in ${env} (triggering item not aboard).`);
+        else warn(`${n}: cannot be prevented in ${env} (no qualifying item aboard).`);
+      }
+    }
+  });
+  sc.injects.forEach((e, i) => {
+    if (offsetSecs(e.t) == null) err(`Inject ${i + 1}: time format T+4h.`);
+    if (e.duration && durationSecs(e.duration) == null) err(`Inject ${i + 1}: duration format 10h.`);
+  });
+  const g = p.ground_truth;
+  if (!g.etiology.trim()) err("Etiology required.");
+  if (!g.differential.filter(x => x.trim()).length) warn("Differential diagnosis not entered.");
+  if (!rb.items.length) err("At least one checklist item required.");
+  if (rb.items.length && !rb.items.some(i => i.weight > 0)) err("At least one expected action required.");
+  const ids = new Set();
+  [...rb.gates, ...rb.items].forEach(x => { if (ids.has(x.id)) err(`Duplicate checklist ID ${x.id}.`); ids.add(x.id); });
+  rb.items.forEach(it => {
+    if (!(it.text || "").trim()) err(`${it.id}: observable behaviour required.`);
+    if (!it.weight || it.weight < -10 || it.weight > 10) err(`${it.id}: weight must be 1–10 (expected) or −1 to −10 (error).`);
+    if (it.complication && !cxIds.has(it.complication)) err(`${it.id}: complication ${it.complication} not found.`);
+    if (it.by && offsetSecs(it.by) == null) err(`${it.id}: deadline format T+8h.`);
+    else if (it.by && !it.complication && end != null && offsetSecs(it.by) > end) warn(`${it.id}: deadline falls after the case ends.`);
+    if (it.type === "rating") {
+      if (!it.anchors || !["1", "3", "5"].every(k => (it.anchors[k] || "").trim())) err(`${it.id}: anchors for 1, 3 and 5 required.`);
+    } else if (VAGUE.test(it.text || "")) warn(`${it.id}: "${(it.text.match(VAGUE) || [""])[0]}" is not observable; state the specific action.`);
+    if ((it.requires || []).length) for (const env of sc.environments) {
+      if (habsFor(env).length && !kit.some(k => it.requires.includes(k.id) && k.envs.has(env))) info(`${it.id}: not applicable in ${env} (required equipment not aboard).`);
+    }
+  });
+  rb.gates.forEach(x => { if (!(x.text || "").trim()) err(`Critical error ${x.id}: description required.`); });
+  return out;
+}
+
+// ---------- export / import ----------
+function clean(v) {
+  if (Array.isArray(v)) return v.map(clean).filter(x => !(typeof x === "string" && x === ""));
+  if (v && typeof v === "object") {
+    const o = {};
+    for (const [k, x] of Object.entries(v)) {
+      const c = clean(x);
+      if (c === "" || c == null) continue;
+      o[k] = c;
+    }
+    return o;
+  }
+  return typeof v === "string" ? v.trim() : v;
+}
+function exportDocs() {
+  const sc = clone(S.scenario), rb = clone(S.rubric);
+  sc.rubric = `${sc.scenario_id}.rubric.json`;
+  sc.authors = sc.authors.filter(a => a.name.trim());
+  const p = sc.patients[0];
+  if (cond() && p.ground_truth.diagnosis === cond().name) delete p.ground_truth.diagnosis;
+  sc.speaker.additional_history = sc.speaker.additional_history.filter(x => x.if_asked.trim() || x.says.trim());
+  p.chart.medications = p.chart.medications.filter(m => m.name.trim());
+  p.chart.allergies = p.chart.allergies.filter(a => a.agent.trim());
+  for (const x of p.complications) {
+    if (x.trigger === "chance") delete x.action;
+    if (x.trigger !== "untreated") delete x.by;
+    if (x.trigger !== "action") delete x.after;
+    if (x.trigger !== "chance") delete x.at;
+    if (!x.worst_course_only) delete x.worst_course_only;
+    if ((x.chance ?? 1) >= 1) delete x.chance;
+  }
+  rb.scenario_id = sc.scenario_id;
+  rb.rubric_id ||= `${sc.scenario_id}-r1`;
+  rb.items.forEach(it => { if (it.type !== "rating") delete it.anchors; if (it.type === "binary") delete it.type; if (!(it.requires || []).length) delete it.requires; });
+  const s = clean(sc), r = clean(rb);
+  // Keep fields the schema requires even when empty.
+  s.patients[0].chart ||= {};
+  s.patients[0].ground_truth ||= {};
+  s.speaker.familiarity ||= {};
+  r.gates ||= []; r.items ||= []; r.must_not_miss_tested = rb.must_not_miss_tested;
+  for (const k of ["nkda"]) s.patients[0].chart[k] = !!sc.patients[0].chart[k];
+  s.speaker.emergent = !!sc.speaker.emergent;
+  return [s, r];
+}
+function download(name, obj) {
+  const blob = new Blob([JSON.stringify(obj, null, 1) + "\n"], { type: "application/json" });
+  const a = h("a", { href: URL.createObjectURL(blob), download: name });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+function exportFiles() {
+  const errs = runChecks().filter(i => i.level === "error");
+  if (errs.length && !confirm(`${errs.length} unresolved error(s) under Case check. Download as a draft?`)) return;
+  const [s, r] = exportDocs();
+  download(`${s.scenario_id}.scenario.json`, s);
+  setTimeout(() => download(`${s.scenario_id}.rubric.json`, r), 300);
+}
+document.getElementById("file-import").addEventListener("change", async e => {
+  const next = blank();
+  for (const f of e.target.files) {
+    try {
+      const doc = JSON.parse(await f.text());
+      if (doc.schema_version === "0.1" && doc.presentation !== undefined) { alert(`${f.name} uses the earlier v0.1 format. The coordinator converts it with "medsim migrate"; open it again afterwards.`); return; }
+      if (f.name.endsWith(".scenario.json") || doc.patients) next.scenario = merge(next.scenario, doc);
+      else if (f.name.endsWith(".rubric.json") || doc.items) next.rubric = merge(next.rubric, doc);
+    } catch (err) { alert(`${f.name} is not a case or checklist file: ${err.message}`); return; }
+  }
+  const p = next.scenario.patients[0];
+  p.chart = merge(emptyChart(), p.chart || {});
+  p.ground_truth = merge({ diagnosis: "", etiology: "", differential: [], must_not_miss: [], synonyms: {} }, p.ground_truth || {});
+  if (!p.ground_truth.diagnosis && COND[p.condition]) p.ground_truth.diagnosis = COND[p.condition].name;
+  p.timeline ||= []; p.time_critical ||= [];
+  p.time_critical.forEach(tc => { tc.action.refs ||= []; });
+  next.scenario.speaker = merge(blank().scenario.speaker, next.scenario.speaker);
+  next.rubric.items.forEach(it => { it.type ||= "binary"; it.by ||= ""; it.requires ||= []; });
+  next.ui.envsTouched = true;
+  S = normalise(next); e.target.value = ""; changed(); render();
+});
+function merge(a, b) {
+  const o = { ...a };
+  for (const [k, v] of Object.entries(b)) o[k] = v && typeof v === "object" && !Array.isArray(v) && a[k] && typeof a[k] === "object" && !Array.isArray(a[k]) ? merge(a[k], v) : v;
+  return o;
+}
+function startNew() { if (confirm("Clear the form and start a new case? Unsaved work is lost unless downloaded.")) { S = blank(); changed(); render(); } }
+document.getElementById("btn-export").addEventListener("click", exportFiles);
+document.getElementById("btn-check").addEventListener("click", () => { refreshSide(); document.getElementById("side").scrollTop = 0; });
+
+// ---------- printable review sheet ----------
+function triggerText(x) {
+  const what = x.action ? x.action.text || x.action.refs.join(", ") : "";
+  if (x.trigger === "untreated") return `if not treated (${what}) by ${x.by}`;
+  if (x.trigger === "action") return `${x.after ? `${x.after} after` : "on"} ${what}`;
+  return `at ${x.at}`;
+}
+function printSheet() {
+  const [s, r] = exportDocs(), c = cond(), p = s.patients[0], twin = CREW[p.crew_id], sp = s.speaker, spk = CREW[sp.crew_id];
+  const ch = p.chart || {};
+  const list = a => (a && a.length ? a.join("; ") : "none");
+  const pv = document.getElementById("print-view");
+  pv.replaceChildren(
+    h("h1", {}, `${s.scenario_id} · ${s.title || "(no chief complaint)"}`),
+    h("p", {}, `Authors: ${(s.authors || []).map(a => `${a.name} (${a.contact})`).join(", ")} · Status: ${s.review.status} · Physiology review: ${s.review.physiology_review}`),
+    h("p", {}, `Presenting symptoms: ${(s.symptoms || []).map(x => SYM[x] ? `${x} ${SYM[x].name}` : x).join("; ") || "none"}`),
+    h("h2", {}, "Condition and mission environment"),
+    h("p", {}, c ? `${c.name} (${c.icl}). CLiFF: ${c.cliff.url}` : "No condition chosen."),
+    h("p", {}, `Environments: ${(s.environments || []).map(e => `${e} ${ENV[e].name}`).join(", ")}`),
+    h("h2", {}, "Patient history"),
+    h("p", {}, twin ? `${twin.name} (${twin.crew_id}), ${twin.sex}, ${twin.age}, ${twin.occupation}.` : "No patient chosen."),
+    h("p", {}, `PMH: ${list(ch.past_medical)}. PSH: ${list(ch.past_surgical)}.`),
+    h("p", {}, `Medications: ${(ch.medications || []).map(m => `${m.name} ${m.form || ""} ${m.dose} ${m.frequency}`.replace(/\s+/g, " ")).join("; ") || "none"}.`),
+    h("p", {}, `Allergies: ${ch.nkda ? "NKDA" : ""}${(ch.allergies || []).map(a => ` ${a.agent} (${a.kind}${a.reaction ? `: ${a.reaction}` : ""})`).join(";")}. Social: ${ch.social_history || "—"}. Family: ${list(ch.family_history)}.`),
+    h("h2", {}, "Presentation"),
+    h("p", {}, `Presenting party: ${spk ? `${spk.name} (${sp.role === "patient" ? "patient" : sp.role === "cmo" ? "CMO" : "crewmember"})` : sp.role}. Emergent: ${sp.emergent ? "yes" : "no"}. Historian reliability ${sp.input_quality}/5 (${QUALITY[sp.input_quality - 1]})${(sp.input_problems || []).length ? `: ${sp.input_problems.map(k => PROBLEM_LABELS[k] || k).join(", ")}` : ""}.`),
+    h("p", {}, h("b", {}, sp.role === "patient" ? "Chief complaint: " : "Opening statement: "), sp.opening || ""),
+    sp.behaviour ? h("p", {}, `Affect and behaviour: ${sp.behaviour}`) : null,
+    (sp.additional_history || []).length ? h("p", {}, h("b", {}, "On direct questioning:")) : null,
+    h("ul", {}, ...(sp.additional_history || []).map(x => h("li", {}, `${x.if_asked}: ${x.says}`))),
+    h("h2", {}, "Medical timeline / course of illness"),
+    h("table", {}, h("tbody", {}, ...(p.timeline || []).map(e => [e.t, e.kind, e.when || "always", e.text || Object.entries(e.state || {}).map(([k, v]) => `${k} ${v}`).join(", ")])
+      .concat((s.injects || []).map(e => [e.t, `inject: ${e.kind}`, e.duration ? `lasts ${e.duration}` : "", e.text || ""]))
+      .sort((x, y) => (offsetSecs(x[0]) ?? 0) - (offsetSecs(y[0]) ?? 0)).map(row => h("tr", {}, ...row.map(x => h("td", {}, x)))))),
+    h("p", {}, `Time-critical interventions: ${(p.time_critical || []).map(tc => `${tc.action.text || tc.action.refs.join(", ")} by ${tc.by}`).join("; ") || "none"}`),
+    h("h2", {}, "Complication events"),
+    (p.complications || []).length ? h("ul", {}, ...p.complications.map(x => h("li", {}, `${x.id} ${x.name}${x.condition && COND[x.condition] ? ` (IMM: ${COND[x.condition].name})` : ""}: ${triggerText(x)}${x.chance ? `; ${Math.round(x.chance * 100)}% of runs` : ""}${x.worst_course_only ? "; worst-course runs only" : ""}. Findings from onset: ${(x.findings || []).map(e => `${e.t} ${e.text || Object.entries(e.state || {}).map(([k, v]) => `${k} ${v}`).join(", ")}`).join("; ") || "per CLiFF"}.${x.recognise_within ? ` Recognition within ${x.recognise_within}.` : ""}`))) : h("p", {}, "None."),
+    h("h2", {}, "Complicating factors"), h("p", {}, s.complicators || "—"),
+    h("h2", {}, "Diagnosis and differential"),
+    h("p", {}, `Diagnosis: ${(p.ground_truth.diagnosis || (c && c.name) || "")}. Etiology: ${p.ground_truth.etiology || ""}.`),
+    h("p", {}, `Differential: ${(p.ground_truth.differential || []).map((d, i) => `${i + 1}. ${d}`).join("  ")}. Can't-miss: ${list(p.ground_truth.must_not_miss)}.`),
+    h("h2", {}, `Scoring checklist (base ${BASE.ref})`),
+    h("table", {}, h("thead", {}, h("tr", {}, ...["ID", "Item", "Weight", "Deadline", "Domain"].map(x => h("th", {}, x)))),
+      h("tbody", {}, ...(BASE.standard_items || []).map(x => h("tr", {}, h("td", {}, x.id), h("td", {}, x.text), h("td", {}, x.weight), h("td", {}, x.scope === "complication" ? "each complication" : ""), h("td", {}, x.domain))),
+        ...r.items.map(i => h("tr", {}, h("td", {}, i.id), h("td", {}, i.text, i.anchors ? h("div", {}, `1: ${i.anchors["1"]} · 3: ${i.anchors["3"]} · 5: ${i.anchors["5"]}`) : null), h("td", {}, i.weight),
+          h("td", {}, i.complication ? `if ${i.complication} occurs${i.by ? `: ${i.by} from onset` : ""}` : i.by || ""), h("td", {}, i.domain))))),
+    r.gates.length ? h("p", {}, `Case-specific critical errors: ${r.gates.map(g => `${g.id} ${g.text}`).join("; ")}`) : null,
+    s.review.physiology_review === "requested" ? [h("h2", {}, "Notes for physiology reviewer"), h("p", {}, s.review.notes_for_physiologist || "—")] : null,
+    h("div", { class: "sign" }, h("div", {}, "Peer reviewer / date"), h("div", {}, "Physiology reviewer (if requested) / date"))
+  );
+  window.print();
+}
+
+render();
+setSaveState(load() ? "Draft restored from this browser" : "");
+</script>
+</body>
+</html>

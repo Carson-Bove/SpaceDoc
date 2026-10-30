@@ -1,0 +1,75 @@
+{
+ "schema_version": "0.1",
+ "scenario_id": "MSE-0001",
+ "title": "Right lower quadrant pain, Mars outbound transit day 212",
+ "status": "draft",
+ "authors": ["engineering (worked example)"],
+ "reviewers": [],
+ "physiology_review": "requested",
+ "drm": "imm-mars-pod-860d",
+ "phase": "outbound",
+ "mission_day": 212,
+ "crewmember": "C2",
+ "condition": {"cliff_id": "appendicitis", "course": "auto"},
+ "patient": {
+  "age": 44,
+  "weight_kg": 81,
+  "allergies": ["penicillin (rash as a child)"],
+  "medications": [],
+  "history": ["coronary artery calcium noted preflight", "no prior abdominal surgery"]
+ },
+ "presentation": "Hey, C2 isn't feeling great. He's had a stomach ache since last night, around his belly button, and he didn't want breakfast. He thinks it's something he ate. Can you help us figure out what to do?",
+ "timeline": [
+  {"t": "T+0", "kind": "symptom", "text": "Dull periumbilical pain since about 10 hours ago, anorexia, nausea, vomited once"},
+  {"t": "T+0", "kind": "keyframe", "state": {"temp_c": 37.6, "hr": 92, "sbp": 128, "dbp": 80, "rr": 16, "spo2": 98, "pain_0_10": 5}},
+  {"t": "T+6h", "kind": "symptom", "text": "Pain moves to the right lower quadrant and is worse on coughing or moving"},
+  {"t": "T+12h", "kind": "keyframe", "when": "untreated", "state": {"temp_c": 38.2, "hr": 104, "pain_0_10": 7}},
+  {"t": "T+36h", "kind": "keyframe", "when": "untreated", "state": {"temp_c": 39.1, "hr": 122, "sbp": 104, "pain_0_10": 9, "mental_status": "alert"}},
+  {"t": "T+36h", "kind": "finding", "when": "untreated", "text": "Diffuse guarding and rigidity: signs of perforation and peritonitis"},
+  {"t": "T+48h", "kind": "keyframe", "when": "treated", "state": {"temp_c": 37.4, "hr": 88, "pain_0_10": 3}}
+ ],
+ "events": [
+  {"t": "T+4h", "kind": "solar_particle_event", "duration": "10h", "text": "Crew ordered to the storm shelter; the patient and the helper go with them"},
+  {"t": "T+4h", "kind": "comm_degraded", "duration": "10h", "text": "Text only to the ground while sheltered; one-way delay about 9 minutes"}
+ ],
+ "branches": [
+  {
+   "id": "B1",
+   "when": {"type": "action_by", "action": {"kind": "treatment", "text": "Any antibiotic regimen active against gut bacteria"}, "by": "T+8h"},
+   "then": {"course_bias": 0.5, "note": "Early antibiotics make the best case more likely"}
+  },
+  {
+   "id": "B2",
+   "when": {"type": "no_action_by", "action": {"kind": "treatment", "text": "Any antibiotic regimen active against gut bacteria"}, "by": "T+24h"},
+   "then": {"course": "worst_case", "note": "No antibiotics by a day in: perforation"}
+  }
+ ],
+ "complicators": "Penicillin allergy (childhood rash). The kit has only 6 ertapenem 1 g vials, so a 10-day course needs a switch to oral antibiotics. A solar particle event sends everyone to the shelter for 10 hours, starting before the pain localizes. Surgery is not possible aboard.",
+ "user_agent": {
+  "role": "crew",
+  "name": "C1",
+  "knowledge": "Backup crew medical officer: about 40 hours of medical training, has done ultrasound on a phantom",
+  "facts": {
+   "onset": "Last night, around 10 hours before the first message",
+   "first_location": "Around the belly button",
+   "appetite": "Didn't want breakfast",
+   "vomiting": "Once, this morning",
+   "bowels": "Normal yesterday, no diarrhoea",
+   "urine": "No burning, no blood that he has noticed",
+   "allergies": "Penicillin: he got a rash as a kid",
+   "surgery": "Never had abdominal surgery"
+  },
+  "behaviour": "Helpful and quick to follow step-by-step instructions. C2 downplays the pain and says it is food poisoning."
+ },
+ "ground_truth": {
+  "primary_dx": "Appendicitis",
+  "synonyms": {"Appendicitis": ["acute appendicitis", "appendix"]},
+  "acceptable_differential": ["Nephrolithiasis", "Gastroenteritis"],
+  "must_not_miss": ["Perforated appendicitis"]
+ },
+ "rubric": "MSE-0001.rubric.json",
+ "duration": "4d",
+ "tags": ["gastrointestinal", "surgical-condition-without-surgery", "allergy", "resource-limits", "space-weather"],
+ "notes_for_physiologist": "Keyframe values are placeholders for the clerk's intent; please check the untreated trajectory against the CLiFF (worst case 22.5–37.4%, untreated phase 2 lasts 168–504 h).",
+ "notes": "Worked example, not clinically reviewed."
+}

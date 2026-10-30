@@ -1,0 +1,87 @@
+{
+ "schema_version": "0.1",
+ "profile_id": "lunar-surface-habitat",
+ "name": "Lunar surface habitat (Artemis Base Camp concept)",
+ "kind": "surface_habitat",
+ "envs": [
+  "T3"
+ ],
+ "gravity_g": 0.166,
+ "status": "concept",
+ "crew_capacity": 4,
+ "sources": [
+  {
+   "doc": "Ruttley T, et al. Back to Stay: NASA's Campaign to Sustainably Return Humans to the Moon. IAC-21,B3,1,6,x62781, 2021 (NTRS 20210022242)",
+   "url": "https://ntrs.nasa.gov/citations/20210022242"
+  }
+ ],
+ "equipment": [],
+ "formulary": [],
+ "capabilities": [
+  {
+   "id": "cpr_manual",
+   "name": "Manual CPR",
+   "status": "adapted",
+   "note": "In lunar and Mars gravity compressions often fall short of guideline depth, more so for lighter rescuers; rotate rescuers in under 1 minute",
+   "source": {
+    "doc": "Overbeek R, et al. Effectiveness of CPR in Hypogravity Conditions: A Systematic Review. Life (Basel) 2022;12(12):1958",
+    "url": "https://doi.org/10.3390/life12121958"
+   }
+  },
+  {
+   "id": "gravity_iv_drip",
+   "name": "Gravity-fed IV drip",
+   "status": "adapted",
+   "note": "Some gravity to drive flow, but slower than on Earth; a pressure infuser may still be needed",
+   "assumption": true
+  },
+  {
+   "id": "major_surgery",
+   "name": "Major surgery (e.g. appendectomy)",
+   "status": "unavailable",
+   "note": "Outside the exploration treatment scope in the IMM CLiFFs",
+   "source": {
+    "doc": "IMM CLiFF ICL8 Appendicitis (2023), Capability Resource Table overview",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ct_xray",
+   "name": "CT or X-ray imaging",
+   "status": "unavailable",
+   "note": "CT 'will likely not be available' per the IMM CLiFFs",
+   "source": {
+    "doc": "IMM CLiFF ICL8 Appendicitis (2023), Capability Resource Table overview",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "blood_labs",
+   "name": "Blood tests (CBC with differential, metabolic panel)",
+   "status": "unknown",
+   "note": "Not in the IMM kit lists; the 2023 CLiFFs assume these will be possible on exploration missions",
+   "source": {
+    "doc": "IMM CLiFF ICL8 Appendicitis (2023), Capability Resource Table overview",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "blood_transfusion",
+   "name": "Blood transfusion",
+   "status": "unavailable",
+   "note": "No blood products in any IMM kit list",
+   "assumption": true
+  },
+  {
+   "id": "medical_area",
+   "name": "Medical space",
+   "status": "available",
+   "note": "Listed among the habitat's capabilities; no detail published",
+   "source": {
+    "doc": "Ruttley T, et al. Back to Stay: NASA's Campaign to Sustainably Return Humans to the Moon. IAC-21,B3,1,6,x62781, 2021 (NTRS 20210022242)",
+    "url": "https://ntrs.nasa.gov/citations/20210022242"
+   }
+  }
+ ],
+ "notes": "Hosts 2–4 crew for 1–2 month expeditions (Ruttley 2021). No medical inventory published; equipment is empty until one is. Scenarios here should state what is aboard in their complicators."
+}

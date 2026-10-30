@@ -1,0 +1,3661 @@
+{
+ "retrieved": "2026-10-27",
+ "sources": {
+  "orion_mass_only": "IMM SR S-20180815-406 (Orion Medical Kit Contents), Table 2: 20 lb, no volume limit; ~9.25 kg, 23,594 cm3",
+  "orion_mass_volume": "IMM SR S-20180815-406, Table 2: 20 lb and 13,721 cm3 limits; ~7.75 kg, 13,895 cm3",
+  "iss": "IMM SR S-20190528-412 (2024 Lunar), Table 3: ISS quantity (reference)",
+  "lunar_7_5d": "IMM SR S-20190528-412, Table 3: 7.5-day lunar optimized kit; 2.37 kg, 6,430 cm3",
+  "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+ },
+ "note": "Quantities are IMM modelling inputs and optimizer outputs, not flight manifests. Decimal optimizer values were rounded up by NASA for simulation; 'optimizer' keeps the raw value.",
+ "unaligned": [],
+ "resources": [
+  {
+   "name": "ABILIFY (ARIPIPRAZOLE) 5 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 60
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ABILIFY (ARIPIPRAZOLE) 7.5 MG/ML, 1.3 ML",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ABSORBABLE SUTURE 3.0",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 2
+   },
+   "orion_mass_volume": {
+    "qty": 2
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "ACE BANDAGE 2 INCHES",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ACE BANDAGE 3 INCHES",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "ACE BANDAGE 4 INCHES",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ADRENALINE (EPINEPHRINE 1:10000) 10ML",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "AED",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "AFRIN (OXYMETAZOLINE) 0.05% 15ML BOTTLE",
+   "category": "drug",
+   "iss": {
+    "qty": 12
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 2,
+    "optimizer": 1.2
+   }
+  },
+  {
+   "name": "ALBUTEROL INHALER (PROVENTIL) 90 MCG, 6.7 GM",
+   "category": "drug",
+   "iss": {
+    "qty": 3
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 2
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "AMBIEN 10MG TABLET",
+   "category": "drug",
+   "iss": {
+    "qty": 250
+   },
+   "orion_mass_only": {
+    "qty": 11
+   },
+   "orion_mass_volume": {
+    "qty": 11
+   },
+   "lunar_7_5d": {
+    "qty": 4
+   }
+  },
+  {
+   "name": "AMBU BAG AND MASK",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "AMOXICILLIN 500 MG CAPSULE",
+   "category": "drug",
+   "iss": {
+    "qty": 60
+   },
+   "orion_mass_only": {
+    "qty": 22
+   },
+   "orion_mass_volume": {
+    "qty": 22
+   },
+   "lunar_7_5d": {
+    "qty": 14
+   }
+  },
+  {
+   "name": "ANTIVERT (MECLIZINE) 25 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 20
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ASPIRIN 325MG TAB.",
+   "category": "drug",
+   "iss": {
+    "qty": 120
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 3
+   }
+  },
+  {
+   "name": "ATIVAN (LORAZEPAM) 1 MG TABLET",
+   "category": "drug",
+   "iss": {
+    "qty": 60
+   },
+   "orion_mass_only": {
+    "qty": 31
+   },
+   "orion_mass_volume": {
+    "qty": 42
+   },
+   "lunar_7_5d": {
+    "qty": 6
+   }
+  },
+  {
+   "name": "ATROPINE 1 MG, 10ML SYRINGE.",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BACITRACIN 500 UNITS/GM. 28 GM TUBE",
+   "category": "drug",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1,
+    "optimizer": 0.85
+   },
+   "orion_mass_volume": {
+    "qty": 1,
+    "optimizer": 0.85
+   },
+   "lunar_7_5d": {
+    "qty": 1,
+    "optimizer": 0.8
+   }
+  },
+  {
+   "name": "BACTRIM DS (SULFAMETHOXAZOLE/TRIMETHOPRIM) 800 MG/160 MG TABLET",
+   "category": "drug",
+   "iss": {
+    "qty": 40
+   },
+   "orion_mass_only": {
+    "qty": 40
+   },
+   "orion_mass_volume": {
+    "qty": 40
+   },
+   "lunar_7_5d": {
+    "qty": 26
+   }
+  },
+  {
+   "name": "BANDAID (2X3)",
+   "category": "equipment",
+   "iss": {
+    "qty": 5
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BANDAID (KNUCKLE)",
+   "category": "equipment",
+   "iss": {
+    "qty": 5
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BANDAID DOT",
+   "category": "equipment",
+   "iss": {
+    "qty": 10
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BANDAID STRIP",
+   "category": "equipment",
+   "iss": {
+    "qty": 10
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BENADRYL 25 MG CAPSULE",
+   "category": "drug",
+   "iss": {
+    "qty": 60
+   },
+   "orion_mass_only": {
+    "qty": 26
+   },
+   "orion_mass_volume": {
+    "qty": 26
+   },
+   "lunar_7_5d": {
+    "qty": 12
+   }
+  },
+  {
+   "name": "BENADRYL 50 MG/ML, 1ML INJECTABLE",
+   "category": "drug",
+   "iss": {
+    "qty": 3
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BENZOCAINE SWAB STICK ORAL 20%, 0.15 ML SWAB",
+   "category": "drug",
+   "iss": {
+    "qty": 24
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BIOHAZARD TRASH BAG",
+   "category": "equipment",
+   "iss": {
+    "qty": 15
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BLOOD OXIMETER",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "BLOOD PRESSURE /ECG MONITOR",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BLOOD PRESSURE CUFF - LARGE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BLOOD PRESSURE CUFF - SMALL",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BOUGIE ET TUBE INTRODUCER",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BURN BANDAGE",
+   "category": "equipment",
+   "iss": {
+    "qty": 10
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "BZK WIPES",
+   "category": "equipment",
+   "iss": {
+    "qty": 60
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "CAMERA",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "CIPROFLOXACIN AND DEXAMETHASONE (CIPRODEX) 3%,7%, 7.5 ML BOTTLE",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 1,
+    "optimizer": 0.52
+   },
+   "orion_mass_volume": {
+    "qty": 1,
+    "optimizer": 0.52
+   },
+   "lunar_7_5d": {
+    "qty": 1,
+    "optimizer": 0.26
+   }
+  },
+  {
+   "name": "CLARITIN (LORATADINE)10MG TABLET",
+   "category": "drug",
+   "iss": {
+    "qty": 75
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "CLEAR BANDAGE",
+   "category": "equipment",
+   "iss": {
+    "qty": 9
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "CLEOCIN (CLINDAMYCIN) 300MG",
+   "category": "drug",
+   "iss": {
+    "qty": 60
+   },
+   "orion_mass_only": {
+    "qty": 21
+   },
+   "orion_mass_volume": {
+    "qty": 21
+   },
+   "lunar_7_5d": {
+    "qty": 14
+   }
+  },
+  {
+   "name": "CMRS",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "COTTON BALLS",
+   "category": "equipment",
+   "iss": {
+    "qty": 40
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "COTTON PELLET",
+   "category": "equipment",
+   "iss": {
+    "qty": 6
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "COTTON SWABS",
+   "category": "equipment",
+   "iss": {
+    "qty": 6
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "CYCLOPENTOLATE 2% 15ML BOTTLE.",
+   "category": "drug",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1,
+    "optimizer": 0.2
+   },
+   "orion_mass_volume": {
+    "qty": 1,
+    "optimizer": 0.2
+   },
+   "lunar_7_5d": {
+    "qty": 1,
+    "optimizer": 0.1
+   }
+  },
+  {
+   "name": "DCS EXAMINATION SCORECARD",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DEBROX FOR EARWAX (CARBAMIDE PEROXIDE) 6.5% 15ML BOTTLE",
+   "category": "drug",
+   "iss": {
+    "qty": 4
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DENTAL ADHESIVE (76 GRAMS)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1,
+    "optimizer": 0.1
+   },
+   "orion_mass_volume": {
+    "qty": 1,
+    "optimizer": 0.1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DENTAL ADHESIVE TIP",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DENTAL AMALGAM FILE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DENTAL CARVER FILE (G)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DENTAL CROWN REMOVER",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DENTAL ELEVATOR - 301 (I)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DENTAL ELEVATOR - 34S (J)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DENTAL EUGENOL ANESTHETIC 1ML ORAL SYRINGE",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 2
+   },
+   "orion_mass_volume": {
+    "qty": 2
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "DENTAL EXPLORER/PROBE (E)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DENTAL FORCEPS-10S (A)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DENTAL FORCEPS-151A (B)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DENTAL FORCEPS-17 (C)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DENTAL MIRROR (H)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "DENTAL SYRINGE (TUBEX)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DERMABOND APPLICATOR 0.5ML",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DEXAMETHASONE (DECADRON) 10MG INJECTABLE",
+   "category": "drug",
+   "iss": {
+    "qty": 20
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DIAMOX (ACETAZOLAMIDE) 250 MG TABLETS",
+   "category": "drug",
+   "iss": {
+    "qty": 100
+   },
+   "orion_mass_only": {
+    "qty": 6
+   },
+   "orion_mass_volume": {
+    "qty": 6
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DIFLUCAN (FLUCONAZOLE) 150 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 150
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "DILANTIN (PHENYTOIN) 300MG CAPSULES",
+   "category": "drug",
+   "iss": {
+    "qty": 30
+   },
+   "orion_mass_only": {
+    "qty": 6
+   },
+   "orion_mass_volume": {
+    "qty": 6
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DILAUDID (HYDROMORPHONE) 2MG/ML, 1ML SYRINGE",
+   "category": "drug",
+   "iss": {
+    "qty": 18
+   },
+   "orion_mass_only": {
+    "qty": 6
+   },
+   "orion_mass_volume": {
+    "qty": 6
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DISPOSABLE OTOSCOPE SPECULA",
+   "category": "equipment",
+   "iss": {
+    "qty": 80
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "DULCOLAX (BISACODYL) TABLET 5MG",
+   "category": "drug",
+   "iss": {
+    "qty": 40
+   },
+   "orion_mass_only": {
+    "qty": 14
+   },
+   "orion_mass_volume": {
+    "qty": 16
+   },
+   "lunar_7_5d": {
+    "qty": 2
+   }
+  },
+  {
+   "name": "EAR CURETTE",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "EAR WICK",
+   "category": "equipment",
+   "iss": {
+    "qty": 6
+   },
+   "orion_mass_only": {
+    "qty": 2
+   },
+   "orion_mass_volume": {
+    "qty": 2
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "EFFEXOR XR (VENLAFAXINE XR) 75 MG CAPSULES",
+   "category": "drug",
+   "iss": {
+    "qty": 60
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ENDOTRACHEAL STYLET",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "EPIPEN 1:1000",
+   "category": "drug",
+   "iss": {
+    "qty": 3
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "EPT",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ERTAPENEM 1GM",
+   "category": "drug",
+   "iss": {
+    "qty": 6
+   },
+   "orion_mass_only": {
+    "qty": 6
+   },
+   "orion_mass_volume": {
+    "qty": 6
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ERYTHROMYCIN OINTMENT 0.5%, 3.5 GM TUBE",
+   "category": "drug",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ESTROGEN 1.25 MG TABLETS",
+   "category": "drug",
+   "iss": {
+    "qty": 100
+   },
+   "orion_mass_only": {
+    "qty": 7
+   },
+   "orion_mass_volume": {
+    "qty": 7
+   },
+   "lunar_7_5d": {
+    "qty": 7
+   }
+  },
+  {
+   "name": "ETHINYL ESTRADIOL / NORGESTREL 0.05 MG/ 0.5 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 42
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "EYE SHIELD",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "EYE SIMULATOR CORNEA",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "EYE WASH GOGGLES & TUBING",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "EYEWASH WASTE WATER BAG",
+   "category": "equipment",
+   "iss": {
+    "qty": 6
+   },
+   "orion_mass_only": {
+    "qty": 3
+   },
+   "orion_mass_volume": {
+    "qty": 3
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "FINGER SPLINT",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "FLAGYL (METRONIDAZOLE) 500MG",
+   "category": "drug",
+   "iss": {
+    "qty": 60
+   },
+   "orion_mass_only": {
+    "qty": 30
+   },
+   "orion_mass_volume": {
+    "qty": 30
+   },
+   "lunar_7_5d": {
+    "qty": 21
+   }
+  },
+  {
+   "name": "FLUOCINONIDE 0.05%, 30GM TUBE",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 1,
+    "optimizer": 0.5
+   },
+   "orion_mass_volume": {
+    "qty": 1,
+    "optimizer": 0.5
+   },
+   "lunar_7_5d": {
+    "qty": 1,
+    "optimizer": 0.2
+   }
+  },
+  {
+   "name": "FLUORESCEIN 1MG STRIPS",
+   "category": "drug",
+   "iss": {
+    "qty": 20
+   },
+   "orion_mass_only": {
+    "qty": 6
+   },
+   "orion_mass_volume": {
+    "qty": 6
+   },
+   "lunar_7_5d": {
+    "qty": 3
+   }
+  },
+  {
+   "name": "FLUTICASONE 220MCG, 12GM INHALER",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "FOAM ELECTRODES",
+   "category": "equipment",
+   "iss": {
+    "qty": 20
+   },
+   "orion_mass_only": {
+    "qty": 10
+   },
+   "orion_mass_volume": {
+    "qty": 10
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "G1 CAMCORDER",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "GAUZE PADS (4X4)",
+   "category": "equipment",
+   "iss": {
+    "qty": 50
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "HEIMLICH MANEUVER",
+   "category": "intervention",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "HEMOSTATS",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "HOT AND COLD PAD",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ILMA CUE CARD",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ILMA ENDOTRACHEAL TUBE 7.0/7.5 & ENDOTRACHEAL TUBE 7.0/8.0",
+   "category": "equipment",
+   "iss": {
+    "qty": 4
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ILMA HARDWARE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ILMA STABILIZING ROD",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ILMA SYRINGE",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "IMODIUM (LOPERAMIDE HCL) 2 MG TABLET",
+   "category": "drug",
+   "iss": {
+    "qty": 40
+   },
+   "orion_mass_only": {
+    "qty": 24
+   },
+   "orion_mass_volume": {
+    "qty": 24
+   },
+   "lunar_7_5d": {
+    "qty": 8
+   }
+  },
+  {
+   "name": "INTRAOSSEOUS DEVICE STARTER KIT",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "INTRAOSSEOUS INJECTION DEVICE",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "IODINE SWAB STICK",
+   "category": "equipment",
+   "iss": {
+    "qty": 14
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "IV ADMINISTRATION SET",
+   "category": "equipment",
+   "iss": {
+    "qty": 3
+   },
+   "orion_mass_only": {
+    "qty": 2
+   },
+   "orion_mass_volume": {
+    "qty": 2
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "IV CAP",
+   "category": "equipment",
+   "iss": {
+    "qty": 5
+   },
+   "orion_mass_only": {
+    "qty": 2
+   },
+   "orion_mass_volume": {
+    "qty": 2
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "IV CATHETER (14G)",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "IV CATHETER (18G)",
+   "category": "equipment",
+   "iss": {
+    "qty": 4
+   },
+   "orion_mass_only": {
+    "qty": 2
+   },
+   "orion_mass_volume": {
+    "qty": 2
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "IV CATHETER (20G)",
+   "category": "equipment",
+   "iss": {
+    "qty": 4
+   },
+   "orion_mass_only": {
+    "qty": 2
+   },
+   "orion_mass_volume": {
+    "qty": 2
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "IV CATHETER (22G)",
+   "category": "equipment",
+   "iss": {
+    "qty": 4
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "IV FLUID 1L (1000ML)",
+   "category": "fluid",
+   "iss": {
+    "qty": 4
+   },
+   "orion_mass_only": {
+    "qty": 2
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "IV PRESSURE INFUSER",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "KETAMINE 50 MG/ML, 10 ML MULTI DOSE VIAL",
+   "category": "drug",
+   "iss": {
+    "qty": 4
+   },
+   "orion_mass_only": {
+    "qty": 1,
+    "optimizer": 0.3
+   },
+   "orion_mass_volume": {
+    "qty": 1,
+    "optimizer": 0.3
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "LARYNGOSCOPE (BLADE)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "LARYNGOSCOPE HANDLE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "LEVAQUIN (LEVOFLOXACIN) 500MG",
+   "category": "drug",
+   "iss": {
+    "qty": 30
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "LIDOCAINE (XYLOCAINE) CARDIAC 2% (20MG/ML) 5ML SYRINGE",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "LIDOCAINE (XYLOCAINE) PLAIN 1%, 10ML MULTI DOSE VIAL",
+   "category": "drug",
+   "iss": {
+    "qty": 3
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "LIDOCAINE JELLY 2% 30ML TUBE",
+   "category": "drug",
+   "iss": {
+    "qty": 3
+   },
+   "orion_mass_only": {
+    "qty": 2,
+    "optimizer": 1.2
+   },
+   "orion_mass_volume": {
+    "qty": 2,
+    "optimizer": 1.2
+   },
+   "lunar_7_5d": {
+    "qty": 1,
+    "optimizer": 0.3
+   }
+  },
+  {
+   "name": "LIDOCAINE W/ EPINEPHRINE (XYLOCAINE) 2 %, 2-ML UNITS 1:100,000 EPI, 20 ML. MULTI DOSE VIALS.",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 1,
+    "optimizer": 0.1
+   },
+   "orion_mass_volume": {
+    "qty": 1,
+    "optimizer": 0.1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "LOPRESSOR (METOPROLOL) 50 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 100
+   },
+   "orion_mass_only": {
+    "qty": 60
+   },
+   "orion_mass_volume": {
+    "qty": 62
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "LOTRIMIN AF CREAM (CLOTRIMAZOLE) 1%, 30GM TUBE",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 2,
+    "optimizer": 1.1
+   },
+   "orion_mass_volume": {
+    "qty": 2,
+    "optimizer": 1.1
+   },
+   "lunar_7_5d": {
+    "qty": 1,
+    "optimizer": 0.1
+   }
+  },
+  {
+   "name": "MAXIMUM ABSORBENCY GARMENT (MAG)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "MEDICAL TAPE",
+   "category": "equipment",
+   "iss": {
+    "qty": 5
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "MELATONIN 3 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 200
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "MIRROR",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "MOTRIN (IBUPROFEN) 400MG",
+   "category": "drug",
+   "iss": {
+    "qty": 500
+   },
+   "orion_mass_only": {
+    "qty": 52
+   },
+   "orion_mass_volume": {
+    "qty": 55
+   },
+   "lunar_7_5d": {
+    "qty": 15
+   }
+  },
+  {
+   "name": "MOXIFLOXACIN (AVELOX) 0.5%, 3ML BOTTLE",
+   "category": "drug",
+   "iss": {
+    "qty": 4
+   },
+   "orion_mass_only": {
+    "qty": 1,
+    "optimizer": 0.3
+   },
+   "orion_mass_volume": {
+    "qty": 1,
+    "optimizer": 0.3
+   },
+   "lunar_7_5d": {
+    "qty": 1,
+    "optimizer": 0.1
+   }
+  },
+  {
+   "name": "MUPIROCIN (BACTROBAN) 2%, 22 GM TUBE",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 2,
+    "optimizer": 1.1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0.1
+   }
+  },
+  {
+   "name": "NASAL AIRWAY 6MM",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "NASAL AIRWAY 7MM",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "NASAL PACKING (POSTERIOR NASAL PACKING)",
+   "category": "equipment",
+   "iss": {
+    "qty": 10
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "NEEDLE (23G)",
+   "category": "equipment",
+   "iss": {
+    "qty": 20
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "NEEDLE [25G]",
+   "category": "equipment",
+   "iss": {
+    "qty": 4
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "NEEDLE DRIVER (AA)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "NEEDLE PLASTIC",
+   "category": "equipment",
+   "iss": {
+    "qty": 10
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "NITRILE GLOVES (LARGE, MEDIUM, AND SMALL) (PAIR)",
+   "category": "equipment",
+   "iss": {
+    "qty": 30
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "NITROGLYCERIN TABLET 0.4MG",
+   "category": "drug",
+   "iss": {
+    "qty": 25
+   },
+   "orion_mass_only": {
+    "qty": 10
+   },
+   "orion_mass_volume": {
+    "qty": 10
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "NONSTICK BANDAGE (TELFA PADS)",
+   "category": "equipment",
+   "iss": {
+    "qty": 20
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "NYLON SUTURE 2.0",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 2
+   },
+   "orion_mass_volume": {
+    "qty": 2
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "NYLON SUTURE 5.0",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ORAL AIRWAY",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "OTOSCOPE HANDLE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "OTOSCOPE HEAD",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "OTOSCOPE USB CABLE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "OXYGEN MASK - RESUSCITATION MASK",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "OXYGEN TUBING",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "PANOPTIC OPHTHALMOSCOPE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "PENLIGHT",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "PEPTO-BISMOL 262MG CHEWABLE TABS",
+   "category": "drug",
+   "iss": {
+    "qty": 80
+   },
+   "orion_mass_only": {
+    "qty": 6
+   },
+   "orion_mass_volume": {
+    "qty": 6
+   },
+   "lunar_7_5d": {
+    "qty": 4
+   }
+  },
+  {
+   "name": "PHENERGAN (PROMETHAZINE TABLET) 25 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 30
+   },
+   "orion_mass_only": {
+    "qty": 4
+   },
+   "orion_mass_volume": {
+    "qty": 4
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "PREDNISONE 20 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 40
+   },
+   "orion_mass_only": {
+    "qty": 4
+   },
+   "orion_mass_volume": {
+    "qty": 4
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "PRILOSEC 20MG",
+   "category": "drug",
+   "iss": {
+    "qty": 90
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "PROMETHAZINE INJECTABLE (PHENERGAN) 50MG/ML SINGLE DOSE VIAL",
+   "category": "drug",
+   "iss": {
+    "qty": 12
+   },
+   "orion_mass_only": {
+    "qty": 2,
+    "optimizer": 1.5
+   },
+   "orion_mass_volume": {
+    "qty": 2,
+    "optimizer": 1.5
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "PROPARACAINE EYE DROPS 0.5%, 15ML BOTTLE",
+   "category": "drug",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "PROVIGIL (MODAFINIL) 200 MG TABLETS",
+   "category": "drug",
+   "iss": {
+    "qty": 30
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "PSYCHOTHERAPY",
+   "category": "intervention",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "REFRESH ARTIFICIAL TEARS (CARBOXYMETHYLCELLULOSE) 0.5%, 0.4ML BOTTLE",
+   "category": "drug",
+   "iss": {
+    "qty": 40
+   },
+   "orion_mass_only": {
+    "qty": 6
+   },
+   "orion_mass_volume": {
+    "qty": 6
+   },
+   "lunar_7_5d": {
+    "qty": 3
+   }
+  },
+  {
+   "name": "REFRESH EYE OINTMENT (PETROLATUM WHITE AND MINERAL OIL) 42.5%; 57.3%, 3.5GM",
+   "category": "drug",
+   "iss": {
+    "qty": 4
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ROBINUL (GLYCOPYRROLATE) 0.2MG/ML",
+   "category": "drug",
+   "iss": {
+    "qty": 5
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ROCEPHIN (CEFTRIAXONE) 1 GM",
+   "category": "drug",
+   "iss": {
+    "qty": 3
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ROLLED GAUZE",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SALINE NOSE SPRAY 22ML BOTTLE",
+   "category": "drug",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SAM SPLINT - LEG/ARM SPLINT",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SCALPEL #11 (SCALPEL BLADE & HANDLE)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SCISSORS - TRAUMA",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SHARPS CONTAINER",
+   "category": "equipment",
+   "iss": {
+    "qty": 40
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SILVER NITRATE STICK 75%/25%",
+   "category": "drug",
+   "iss": {
+    "qty": 10
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SKIN STAPLE REMOVER",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SKIN STAPLER",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SMOOTH FORCEPS",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "SPACE ANTICIPATION GLASSES",
+   "category": "equipment",
+   "iss": {
+    "qty": 6
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SPACE STATION EYE WASH",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "STERILE GLOVES (LARGE, MEDIUM, AND SMALL) (PAIR)",
+   "category": "equipment",
+   "iss": {
+    "qty": 6
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "STERILE WATER 10 ML VIAL",
+   "category": "fluid",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "STETHOSCOPE",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "STETHOSCOPE EAR PIECES",
+   "category": "equipment",
+   "iss": {
+    "qty": 15
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SUCTION CARTRIDGE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SUCTION DEVICE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SUCTION DEVICE COLLECTION BAG",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SUCTION DEVICE SYRINGE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SUCTION TIP - MOUTH (CURETTE)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SUCTION TUBING - ENDOTRACHEAL TUBE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SUCTION TUBING - GASTRIC TUBE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SUDAFED (PSEUDOEPHEDRINE) 30MG",
+   "category": "drug",
+   "iss": {
+    "qty": 100
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SUDAFED 12 HOUR (PSEUDOEPHEDRINE) 120 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 125
+   },
+   "orion_mass_only": {
+    "qty": 6
+   },
+   "orion_mass_volume": {
+    "qty": 6
+   },
+   "lunar_7_5d": {
+    "qty": 7
+   }
+  },
+  {
+   "name": "SURGICAL LUBRICANT",
+   "category": "equipment",
+   "iss": {
+    "qty": 6
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SURGICAL TOOLS KIT",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SUTURE SCISSORS (BB)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SYRINGE (10CC)",
+   "category": "equipment",
+   "iss": {
+    "qty": 6
+   },
+   "orion_mass_only": {
+    "qty": 3
+   },
+   "orion_mass_volume": {
+    "qty": 3
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SYRINGE (35CC)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SYRINGE (3CC)",
+   "category": "equipment",
+   "iss": {
+    "qty": 20
+   },
+   "orion_mass_only": {
+    "qty": 2
+   },
+   "orion_mass_volume": {
+    "qty": 2
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SYRINGE (5CC)",
+   "category": "equipment",
+   "iss": {
+    "qty": 6
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "SYRINGE (60ML)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "TAMSULOSIN 0.4 MG TABLET",
+   "category": "drug",
+   "iss": {
+    "qty": 10
+   },
+   "orion_mass_only": {
+    "qty": 10
+   },
+   "orion_mass_volume": {
+    "qty": 10
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "TEMPORARY TOOTH FILLING",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "THERMOMETER",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "TOBRAMYCIN AND DEXAMETHASONE 0.3%; 0.1%, 10ML BOTTLE",
+   "category": "drug",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "TONGUE DEPRESSOR",
+   "category": "equipment",
+   "iss": {
+    "qty": 20
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "TONOMETER",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "TONOMETER TIP COVER",
+   "category": "equipment",
+   "iss": {
+    "qty": 150
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "TOOTHED FORCEPS (EE)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "TORADOL (KETOROLAC) 30MG/ML, 2ML SINGLE DOSE VIAL",
+   "category": "drug",
+   "iss": {
+    "qty": 3
+   },
+   "orion_mass_only": {
+    "qty": 4
+   },
+   "orion_mass_volume": {
+    "qty": 4
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "TOURNIQUET",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "TROPICAMIDE 1%",
+   "category": "drug",
+   "iss": {
+    "qty": 6
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "TYLENOL (ACETAMINOPHEN) 325 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 250
+   },
+   "orion_mass_only": {
+    "qty": 91
+   },
+   "orion_mass_volume": {
+    "qty": 96
+   },
+   "lunar_7_5d": {
+    "qty": 4
+   }
+  },
+  {
+   "name": "ULTRASOUND GEL",
+   "category": "equipment",
+   "iss": {
+    "qty": 17
+   },
+   "orion_mass_only": {
+    "qty": 3
+   },
+   "orion_mass_volume": {
+    "qty": 2
+   },
+   "lunar_7_5d": {
+    "qty": 1
+   }
+  },
+  {
+   "name": "ULTRASOUND MACHINE",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "URINARY COLLECTION BAG (LEG BAG)",
+   "category": "equipment",
+   "iss": {
+    "qty": 250
+   },
+   "orion_mass_only": {
+    "qty": 2
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "URINE CATHETER COUDE",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "URINE CATHETER FOLEY",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "URINE CATHETER SHORT",
+   "category": "equipment",
+   "iss": {
+    "qty": 10
+   },
+   "orion_mass_only": {
+    "qty": 3
+   },
+   "orion_mass_volume": {
+    "qty": 3
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "URINE CATHETER STRAIGHT",
+   "category": "equipment",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 3
+   },
+   "orion_mass_volume": {
+    "qty": 3
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "URINE CHEMSTRIPS",
+   "category": "equipment",
+   "iss": {
+    "qty": 10
+   },
+   "orion_mass_only": {
+    "qty": 9
+   },
+   "orion_mass_volume": {
+    "qty": 9
+   },
+   "lunar_7_5d": {
+    "qty": 5
+   }
+  },
+  {
+   "name": "URINE COLOR CHART",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "VALACYCLOVIR 1 GM TABLET",
+   "category": "drug",
+   "iss": {
+    "qty": 60
+   },
+   "orion_mass_only": {
+    "qty": 21
+   },
+   "orion_mass_volume": {
+    "qty": 21
+   },
+   "lunar_7_5d": {
+    "qty": 21
+   }
+  },
+  {
+   "name": "VALIUM (DIAZEPAM) 5 MG/ML, 2 ML SYRINGE",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 1
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "VARIABLE OXYGEN SYSTEM",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 1
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "VICODIN HP (HYDROCODONE/ ACETAMINOPHEN HP) 10 MG/660 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 30
+   },
+   "orion_mass_only": {
+    "qty": 36
+   },
+   "orion_mass_volume": {
+    "qty": 36
+   },
+   "lunar_7_5d": {
+    "qty": 6
+   }
+  },
+  {
+   "name": "VOS INTUBATED PATIENT HARDWARE (VENTILATOR/RESPIRATOR)",
+   "category": "equipment",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "WATER",
+   "category": "fluid",
+   "iss": {
+    "qty": 1
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "WOUND PACKING",
+   "category": "equipment",
+   "iss": {
+    "qty": 3
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ZANTAC (RANITIDINE) 150 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 60
+   },
+   "orion_mass_only": {
+    "qty": 4
+   },
+   "orion_mass_volume": {
+    "qty": 4
+   },
+   "lunar_7_5d": {
+    "qty": 4
+   }
+  },
+  {
+   "name": "ZIPRASIDONE (GEODON 20MG/ML)",
+   "category": "drug",
+   "iss": {
+    "qty": 2
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ZITHROMAX (AZITHROMYCIN) 250 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 18
+   },
+   "orion_mass_only": {
+    "qty": 12
+   },
+   "orion_mass_volume": {
+    "qty": 12
+   },
+   "lunar_7_5d": {
+    "qty": 6
+   }
+  },
+  {
+   "name": "ZOFRAN (ONDANSETRON) 8 MG TABLET",
+   "category": "drug",
+   "iss": {
+    "qty": 30
+   },
+   "orion_mass_only": {
+    "qty": 12
+   },
+   "orion_mass_volume": {
+    "qty": 12
+   },
+   "lunar_7_5d": {
+    "qty": 2
+   }
+  },
+  {
+   "name": "ZOLOFT (SERTRALINE) 50 MG",
+   "category": "drug",
+   "iss": {
+    "qty": 60
+   },
+   "orion_mass_only": {
+    "qty": 20
+   },
+   "orion_mass_volume": {
+    "qty": 20
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  },
+  {
+   "name": "ZYRTEC (CETIRIZINE) 10 MG TABLET",
+   "category": "drug",
+   "iss": {
+    "qty": 30
+   },
+   "orion_mass_only": {
+    "qty": 0
+   },
+   "orion_mass_volume": {
+    "qty": 0
+   },
+   "lunar_7_5d": {
+    "qty": 0
+   }
+  }
+ ]
+}
