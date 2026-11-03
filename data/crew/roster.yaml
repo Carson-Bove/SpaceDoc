@@ -43,7 +43,7 @@ crew:
       weight_kg: 78
       allergies: []
       medications: []
-      history: [no prior kidney stones]
+      history: [no significant medical history]
       tetanus: booster 2023
       baselines:
         vision: no correction needed before flight
