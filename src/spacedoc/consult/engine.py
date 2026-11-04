@@ -20,6 +20,7 @@ from spacedoc.agent.orchestrator import Orchestrator
 from spacedoc.answer.schema import VerifiedAnswer, require_all
 from spacedoc.audit.log import AuditLog
 from spacedoc.consult import prompts
+from spacedoc.consult import questions as asked
 from spacedoc.consult.redflags import RedFlagHit, RedFlags
 from spacedoc.consult.roster import CrewMember
 from spacedoc.consult.safety import (
@@ -44,7 +45,7 @@ class Answer(BaseModel):
     or a short typed answer), or to one item of the exposure check."""
 
     kind: Literal["question", "screen"] = "question"
-    question: str  # the question's topic, or the exposure item's question
+    question: str  # the question as it was asked on its card, or the exposure item's question
     answer: str
     screen_id: str | None = None
 
@@ -65,8 +66,13 @@ class ExamResult(BaseModel):
 
 def compose(text: str, answers: list[Answer], exams: list[ExamResult]) -> str:
     """The message as the model and the transcript see it: answers, exams, then free text.
+    Each answer is paired with the question it answers, so a bare "Yes" is never ambiguous.
     Exposure-check answers are kept apart (Turn.exposure_answers)."""
-    lines = [f"{a.question}: {a.answer}." for a in answers if a.kind == "question"]
+    lines = [
+        f'Answer to "{a.question.strip()}": {a.answer.strip()}'
+        for a in answers
+        if a.kind == "question"
+    ]
     lines += [f"Exam ({e.request}): {e.result}" for e in exams]
     if text.strip():
         lines.append(text.strip())
@@ -125,6 +131,8 @@ class Turn:
     screen: list[ScreenItem] = field(default_factory=list)  # exposure card shown with the reply
     exposure_answers: dict[str, str] = field(default_factory=dict)  # sent with this message
     exposure_text: str = ""  # how those answers were put to the model
+    answers: list[Answer] = field(default_factory=list)  # card answers sent with this message
+    repeats_dropped: list[str] = field(default_factory=list)  # already-answered, not re-asked
 
     @property
     def paused(self) -> bool:
@@ -168,6 +176,10 @@ class Consult:
 
     def delay(self) -> str:
         return self.env.delay_text()
+
+    def answered(self) -> list[str]:
+        """Every question the user has answered on a card so far, as it was asked."""
+        return [a.question for t in self.turns for a in t.answers]
 
     @property
     def alerts(self) -> list[RedFlagHit]:
@@ -288,6 +300,7 @@ class ConsultEngine:
         answers, exams = answers or [], exams or []
         questions = [a for a in answers if a.kind == "question"]
         turn = Turn(n=len(consult.turns) + 1, user_text=compose(text, questions, exams))
+        turn.answers = questions
         if self.screen:
             turn.exposure_answers = {
                 a.screen_id: a.answer
@@ -357,11 +370,14 @@ class ConsultEngine:
 
     @staticmethod
     def _spacedoc_words(consult: Consult) -> str:
-        """Everything SpaceDoc has asked: its messages and the exposure card's questions."""
+        """Everything SpaceDoc has asked: the questions in its messages and on its cards, and
+        the exposure card's questions. A statement such as "Let me check for a head injury"
+        does not count as asking."""
         parts = []
         for t in consult.turns:
             if t.reply:
-                parts.append(t.reply.message)
+                parts += asked.question_sentences(t.reply.message)
+                parts += [q.ask for q in t.reply.questions]
             parts += [i.question for i in t.screen]
         return "\n".join(parts)
 
@@ -425,8 +441,9 @@ class ConsultEngine:
             turn.error = "The model did not return a valid reply (two attempts)."
         if turn.reply:
             reply = turn.reply
-            reply.questions = reply.questions[: self.max_questions]
             reply.message = reply.message.strip()
+            turn.repeats_dropped = asked.clean(reply, consult.answered())
+            reply.questions = reply.questions[: self.max_questions]
             reply.exam_requests = reply.exam_requests[:2]
             if reply.urgent.flag and not reply.urgent.reason.strip():
                 reply.urgent.reason = "The model flagged this as urgent without giving a reason."
@@ -449,6 +466,7 @@ class ConsultEngine:
                 self._append(turn, lead + item.question)
                 reply.questions.append(
                     Question(
+                        ask=item.question,
                         topic=item.topic,
                         why="On SpaceDoc's must-ask list (draft)",
                         answer_type="free_text",
@@ -629,6 +647,8 @@ class ConsultEngine:
                 "exposure_answers": turn.exposure_answers,
                 "exposure_text": turn.exposure_text,
                 "must_ask_added": turn.must_ask_added,
+                "answers": [a.model_dump() for a in turn.answers],
+                "repeats_dropped": turn.repeats_dropped,
             },
         )
 

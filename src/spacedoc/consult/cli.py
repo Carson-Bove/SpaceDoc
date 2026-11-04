@@ -60,7 +60,9 @@ def quick_answers(text: str, turn: Turn) -> list[Answer] | None:
     tokens = text.lower().replace(",", " ").split()
     if not qs or len(tokens) != len(qs) or not all(t in QUICK for t in tokens):
         return None
-    return [Answer(question=q.topic, answer=QUICK[t]) for q, t in zip(qs, tokens, strict=True)]
+    return [
+        Answer(question=q.ask or q.topic, answer=QUICK[t]) for q, t in zip(qs, tokens, strict=True)
+    ]
 
 
 def exposure_card(items: list[ScreenItem]) -> str:

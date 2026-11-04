@@ -148,7 +148,7 @@ class MustNotMiss(BaseModel):
             hits = sum(
                 1
                 for p in rule.patterns
-                if any(not _negated(text, m.start()) for m in re.finditer(p, text, re.I))
+                if any(not _negated(text, m.start(), m.end()) for m in re.finditer(p, text, re.I))
             )
             if hits >= rule.min_matches:
                 out.append(rule)
@@ -164,7 +164,9 @@ class MustNotMiss(BaseModel):
 
 
 def _says(patterns: list[str], text: str) -> bool:
-    return any(not _negated(text, m.start()) for p in patterns for m in re.finditer(p, text, re.I))
+    return any(
+        not _negated(text, m.start(), m.end()) for p in patterns for m in re.finditer(p, text, re.I)
+    )
 
 
 class AskItem(BaseModel):

@@ -31,6 +31,12 @@ class WorkingDx(BaseModel):
 class Question(BaseModel):
     """One question asked in the message."""
 
+    ask: str = Field(
+        "",
+        description="The question exactly as worded in your message; it is shown on the "
+        "answer card",
+        json_schema_extra={"maxLength": 120},
+    )
     topic: str = _cap(50, "The question's subject in a few words, e.g. 'how the cut happened'")
     why: str = _cap(80, "Why you are asking, in a few words")
     answer_type: Literal["yes_no", "choice", "free_text", "measurement"] = "free_text"

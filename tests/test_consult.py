@@ -254,8 +254,8 @@ def test_quick_replies_become_button_answers(demo_system, env_t4):
     turn = demo_system.consult.turn(c, "Since this morning", exposure(demo_system.consult))
     answers = quick_answers("y n", turn)
     assert [(a.question, a.answer) for a in answers] == [
-        ("fever or chills", "Yes"),
-        ("blood in the urine", "No"),
+        ("Fever or chills", "Yes"),
+        ("Blood in the urine", "No"),
     ]
     assert quick_answers("y", turn) is None  # two questions, one answer: left as typed
     assert quick_answers("No fever", turn) is None

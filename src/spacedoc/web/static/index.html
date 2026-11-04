@@ -514,7 +514,8 @@ function gatherAnswer() {
       const q = lastTurn.reply.questions[card.dataset.q];
       const input = card.querySelector("input");
       const answer = input ? input.value.trim() : pressed(card.querySelector(".quick"));
-      if (answer) { answers.push({kind: "question", question: q.topic, answer}); shown.push(`${cap(q.topic)}: ${answer}`); }
+      const asked = q.ask || cap(q.topic);
+      if (answer) { answers.push({kind: "question", question: asked, answer}); shown.push(`${asked} — ${answer}`); }
     }
     for (const input of said.querySelectorAll("input[data-exam]")) {
       const what = lastTurn.exam_checks[input.dataset.exam].request.what;
@@ -615,8 +616,8 @@ function renderTurn(t) {
   const questions = r.questions.map((q, i) => {
     const input = q.answer_type === "yes_no" ? buttons(YNU)
       : q.answer_type === "choice" && q.choices.length ? buttons(q.choices)
-      : `<input type="text" aria-label="${esc(q.topic)}" placeholder="${q.answer_type === "measurement" ? "Reading" : "Short answer (optional)"}">`;
-    return `<div class="acard" data-kind="question" data-q="${i}"><div class="atopic">${esc(cap(q.topic))}</div>${input}</div>`;
+      : `<input type="text" aria-label="${esc(q.ask || q.topic)}" placeholder="${q.answer_type === "measurement" ? "Reading" : "Short answer (optional)"}">`;
+    return `<div class="acard" data-kind="question" data-q="${i}"><div class="atopic">${esc(q.ask || cap(q.topic))}</div>${input}</div>`;
   });
   const exams = t.exam_checks.map((c, i) => {
     const eq = c.request.equipment.join(", ");
@@ -632,6 +633,7 @@ function renderTurn(t) {
   const why = [
     ...r.questions.map(x => `${x.topic}: ${x.why}`),
     ...(t.must_ask_added.length ? ["SpaceDoc added a question from its must-ask list (draft) that the model left out."] : []),
+    ...(t.repeats_dropped.length ? [`SpaceDoc removed ${t.repeats_dropped.length === 1 ? "a question" : "questions"} you had already answered: ${t.repeats_dropped.join(" ")}`] : []),
     ...(t.screen.length ? ["SpaceDoc asks the exposure check in every consult (draft list)."] : []),
   ];
   const cards = [...questions, ...exams].join("") + screen;

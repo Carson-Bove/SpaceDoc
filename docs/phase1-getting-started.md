@@ -33,7 +33,7 @@ pytest -q
 
 - `consult` runs a scripted consult in Terminal: questions, then a checked assessment.
 - `eval run` runs the 3 example cases through the assessment step and writes `eval_runs/<time>/report.md`.
-- `pytest -q` runs the 204 tests.
+- `pytest -q` runs the 214 tests.
 
 In the demo flank-pain assessment, the verification layer should:
 

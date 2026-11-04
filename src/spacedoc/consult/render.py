@@ -78,6 +78,8 @@ def render_turn(turn: Turn) -> str:
         out.append("  Why: " + "; ".join(f"{q.topic}: {q.why}" for q in r.questions))
     if turn.must_ask_added:
         out.append("  (SpaceDoc added a must-ask question the model left out.)")
+    for q in turn.repeats_dropped:
+        out.append(f"  (SpaceDoc removed a question already answered: {q})")
     if r.working_ddx:
         out.append(f"{WORKING_LABEL}:")
         out += [f"  - {d.condition} · {d.likelihood} · {d.why}" for d in r.working_ddx]
@@ -149,7 +151,12 @@ def record_markdown(consult: Consult) -> str:
             quoted = "\n> ".join(r.message.splitlines())
             lines += ["**SpaceDoc** _(not checked)_:", f"> {quoted}", ""]
             if r.questions:
-                lines += [f"- **Asked about** {q.topic} _(why: {q.why})_" for q in r.questions]
+                lines += [
+                    f"- **Asked:** {q.ask or q.topic} _(topic: {q.topic}; why: {q.why})_"
+                    for q in r.questions
+                ]
+            if t.repeats_dropped:
+                lines += [f"- **Removed as already answered:** {q}" for q in t.repeats_dropped]
             if t.must_ask_added:
                 lines.append(
                     "- **Added by SpaceDoc** (must-ask, left out by the model): "

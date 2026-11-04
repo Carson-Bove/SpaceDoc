@@ -83,5 +83,5 @@ def test_consult_api_takes_structured_answers(demo_system):
     }
     t = client.post(f"/api/consult/{cid}/turn", json=body).json()
     assert not t["paused"] and t["reply"]
-    assert t["user_text"] == "fever or chills: No.\nExam (temperature): 37.2 C"
+    assert t["user_text"] == 'Answer to "fever or chills": No\nExam (temperature): 37.2 C'
     assert client.post(f"/api/consult/{cid}/turn", json={"text": " "}).status_code == 400

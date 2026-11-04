@@ -33,6 +33,15 @@ _NEW_STATEMENT = re.compile(
 # list counts as negated only when it is joined by "or" or "nor" ("no fever, cough or chest
 # pain"), because "no fever, chest pain" may mean the chest pain is present.
 _CLINICAL_NEGATION = re.compile(r"\b(denies|denied|negative for)\b", re.I)
+# A "no" after the sign, as people answer a checklist: "chest pain: no", "Smoke? No.",
+# "trouble breathing no". The "no" must end the answer, so "chest pain, no fever" (chest
+# pain present, no fever) still counts.
+_NEGATION_AFTER = re.compile(
+    r"^[^.;:?!\n,]{0,25}?\s*[:?,\-–—]*\s*"
+    r"(?:no|none|nope|nil|negative|never|not really|not at all|n/a)\b[\s.!]*"
+    r"(?=$|\n|;|,?\s*(?:but|and)\b)",
+    re.I,
+)
 
 
 class RedFlagRule(BaseModel):
@@ -62,7 +71,11 @@ class RedFlags(BaseModel):
         for rule in self.rules:
             for pattern in rule.patterns:
                 match = next(
-                    (m for m in re.finditer(pattern, text, re.I) if not _negated(text, m.start())),
+                    (
+                        m
+                        for m in re.finditer(pattern, text, re.I)
+                        if not _negated(text, m.start(), m.end())
+                    ),
                     None,
                 )
                 if match:
@@ -81,7 +94,9 @@ class RedFlags(BaseModel):
         return [s.replace("{delay}", delay) for s in (steps or self.default_steps)]
 
 
-def _negated(text: str, start: int) -> bool:
+def _negated(text: str, start: int, end: int | None = None) -> bool:
+    if end is not None and _NEGATION_AFTER.match(text[end:]):
+        return True
     before = _CLAUSE_END.split(text[:start])[-1]
     window = _WINDOW_END.split(before)[-1].split()[-4:]
     if _NEGATION.search(" ".join(window)):

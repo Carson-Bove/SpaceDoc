@@ -156,6 +156,7 @@ def create_app(system: System) -> FastAPI:
             "exposure_answers": turn.exposure_answers,
             "must_ask_added": turn.must_ask_added,
             "must_not_miss_added": turn.must_not_miss_added,
+            "repeats_dropped": turn.repeats_dropped,
         }
 
     @app.get("/api/roster")

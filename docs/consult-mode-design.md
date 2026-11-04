@@ -293,3 +293,14 @@ After trying the conversation-first page, the NASA team asked for the answer car
 | The assessment | Items answered No are not named ("No to all 6 spaceflight exposures asked about"), so their wording cannot steer the source search or the model |
 | Typed negatives | A negation now covers a list joined by "or" ("no spacewalk, radiation alert, smoke or smell"; "there hasn't been any smoke or fire"), and "denies" or "negative for" covers a comma list. It never covers a new statement: "no fever, I have chest pain", "no fever, chest pain" and "no fever and chest pain since this morning" still raise the chest-pain card, since missing a real sign costs more than one dismissed card |
 
+
+## 15. Answers paired with their questions, and no repeat questions
+
+A headache practice consult (audit-000066) showed three problems:
+
+| Finding | Change |
+|---|---|
+| Two questions shared one topic ("headache or neurological symptoms"), and the model received answers as `topic: Yes`, so it could not tell which question a "Yes" answered. A "Yes" to the head-injury card was never followed up | Each question now carries **`ask`**, the question as worded in the message (prompt c3.2). Its card shows that question, and the model receives `Answer to "<question>": <answer>`. Topics must differ |
+| The model listed a question it never wrote in its message, and asked again what was already answered | After every reply, code (`consult/questions.py`) drops a second question that asks the same thing, drops a question already answered on a card (in any close wording) along with its sentence, and adds to the message any listed question it left out. The record notes each removal |
+| "Let me check for a recent head injury" counted as asking the must-ask question | Only sentences with a question mark, and the cards, count as asking |
+| A "no" after a sign ("chest pain: no", "Smoke? No.") raised the red-flag card | A trailing "no", "none" or "not really" that ends the answer now negates the sign. "Chest pain, no fever" still raises the chest-pain card |
