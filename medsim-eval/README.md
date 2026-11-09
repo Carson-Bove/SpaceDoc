@@ -4,7 +4,7 @@ Simulation-based evaluation for crew medical digital assistants. It works with *
 
 > **Research prototype.** Not for clinical use. Design and rationale: [docs/11-evaluation-system.md](../docs/11-evaluation-system.md).
 
-**Status:** Phase A (scenario authoring) is built: file formats v0.2, validator, library and the offline Scenario Builder. The digital twin, runner and agents (Phases B–E) are not built yet.
+**Status:** Phase A (scenario authoring) is built: file formats v0.2, validator, library, the offline Scenario Builder and printable scoring sheets. Phase B has a first version: the runner, the SpaceDoc adapter, the AI crewmember and a simple twin. Scoring (Phase C) and the full digital twin (Phase D) are not built yet.
 
 ## Install
 
@@ -56,6 +56,29 @@ medsim build-form
 ```
 
 The source is [`form/template.html`](form/template.html).
+
+## Running scenarios (Phase B, first version)
+
+```bash
+medsim plan scenarios/inbox                     # the runs each scenario gets (up to 12)
+medsim run scenarios/inbox --runs 1             # one run per scenario, against SpaceDoc
+medsim run scenarios/inbox                      # every run
+medsim run X.scenario.json --spacedoc-demo --crewmember rules   # no models needed: tests the plumbing
+```
+
+On the laptop this needs Ollama with SpaceDoc's models (`spacedoc models pull`) and the crewmember's model (`ollama pull llama3.2:3b`, or pick another with `--model`). Each run writes `runs/<batch>/<scenario>/<run>/`: `events.jsonl` (every message, extracted action and twin event, with simulated time), `transcript.md` and `run.json` (the plan entry, settings and outcome). `batch.json` summarises the batch.
+
+How a run works:
+
+- **SpaceDoc** is started once per scenario with a crew roster made from MedSim's, with the scenario's chart for the patient, so it knows the record as it would aboard. Consults are practice consults. SpaceDoc's own code and data are untouched.
+- **The crewmember** opens with the scenario's opening statement. A local model words each reply, but code decides what it may say: the patient's chart, what the twin shows at that moment, and the clerk's "on direct questioning" history. `--crewmember rules` answers by keyword, without a model.
+- **Each reply** is read for what the crew must do (medicines, mapped to kit items; vitals; exams; when to check again), and the twin applies it.
+- **The simple twin** follows the scenario's timeline and keyframes (treated or untreated), the time-critical rule and complication events, and counts kit stock. The course side is set by the run plan, or drawn from the CLiFF for CLiFF-odds runs.
+- **After the consult** the clock jumps to the next change (a new symptom, a complication, or the re-check the assistant asked for) and the crewmember reports back, up to 3 times or the end of the scenario.
+
+## Scoring sheets
+
+`medsim sheet X.scenario.json` prints a scoring sheet to fill in by pen; `medsim sheet` alone prints a blank one. Needs reportlab (`pip install -e "medsim-eval[pdf]"`).
 
 ## Updating the library from NASA
 

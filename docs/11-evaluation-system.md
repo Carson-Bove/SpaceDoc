@@ -414,6 +414,8 @@ Assistants without MCP still work. They just ask the crew for everything through
 
 **Decision needed:** the CMO-DA interface spec, if you can get it, to confirm the direction before Phase B.
 
+**Built (first version):** the adapter interface and a SpaceDoc adapter on the conversation channel. SpaceDoc takes everything through the conversation (its consult API), so the world channel's MCP server waits for an assistant that calls tools, such as CMO-DA once its spec is in. The SpaceDoc adapter starts SpaceDoc with a crew roster built from MedSim's, with the scenario's chart for the patient; an urgent-sign card is treated as an emergency and goes straight to SpaceDoc's checked assessment. A scripted stand-in assistant tests the pipeline.
+
 ## 9. Agents, outputs and review
 
 All agents run on local models. Each agent's model is a config setting, so they can be swapped and compared.
@@ -463,7 +465,7 @@ A **separate package in this repository**, e.g. `medsim-eval/` with its own `pyp
 | **A5** | Second clerk round on the v2 form | Time per scenario is measured; the form is revised again |
 | A6 | Several-patient scenarios in the form: triage, illness that spreads, the CMO as patient, allocating scarce drugs; research on spaceflight triage and drug storage | Clinical lead agrees the triage rules |
 | A7 (paper sheet done) | Manual scoring sheet, a separate tool for clerks testing cases by hand. Paper version: `medsim sheet` prints a PDF for any scenario, or a blank one ([blank](../medsim-eval/dist/scoring-sheet-blank.pdf), [worked example](../medsim-eval/dist/MSE-0001-scoring-sheet.pdf)) | Clerk scores feed the Phase E calibration set |
-| B | Adapter interface + SpaceDoc adapter; MCP world server (static twin); user agent; runner (up to 12 runs per scenario) | One scenario runs end to end on the laptop overnight |
+| B (first version built) | Adapter interface + SpaceDoc adapter; MCP world server (static twin, waiting for a tool-calling assistant); user agent; runner (up to 12 runs per scenario). Built: `medsim plan` and `medsim run`, the SpaceDoc adapter, the crewmember (local model, or rules), action extraction, a simple twin and run logs | One scenario runs end to end on the laptop overnight (done here against SpaceDoc's demo mode; a real-model run on the laptop is next) |
 | C | Scorer, judge, viewer | Judge report with working anomaly links |
 | D | Twin v1 (CLiFF course model, effect table, complication events, clock); mission events and the paper doll after | The outcome distribution over seeds matches the CLiFF within tolerance |
 | E | Feedback agent, medical + technical reports; scorer validation study | Scorer–human κ reported per item |

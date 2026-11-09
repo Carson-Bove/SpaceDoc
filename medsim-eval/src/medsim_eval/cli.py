@@ -138,5 +138,120 @@ def sheet_cmd(
     typer.echo(f"wrote {path}")
 
 
+def _load_scenarios(paths: list[Path], library: Path):
+    """Valid scenarios from files or folders (e.g. scenarios/inbox); report and skip the rest."""
+    from medsim_eval.models import Scenario
+    from medsim_eval.validate import load
+
+    files = [f for p in paths for f in (sorted(p.rglob("*.scenario.json")) if p.is_dir() else [p])]
+    out = []
+    for f in files:
+        errors = [i for i in validate([f], library) if i.level == "error"]
+        model, _ = load(f)
+        if errors or not isinstance(model, Scenario):
+            typer.echo(f"skipping {f}: {len(errors)} error(s); run `medsim validate {f}`")
+            continue
+        out.append(model)
+    return out
+
+
+@app.command("plan")
+def plan_cmd(
+    paths: list[Path] = typer.Argument(..., help="Scenario files or folders"),
+    library: Path = LibraryOpt,
+    seed: int = typer.Option(0, help="Base seed"),
+) -> None:
+    """Show the runs each scenario gets: environments x best and worst course, plus CLiFF odds."""
+    from medsim_eval.run.plan import plan_runs
+    from medsim_eval.validate import load_library
+
+    lib, _ = load_library(library)
+    for sc in _load_scenarios(paths, library):
+        runs = plan_runs(sc, lib, seed)
+        typer.echo(f"{sc.scenario_id}: {len(runs)} runs")
+        for r in runs:
+            typer.echo(
+                f"  {r.run_id:<16} {r.env} {r.env_name:<26} course {r.course:<6} seed {r.seed}"
+            )
+
+
+@app.command("run")
+def run_cmd(
+    paths: list[Path] = typer.Argument(..., help="Scenario files or folders, e.g. scenarios/inbox"),
+    assistant: str = typer.Option(
+        "spacedoc", help="spacedoc, or scripted (a stand-in for testing)"
+    ),
+    crewmember: str = typer.Option("llm", help="llm (a local model plays the crewmember) or rules"),
+    model: str = typer.Option("llama3.2:3b", help="Ollama model for the crewmember and extraction"),
+    ollama_url: str = typer.Option("http://localhost:11434", help="Ollama server"),
+    spacedoc_config: Path = typer.Option(
+        None, help="SpaceDoc's spacedoc.toml (default: the repo's)"
+    ),
+    spacedoc_demo: bool = typer.Option(False, help="Run SpaceDoc in its scripted demo mode"),
+    script: Path = typer.Option(None, help="Reply script (JSON list) for --assistant scripted"),
+    runs: int = typer.Option(None, help="Only the first N runs of each scenario"),
+    out: Path = typer.Option(Path("runs"), help="Output folder"),
+    seed: int = typer.Option(0, help="Base seed"),
+    max_turns: int = typer.Option(12, help="Consult turns before follow-ups start"),
+    max_followups: int = typer.Option(3, help="Follow-up reports after the consult"),
+    library: Path = LibraryOpt,
+) -> None:
+    """Run scenarios against an assistant and log every run (Phase B)."""
+    from medsim_eval.run.adapters import make_assistant
+    from medsim_eval.run.crewmember import (
+        LLMCrewmember,
+        LLMExtractor,
+        RuleCrewmember,
+        RuleExtractor,
+    )
+    from medsim_eval.run.llm import OllamaLLM
+    from medsim_eval.run.runner import RunConfig, run_batch
+    from medsim_eval.validate import load_library
+
+    lib, _ = load_library(library)
+    scenarios = _load_scenarios(paths, library)
+    if not scenarios:
+        typer.echo("no valid scenarios to run")
+        raise typer.Exit(1)
+    if crewmember == "llm":
+        llm = OllamaLLM(model, ollama_url)
+        problem = llm.check()
+        if problem:
+            typer.echo(problem)
+            raise typer.Exit(1)
+
+        def make_crew(persona, spec):
+            return LLMCrewmember(persona, llm, spec.env_name, spec.seed)
+
+        extractor = LLMExtractor(llm)
+    elif crewmember == "rules":
+
+        def make_crew(persona, spec):
+            return RuleCrewmember(persona)
+
+        extractor = RuleExtractor()
+    else:
+        typer.echo(f"unknown crewmember {crewmember!r} (llm or rules)")
+        raise typer.Exit(1)
+    options = (
+        {"config": spacedoc_config, "demo": spacedoc_demo}
+        if assistant == "spacedoc"
+        else {"script": script}
+    )
+    batch = run_batch(
+        scenarios,
+        lib,
+        make_assistant(assistant, **options),
+        make_crew,
+        extractor,
+        out,
+        RunConfig(max_turns=max_turns, max_followups=max_followups),
+        only=runs,
+        base_seed=seed,
+        progress=typer.echo,
+    )
+    typer.echo(f"wrote {batch}")
+
+
 if __name__ == "__main__":
     app()
