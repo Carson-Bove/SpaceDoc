@@ -14,7 +14,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.5"]
+pdf = ["reportlab>=4"]
+dev = ["pytest>=8", "ruff>=0.5", "reportlab>=4"]
 
 [project.scripts]
 medsim = "medsim_eval.cli:app"

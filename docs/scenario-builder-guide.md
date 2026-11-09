@@ -70,6 +70,10 @@ Case check flags non-observable terms such as *appropriately*, *adequate* and *p
 
 To revise a case, use **Open case files** and load both files. Files from the first version of the form are converted by the coordinator with `medsim migrate`.
 
+## 5. Scoring a run by hand
+
+To score a run on paper, print a scoring sheet: the [blank sheet](../medsim-eval/dist/scoring-sheet-blank.pdf) works for any scenario, and the coordinator can print one pre-filled for a scenario with `medsim sheet MSE-0123.scenario.json` ([example](../medsim-eval/dist/MSE-0001-scoring-sheet.pdf)). Score from the transcript alone: tick one box per item and write the turn number or simulated time as evidence. The sheet follows the four layers above: critical errors, checklist (with the standard items), global ratings and outcome.
+
 ## Lifecycle
 
 ```

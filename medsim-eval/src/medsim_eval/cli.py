@@ -97,5 +97,46 @@ def build_form_cmd(
     typer.echo(f"wrote {path} ({path.stat().st_size // 1024} KB)")
 
 
+@app.command("sheet")
+def sheet_cmd(
+    scenario: Path = typer.Argument(
+        None, help="A .scenario.json file; leave out for a blank sheet for any scenario"
+    ),
+    out: Path = typer.Option(None, "--out", "-o", help="Where to write the PDF"),
+    library: Path = LibraryOpt,
+) -> None:
+    """Write a printable scoring sheet (PDF) to fill in by pen while reading a run's transcript."""
+    try:
+        from medsim_eval.sheet import build_sheet
+    except ImportError:
+        typer.echo("The scoring sheet needs reportlab: pip install 'medsim-eval[pdf]'")
+        raise typer.Exit(1) from None
+    from medsim_eval.models import Scenario, ScenarioRubric
+    from medsim_eval.validate import load, load_library
+
+    lib, _ = load_library(library)
+    sc = rb = None
+    if scenario:
+        sc, errs = load(scenario)
+        rb, rerrs = load(scenario.parent / sc.rubric) if isinstance(sc, Scenario) else (None, [])
+        if not isinstance(sc, Scenario) or not isinstance(rb, ScenarioRubric):
+            for issue in errs + rerrs:
+                typer.echo(str(issue))
+            typer.echo("Fix the scenario and its rubric first (medsim validate).")
+            raise typer.Exit(1)
+        base = lib.base_rubrics.get(rb.base)
+        if base is None:
+            typer.echo(f"unknown base rubric {rb.base!r}")
+            raise typer.Exit(1)
+    else:
+        base = max(
+            lib.base_rubrics.values(),
+            key=lambda b: tuple(int(x) for x in b.version.split(".")),
+        )
+    default = f"{sc.scenario_id}-scoring-sheet.pdf" if sc else "scoring-sheet-blank.pdf"
+    path = build_sheet(out or Path(default), base, sc, rb, lib.conditions, lib.crew)
+    typer.echo(f"wrote {path}")
+
+
 if __name__ == "__main__":
     app()
