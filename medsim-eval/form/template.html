@@ -137,7 +137,7 @@ function blank() {
       review: { status: "draft", reviewers: [], physiology_review: "not_needed", notes_for_physiologist: "", notes: "" }, tags: []
     },
     rubric: { schema_version: LIB.schema_version, rubric_id: "", scenario_id: "", base: BASE.ref, gates: [], items: [], must_not_miss_tested: true, notes: "" },
-    ui: { envsTouched: false, showInjects: false, encQuery: "", habEnv: "" }
+    ui: { envsTouched: false, open: {}, encQuery: "", habEnv: "" }
   };
 }
 function blankComplication(id) {
@@ -146,6 +146,8 @@ function blankComplication(id) {
 }
 // Fill fields a saved draft or an imported file may lack.
 function normalise(st) {
+  st.ui = { ...blank().ui, ...(st.ui || {}) };
+  st.ui.open ||= {};
   for (const p of st.scenario.patients) p.complications = (p.complications || []).map(x => merge(blankComplication(x.id), x));
   return st;
 }
@@ -257,6 +259,12 @@ function picker(values, options, { placeholder = "Search…", label = o => o.lab
   return wrap;
 }
 function card(title, help, ...body) { return h("section", { class: "card" }, h("h2", {}, title), help ? h("p", { class: "help" }, help) : null, ...body); }
+// A collapsible box that stays open or closed across re-renders (the form is redrawn on most edits).
+function det(key, summary, { open = false, style = null, summaryStyle = null } = {}, ...body) {
+  const isOpen = key in S.ui.open ? S.ui.open[key] : open;
+  return h("details", { open: isOpen, style, ontoggle: e => { if (S.ui.open[key] !== e.target.open) { S.ui.open[key] = e.target.open; save(); } } },
+    h("summary", { style: summaryStyle }, summary), ...body);
+}
 function rowBox(title, onRemove, ...body) {
   return h("div", { class: "row" }, h("div", { class: "head" }, title, onRemove ? h("button", { class: "small danger", type: "button", onclick: onRemove }, "Remove") : null), ...body);
 }
@@ -349,8 +357,8 @@ function renderPatient() {
       h("div", { class: "lbl" }, "Medications"), medsEditor(ch),
       h("div", { class: "lbl" }, "Allergies"), check(ch, "nkda", "NKDA", { rerender: true }), allergyEditor(ch),
       h("div", { class: "grid", style: "margin-top:8px" }, field("Social history", text(ch, "social_history"))),
-      h("details", {}, h("summary", {}, `Family history (optional, ${ch.family_history.length})`), strList(ch.family_history, "e.g. father: MI at 64")),
-      h("details", {}, h("summary", {}, `Immunizations (${ch.immunizations.length})`), strList(ch.immunizations, "e.g. Tdap 2023")));
+      det("family", `Family history (optional, ${ch.family_history.length})`, {}, strList(ch.family_history, "e.g. father: MI at 64")),
+      det("immunizations", `Immunizations (${ch.immunizations.length})`, {}, strList(ch.immunizations, "e.g. Tdap 2023")));
   }
   return card("4. Patient history", "Select the patient from the crew roster.", ...body);
 }
@@ -523,7 +531,7 @@ function renderAnswer() {
       field("Etiology", text(g, "etiology", { placeholder: "e.g. appendiceal luminal obstruction (appendicolith)" }))),
     h("div", { class: "lbl" }, "Differential diagnosis (ranked)"), diff,
     h("div", { class: "lbl" }, "Can't-miss diagnoses"), strList(g.must_not_miss, "e.g. perforated appendicitis"),
-    h("details", {}, h("summary", {}, "Accepted synonyms"), synWrap));
+    det("synonyms", "Accepted synonyms", {}, synWrap));
 }
 
 function renderRubric() {
@@ -548,7 +556,7 @@ function renderRubric() {
       cxs.length || it.complication ? field("Applies to", sel(it, "complication", [["", "Every run"], ...cxs.map(c => [c.id, `Only runs where ${c.id}${c.name ? ` (${c.name})` : ""} occurs`])], { rerender: true })) : null,
       it.type === "rating" ? h("div", { class: "grid" }, ...["1", "3", "5"].map(k => field(`Anchor for ${k}`,
         h("input", { type: "text", value: (it.anchors || {})[k] || "", oninput: e => { (it.anchors ||= {})[k] = e.target.value; changed(); } })))) : null,
-      h("details", {}, h("summary", {}, `Requires equipment (${(it.requires || []).length}); not applicable where it is absent`),
+      det(`requires-${it.id}`, `Requires equipment (${(it.requires || []).length}); not applicable where it is absent`, {},
         picker(it.requires ||= [], equipment, { placeholder: "Search equipment…", label: o => `${o.label} (${[...o.envs].join(", ")})` })));
   });
   const lib = h("div");
@@ -568,11 +576,11 @@ function renderRubric() {
     h("div", { class: "lbl" }, "Standard items"),
     ...(b.standard_items || []).map(s => h("div", { class: "std" }, h("b", {}, `${s.id} +${s.weight} (${s.domain}) `), s.text, s.depends_on ? h("span", { class: "muted" }, ` · only with ${s.depends_on}`) : null,
       h("span", { class: "muted" }, s.scope === "complication" ? " · once for each complication that occurs" : " · every run"))),
-    h("details", {}, h("summary", {}, `Critical errors (${b.gates.length}) and global rating domains (${b.domains.length})`),
+    det("base", `Critical errors (${b.gates.length}) and global rating domains (${b.domains.length})`, {},
       h("ul", {}, ...b.gates.map(g => h("li", {}, h("b", {}, g.id), " ", g.text))),
       h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "Domain"), h("th", {}, "1"), h("th", {}, "3"), h("th", {}, "5"))),
         h("tbody", {}, ...b.domains.map(d => h("tr", {}, h("td", {}, h("b", {}, `${d.id} ${d.name}`)), h("td", {}, d.anchors["1"]), h("td", {}, d.anchors["3"]), h("td", {}, d.anchors["5"])))))),
-    h("details", { open: !rb.items.length }, h("summary", {}, `Common checklist items (${b.item_library.length})`),
+    det("library", `Common checklist items (${b.item_library.length})`, { open: !rb.items.length },
       h("div", { class: "grid" },
         h("input", { type: "search", placeholder: "Filter…", oninput: e => { libFilter.q = e.target.value; drawLib(); } }),
         (() => { const s = h("select", { onchange: e => { libFilter.domain = e.target.value; drawLib(); } }, h("option", { value: "" }, "All domains"), ...domains.map(([v, l]) => h("option", { value: v }, l))); return s; })()),
@@ -582,7 +590,7 @@ function renderRubric() {
     h("div", { class: "btnbar" },
       h("button", { type: "button", onclick: () => { rb.items.push({ id: nextId("I"), text: "", type: "binary", weight: 3, by: "", domain: "D3", requires: [] }); changed(); render(); } }, "+ Expected action"),
       h("button", { type: "button", onclick: () => { rb.items.push({ id: nextId("N"), text: "", type: "binary", weight: -5, by: "", domain: "D3", requires: [] }); changed(); render(); } }, "+ Error")),
-    h("details", { style: "margin-top:10px" }, h("summary", {}, `Case-specific critical errors (${rb.gates.length})`), ...gates,
+    det("gates", `Case-specific critical errors (${rb.gates.length})`, { style: "margin-top:10px" }, ...gates,
       h("button", { class: "small", type: "button", onclick: () => { rb.gates.push({ id: nextId("SG"), text: "" }); changed(); render(); } }, "+ Add critical error")),
     h("div", { style: "margin-top:8px" }, check(rb, "must_not_miss_tested", "Score whether each can't-miss diagnosis was considered or excluded")));
 }
@@ -598,8 +606,7 @@ function renderAdvanced() {
     field("Description", text(e, "text"))));
   return card("12. Simulation settings", null,
     h("div", { class: "grid" }, field("Case duration", text(sc, "duration", { placeholder: "3d" }), "Simulated time, e.g. 3d or 36h")),
-    h("details", { open: S.ui.showInjects, ontoggle: e => { S.ui.showInjects = e.target.open; save(); } },
-      h("summary", {}, `Mission events (${sc.injects.length}) · later feature, not yet simulated`),
+    det("injects", `Mission events (${sc.injects.length}) · later feature, not yet simulated`, {},
       h("p", { class: "help" }, "Scripted mission events, as in launch-readiness simulations: space weather, dust storms, communication blackout, equipment failure. Communication delay is set by the environment and needs no event."),
       ...rows, h("button", { class: "small", type: "button", onclick: () => { sc.injects.push({ t: "", kind: "comm_blackout", duration: "", text: "" }); changed(); render(); } }, "+ Add inject")));
 }
@@ -645,10 +652,10 @@ function refreshSide() {
       };
       filt.addEventListener("input", drawItems); drawItems();
       return h("div", {}, h("p", { style: "font-weight:600;font-size:13px;margin:8px 0 2px" }, hab.name),
-        h("details", {}, h("summary", {}, "Medical capabilities"),
+        det(`caps-${hab.profile_id}`, "Medical capabilities", {},
           h("table", {}, h("tbody", {}, ...hab.capabilities.map(c => h("tr", { title: c.note || "" }, h("td", {}, c.name), h("td", { class: `st-${c.status}` }, c.status + (c.assumption ? " *" : "")))))),
           h("p", { class: "help" }, "* Assumed; not from a NASA source. Hover for notes.")),
-        h("details", {}, h("summary", {}, `Formulary and equipment (${hab.formulary.filter(i => i.qty > 0).length} drugs, ${hab.equipment.filter(i => i.qty > 0).length} items)`), filt, tbl));
+        det(`kit-${hab.profile_id}`, `Formulary and equipment (${hab.formulary.filter(i => i.qty > 0).length} drugs, ${hab.equipment.filter(i => i.qty > 0).length} items)`, {}, filt, tbl));
     });
     parts.push(h("div", { class: "card" }, h("h3", {}, "Medical capability by environment"), pickEnv,
       h("p", { class: "help", style: "margin-top:6px" }, `Gravity ${env.gravity_g} g · one-way comm delay ${fmtDelay(env.one_way_delay_s)} · time to definitive care: ${env.evacuation}`),
