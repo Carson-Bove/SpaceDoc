@@ -63,9 +63,19 @@
      }
     },
     {
+     "t": "T+0",
+     "kind": "finding",
+     "text": "Mild tenderness around the umbilicus; abdomen soft, no guarding or rebound"
+    },
+    {
      "t": "T+6h",
      "kind": "symptom",
      "text": "Pain migrates to the right lower quadrant; worse with coughing and movement"
+    },
+    {
+     "t": "T+6h",
+     "kind": "finding",
+     "text": "Right lower quadrant tenderness with rebound and guarding"
     },
     {
      "t": "T+12h",

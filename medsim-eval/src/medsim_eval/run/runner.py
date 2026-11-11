@@ -2,9 +2,9 @@
 
 A run has two phases. The consult: the crewmember opens with the scenario's opening statement
 and the two talk until the assistant gives its assessment or the turn limit is reached. Then
-follow-ups: the clock jumps to the next thing that changes (a new symptom, a complication, or
-the re-check the assistant asked for) and the crewmember reports back, up to a limit or the end
-of the scenario. Everything is logged with its simulated time.
+follow-ups: the clock jumps to each later point in the scenario (a new symptom, a finding, a
+complication) and the crewmember reports back, saying what was carried out, up to a limit or
+the end of the scenario. Everything is logged with its simulated time.
 
 Output, per run: events.jsonl (every message and twin event), transcript.md, run.json (the run
 plan entry, outcome and settings). Per batch: batch.json, a summary of every run.
@@ -20,7 +20,7 @@ from pathlib import Path
 
 from medsim_eval.models import Scenario
 from medsim_eval.run.adapters import Assistant, Session
-from medsim_eval.run.crewmember import Actions, Persona
+from medsim_eval.run.crewmember import Actions, Persona, Treatment, match_kit
 from medsim_eval.run.plan import RunSpec, plan_runs
 from medsim_eval.run.twin import SimpleTwin
 from medsim_eval.simtime import format_offset
@@ -32,7 +32,9 @@ class RunConfig:
     max_turns: int = 12
     max_followups: int = 3
     turn_minutes: int = 3  # simulated time per exchange (reading, doing, replying)
-    default_followup_h: float = 12  # when nothing is scheduled and no re-check was asked for
+    # False: follow-ups go to the scenario's own time points. True: a re-check time the
+    # assistant asks for is also honoured when it comes sooner (more exchanges per run).
+    honor_rechecks: bool = False
 
 
 class RunLog:
@@ -48,7 +50,9 @@ class RunLog:
         rec = {"n": self.n, "t": t, "who": who, "text": text, **data}
         self.events.write(json.dumps(rec, ensure_ascii=False) + "\n")
         self.events.flush()
-        if who in ("crew", "assistant"):
+        if who == "harness":
+            self.lines.append(f"*[{self.n}] {t} · harness: {text}*\n")
+        elif who in ("crew", "assistant"):
             label = {"crew": "Crewmember", "assistant": "Assistant"}[who]
             self.lines.append(f"**[{self.n}] {t} · {label}:** {text}\n")
         elif who == "twin":
@@ -90,81 +94,85 @@ def run_one(
     )
     turns, finals, errors = 0, 0, 0
     last_acts = Actions()
-    twin_seen = 0
+    twin_seen, given_seen = 0, 0
+
+    def now() -> str:
+        return format_offset(twin.t)
+
+    def flush_twin() -> None:
+        nonlocal twin_seen
+        for ev in twin.events[twin_seen:]:
+            detail = ", ".join(f"{k}={v}" for k, v in ev.items() if k not in ("t", "kind"))
+            log.event(ev["t"], "twin", f"{ev['kind']} {detail}", event=ev)
+        twin_seen = len(twin.events)
 
     def exchange(message: str) -> tuple[str, bool]:
-        nonlocal turns, finals, errors, last_acts, twin_seen
-        log.event(format_offset(twin.t), "crew", message)
+        nonlocal turns, finals, errors, last_acts
+        log.event(now(), "crew", message)
         try:
             reply = assistant.send(message)
         except Exception as e:  # keep the batch going; the log says what broke
             errors += 1
-            log.event(format_offset(twin.t), "system", f"assistant failed: {e}")
+            log.event(now(), "system", f"assistant failed: {e}")
             return "", True
         turns += 1
         finals += reply.final
+        for note in reply.notes:
+            log.event(now(), "harness", note)
         log.event(
-            format_offset(twin.t),
+            now(),
             "assistant",
             reply.text,
             final=reply.final,
             seconds=round(reply.seconds, 2),
             data=reply.data,
         )
-        acts = extractor.extract(reply.text, twin.kit_items())
+        kit = twin.kit_items()
+        acts = extractor.extract(reply.text, kit)
+        if reply.directed is not None:  # the assistant listed its actions: use those
+            acts.treatments = [
+                Treatment(k.id, text) for text in reply.directed for k in match_kit(text, kit)
+            ]
+        if reply.wants_vitals is not None:
+            acts.measure_vitals = acts.measure_vitals or reply.wants_vitals
+        if reply.wants_exam is not None:
+            acts.examine = reply.wants_exam
         last_acts = acts
-        log.event(format_offset(twin.t), "extract", "", actions=acts.to_dict())
+        log.event(now(), "extract", "", actions=acts.to_dict(), directed=reply.directed)
         for tr in acts.treatments:
             twin.give(tr.kit_id, tr.text)
         twin.advance_to(twin.t + cfg.turn_minutes * 60)
-        for ev in twin.events[twin_seen:]:
-            log.event(
-                ev["t"],
-                "twin",
-                f"{ev['kind']} "
-                + ", ".join(f"{k}={v}" for k, v in ev.items() if k not in ("t", "kind")),
-                event=ev,
-            )
-        twin_seen = len(twin.events)
+        flush_twin()
         return reply.text, reply.final
 
-    # Phase 1: the consult.
+    # Phase 1: the consult, until the assistant gives its assessment.
     message = crew.opening()
     for _ in range(cfg.max_turns):
         text, final = exchange(message)
-        if not text:
-            break
-        if final:
-            message = crew.acknowledge(text, twin.observe())
-            exchange(message)
+        if not text or final:
             break
         message = crew.reply(text, twin.observe(), last_acts)
 
-    # Phase 2: follow-ups as time passes.
+    # Phase 2: the clock jumps to each later point in the scenario and the crewmember reports.
     last_facts = twin.observe()
     for _ in range(cfg.max_followups):
         if errors:
             break
-        candidates = [twin.next_change_after(twin.t)]
-        if last_acts.recheck_minutes:
-            candidates.append(twin.t + last_acts.recheck_minutes * 60)
-        nxt = min((c for c in candidates if c), default=None)
-        if nxt is None:
-            nxt = twin.t + int(cfg.default_followup_h * 3600)
-        if nxt > twin.end:
+        nxt = twin.next_change_after(twin.t)
+        if cfg.honor_rechecks and last_acts.recheck_minutes:
+            recheck = twin.t + last_acts.recheck_minutes * 60
+            nxt = min(nxt, recheck) if nxt else recheck
+        if nxt is None or nxt > twin.end:
             break
         twin.advance_to(nxt)
-        for ev in twin.events[twin_seen:]:
-            log.event(
-                ev["t"],
-                "twin",
-                f"{ev['kind']} "
-                + ", ".join(f"{k}={v}" for k, v in ev.items() if k not in ("t", "kind")),
-                event=ev,
-            )
-        twin_seen = len(twin.events)
+        flush_twin()
         facts = twin.observe()
-        text, _ = exchange(crew.update(facts, last_facts))
+        done = [
+            f"{twin.kit[g.kit_id].name.lower()} at {format_offset(g.t)}"
+            for g in twin.given[given_seen:]
+        ]
+        given_seen = len(twin.given)
+        text, _ = exchange(crew.update(facts, last_facts, done))
         last_facts = facts
         if not text:
             break
@@ -176,13 +184,13 @@ def run_one(
         "scenario_id": sc.scenario_id,
         "assistant": assistant.info(),
         "crewmember": getattr(crew, "name", type(crew).__name__),
-        "extractor": type(extractor).__name__,
         "config": cfg.__dict__,
         "turns": turns,
         "assessments": finals,
         "errors": errors,
         "wall_seconds": round(time.monotonic() - started, 1),
         "outcome": outcome,
+        "crewmember_log": getattr(crew, "log", []),
         "assistant_record": record,
     }
     (out / spec.run_id / "run.json").write_text(

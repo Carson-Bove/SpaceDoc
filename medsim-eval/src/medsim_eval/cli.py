@@ -181,8 +181,10 @@ def run_cmd(
     assistant: str = typer.Option(
         "spacedoc", help="spacedoc, or scripted (a stand-in for testing)"
     ),
-    crewmember: str = typer.Option("llm", help="llm (a local model plays the crewmember) or rules"),
-    model: str = typer.Option("llama3.2:3b", help="Ollama model for the crewmember and extraction"),
+    crewmember: str = typer.Option(
+        "facts", help="facts (a local model picks which scenario facts were asked for) or rules"
+    ),
+    model: str = typer.Option("llama3.2:3b", help="Ollama model that picks the facts"),
     ollama_url: str = typer.Option("http://localhost:11434", help="Ollama server"),
     spacedoc_config: Path = typer.Option(
         None, help="SpaceDoc's spacedoc.toml (default: the repo's)"
@@ -194,16 +196,14 @@ def run_cmd(
     seed: int = typer.Option(0, help="Base seed"),
     max_turns: int = typer.Option(12, help="Consult turns before follow-ups start"),
     max_followups: int = typer.Option(3, help="Follow-up reports after the consult"),
+    rechecks: bool = typer.Option(
+        False, help="Also report back at re-check times the assistant asks for"
+    ),
     library: Path = LibraryOpt,
 ) -> None:
     """Run scenarios against an assistant and log every run (Phase B)."""
     from medsim_eval.run.adapters import make_assistant
-    from medsim_eval.run.crewmember import (
-        LLMCrewmember,
-        LLMExtractor,
-        RuleCrewmember,
-        RuleExtractor,
-    )
+    from medsim_eval.run.crewmember import FactCrewmember, RuleCrewmember, RuleExtractor
     from medsim_eval.run.llm import OllamaLLM
     from medsim_eval.run.runner import RunConfig, run_batch
     from medsim_eval.validate import load_library
@@ -213,7 +213,7 @@ def run_cmd(
     if not scenarios:
         typer.echo("no valid scenarios to run")
         raise typer.Exit(1)
-    if crewmember == "llm":
+    if crewmember == "facts":
         llm = OllamaLLM(model, ollama_url)
         problem = llm.check()
         if problem:
@@ -221,17 +221,15 @@ def run_cmd(
             raise typer.Exit(1)
 
         def make_crew(persona, spec):
-            return LLMCrewmember(persona, llm, spec.env_name, spec.seed)
+            return FactCrewmember(persona, llm, spec.seed)
 
-        extractor = LLMExtractor(llm)
     elif crewmember == "rules":
 
         def make_crew(persona, spec):
             return RuleCrewmember(persona)
 
-        extractor = RuleExtractor()
     else:
-        typer.echo(f"unknown crewmember {crewmember!r} (llm or rules)")
+        typer.echo(f"unknown crewmember {crewmember!r} (facts or rules)")
         raise typer.Exit(1)
     options = (
         {"config": spacedoc_config, "demo": spacedoc_demo}
@@ -243,9 +241,9 @@ def run_cmd(
         lib,
         make_assistant(assistant, **options),
         make_crew,
-        extractor,
+        RuleExtractor(),
         out,
-        RunConfig(max_turns=max_turns, max_followups=max_followups),
+        RunConfig(max_turns=max_turns, max_followups=max_followups, honor_rechecks=rechecks),
         only=runs,
         base_seed=seed,
         progress=typer.echo,

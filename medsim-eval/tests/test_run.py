@@ -12,11 +12,11 @@ from medsim_eval.models import Scenario
 from medsim_eval.run.adapters import ScriptedAssistant
 from medsim_eval.run.adapters.spacedoc import SpaceDocAssistant, render_assessment
 from medsim_eval.run.crewmember import (
-    LLMCrewmember,
-    LLMExtractor,
+    FactCrewmember,
     Persona,
     RuleCrewmember,
     RuleExtractor,
+    match_kit,
 )
 from medsim_eval.run.llm import FakeLLM
 from medsim_eval.run.plan import plan_runs
@@ -103,50 +103,76 @@ def test_items_not_aboard_are_not_given():
 
     tw = twin(change=no_kit)
     tw.give("ertapenem-1gm", "ertapenem")  # not carried on the lunar lander
-    assert tw.given[0].kit_id is None and tw.events[0]["kind"] == "not_aboard"
+    tw.give(None, "Monitor for fever")  # not a kit item at all
+    assert tw.given == [] and [e["kind"] for e in tw.events] == ["not_aboard", "not_aboard"]
 
 
 def test_rule_extractor_reads_directions_not_mentions():
-    tw = twin()
+    kit = twin().kit_items()
     acts = RuleExtractor().extract(
         "Start ertapenem 1 g IV now. Do not give ceftriaxone. Recheck his vital signs in 4 hours.",
-        tw.kit_items(),
+        kit,
     )
     assert [t.kit_id for t in acts.treatments] == ["ertapenem-1gm"]
     assert acts.measure_vitals and acts.recheck_minutes == 240
+    # A message that only asks questions directs nothing (a real run "gave" a drug here).
+    asks = RuleExtractor().extract("Where is the pain? Let's check the exposure factors.", kit)
+    assert asks.treatments == [] and not asks.examine and not asks.measure_vitals
 
 
-def test_llm_extractor_maps_kit_ids_and_falls_back():
-    kit = twin().kit_items()
-    llm = FakeLLM(
-        lambda m, s: {
-            "treatments": [
-                {"kit_id": "made-up", "text": "x"},
-                {"kit_id": "ertapenem-1gm", "text": "ertapenem"},
-            ],
-            "measure_vitals": False,
-            "examine": True,
-            "recheck_minutes": None,
-        }
-    )
-    acts = LLMExtractor(llm).extract("...", kit)
-    assert [t.kit_id for t in acts.treatments] == [None, "ertapenem-1gm"] and acts.examine
-    broken = LLMExtractor(FakeLLM(lambda m, s: "not json")).extract("Give ertapenem now.", kit)
-    assert [t.kit_id for t in broken.treatments] == ["ertapenem-1gm"]
+def test_one_kit_item_per_drug_named():
+    hits = match_kit("Give acetaminophen 1000 mg by mouth for pain", twin().kit_items())
+    assert len(hits) == 1 and "acetaminophen" in hits[0].name.lower()
 
 
-def test_llm_crewmember_sees_only_current_facts():
+def asks_about(*topics):
+    """A stand-in for the model: says yes when the topic is one of these."""
+
+    def respond(messages, schema):
+        topic = messages[-1]["content"].split("TOPIC: ")[-1]
+        return {"asks": "yes" if topic in topics else "no"}
+
+    return FakeLLM(respond)
+
+
+def test_fact_crewmember_uses_the_clerks_words_and_exact_numbers():
     sc = scenario()
-    seen = []
-    llm = FakeLLM(lambda m, s: seen.append(m) or "It hurts around my belly button.")
     tw = twin()
-    crew = LLMCrewmember(Persona(sc, LIB.crew["C14"], LIB.crew["C10"]), llm, "Low Earth orbit", 1)
+    crew = FactCrewmember(Persona(sc, LIB.crew["C14"], LIB.crew["C10"]), asks_about("vomiting"))
     assert crew.opening() == sc.speaker.opening
-    crew.reply("Where is the pain?", tw.observe(), RuleExtractor().extract("", []))
-    system = seen[0][0]["content"]
-    assert "Rachel Abernathy" in system and "penicillin" in system
-    assert "right lower quadrant" not in system  # the T+6h symptom hasn't happened yet
-    assert "about where it started: Around his belly button" in system
+    msg = "Has he been sick? Any radiation alarm or ammonia smell? Please take his temperature."
+    reply = crew.reply(msg, tw.observe(), RuleExtractor().extract(msg, tw.kit_items()))
+    assert "Vomiting: Once, this morning." in reply
+    assert "heart rate 92/min" in reply and "temperature 37.6" in reply  # as the twin has them
+    assert reply.endswith("Nothing else that I've noticed.")
+    assert "ammonia" not in reply and "radiation" not in reply  # nothing echoed or invented
+    assert "right lower quadrant" not in reply  # the T+6h symptom hasn't happened yet
+
+
+def test_fact_crewmember_reports_findings_only_when_asked_to_examine():
+    sc = scenario()
+    tw = twin()
+    crew = FactCrewmember(Persona(sc, LIB.crew["C14"], LIB.crew["C10"]), asks_about())
+    finding = "Mild tenderness around the umbilicus; abdomen soft, no guarding or rebound"
+    msg = "Press gently on his belly. Is it tender?"
+    crew.llm = asks_about(finding)
+    assert finding in crew.reply(msg, tw.observe(), RuleExtractor().extract(msg, tw.kit_items()))
+    crew.llm = asks_about()
+    assert crew.reply("How old is he?", tw.observe(), RuleExtractor().extract("", [])) == (
+        "Nothing else that I've noticed."
+    )
+
+
+def test_follow_up_report_says_what_changed_and_what_was_done():
+    sc = scenario()
+    tw = twin()
+    crew = FactCrewmember(Persona(sc, LIB.crew["C14"], LIB.crew["C10"]), asks_about())
+    before = tw.observe()
+    tw.advance_to(parse_offset("T+6h"))
+    text = crew.update(tw.observe(), before, ["ertapenem 1gm at T+12m"])
+    assert text.startswith("Update, 6 hours after my first message.")
+    assert "Pain migrates to the right lower quadrant" in text and "rebound and guarding" in text
+    assert "Done since we last spoke: ertapenem 1gm at T+12m." in text
 
 
 def test_rule_crewmember_answers_from_the_facts():
@@ -161,7 +187,7 @@ def test_a_whole_run_with_a_scripted_assistant(tmp_path):
     script = [
         "When did it start, and what are his temperature and heart rate?",
         {
-            "text": "This is likely appendicitis. Start ertapenem 1 g IV now. Recheck in 4 hours.",
+            "text": "This is likely appendicitis. Start ertapenem 1 g IV now. Recheck in 30 minutes.",
             "final": True,
         },
     ]
@@ -172,11 +198,34 @@ def test_a_whole_run_with_a_scripted_assistant(tmp_path):
     runs = json.loads((batch / "batch.json").read_text())["runs"]
     assert [r["course_reached"] for r in runs] == ["treated_best", "treated_best"]
     assert all(r["complications"] == {} for r in runs)
-    run = json.loads((batch / "MSE-0001" / "r01-T1-best" / "run.json").read_text())
+    folder = batch / "MSE-0001" / "r01-T1-best"
+    run = json.loads((folder / "run.json").read_text())
     assert run["outcome"]["treatments"][0]["kit_id"] == "ertapenem-1gm"
-    events = (batch / "MSE-0001" / "r01-T1-best" / "events.jsonl").read_text().splitlines()
-    assert json.loads(events[1])["who"] == "crew" and "temperature 37.6" in events[4]
-    assert "Recheck" in (batch / "MSE-0001" / "r01-T1-best" / "transcript.md").read_text()
+    events = [json.loads(e) for e in (folder / "events.jsonl").read_text().splitlines()]
+    crew = [e for e in events if e["who"] == "crew"]
+    assert "temperature 37.6" in crew[1]["text"]
+    # Follow-ups go to the scenario's own time points, not the 30-minute re-check.
+    assert [e["t"] for e in crew[2:]] == ["T+6h", "T+2d"]
+    assert "Done since we last spoke: ertapenem 1gm at T+3m" in crew[2]["text"]
+
+
+def test_assistant_listed_actions_are_used_instead_of_the_text(tmp_path):
+    class Listing(ScriptedAssistant):
+        def send(self, text):
+            r = super().send(text)
+            # The text names amoxicillin, but only as something its checks blocked.
+            r.directed, r.notes = ["Ertapenem 1 g IV now"], ["cards answered"]
+            return r
+
+    script = [{"text": "Give amoxicillin 500 mg now (blocked).", "final": True}]
+    batch = run_batch(
+        [scenario()], LIB, Listing(script), lambda p, s: RuleCrewmember(p),
+        RuleExtractor(), tmp_path, RunConfig(max_followups=0), only=1, progress=lambda *_: None,
+    )  # fmt: skip
+    folder = batch / "MSE-0001" / "r01-T1-best"
+    run = json.loads((folder / "run.json").read_text())
+    assert [x["kit_id"] for x in run["outcome"]["treatments"]] == ["ertapenem-1gm"]
+    assert "harness: cards answered" in (folder / "transcript.md").read_text()
 
 
 def test_spacedoc_overlay_gives_spacedoc_the_scenario_patient(tmp_path):
@@ -197,14 +246,79 @@ def test_spacedoc_overlay_gives_spacedoc_the_scenario_patient(tmp_path):
     assert (tmp_path / "run" / "data" / "formulary").is_symlink()
 
 
-def test_render_assessment():
+def test_render_assessment_sets_blocked_actions_apart():
     text = render_assessment({
         "summary": "Likely appendicitis.", "next_steps": ["Start antibiotics."],
         "differential": [{"condition": "Appendicitis", "likelihood": "high"}],
-        "actions": [{"action": {"text": "Ertapenem 1 g IV"}, "status": "ok", "display_text": None}],
+        "actions": [
+            {"action": {"text": "Ertapenem 1 g IV"}, "status": "ok", "display_text": None},
+            {"action": {"text": "Ondansetron"}, "status": "blocked", "reasons": ["not aboard"]},
+        ],
         "claims": [], "uncertainty": "moderate", "abstained": False,
     })  # fmt: skip
-    assert "Likely appendicitis." in text and "- Ertapenem 1 g IV" in text
+    assert "Actions:\n- Ertapenem 1 g IV" in text
+    assert "Blocked by SpaceDoc's checks (not to be done):\n- Ondansetron (not aboard)" in text
+
+
+class FakeSpaceDoc(SpaceDocAssistant):
+    """SpaceDoc's API, canned: an exposure card, then an urgent card, then a normal turn."""
+
+    def __init__(self):
+        super().__init__()
+        self.calls = []
+        self.turns = iter([
+            {"reply": {"message": "Where is the pain?", "questions": [], "exam_requests": []},
+             "screen": [{"id": "EXP-EVA", "question": "Any EVA?", "label": "EVA"},
+                        {"id": "EXP-RAD", "question": "Any radiation alert?", "label": "radiation"}]},
+            {"paused": True, "red_flags": [{"message": "Rigid abdomen", "steps": ["Call ground"]}]},
+            {"reply": {"message": "How is he now?", "questions": [], "exam_requests": []}},
+        ])  # fmt: skip
+
+    def _post(self, path, body=None):
+        self.calls.append((path.rsplit("/", 1)[-1], body or {}))
+        kind = self.calls[-1][0]
+        data = (
+            next(self.turns)
+            if kind == "turn"
+            else {
+                "summary": "Emergency.",
+                "actions": [
+                    {"action": {"text": "Ertapenem 1 g IV"}, "status": "requires_confirmation"},
+                    {"action": {"text": "Morphine"}, "status": "blocked", "reasons": ["x"]},
+                ],
+            }
+        )
+
+        class R:
+            status_code = 200
+
+            def json(self):
+                return data
+
+            def raise_for_status(self):
+                pass
+
+        return R()
+
+
+def test_spacedoc_cards_and_urgent_flow():
+    a = FakeSpaceDoc()
+    a.consult_id, a.exposure = "c1", {"EXP-EVA": "Yes"}
+    first = a.send("He has belly pain.")
+    assert first.text == "Where is the pain?" and "exposure check card" in first.notes[0]
+    second = a.send("Around the belly button.")
+    # The exposure check went back through the cards, not as typed text.
+    answers = a.calls[1][1]["answers"]
+    assert [(x["screen_id"], x["answer"]) for x in answers] == [
+        ("EXP-EVA", "Yes"),
+        ("EXP-RAD", "No"),
+    ]
+    assert second.final and second.text.startswith("URGENT: Rigid abdomen")
+    assert second.directed == ["Ertapenem 1 g IV"]  # the blocked action is not carried out
+    third = a.send("Update.")
+    # One assessment for the urgent card, then the card is dismissed and the consult goes on.
+    assert [c[0] for c in a.calls] == ["turn", "turn", "assess", "resume", "turn"]
+    assert third.text == "How is he now?" and not third.final
 
 
 @pytest.mark.skipif(shutil.which("spacedoc") is None, reason="SpaceDoc is not installed")

@@ -80,6 +80,9 @@ class SpaceDocAssistant(Assistant):
         self.url = ""
         self.consult_id: str | None = None
         self.status: dict = {}
+        self.paused = False
+        self.pending_screen: list[dict] = []
+        self.exposure: dict[str, str] = {}  # exposure-check answers that are not "No"
 
     def info(self) -> dict:
         s = self.status
@@ -95,6 +98,9 @@ class SpaceDocAssistant(Assistant):
     # ---- per scenario: overlay data with this scenario's patient, then (re)start ----------
     def prepare(self, scenario: Scenario, lib: Library, workdir: Path) -> None:
         self.close()
+        cond = lib.conditions.get(scenario.patients[0].condition)
+        eva = bool(cond and cond.applicability and cond.applicability.eva)
+        self.exposure = {"EXP-EVA": "Yes"} if eva else {}
         root = workdir / "spacedoc"
         cfg = self._overlay(scenario, lib, root)
         port = _free_port()
@@ -175,40 +181,96 @@ class SpaceDocAssistant(Assistant):
         )
         r.raise_for_status()
         self.consult_id = r.json()["consult_id"]
+        self.paused = False
+        self.pending_screen = []
 
     def send(self, text: str) -> Reply:
         t0 = time.monotonic()
-        r = self._post(f"/api/consult/{self.consult_id}/turn", {"text": text})
-        if r.status_code == 409:  # an urgent card is waiting: treat it as an emergency
-            return self._assess("", {"status": 409, "detail": r.text}, t0)
+        notes, data = [], {}
+        if self.paused:
+            # The urgent card was acted on (the assessment). Dismiss it so the consult can go on.
+            r = self._post(f"/api/consult/{self.consult_id}/resume")
+            if r.status_code == 200:
+                data["resume"] = r.json()
+            self.paused = False
+            notes.append("Urgent card dismissed after its assessment, to continue the consult.")
+        body: dict = {"text": text}
+        if self.pending_screen:
+            # SpaceDoc's exposure check is a card with a button per item; answer it that way.
+            body["answers"] = [
+                {
+                    "kind": "screen",
+                    "question": s["question"],
+                    "screen_id": s["id"],
+                    "answer": self.exposure.get(s["id"], "No"),
+                }
+                for s in self.pending_screen
+            ]
+            yes = [s["label"] for s in self.pending_screen if self.exposure.get(s["id"]) == "Yes"]
+            notes.append(
+                "Exposure check answered on SpaceDoc's cards: "
+                + (f"Yes to {', '.join(yes)}; No to the rest." if yes else "No to every item.")
+            )
+            self.pending_screen = []
+        r = self._post(f"/api/consult/{self.consult_id}/turn", body)
         r.raise_for_status()
         d = r.json()
+        data["turn"] = d
         if d.get("paused"):
+            self.paused = True
             urgent = "\n".join(
                 f"URGENT: {h['message']}\n" + "\n".join(f"- {s}" for s in h.get("steps", []))
                 for h in d.get("red_flags", [])
             )
-            return self._assess(urgent, {"turn": d}, t0)
+            notes.append("SpaceDoc showed an urgent card; taken as an emergency: assess now.")
+            return self._assess(urgent, data, t0, notes)
         if d.get("error"):
             return Reply(
-                f"[SpaceDoc error: {d['error']}]", data={"turn": d}, seconds=time.monotonic() - t0
+                f"[SpaceDoc error: {d['error']}]",
+                data=data,
+                seconds=time.monotonic() - t0,
+                notes=notes,
             )
         reply = d.get("reply") or {}
-        text_out = reply.get("message", "")
-        screen = [s["question"] for s in d.get("screen", []) if s.get("question")]
-        if screen:
-            text_out += "\n\nExposure check: " + " ".join(screen)
+        self.pending_screen = [s for s in d.get("screen", []) if s.get("id")]
+        if self.pending_screen:
+            notes.append(
+                "SpaceDoc showed its exposure check card: "
+                + " ".join(s["question"] for s in self.pending_screen)
+            )
         if d.get("assess_reason"):
-            return self._assess(text_out, {"turn": d}, t0)
-        return Reply(text_out, data={"turn": d}, seconds=time.monotonic() - t0)
+            return self._assess(reply.get("message", ""), data, t0, notes)
+        return Reply(
+            reply.get("message", ""),
+            data=data,
+            seconds=time.monotonic() - t0,
+            notes=notes,
+            directed=[],
+            wants_vitals=any(
+                q.get("answer_type") == "measurement" for q in reply.get("questions", [])
+            )
+            or None,
+            wants_exam=bool(reply.get("exam_requests")),
+        )
 
-    def _assess(self, before: str, data: dict, t0: float) -> Reply:
+    def _assess(self, before: str, data: dict, t0: float, notes: list[str]) -> Reply:
         r = self._post(f"/api/consult/{self.consult_id}/assess")
         r.raise_for_status()
         v = r.json()
         text = "\n\n".join(x for x in (before.strip(), render_assessment(v)) if x)
+        # Blocked actions failed SpaceDoc's own checks, so the crew does not carry them out.
+        directed = [
+            a.get("display_text") or a["action"]["text"]
+            for a in v.get("actions", [])
+            if a.get("status") != "blocked"
+        ]
         return Reply(
-            text, final=True, data={**data, "assessment": v}, seconds=time.monotonic() - t0
+            text,
+            final=True,
+            data={**data, "assessment": v},
+            seconds=time.monotonic() - t0,
+            notes=notes,
+            directed=directed,
         )
 
     def end(self) -> dict:
@@ -249,19 +311,24 @@ def render_assessment(v: dict) -> str:
             "Differential: " + "; ".join(f"{d['condition']} ({d['likelihood']})" for d in dx)
         )
     acts = v.get("actions") or []
-    if acts:
+    todo = [a for a in acts if a.get("status") != "blocked"]
+    blocked = [a for a in acts if a.get("status") == "blocked"]
+    if todo:
         lines = []
-        for a in acts:
+        for a in todo:
             text = a.get("display_text") or a["action"]["text"]
-            status = {
-                "ok": "",
-                "requires_confirmation": " (needs confirmation)",
-                "blocked": " (blocked)",
-            }
-            lines.append(f"- {text}{status.get(a.get('status'), '')}")
+            confirm = " (needs the CMO's confirmation)" if a.get("status") != "ok" else ""
+            lines.append(f"- {text}{confirm}")
             if a.get("calc_text"):
                 lines.append(f"  calculator: {a['calc_text']}")
         out.append("Actions:\n" + "\n".join(lines))
+    if blocked:
+        lines = [
+            f"- {a.get('display_text') or a['action']['text']}"
+            + (f" ({'; '.join(a['reasons'])})" if a.get("reasons") else "")
+            for a in blocked
+        ]
+        out.append("Blocked by SpaceDoc's checks (not to be done):\n" + "\n".join(lines))
     claims = [c["claim"]["text"] for c in v.get("claims", []) if c.get("shown")]
     if claims:
         out.append("Findings:\n" + "\n".join(f"- {c}" for c in claims))

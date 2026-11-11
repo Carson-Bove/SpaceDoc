@@ -1,9 +1,11 @@
 """The person talking to the assistant (docs/11 §9.1), and reading what the assistant asked for.
 
 Code decides what the crewmember may say: the twin's observable state at this moment, the
-patient's chart, and the history the clerk wrote to give only on direct questioning. A model
-words it in the speaker's voice (`LLMCrewmember`); `RuleCrewmember` does the same without a
-model, for testing the pipeline. Neither can add a finding that isn't in the facts.
+patient's chart, and the history the clerk wrote to give only on direct questioning. A local
+model only picks which facts the assistant asked about (`FactCrewmember`); the reply is the
+clerk's own words. `RuleCrewmember` does the same by keyword, without a model. Neither can add a
+finding that isn't in the facts. (A 3B model that worded replies itself invented exposures and
+changed numbers in a real run, so no model writes the crewmember's text for now.)
 
 `Extractor`s read each assistant message for what the crew must now do: treatments (mapped to
 kit items), measurements, examinations, and when to check again.
@@ -17,7 +19,6 @@ from dataclasses import dataclass, field
 
 from medsim_eval.models import Scenario
 from medsim_eval.models.crew import CrewTwin
-from medsim_eval.models.scenario import INPUT_PROBLEMS
 from medsim_eval.run.llm import LLM
 from medsim_eval.run.twin import KitItem
 
@@ -64,7 +65,7 @@ _VITALS = re.compile(
     re.I,
 )
 _EXAM = re.compile(
-    r"\b(press|palpate|examine|exam|examination|feel|tender|tenderness|look at|listen|check (?:his|her|their|the)|guarding|rebound)\b",
+    r"\b(press|palpate|examine|exam|examination|tender|tenderness|look at (?:his|her|their|the)|listen to|guarding|rebound)\b",
     re.I,
 )
 _RECHECK = re.compile(
@@ -78,19 +79,37 @@ def drug_keywords(item: KitItem) -> set[str]:
     return {w for w in words if w not in _FORM_WORDS}
 
 
+def match_kit(text: str, kit: list[KitItem]) -> list[KitItem]:
+    """Kit drugs named in the text: for each drug word, the item it describes most exactly."""
+    low = text.lower()
+    best: dict[str, tuple[float, KitItem]] = {}
+    for k in kit:
+        if k.category == "equipment":
+            continue
+        words = drug_keywords(k)
+        hits = [w for w in words if re.search(rf"\b{re.escape(w)}\b", low)]
+        for w in hits:
+            score = len(hits) / len(words)
+            if w not in best or score > best[w][0]:
+                best[w] = (score, k)
+    out: list[KitItem] = []
+    for _, k in best.values():
+        if k not in out:
+            out.append(k)
+    return out
+
+
 class RuleExtractor:
-    """Keyword rules; good enough to drive the pipeline without a model."""
+    """Reads a message for what the crew must do, by rules: a medicine counts only if the kit
+    item's name is in a sentence that tells the crew to give it."""
 
     def extract(self, text: str, kit: list[KitItem]) -> Actions:
         acts = Actions()
-        drugs = [(k, drug_keywords(k)) for k in kit if k.category != "equipment"]
         for sentence in re.split(r"(?<=[.!?])\s+|\n", text):
-            low = sentence.lower()
             if _DIRECTIVE.search(sentence) and not _NEGATION.search(sentence):
-                for k, words in drugs:
-                    if any(re.search(rf"\b{re.escape(w)}\b", low) for w in words):
-                        if all(t.kit_id != k.id for t in acts.treatments):
-                            acts.treatments.append(Treatment(k.id, sentence.strip()[:200]))
+                for k in match_kit(sentence, kit):
+                    if all(x.kit_id != k.id for x in acts.treatments):
+                        acts.treatments.append(Treatment(k.id, sentence.strip()[:200]))
             if _VITALS.search(sentence):
                 acts.measure_vitals = True
             if _EXAM.search(sentence):
@@ -100,70 +119,6 @@ class RuleExtractor:
             n, unit = float(m.group(1)), m.group(2).lower()
             acts.recheck_minutes = int(n * 60 if unit.startswith("h") else n)
         return acts
-
-
-EXTRACT_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "treatments": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {"kit_id": {"type": ["string", "null"]}, "text": {"type": "string"}},
-                "required": ["kit_id", "text"],
-            },
-        },
-        "measure_vitals": {"type": "boolean"},
-        "examine": {"type": "boolean"},
-        "recheck_minutes": {"type": ["integer", "null"]},
-    },
-    "required": ["treatments", "measure_vitals", "examine", "recheck_minutes"],
-}
-
-
-@dataclass
-class LLMExtractor:
-    llm: LLM
-    fallback: RuleExtractor = field(default_factory=RuleExtractor)
-
-    def extract(self, text: str, kit: list[KitItem]) -> Actions:
-        drugs = "\n".join(f"{k.id}: {k.name}" for k in kit if k.category != "equipment")
-        prompt = (
-            "A medical assistant sent this message to a spacecraft crew. List what it tells the "
-            "crew to do now.\n"
-            "- treatments: each medicine it tells them to give now (not ones it rules out, "
-            "only mentions, or says to avoid). kit_id is the matching id from the kit list, or "
-            "null if none matches; text is the instruction in a few words.\n"
-            "- measure_vitals: true if it asks for vital signs or any of them.\n"
-            "- examine: true if it asks them to examine the patient.\n"
-            "- recheck_minutes: if it says when to check again or report back, how many "
-            "minutes from now; else null.\n\n"
-            f"KIT (id: name):\n{drugs}\n\nMESSAGE:\n{text}"
-        )
-        try:
-            raw = json.loads(
-                self.llm.chat(
-                    [{"role": "user", "content": prompt}],
-                    schema=EXTRACT_SCHEMA,
-                    temperature=0,
-                    seed=0,
-                    max_tokens=500,
-                )
-            )
-            ids = {k.id for k in kit}
-            return Actions(
-                treatments=[
-                    Treatment(
-                        t.get("kit_id") if t.get("kit_id") in ids else None, t.get("text", "")
-                    )
-                    for t in raw.get("treatments", [])
-                ],
-                measure_vitals=bool(raw.get("measure_vitals")),
-                examine=bool(raw.get("examine")),
-                recheck_minutes=raw.get("recheck_minutes"),
-            )
-        except (json.JSONDecodeError, AttributeError, TypeError):
-            return self.fallback.extract(text, kit)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -242,143 +197,189 @@ class RuleCrewmember:
         out = [s if s.rstrip().endswith((".", "!", "?")) else s.rstrip() + "." for s in out]
         return " ".join(out) or "I'm not sure. Nothing else I've noticed."
 
-    def update(self, facts: dict, last: dict) -> str:
+    def update(self, facts: dict, last: dict, done: list[str] | None = None) -> str:
         seen = {s["text"] for s in last.get("symptoms", []) + last.get("exam_findings", [])}
         new = [
             s["text"] for s in facts["symptoms"] + facts["exam_findings"] if s["text"] not in seen
         ]
         msg = f"Update at {facts['time']}: "
         msg += ("; ".join(new) + ". ") if new else "no new symptoms. "
+        if done:
+            msg += f"Done since we last spoke: {'; '.join(done)}. "
         if facts["vitals"]:
             msg += f"Rechecked vitals: {vitals_text(facts['vitals'])}."
         return msg
 
-    def acknowledge(self, assistant_text: str, facts: dict) -> str:
-        return "Understood, we'll do that."
+
+@dataclass
+class Fact:
+    id: str
+    topic: str
+    text: str
 
 
-def _persona_prompt(p: Persona, env_name: str) -> str:
-    sc, sp = p.sc, p.sc.speaker
-    me = p.speaker
-    pt = p.patient
-    who = (
-        f"You are {me.name}, {me.age}, {me.occupation}"
-        if me
-        else f"You are crewmember {sp.crew_id}"
+def chart_facts(persona: Persona) -> list[Fact]:
+    ch = persona.sc.patients[0].chart
+    allergies = (
+        "no known drug allergies"
+        if ch.nkda and not ch.allergies
+        else ", ".join(f"{a.agent} ({a.reaction or 'reaction not recorded'})" for a in ch.allergies)
     )
-    lines = [
-        f"{who}, on a {env_name} mission. You are talking to the crew's medical assistant software.",
+    meds = ", ".join(
+        " ".join(x for x in (m.name, m.dose, m.frequency) if x) for m in ch.medications
+    )
+    out = [
+        Fact("C1", "allergies", f"Allergies: {allergies or 'none recorded'}"),
+        Fact("C2", "regular medications", f"Regular medications: {meds or 'none'}"),
+        Fact(
+            "C3", "past medical history", f"Past illnesses: {', '.join(ch.past_medical) or 'none'}"
+        ),
+        Fact("C4", "past surgery", f"Past surgery: {', '.join(ch.past_surgical) or 'none'}"),
     ]
-    if p.is_patient:
-        lines.append("You are the patient: you are describing your own problem.")
-    else:
-        role = "the crew medical officer (CMO)" if sp.role == "cmo" else "a crewmember helping"
-        name = pt.name if pt else sc.patients[0].crew_id
-        lines.append(f"You are {role}, asking for help with {name}, who is the patient.")
-    if me:
-        lines.append(f"Your medical training: {me.medical_training.description}")
-        lines.append(f"Your way of talking: {me.communication_style}")
-    f = sp.familiarity
-    if any(v is not None for v in (f.medicine, f.equipment, f.assistant)):
-        lines.append(
-            f"Familiarity (1 none, 5 expert): medicine {f.medicine or '-'}, onboard equipment "
-            f"{f.equipment or '-'}, medical software {f.assistant or '-'}."
-        )
-    if sp.behaviour:
-        lines.append(f"How you behave: {sp.behaviour}")
-    if sp.emergent:
-        lines.append("This feels urgent to you: you are under time pressure and want answers fast.")
-    if sp.input_quality > 1:
-        problems = "; ".join(INPUT_PROBLEMS[k] for k in sp.input_problems if k in INPUT_PROBLEMS)
-        lines.append(
-            f"You are not a reliable historian (level {sp.input_quality} of 5): {problems}."
-        )
-    return "\n".join(lines)
+    if ch.social_history:
+        out.append(Fact("C5", "smoking, alcohol, exercise", f"Social history: {ch.social_history}"))
+    return out
 
 
-RULES = """Rules:
-- Stay in character. Reply in plain speech, 1 to 4 sentences, as this person would type.
-- Use only the facts below. Never invent symptoms, findings, numbers or history. If asked about something the facts don't cover, say you don't know or haven't noticed it.
-- Give items from "Only if asked" only when the assistant asks about that topic.
-- Give vital-sign numbers only when the assistant asks you to measure them.
-- Describe examination findings only when the assistant tells you what to examine.
-- When the assistant tells you to give a medicine or do something, say you've done it (or why you can't).
-- Don't name a diagnosis unless your character already believes one."""
+def fact_list(persona: Persona, facts: dict, acts: Actions) -> list[Fact]:
+    """Everything the crewmember could truthfully say right now, one item each."""
+    out = [
+        Fact(f"H{i}", h.if_asked, h.says)
+        for i, h in enumerate(persona.sc.speaker.additional_history, 1)
+    ]
+    out += [Fact(f"S{i}", "current symptom", s["text"]) for i, s in enumerate(facts["symptoms"], 1)]
+    out += chart_facts(persona)
+    if acts.examine:
+        out += [
+            Fact(f"E{i}", "finding on examination", f["text"])
+            for i, f in enumerate(facts["exam_findings"], 1)
+        ]
+    return out
 
 
-class LLMCrewmember:
-    def __init__(self, persona: Persona, llm: LLM, env_name: str, seed: int):
-        self.persona, self.llm, self.env_name, self.seed = persona, llm, env_name, seed
-        self.name = llm.model
-        self.history: list[dict] = []
+def _keywords(text: str) -> set[str]:
+    stop = {"what", "when", "where", "which", "that", "this", "with", "have", "from", "about", "does", "your", "there", "been", "they", "them", "then", "than", "also", "more", "some", "started", "start"}  # fmt: skip
+    return {w for w in re.findall(r"[a-z]{4,}", text.lower()) if w not in stop}
+
+
+def rule_select(assistant_text: str, items: list[Fact]) -> set[str]:
+    """Facts whose topic words appear in the assistant's message."""
+    asked = _keywords(assistant_text)
+    stems = {w[:5] for w in asked}
+    picked = set()
+    for f in items:
+        if f.id.startswith(("H", "C")) and any(w[:5] in stems for w in _keywords(f.topic)):
+            picked.add(f.id)
+    return picked
+
+
+def join_points(points: list[str]) -> str:
+    return " ".join(p if p.rstrip().endswith((".", "!", "?")) else p.rstrip() + "." for p in points)
+
+
+SELECT_SYSTEM = (
+    "You check whether a message asks about a topic. Answer yes if any question in the message "
+    "is about that topic, even in different words. Answer no if the message does not ask about it."
+)
+# Worked examples steer a small model far better than rules do (measured: 27 of 27 asked-for
+# facts found, about 1 in 8 unasked facts offered; with rules alone it found 1 of 13).
+SELECT_SHOTS = [
+    ("Does she have a cough or a sore throat? Any fever?", "cough", "yes"),
+    ("Does she have a cough or a sore throat? Any fever?", "allergies", "no"),
+    ("When did the headache begin, and has it got worse?", "when it started", "yes"),
+    ("Please check her pulse and tell me the number.", "past surgery", "no"),
+    ("Has he been sick or had loose stools?", "vomiting", "yes"),
+    ("Has he been sick or had loose stools?", "regular medications", "no"),
+    ("What tablets is she on?", "regular medications", "yes"),
+    ("Thanks, give me a moment to check.", "when it started", "no"),
+]
+SELECT_SCHEMA = {
+    "type": "object",
+    "properties": {"asks": {"enum": ["yes", "no"]}},
+    "required": ["asks"],
+}
+NOTHING = "Nothing else that I've noticed."
+
+
+class FactCrewmember:
+    """Answers only from the scenario's facts, in the clerk's own words.
+
+    A local model decides one thing: for each fact, whether the assistant's message asks about
+    it. It writes no text of its own, so it cannot invent a symptom, an event or a number. Vital
+    signs are added by code when the assistant asks for them, and a question no fact answers
+    gets "nothing else noticed".
+    """
+
+    def __init__(self, persona: Persona, llm: LLM, seed: int = 0):
+        self.persona, self.llm, self.seed = persona, llm, seed
+        self.name = f"facts ({llm.model})"
+        self.said: set[str] = set()
+        self.log: list[dict] = []
 
     def opening(self) -> str:
-        text = self.persona.sc.speaker.opening
-        self.history.append({"role": "assistant", "content": text})
-        return text
+        return self.persona.sc.speaker.opening
 
-    def _facts(self, facts: dict) -> str:
-        p = self.persona
-        ch = p.sc.patients[0].chart
-        allergies = (
-            "none known (NKDA)"
-            if ch.nkda and not ch.allergies
-            else ", ".join(
-                f"{a.agent} ({a.reaction or 'reaction not recorded'})" for a in ch.allergies
+    def _asks(self, message: str, topic: str) -> bool:
+        m = [{"role": "system", "content": SELECT_SYSTEM}]
+        for msg, top, ans in SELECT_SHOTS:
+            m.append({"role": "user", "content": f'MESSAGE: "{msg}"\nTOPIC: {top}'})
+            m.append({"role": "assistant", "content": json.dumps({"asks": ans})})
+        m.append({"role": "user", "content": f'MESSAGE: "{message}"\nTOPIC: {topic}'})
+        try:
+            out = self.llm.chat(
+                m, schema=SELECT_SCHEMA, temperature=0, seed=self.seed, max_tokens=10
             )
-            or "none recorded"
-        )
-        meds = ", ".join(f"{m.name} {m.dose} {m.frequency}" for m in ch.medications) or "none"
-        lines = [
-            f"FACTS at {facts['time']} (time since the problem was first reported):",
-            f"Patient's history: past medical {', '.join(ch.past_medical) or 'none'}; past "
-            f"surgical {', '.join(ch.past_surgical) or 'none'}; medications {meds}; allergies "
-            f"{allergies}; social {ch.social_history or 'not recorded'}.",
-            "Symptoms now: "
-            + (
-                "; ".join(f"{s['text']} (since {s['since']})" for s in facts["symptoms"])
-                or "none beyond the opening complaint"
-            ),
-            "If examined now: "
-            + (
-                "; ".join(f["text"] for f in facts["exam_findings"]) or "nothing abnormal to report"
-            ),
-            f"If measured now: {vitals_text(facts['vitals']) or 'not available'}.",
-        ]
-        if facts["labs"]:
-            lines.append(f"Only if a test is run: {json.dumps(facts['labs'])}.")
-        asked = p.sc.speaker.additional_history
-        if asked:
-            lines.append("Only if asked:")
-            lines += [f"- about {h.if_asked}: {h.says}" for h in asked]
-        return "\n".join(lines)
-
-    def _say(self, facts: dict, instruction: str | None = None) -> str:
-        system = "\n\n".join(
-            [_persona_prompt(self.persona, self.env_name), RULES, self._facts(facts)]
-        )
-        messages = [{"role": "system", "content": system}, *self.history]
-        if instruction:
-            messages.append({"role": "user", "content": instruction})
-        text = self.llm.chat(messages, temperature=0.7, seed=self.seed, max_tokens=300).strip()
-        self.history.append({"role": "assistant", "content": text})
-        return text
+            return json.loads(out).get("asks") == "yes"
+        except (json.JSONDecodeError, AttributeError, TypeError):
+            return False
 
     def reply(self, assistant_text: str, facts: dict, acts: Actions) -> str:
-        self.history.append({"role": "user", "content": assistant_text})
-        return self._say(facts)
+        items = fact_list(self.persona, facts, acts)
+        picked = rule_select(assistant_text, items)
+        if "?" in assistant_text:
+            for f in items:
+                topic = f.topic if f.id[0] in "HC" else f.text
+                if f.id not in picked and self._asks(assistant_text, topic):
+                    picked.add(f.id)
+        # The clerk's own answer on a topic replaces the chart line on the same topic.
+        clerk_topics = {f.topic.lower() for f in items if f.id in picked and f.id[0] == "H"}
+        picked -= {f.id for f in items if f.id[0] == "C" and f.topic.lower() in clerk_topics}
+        # A symptom is said once; history is given again if asked again.
+        chosen = [f for f in items if f.id in picked and not (f.id[0] == "S" and f.id in self.said)]
+        self.said |= {f.id for f in chosen}
+        said = [f"{f.topic.capitalize()}: {f.text}" if f.id[0] == "H" else f.text for f in chosen]
+        parts = [join_points(said)] if chosen else []
+        if acts.examine and not any(f.id[0] == "E" for f in chosen):
+            parts.append("I examined as you asked and found nothing abnormal.")
+        if acts.measure_vitals and facts["vitals"]:
+            parts.append(f"Vital signs now: {vitals_text(facts['vitals'])}.")
+        if "?" in assistant_text and (not chosen or assistant_text.count("?") > len(chosen)):
+            parts.append(NOTHING)
+        self.log.append({"selected": sorted(picked), "used": [f.id for f in chosen]})
+        return " ".join(parts) or NOTHING
 
-    def update(self, facts: dict, last: dict) -> str:
-        return self._say(
-            facts,
-            f"[Time has passed; it is now {facts['time']}. Write your next message to the "
-            "assistant: say how the patient is now, using only the facts, and include rechecked "
-            "vital signs if the assistant asked you to keep checking them.]",
-        )
+    def update(self, facts: dict, last: dict, done: list[str] | None = None) -> str:
+        seen = {s["text"] for s in last.get("symptoms", []) + last.get("exam_findings", [])}
+        new = [
+            s["text"] for s in facts["symptoms"] + facts["exam_findings"] if s["text"] not in seen
+        ]
+        parts = [f"Update, {_elapsed(facts['time'])} after my first message."]
+        parts.append(join_points(new) if new else "No new symptoms.")
+        if done:
+            parts.append(f"Done since we last spoke: {'; '.join(done)}.")
+        if facts["vitals"]:
+            parts.append(f"Vital signs now: {vitals_text(facts['vitals'])}.")
+        return " ".join(parts)
 
-    def acknowledge(self, assistant_text: str, facts: dict) -> str:
-        self.history.append({"role": "user", "content": assistant_text})
-        return self._say(
-            facts,
-            "[Reply briefly: confirm you will follow the plan, or ask one short question about it.]",
-        )
+
+def _elapsed(offset: str) -> str:
+    m = re.fullmatch(r"T\+(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?", offset)
+    if not m or not any(m.groups()):
+        return "just"
+    d, h, mi = (int(x) if x else 0 for x in m.groups())
+    parts = [
+        f"{d} day{'s' if d != 1 else ''}" if d else "",
+        f"{h} hour{'s' if h != 1 else ''}" if h else "",
+        f"{mi} minutes" if mi and not d else "",
+    ]
+    return " ".join(p for p in parts if p)

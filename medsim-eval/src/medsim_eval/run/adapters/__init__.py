@@ -29,6 +29,11 @@ class Reply:
     final: bool = False  # the assistant gave its assessment or plan
     data: dict = field(default_factory=dict)  # the raw reply, for the log
     seconds: float = 0.0
+    notes: list[str] = field(default_factory=list)  # what the adapter did, for the log
+    # When the assistant gives these as data, the runner uses them instead of reading the text:
+    directed: list[str] | None = None  # actions the crew should carry out
+    wants_vitals: bool | None = None
+    wants_exam: bool | None = None
 
 
 class Assistant:

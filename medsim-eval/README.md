@@ -64,6 +64,7 @@ medsim plan scenarios/inbox                     # the runs each scenario gets (u
 medsim run scenarios/inbox --runs 1             # one run per scenario, against SpaceDoc
 medsim run scenarios/inbox                      # every run
 medsim run X.scenario.json --spacedoc-demo --crewmember rules   # no models needed: tests the plumbing
+medsim run X.scenario.json --rechecks      # also report back when the assistant asks for a re-check
 ```
 
 On the laptop this needs Ollama with SpaceDoc's models (`spacedoc models pull`) and the crewmember's model (`ollama pull llama3.2:3b`, or pick another with `--model`). Each run writes `runs/<batch>/<scenario>/<run>/`: `events.jsonl` (every message, extracted action and twin event, with simulated time), `transcript.md` and `run.json` (the plan entry, settings and outcome). `batch.json` summarises the batch.
@@ -71,10 +72,12 @@ On the laptop this needs Ollama with SpaceDoc's models (`spacedoc models pull`) 
 How a run works:
 
 - **SpaceDoc** is started once per scenario with a crew roster made from MedSim's, with the scenario's chart for the patient, so it knows the record as it would aboard. Consults are practice consults. SpaceDoc's own code and data are untouched.
-- **The crewmember** opens with the scenario's opening statement. A local model words each reply, but code decides what it may say: the patient's chart, what the twin shows at that moment, and the clerk's "on direct questioning" history. `--crewmember rules` answers by keyword, without a model.
-- **Each reply** is read for what the crew must do (medicines, mapped to kit items; vitals; exams; when to check again), and the twin applies it.
+- **The crewmember** opens with the scenario's opening statement and then answers only from the scenario's facts, in the clerk's own words: the "on direct questioning" history, the chart, and what the twin shows at that moment. A local model does one thing: for each fact, it says whether the assistant asked about it. It writes no text, so it can't invent anything. Vital signs are added by code when asked for; a question no fact answers gets "Nothing else that I've noticed". Examination findings must be in the scenario's timeline, or an examination comes back normal. `--crewmember rules` picks facts by keyword, without a model.
+- **Not simulated yet:** the speaker's historian reliability, familiarity and behaviour settings. In the first real run a 3B model that worded replies itself invented exposures (an EVA, a radiation alert, an ammonia smell), spoke as the patient and changed a heart rate, which sent SpaceDoc to the wrong diagnosis; rewording will return only when it can be checked against the facts.
+- **Each reply** is read for what the crew must do. When the assistant lists its actions as data (SpaceDoc's assessment does), those are used, and actions its own checks blocked are not carried out. Otherwise rules read the text: a medicine counts only if a kit item is named in a sentence telling the crew to give it. Only kit items change the twin.
+- **SpaceDoc's cards** are answered as cards: the exposure check gets "No" to every item ("Yes" to EVA for an EVA-related condition), and an urgent card is taken as an emergency: one checked assessment, then the card is dismissed so the consult can go on.
 - **The simple twin** follows the scenario's timeline and keyframes (treated or untreated), the time-critical rule and complication events, and counts kit stock. The course side is set by the run plan, or drawn from the CLiFF for CLiFF-odds runs.
-- **After the consult** the clock jumps to the next change (a new symptom, a complication, or the re-check the assistant asked for) and the crewmember reports back, up to 3 times or the end of the scenario.
+- **After the consult** the clock jumps to each later point in the scenario (a new symptom, a finding, a complication) and the crewmember reports what changed and what was carried out, up to 3 times or the end of the scenario.
 
 ## Scoring sheets
 

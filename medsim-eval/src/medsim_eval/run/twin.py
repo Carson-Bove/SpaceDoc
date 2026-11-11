@@ -94,10 +94,11 @@ class SimpleTwin:
 
     def give(self, kit_id: str | None, text: str) -> None:
         """Record a treatment the assistant directed and the crew carried out."""
-        if kit_id and kit_id not in self.kit:
+        if not kit_id or kit_id not in self.kit:
+            # Not a kit item here: nothing is given, and the log says so.
             self._event("not_aboard", kit_id=kit_id, text=text)
-            kit_id = None
-        if kit_id and self.kit[kit_id].qty <= 0:
+            return
+        if self.kit[kit_id].qty <= 0:
             self._event("out_of_stock", kit_id=kit_id, text=text)
             return
         self.given.append(Given(self.t, kit_id, text))
@@ -140,12 +141,15 @@ class SimpleTwin:
 
     def next_change_after(self, t: int) -> int | None:
         """The next time something in the scenario can change, after `t`."""
-        times = [parse_offset(e.t) for e in self.p.timeline]
+        times = [parse_offset(e.t) for e in self.p.timeline if self._applies(e)]
         for x in self.p.complications:
             if x.id in self.onsets:
                 times += [self.onsets[x.id] + parse_offset(f.t) for f in x.findings]
+            elif not self._eligible(x):
+                continue
             elif x.trigger == "untreated":
-                times.append(parse_offset(x.by))
+                if not self._qualifies(x.action, parse_offset(x.by)):
+                    times.append(parse_offset(x.by))
             elif x.trigger == "chance":
                 times.append(parse_offset(x.at))
         times += list(self.pending.values())

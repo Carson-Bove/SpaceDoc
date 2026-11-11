@@ -484,7 +484,7 @@ Decided:
 - **Crew roster:** 20 fictional crewmembers with full names, modelled on the active corps.
 - **Clerk details in files:** name and contact only.
 - **Automation:** no new GitHub Actions. The package's tests and `medsim validate` run locally.
-- **User agent:** a small model from a different family than the assistant under test. Code supplies the facts it may give; the model only words them.
+- **User agent:** a small model from a different family than the assistant under test. Code supplies the facts it may give. **Changed after the first real run:** the model no longer words the replies. A 3B model invented exposures, spoke as the patient and changed a number, which misled SpaceDoc. It now only picks which facts were asked about (measured: 27 of 27 asked-for facts found, about 1 in 8 unasked facts also offered), and the reply is the clerk's own words. Historian reliability and behaviour settings are not simulated until rewording can be checked against the facts.
 - **Scorer and judge:** an 8B model with reasoning on, to start. Trust per rubric item is measured against clerk scoring in Phase E.
 - **Before Phase B:** revise the Scenario Builder from the clerks' feedback.
 - **Complication events, not mission events, for now:** scenarios script clinical complications (untreated, action and chance triggers; optional IMM link; standard items SCR and SCM plus clerk items). Mission ("freak") events such as space weather stay in the format as a later feature. Communication delay is a constant per environment.
