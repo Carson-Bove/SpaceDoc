@@ -1,0 +1,448 @@
+{
+ "note": "Usual adult single doses for kit drugs taken by mouth, injection or inhaler, from the dosage section of each drug's FDA label as generally used in practice. Written for software testing, entered from general knowledge of the labels and NOT yet checked against them one by one or reviewed by a clinician: every entry is passed to assistants as unvalidated. Topical products, eye and ear drops, anaesthetics and hormone tablets have no entry.",
+ "reviewed_by": null,
+ "doses": {
+  "adrenaline-epinephrine-1-10000-10ml": {
+   "min_mg": 1,
+   "max_mg": 1,
+   "round_to_mg": 1,
+   "route": "IV, cardiac arrest only",
+   "interval": "every 3-5 minutes during resuscitation",
+   "allergy_classes": []
+  },
+  "albuterol-inhaler-proventil-90-mcg-6-7-gm": {
+   "min_mg": 0.18,
+   "max_mg": 0.18,
+   "round_to_mg": 0.09,
+   "route": "inhaled (2 puffs)",
+   "interval": "every 4-6 hours as needed",
+   "allergy_classes": []
+  },
+  "ambien-10mg-tablet": {
+   "min_mg": 5,
+   "max_mg": 10,
+   "round_to_mg": 5,
+   "route": "oral",
+   "interval": "once, at bedtime",
+   "allergy_classes": []
+  },
+  "amoxicillin-500-mg-capsule": {
+   "min_mg": 500,
+   "max_mg": 500,
+   "round_to_mg": 500,
+   "route": "oral",
+   "interval": "every 8 hours",
+   "allergy_classes": [
+    "penicillin",
+    "penicillins"
+   ]
+  },
+  "antivert-meclizine-25-mg": {
+   "min_mg": 25,
+   "max_mg": 25,
+   "round_to_mg": 25,
+   "route": "oral",
+   "interval": "up to three times daily as needed",
+   "allergy_classes": []
+  },
+  "aspirin-325mg-tab": {
+   "min_mg": 325,
+   "max_mg": 650,
+   "round_to_mg": 325,
+   "route": "oral",
+   "interval": "every 4-6 hours as needed; for a suspected heart attack 162-325 mg once, chewed",
+   "allergy_classes": [
+    "nsaids",
+    "salicylates",
+    "aspirin"
+   ]
+  },
+  "ativan-lorazepam-1-mg-tablet": {
+   "min_mg": 1,
+   "max_mg": 1,
+   "round_to_mg": 0.5,
+   "route": "oral",
+   "interval": "two to three times daily as needed",
+   "allergy_classes": [
+    "benzodiazepines"
+   ]
+  },
+  "atropine-1-mg-10ml-syringe": {
+   "min_mg": 0.5,
+   "max_mg": 1,
+   "round_to_mg": 0.5,
+   "route": "IV",
+   "interval": "every 3-5 minutes for a slow heart rate; no more than 3 mg",
+   "allergy_classes": []
+  },
+  "bactrim-ds-sulfamethoxazole-trimethoprim-800-mg-160-mg-tablet": {
+   "min_mg": 160,
+   "max_mg": 160,
+   "round_to_mg": 160,
+   "route": "oral (one DS tablet; dose given as trimethoprim)",
+   "interval": "every 12 hours",
+   "allergy_classes": [
+    "sulfonamide antibiotics",
+    "sulfonamides",
+    "sulfa"
+   ]
+  },
+  "benadryl-25-mg-capsule": {
+   "min_mg": 25,
+   "max_mg": 50,
+   "round_to_mg": 25,
+   "route": "oral",
+   "interval": "every 4-6 hours as needed; no more than 300 mg in 24 hours",
+   "allergy_classes": []
+  },
+  "benadryl-50-mg-ml-1ml-injectable": {
+   "min_mg": 25,
+   "max_mg": 50,
+   "round_to_mg": 25,
+   "route": "IM or slow IV",
+   "interval": "every 4-6 hours as needed; no more than 400 mg in 24 hours",
+   "allergy_classes": []
+  },
+  "claritin-loratadine-10mg-tablet": {
+   "min_mg": 10,
+   "max_mg": 10,
+   "round_to_mg": 10,
+   "route": "oral",
+   "interval": "once daily",
+   "allergy_classes": []
+  },
+  "cleocin-clindamycin-300mg": {
+   "min_mg": 300,
+   "max_mg": 300,
+   "round_to_mg": 300,
+   "route": "oral",
+   "interval": "every 6 hours",
+   "allergy_classes": [
+    "lincosamides",
+    "clindamycin"
+   ]
+  },
+  "dexamethasone-decadron-10mg-injectable": {
+   "min_mg": 10,
+   "max_mg": 10,
+   "round_to_mg": 10,
+   "route": "IV or IM",
+   "interval": "dose and repeats depend on the condition",
+   "allergy_classes": []
+  },
+  "diamox-acetazolamide-250-mg-tablets": {
+   "min_mg": 250,
+   "max_mg": 250,
+   "round_to_mg": 250,
+   "route": "oral",
+   "interval": "every 12 hours",
+   "allergy_classes": [
+    "sulfonamides"
+   ]
+  },
+  "diflucan-fluconazole-150-mg": {
+   "min_mg": 150,
+   "max_mg": 150,
+   "round_to_mg": 150,
+   "route": "oral",
+   "interval": "single dose; other infections need a different schedule",
+   "allergy_classes": []
+  },
+  "dilaudid-hydromorphone-2mg-ml-1ml-syringe": {
+   "min_mg": 0.5,
+   "max_mg": 1,
+   "round_to_mg": 0.5,
+   "route": "slow IV (or 1-2 mg IM)",
+   "interval": "every 2-3 hours as needed",
+   "allergy_classes": [
+    "opioids"
+   ]
+  },
+  "dulcolax-bisacodyl-tablet-5mg": {
+   "min_mg": 10,
+   "max_mg": 10,
+   "round_to_mg": 5,
+   "route": "oral",
+   "interval": "once daily as needed",
+   "allergy_classes": []
+  },
+  "effexor-xr-venlafaxine-xr-75-mg-capsules": {
+   "min_mg": 75,
+   "max_mg": 75,
+   "round_to_mg": 37.5,
+   "route": "oral",
+   "interval": "once daily with food",
+   "allergy_classes": []
+  },
+  "epipen-1-1000": {
+   "min_mg": 0.3,
+   "max_mg": 0.3,
+   "round_to_mg": 0.3,
+   "route": "IM, outer thigh",
+   "interval": "repeat after 5-15 minutes if needed",
+   "allergy_classes": []
+  },
+  "ertapenem-1gm": {
+   "min_mg": 1000,
+   "max_mg": 1000,
+   "round_to_mg": 1000,
+   "route": "IV or IM",
+   "interval": "every 24 hours",
+   "allergy_classes": [
+    "carbapenems"
+   ]
+  },
+  "flagyl-metronidazole-500mg": {
+   "min_mg": 500,
+   "max_mg": 500,
+   "round_to_mg": 500,
+   "route": "oral",
+   "interval": "every 8 hours; no alcohol",
+   "allergy_classes": []
+  },
+  "imodium-loperamide-hcl-2-mg-tablet": {
+   "min_mg": 4,
+   "max_mg": 4,
+   "round_to_mg": 2,
+   "route": "oral",
+   "interval": "4 mg first, then 2 mg after each loose stool; no more than 16 mg in 24 hours",
+   "allergy_classes": []
+  },
+  "levaquin-levofloxacin-500mg": {
+   "min_mg": 500,
+   "max_mg": 500,
+   "round_to_mg": 500,
+   "route": "oral",
+   "interval": "every 24 hours",
+   "allergy_classes": [
+    "fluoroquinolones",
+    "quinolones"
+   ]
+  },
+  "lidocaine-xylocaine-cardiac-2-20mg-ml-5ml-syringe": {
+   "min_mg": 70,
+   "max_mg": 100,
+   "round_to_mg": 10,
+   "route": "IV",
+   "interval": "once for ventricular arrhythmia; repeats per resuscitation protocol",
+   "allergy_classes": []
+  },
+  "lopressor-metoprolol-50-mg": {
+   "min_mg": 50,
+   "max_mg": 50,
+   "round_to_mg": 50,
+   "route": "oral",
+   "interval": "every 12 hours",
+   "allergy_classes": []
+  },
+  "melatonin-3-mg": {
+   "min_mg": 3,
+   "max_mg": 3,
+   "round_to_mg": 3,
+   "route": "oral",
+   "interval": "at bedtime",
+   "allergy_classes": []
+  },
+  "motrin-ibuprofen-400mg": {
+   "min_mg": 400,
+   "max_mg": 400,
+   "round_to_mg": 400,
+   "route": "oral",
+   "interval": "every 6-8 hours as needed, with food",
+   "allergy_classes": [
+    "nsaids",
+    "non-steroidal anti-inflammatory drugs"
+   ]
+  },
+  "nitroglycerin-tablet-0-4mg": {
+   "min_mg": 0.4,
+   "max_mg": 0.4,
+   "round_to_mg": 0.4,
+   "route": "under the tongue",
+   "interval": "every 5 minutes, up to 3 doses",
+   "allergy_classes": []
+  },
+  "pepto-bismol-262mg-chewable-tabs": {
+   "min_mg": 524,
+   "max_mg": 524,
+   "round_to_mg": 262,
+   "route": "oral",
+   "interval": "every 30-60 minutes as needed; no more than 8 doses in 24 hours",
+   "allergy_classes": [
+    "salicylates",
+    "aspirin"
+   ]
+  },
+  "phenergan-promethazine-tablet-25-mg": {
+   "min_mg": 25,
+   "max_mg": 25,
+   "round_to_mg": 25,
+   "route": "oral",
+   "interval": "every 4-6 hours as needed",
+   "allergy_classes": []
+  },
+  "prednisone-20-mg": {
+   "min_mg": 20,
+   "max_mg": 60,
+   "round_to_mg": 20,
+   "route": "oral",
+   "interval": "once daily; dose depends on the condition",
+   "allergy_classes": []
+  },
+  "prilosec-20mg": {
+   "min_mg": 20,
+   "max_mg": 20,
+   "round_to_mg": 20,
+   "route": "oral",
+   "interval": "once daily before a meal",
+   "allergy_classes": []
+  },
+  "promethazine-injectable-phenergan-50mg-ml-single-dose-vial": {
+   "min_mg": 12.5,
+   "max_mg": 25,
+   "round_to_mg": 12.5,
+   "route": "deep IM",
+   "interval": "every 4-6 hours as needed",
+   "allergy_classes": []
+  },
+  "provigil-modafinil-200-mg-tablets": {
+   "min_mg": 200,
+   "max_mg": 200,
+   "round_to_mg": 200,
+   "route": "oral",
+   "interval": "once, in the morning",
+   "allergy_classes": []
+  },
+  "rocephin-ceftriaxone-1-gm": {
+   "min_mg": 1000,
+   "max_mg": 1000,
+   "round_to_mg": 1000,
+   "route": "IV or IM",
+   "interval": "every 24 hours",
+   "allergy_classes": [
+    "cephalosporins"
+   ]
+  },
+  "sudafed-12-hour-pseudoephedrine-120-mg": {
+   "min_mg": 120,
+   "max_mg": 120,
+   "round_to_mg": 120,
+   "route": "oral",
+   "interval": "every 12 hours",
+   "allergy_classes": []
+  },
+  "sudafed-pseudoephedrine-30mg": {
+   "min_mg": 60,
+   "max_mg": 60,
+   "round_to_mg": 30,
+   "route": "oral",
+   "interval": "every 4-6 hours as needed; no more than 240 mg in 24 hours",
+   "allergy_classes": []
+  },
+  "tamsulosin-0-4-mg-tablet": {
+   "min_mg": 0.4,
+   "max_mg": 0.4,
+   "round_to_mg": 0.4,
+   "route": "oral",
+   "interval": "once daily",
+   "allergy_classes": []
+  },
+  "toradol-ketorolac-30mg-ml-2ml-single-dose-vial": {
+   "min_mg": 30,
+   "max_mg": 30,
+   "round_to_mg": 15,
+   "route": "IV or IM",
+   "interval": "every 6 hours; no more than 120 mg in 24 hours, 5 days at most",
+   "allergy_classes": [
+    "nsaids",
+    "non-steroidal anti-inflammatory drugs"
+   ]
+  },
+  "tylenol-acetaminophen-325-mg": {
+   "min_mg": 650,
+   "max_mg": 650,
+   "round_to_mg": 325,
+   "route": "oral",
+   "interval": "every 4-6 hours as needed; no more than 3,000 mg in 24 hours",
+   "allergy_classes": []
+  },
+  "valacyclovir-1-gm-tablet": {
+   "min_mg": 1000,
+   "max_mg": 1000,
+   "round_to_mg": 500,
+   "route": "oral",
+   "interval": "every 8 hours for shingles; other infections need a different schedule",
+   "allergy_classes": []
+  },
+  "valium-diazepam-5-mg-ml-2-ml-syringe": {
+   "min_mg": 5,
+   "max_mg": 10,
+   "round_to_mg": 5,
+   "route": "slow IV or IM",
+   "interval": "repeat per the condition",
+   "allergy_classes": [
+    "benzodiazepines"
+   ]
+  },
+  "vicodin-hp-hydrocodone-acetaminophen-hp-10-mg-660-mg": {
+   "min_mg": 10,
+   "max_mg": 10,
+   "round_to_mg": 10,
+   "route": "oral (one tablet; dose given as hydrocodone)",
+   "interval": "every 4-6 hours as needed; count its acetaminophen toward the daily limit",
+   "allergy_classes": [
+    "opioids"
+   ]
+  },
+  "zantac-ranitidine-150-mg": {
+   "min_mg": 150,
+   "max_mg": 150,
+   "round_to_mg": 150,
+   "route": "oral",
+   "interval": "every 12 hours",
+   "allergy_classes": []
+  },
+  "ziprasidone-geodon-20mg-ml": {
+   "min_mg": 10,
+   "max_mg": 10,
+   "round_to_mg": 10,
+   "route": "IM",
+   "interval": "every 2 hours as needed; no more than 40 mg in 24 hours",
+   "allergy_classes": []
+  },
+  "zithromax-azithromycin-250-mg": {
+   "min_mg": 500,
+   "max_mg": 500,
+   "round_to_mg": 250,
+   "route": "oral",
+   "interval": "500 mg on day 1, then 250 mg once daily on days 2-5",
+   "allergy_classes": [
+    "macrolides"
+   ]
+  },
+  "zofran-ondansetron-8-mg-tablet": {
+   "min_mg": 8,
+   "max_mg": 8,
+   "round_to_mg": 4,
+   "route": "oral",
+   "interval": "every 8-12 hours as needed",
+   "allergy_classes": []
+  },
+  "zoloft-sertraline-50-mg": {
+   "min_mg": 50,
+   "max_mg": 50,
+   "round_to_mg": 25,
+   "route": "oral",
+   "interval": "once daily",
+   "allergy_classes": []
+  },
+  "zyrtec-cetirizine-10-mg-tablet": {
+   "min_mg": 10,
+   "max_mg": 10,
+   "round_to_mg": 10,
+   "route": "oral",
+   "interval": "once daily",
+   "allergy_classes": []
+  }
+ }
+}

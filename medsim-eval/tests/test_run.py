@@ -231,7 +231,7 @@ def test_assistant_listed_actions_are_used_instead_of_the_text(tmp_path):
 def test_spacedoc_overlay_gives_spacedoc_the_scenario_patient(tmp_path):
     cfg = tmp_path / "spacedoc.toml"
     (tmp_path / "data" / "crew").mkdir(parents=True)
-    (tmp_path / "data" / "formulary").mkdir()
+    (tmp_path / "data" / "rules").mkdir()
     cfg.write_text(
         'db_path = "spacedoc.db"\nchat_model = "qwen3:8b"\nsampling = { temperature = 0.6 }\n'
     )
@@ -243,7 +243,15 @@ def test_spacedoc_overlay_gives_spacedoc_the_scenario_patient(tmp_path):
     by_id = {c["crew_id"]: c for c in roster}
     assert by_id["C10"]["record"]["allergies"] == ["penicillin (rash as a child)"]
     assert by_id["C14"]["medical_role"] == "cmo"
-    assert (tmp_path / "run" / "data" / "formulary").is_symlink()
+    # SpaceDoc gets the kit for each environment, with usual adult doses marked unvalidated.
+    iss = json.loads((tmp_path / "run" / "data" / "formulary" / "medsim-T1.yaml").read_text())
+    by_id = {i["id"]: i for i in iss["items"]}
+    assert len(by_id) == 84 and by_id["ertapenem-1gm"]["dosing"]["max_mg"] == 1000
+    assert "ertapenem" in by_id["ertapenem-1gm"]["aliases"]
+    assert by_id["amoxicillin-500-mg-capsule"]["allergy_classes"] == ["penicillin", "penicillins"]
+    assert all(i["validation_status"] == "unvalidated" for i in iss["items"])
+    lander = json.loads((tmp_path / "run" / "data" / "formulary" / "medsim-T3.yaml").read_text())
+    assert "ertapenem-1gm" not in {i["id"] for i in lander["items"]}
 
 
 def test_render_assessment_sets_blocked_actions_apart():

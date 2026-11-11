@@ -24,6 +24,7 @@ from medsim_eval.run.adapters import Assistant, Reply, Session
 from medsim_eval.validate import Library
 
 PACKAGE_ROOT = Path(__file__).resolve().parents[4]
+DOSES = PACKAGE_ROOT / "library" / "sources" / "usual-adult-doses.json"
 
 
 def default_config() -> Path:
@@ -83,6 +84,7 @@ class SpaceDocAssistant(Assistant):
         self.paused = False
         self.pending_screen: list[dict] = []
         self.exposure: dict[str, str] = {}  # exposure-check answers that are not "No"
+        self.env: str | None = None
 
     def info(self) -> dict:
         s = self.status
@@ -101,13 +103,28 @@ class SpaceDocAssistant(Assistant):
         cond = lib.conditions.get(scenario.patients[0].condition)
         eva = bool(cond and cond.applicability and cond.applicability.eva)
         self.exposure = {"EXP-EVA": "Yes"} if eva else {}
-        root = workdir / "spacedoc"
-        cfg = self._overlay(scenario, lib, root)
+        self.root = workdir / "spacedoc"
+        self.cfg = self._overlay(scenario, lib, self.root)
+        self.env = None  # started by the first run, with that run's kit
+
+    def _use_env(self, env: str) -> None:
+        if env == self.env and self.proc and self.proc.poll() is None:
+            return
+        self.close()
+        # SpaceDoc reads one formulary file by a fixed name: give it this environment's kit.
+        src = self.formulary_dir / f"medsim-{env}.yaml"
+        if src.exists():
+            (self.formulary_dir / "example-transit.yaml").write_text(src.read_text())
+        self.env = env
+        self._launch()
+
+    def _launch(self) -> None:
+        root = self.root
         port = _free_port()
-        args = [self.command, "serve", "--port", str(port), "--config", str(cfg)]
+        args = [self.command, "serve", "--port", str(port), "--config", str(self.cfg)]
         if self.demo:
             args.append("--demo")
-        log = (root / "server.log").open("w")
+        log = (root / "server.log").open("a")
         self.proc = subprocess.Popen(args + self.extra_args, stdout=log, stderr=subprocess.STDOUT)
         self.url = f"http://127.0.0.1:{port}"
         deadline = time.monotonic() + self.startup_timeout_s
@@ -139,9 +156,11 @@ class SpaceDocAssistant(Assistant):
         overlay.mkdir(parents=True, exist_ok=True)
         for entry in data.iterdir():
             link = overlay / entry.name
-            if entry.name != "crew" and not link.exists():
+            if entry.name not in ("crew", "formulary") and not link.exists():
                 link.symlink_to(entry.resolve())
         (overlay / "crew").mkdir(exist_ok=True)
+        (overlay / "formulary").mkdir(exist_ok=True)
+        self._write_formulary(lib, overlay / "formulary")
         p = sc.patients[0]
         crew = []
         for c in lib.crew.values():
@@ -163,11 +182,34 @@ class SpaceDocAssistant(Assistant):
         cfg.write_text("".join(f"{k} = {_toml_value(v)}\n" for k, v in out.items()))
         return cfg
 
+    def _write_formulary(self, lib: Library, folder: Path) -> None:
+        """One SpaceDoc formulary per environment, from that environment's kit, so SpaceDoc
+        knows what is aboard. Doses are usual adult doses, marked unvalidated."""
+        doses = json.loads(DOSES.read_text(encoding="utf-8"))["doses"] if DOSES.exists() else {}
+        for env in lib.environments:
+            items = {}
+            for h in lib.habitats_in(env):
+                for i in h.formulary:
+                    if i.qty and i.qty > 0 and i.id not in items:
+                        items[i.id] = formulary_item(i, doses.get(i.id))
+            doc = {
+                "ref": f"medsim-{env}",
+                "description": f"Kit aboard in {env}, from MedSim Eval's habitat profiles (NASA IMM).",
+                "items": list(items.values()),
+            }
+            (folder / f"medsim-{env}.yaml").write_text(json.dumps(doc, indent=1))
+        # Environments with no kit profile keep SpaceDoc's own example list.
+        own = self.config.parent / "data" / "formulary" / "example-transit.yaml"
+        if own.exists():
+            (folder / "example-transit.yaml").write_text(own.read_text())
+        self.formulary_dir = folder
+
     # ---- per run ------------------------------------------------------------------------
     def _post(self, path: str, body: dict | None = None) -> httpx.Response:
         return httpx.post(f"{self.url}{path}", json=body or {}, timeout=self.request_timeout_s)
 
     def start(self, session: Session) -> None:
+        self._use_env(session.env)
         patient = "self" if session.speaker_role == "patient" else session.patient_crew_id
         r = self._post(
             "/api/consult",
@@ -292,6 +334,36 @@ class SpaceDocAssistant(Assistant):
             except subprocess.TimeoutExpired:
                 self.proc.kill()
         self.proc = None
+
+
+def formulary_item(i, dose: dict | None) -> dict:
+    """A MedSim kit item in SpaceDoc's formulary shape."""
+    from medsim_eval.run.crewmember import drug_keywords
+    from medsim_eval.run.twin import KitItem
+
+    words = sorted(drug_keywords(KitItem(i.id, i.name, "drug", i.qty)))
+    item = {
+        "id": i.id,
+        "name": i.name.title(),
+        "kind": "drug",
+        "aliases": words,
+        "quantity": i.qty,
+        "unit": "units",
+        "validation_status": "unvalidated",
+    }
+    if dose:
+        item["allergy_classes"] = dose.get("allergy_classes", [])
+        item["dosing"] = {
+            # SpaceDoc doses by weight between a floor and a ceiling; usual adult doses are a
+            # range, so the weight term only chooses a point inside it.
+            "mg_per_kg": round(dose["max_mg"] / 70, 4),
+            "min_mg": dose["min_mg"],
+            "max_mg": dose["max_mg"],
+            "round_to_mg": dose["round_to_mg"],
+            "route": dose["route"],
+            "interval": dose["interval"],
+        }
+    return item
 
 
 def render_assessment(v: dict) -> str:
