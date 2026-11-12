@@ -466,7 +466,7 @@ A **separate package in this repository**, e.g. `medsim-eval/` with its own `pyp
 | A6 | Several-patient scenarios in the form: triage, illness that spreads, the CMO as patient, allocating scarce drugs; research on spaceflight triage and drug storage | Clinical lead agrees the triage rules |
 | A7 (paper sheet done) | Manual scoring sheet, a separate tool for clerks testing cases by hand. Paper version: `medsim sheet` prints a PDF for any scenario, or a blank one ([blank](../medsim-eval/dist/scoring-sheet-blank.pdf), [worked example](../medsim-eval/dist/MSE-0001-scoring-sheet.pdf)) | Clerk scores feed the Phase E calibration set |
 | B (first version built) | Adapter interface + SpaceDoc adapter; MCP world server (static twin, waiting for a tool-calling assistant); user agent; runner (up to 12 runs per scenario). Built: `medsim plan` and `medsim run`, the SpaceDoc adapter, the crewmember (local model, or rules), action extraction, a simple twin and run logs | One scenario runs end to end on the laptop overnight (done here against SpaceDoc's demo mode; a real-model run on the laptop is next) |
-| C | Scorer, judge, viewer | Judge report with working anomaly links |
+| C (scorer built) | Scorer, judge, viewer. Built: `medsim score` (per-item verdicts with transcript line numbers, applicability and deadlines by code, review list). Judge and viewer next | Judge report with working anomaly links |
 | D | Twin v1 (CLiFF course model, effect table, complication events, clock); mission events and the paper doll after | The outcome distribution over seeds matches the CLiFF within tolerance |
 | E | Feedback agent, medical + technical reports; scorer validation study | Scorer–human κ reported per item |
 

@@ -79,6 +79,16 @@ How a run works:
 - **The simple twin** follows the scenario's timeline and keyframes (treated or untreated), the time-critical rule and complication events, and counts kit stock. The course side is set by the run plan, or drawn from the CLiFF for CLiFF-odds runs.
 - **After the consult** the clock jumps to each later point in the scenario (a new symptom, a finding, a complication) and the crewmember reports what changed and what was carried out, up to 3 times or the end of the scenario.
 
+## Scoring runs (Phase C, first version)
+
+```bash
+medsim score runs/20261111-184023-spacedoc     # every run in a batch
+```
+
+For each run this writes `score.json` and `score.md` next to the transcript. A local model (default `qwen3:8b`, thinking off) answers one question per rubric item about the numbered transcript and must cite the assistant's own lines; a "yes" without a valid line becomes "cannot tell". Code decides the rest: which items apply (equipment aboard, complications that occurred), deadlines from the simulated times of the cited lines, the checklist score, and the outcome from the twin. Critical-error hits and "cannot tell" items are listed for a person to check. Runs made before scenarios were saved with them need `--scenario path/to/X.scenario.json`.
+
+The scorer has not been checked against human scoring yet (Phase E); treat its results as a first pass.
+
 ## Scoring sheets
 
 `medsim sheet X.scenario.json` prints a scoring sheet to fill in by pen; `medsim sheet` alone prints a blank one. Needs reportlab (`pip install -e "medsim-eval[pdf]"`).

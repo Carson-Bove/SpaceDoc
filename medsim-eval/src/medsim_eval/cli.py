@@ -138,6 +138,9 @@ def sheet_cmd(
     typer.echo(f"wrote {path}")
 
 
+SCENARIO_FILES: dict[str, Path] = {}
+
+
 def _load_scenarios(paths: list[Path], library: Path):
     """Valid scenarios from files or folders (e.g. scenarios/inbox); report and skip the rest."""
     from medsim_eval.models import Scenario
@@ -152,6 +155,7 @@ def _load_scenarios(paths: list[Path], library: Path):
             typer.echo(f"skipping {f}: {len(errors)} error(s); run `medsim validate {f}`")
             continue
         out.append(model)
+        SCENARIO_FILES[model.scenario_id] = f
     return out
 
 
@@ -247,8 +251,66 @@ def run_cmd(
         only=runs,
         base_seed=seed,
         progress=typer.echo,
+        files=SCENARIO_FILES,
     )
     typer.echo(f"wrote {batch}")
+
+
+@app.command("score")
+def score_cmd(
+    paths: list[Path] = typer.Argument(
+        ..., help="A batch folder from `medsim run`, or run folders"
+    ),
+    model: str = typer.Option("qwen3:8b", help="Ollama model that scores"),
+    ollama_url: str = typer.Option("http://localhost:11434", help="Ollama server"),
+    num_ctx: int = typer.Option(12288, help="Context window; the transcript must fit"),
+    think: bool = typer.Option(False, help="Let the model reason before each answer (slower)"),
+    scenario: Path = typer.Option(
+        None, help="The .scenario.json, for runs made before scenarios were saved with them"
+    ),
+    library: Path = LibraryOpt,
+) -> None:
+    """Score runs against the rubric, item by item, with the transcript lines as evidence."""
+    from medsim_eval.models import Scenario, ScenarioRubric
+    from medsim_eval.run.llm import OllamaLLM
+    from medsim_eval.score import Scorer, score_markdown
+    from medsim_eval.validate import load, load_library
+
+    lib, _ = load_library(library)
+    llm = OllamaLLM(model, ollama_url, num_ctx=num_ctx, timeout_s=1800, think=think)
+    problem = llm.check()
+    if problem:
+        typer.echo(problem)
+        raise typer.Exit(1)
+    runs = sorted({r.parent for p in paths for r in p.rglob("run.json")})
+    if not runs:
+        typer.echo("no runs found (looked for run.json)")
+        raise typer.Exit(1)
+    scorer = Scorer(llm)
+    for run_dir in runs:
+        found = sorted(run_dir.parent.glob("*.scenario.json"))
+        sc_path = scenario or (found[0] if found else None)
+        sc, _ = load(sc_path) if sc_path else (None, [])
+        rb, _ = load(sc_path.parent / sc.rubric) if isinstance(sc, Scenario) else (None, [])
+        if not isinstance(sc, Scenario) or not isinstance(rb, ScenarioRubric):
+            typer.echo(
+                f"skipping {run_dir}: its scenario and rubric were not found; pass --scenario"
+            )
+            continue
+        base = lib.base_rubrics.get(rb.base)
+        if base is None:
+            typer.echo(f"skipping {run_dir}: unknown base rubric {rb.base!r}")
+            continue
+        typer.echo(f"scoring {run_dir}")
+        s = scorer.score(run_dir, sc, rb, base, lib)
+        s["scorer"] = {"model": model, "think": think}
+        (run_dir / "score.json").write_text(json.dumps(s, indent=1, ensure_ascii=False))
+        (run_dir / "score.md").write_text(score_markdown(s))
+        c = s["checklist"]
+        typer.echo(
+            f"  checklist {c['score']}; critical errors {s['critical_errors']['occurred'] or 'none'}; "
+            f"{len(s['review'])} item(s) for a person to check"
+        )
 
 
 if __name__ == "__main__":

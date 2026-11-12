@@ -215,6 +215,7 @@ def run_batch(
     only: int | None = None,
     base_seed: int = 0,
     progress=print,
+    files: dict[str, Path] | None = None,
 ) -> Path:
     stamp = datetime.now(UTC).strftime("%Y%m%d-%H%M%S")
     batch = out_root / f"{stamp}-{assistant.name}"
@@ -224,6 +225,13 @@ def run_batch(
         for sc in scenarios:
             folder = batch / sc.scenario_id
             folder.mkdir(exist_ok=True)
+            # Keep the scenario and its rubric with the runs, so they can be scored later
+            # against exactly what was run.
+            src = (files or {}).get(sc.scenario_id)
+            if src:
+                for f in (src, src.parent / sc.rubric):
+                    if f.exists():
+                        (folder / f.name).write_bytes(f.read_bytes())
             progress(f"{sc.scenario_id}: preparing {assistant.name}")
             assistant.prepare(sc, lib, folder)
             specs = plan_runs(sc, lib, base_seed)[:only] if only else plan_runs(sc, lib, base_seed)

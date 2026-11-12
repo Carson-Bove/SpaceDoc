@@ -34,6 +34,7 @@ class OllamaLLM:
     base_url: str = "http://localhost:11434"
     num_ctx: int = 8192
     timeout_s: float = 600
+    think: bool | None = None  # thinking mode, for models that have one; None = model default
 
     def chat(self, messages, *, schema=None, temperature=0.7, seed=None, max_tokens=400) -> str:
         options = {"temperature": temperature, "num_ctx": self.num_ctx, "num_predict": max_tokens}
@@ -42,6 +43,8 @@ class OllamaLLM:
         body = {"model": self.model, "messages": messages, "stream": False, "options": options}
         if schema is not None:
             body["format"] = schema
+        if self.think is not None:
+            body["think"] = self.think
         r = httpx.post(f"{self.base_url}/api/chat", json=body, timeout=self.timeout_s)
         if r.status_code == 404:
             raise RuntimeError(

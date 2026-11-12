@@ -343,3 +343,60 @@ def test_spacedoc_demo_end_to_end(tmp_path):
     )  # fmt: skip
     run = json.loads((batch / "MSE-0001" / "r01-T1-best" / "run.json").read_text())
     assert run["errors"] == 0 and run["turns"] >= 2 and run["assistant"]["demo"] is True
+
+
+def test_scorer_checks_evidence_deadlines_and_applicability(tmp_path):
+    from medsim_eval.models import ScenarioRubric
+    from medsim_eval.score import Scorer, score_markdown
+
+    script = [
+        "What are his temperature and heart rate?",
+        {"text": "Leading diagnosis: appendicitis. Start ertapenem 1 g IV now.", "final": True},
+    ]
+    batch = run_batch(
+        [scenario()], LIB, ScriptedAssistant(script), lambda p, s: RuleCrewmember(p),
+        RuleExtractor(), tmp_path, RunConfig(max_followups=0), only=1, progress=lambda *_: None,
+    )  # fmt: skip
+    run_dir = batch / "MSE-0001" / "r01-T1-best"
+    rubric = ScenarioRubric.model_validate(
+        json.loads((EXAMPLES / "MSE-0001.rubric.json").read_text())
+    )
+    lines = [json.loads(x) for x in (run_dir / "events.jsonl").read_text().splitlines()]
+    final = next(e["n"] for e in lines if e["who"] == "assistant" and e.get("final"))
+    crew_line = next(e["n"] for e in lines if e["who"] == "crew")
+
+    def respond(messages, schema):
+        q = messages[-1]["content"].split("QUESTION\n")[-1]
+        if "rating" in schema["properties"]:
+            return {"evidence": [final], "reason": "ok", "rating": 4}
+        if "IMM diagnosis" in q or "antibiotic regimen" in q:
+            return {"evidence": [final], "reason": "said so", "verdict": "yes"}
+        if "temperature and heart rate" in q:
+            return {
+                "evidence": [crew_line],
+                "reason": "asked",
+                "verdict": "yes",
+            }  # not its own line
+        if "operate" in q:
+            return "not json"
+        return {"evidence": [], "reason": "not seen", "verdict": "no"}
+
+    s = Scorer(FakeLLM(respond)).score(
+        run_dir, scenario(), rubric, LIB.base_rubrics[rubric.base], LIB
+    )
+    items = {r["id"]: r for r in s["items"]}
+    assert items["SDX"]["verdict"] == "met" and s["outcome"]["time_to_leading_diagnosis"] == "T+3m"
+    assert items["SET"]["verdict"] == "not_met"
+    assert items["I7"]["verdict"] == "met" and items["I7"]["deadline"] == "T+8h"
+    assert items["I3"]["verdict"] == "cannot_tell"  # a yes that cites only the crew's line
+    assert items["N1"]["verdict"] == "cannot_tell" and "N1" in s["review"]  # unreadable answer
+    assert items["I15"]["verdict"] == "na" and items["SCR:X1"]["verdict"] == "na"  # no complication
+    assert items["G1"]["verdict"] == "clear" and s["ratings"]["D1"] == 4
+    # SDX 6 + I7 8 met, of every applicable expected weight; nothing negative.
+    c = s["checklist"]
+    assert (
+        c["expected_met"] == 14
+        and c["errors"] == 0
+        and c["score"] == round(14 / c["expected_total"], 3)
+    )
+    assert "| I7 |" in score_markdown(s)
