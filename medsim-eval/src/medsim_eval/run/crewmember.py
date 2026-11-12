@@ -53,14 +53,14 @@ _FORM_WORDS = {
     "cream", "ointment", "multi", "dose", "units", "drops", "spray", "inhaler", "packet", "vial",
     "syringe", "suspension", "chewable", "extended", "release", "topical", "ophthalmic", "otic",
     "sodium", "chloride", "hydrochloride", "acid", "with", "oral", "pack", "each", "sterile",
-    "water", "strength", "regular",
+    "water", "strength", "regular", "fluid",
 }  # fmt: skip
 _DIRECTIVE = re.compile(
     r"\b(give|giv(?:e|ing)|take|start|begin|administer|inject|use|apply|swallow|dose|load)\b", re.I
 )
 _NEGATION = re.compile(r"\b(don't|do not|avoid|never|hold off|not|no)\b", re.I)
 _VITALS = re.compile(
-    r"\b(vitals?|vital signs|temperature|temp|pulse|heart rate|blood pressure|bp|oxygen|"
+    r"\b(vitals?|vital signs|temperature|temp|fever|pulse|heart rate|blood pressure|bp|oxygen|"
     r"saturation|sat|spo2|breathing rate|respiratory rate|breaths)\b",
     re.I,
 )
@@ -88,6 +88,12 @@ def match_kit(text: str, kit: list[KitItem]) -> list[KitItem]:
             continue
         words = drug_keywords(k)
         hits = [w for w in words if re.search(rf"\b{re.escape(w)}\b", low)]
+        if not words and "fluid" in k.name.lower():
+            # "IV fluid" has no drug word of its own; "free fluid" on a scan must not match it.
+            words = {"iv fluid"}
+            hits = (
+                ["iv fluid"] if re.search(r"\b(?:iv|intravenous) fluids?\b|\bsaline\b", low) else []
+            )
         for w in hits:
             score = len(hits) / len(words)
             if w not in best or score > best[w][0]:
@@ -353,7 +359,7 @@ class FactCrewmember:
             parts.append("I examined as you asked and found nothing abnormal.")
         if acts.measure_vitals and facts["vitals"]:
             parts.append(f"Vital signs now: {vitals_text(facts['vitals'])}.")
-        if "?" in assistant_text and (not chosen or assistant_text.count("?") > len(chosen)):
+        if "?" in assistant_text:  # so that every question gets an answer, if only "no"
             parts.append(NOTHING)
         self.log.append({"selected": sorted(picked), "used": [f.id for f in chosen]})
         return " ".join(parts) or NOTHING

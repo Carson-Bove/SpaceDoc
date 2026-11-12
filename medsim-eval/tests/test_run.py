@@ -125,6 +125,12 @@ def test_one_kit_item_per_drug_named():
     assert len(hits) == 1 and "acetaminophen" in hits[0].name.lower()
 
 
+def test_free_fluid_on_a_scan_is_not_iv_fluid():
+    kit = twin().kit_items()
+    assert match_kit("Perform abdominal ultrasound to assess for free fluid", kit) == []
+    assert [k.id for k in match_kit("Start IV fluids now", kit)] == ["iv-fluid-1l-1000ml"]
+
+
 def asks_about(*topics):
     """A stand-in for the model: says yes when the topic is one of these."""
 
