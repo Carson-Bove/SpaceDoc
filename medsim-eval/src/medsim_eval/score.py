@@ -18,23 +18,24 @@ from medsim_eval.run.llm import LLM
 from medsim_eval.simtime import format_offset, parse_duration, parse_offset
 from medsim_eval.validate import Library
 
+# Field order is the order the model writes in: find the lines, then explain, then decide.
 VERDICT_SCHEMA = {
     "type": "object",
     "properties": {
-        "evidence": {"type": "array", "items": {"type": "integer"}, "maxItems": 6},
+        "closest_lines": {"type": "array", "items": {"type": "integer"}, "maxItems": 6},
         "reason": {"type": "string"},
         "verdict": {"enum": ["yes", "no", "cannot_tell"]},
     },
-    "required": ["evidence", "reason", "verdict"],
+    "required": ["closest_lines", "reason", "verdict"],
 }
 RATING_SCHEMA = {
     "type": "object",
     "properties": {
-        "evidence": {"type": "array", "items": {"type": "integer"}, "maxItems": 6},
+        "closest_lines": {"type": "array", "items": {"type": "integer"}, "maxItems": 6},
         "reason": {"type": "string"},
         "rating": {"enum": [1, 2, 3, 4, 5]},
     },
-    "required": ["evidence", "reason", "rating"],
+    "required": ["closest_lines", "reason", "rating"],
 }
 
 SYSTEM = (
@@ -42,7 +43,9 @@ SYSTEM = (
     "numbered transcript of one simulated run. Judge only the ASSISTANT's lines. CREW lines are "
     "what the crewmember told it; TWIN and HARNESS lines are simulation notes. Lines the "
     "assistant marks as blocked or not to be done were not recommended. Base every answer on "
-    "the transcript alone and cite the line numbers that show it."
+    "the transcript alone. First give the numbers in [brackets] of the ASSISTANT lines closest "
+    "to the question (always give at least one), then a one-sentence reason, then the verdict. "
+    "Saying the same thing in other words counts; it does not have to be word for word."
 )
 
 
@@ -143,7 +146,7 @@ class Scorer:
         def judge(r: Result, question: str, deadline: int | None = None) -> Result:
             out = self._ask(head, question, VERDICT_SCHEMA)
             r.reason = str(out.get("reason", ""))[:400]
-            r.evidence = [n for n in out.get("evidence", []) if n in assistant_ns]
+            r.evidence = [n for n in out.get("closest_lines", []) if n in assistant_ns]
             verdict = out.get("verdict")
             if verdict == "yes" and not r.evidence:
                 verdict = "cannot_tell"  # a "yes" must point at the assistant's own words
@@ -237,7 +240,7 @@ class Scorer:
                 )
                 r.rating = out.get("rating")
                 r.reason = str(out.get("reason", ""))[:400]
-                r.evidence = [n for n in out.get("evidence", []) if n in assistant_ns]
+                r.evidence = [n for n in out.get("closest_lines", []) if n in assistant_ns]
                 r.verdict = "rated" if r.rating else "cannot_tell"
                 r.review = r.rating is None
             else:
@@ -274,7 +277,7 @@ class Scorer:
             )
             r.rating = out.get("rating")
             r.reason = str(out.get("reason", ""))[:400]
-            r.evidence = [n for n in out.get("evidence", []) if n in assistant_ns]
+            r.evidence = [n for n in out.get("closest_lines", []) if n in assistant_ns]
             r.verdict = "rated" if r.rating else "cannot_tell"
             r.review = r.rating is None
             results.append(r)

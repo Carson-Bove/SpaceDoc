@@ -368,18 +368,18 @@ def test_scorer_checks_evidence_deadlines_and_applicability(tmp_path):
     def respond(messages, schema):
         q = messages[-1]["content"].split("QUESTION\n")[-1]
         if "rating" in schema["properties"]:
-            return {"evidence": [final], "reason": "ok", "rating": 4}
+            return {"closest_lines": [final], "reason": "ok", "rating": 4}
         if "IMM diagnosis" in q or "antibiotic regimen" in q:
-            return {"evidence": [final], "reason": "said so", "verdict": "yes"}
+            return {"closest_lines": [final], "reason": "said so", "verdict": "yes"}
         if "temperature and heart rate" in q:
             return {
-                "evidence": [crew_line],
+                "closest_lines": [crew_line],
                 "reason": "asked",
                 "verdict": "yes",
             }  # not its own line
         if "operate" in q:
             return "not json"
-        return {"evidence": [], "reason": "not seen", "verdict": "no"}
+        return {"closest_lines": [], "reason": "not seen", "verdict": "no"}
 
     s = Scorer(FakeLLM(respond)).score(
         run_dir, scenario(), rubric, LIB.base_rubrics[rubric.base], LIB
