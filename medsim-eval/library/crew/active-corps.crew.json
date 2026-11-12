@@ -1,0 +1,1322 @@
+{
+ "schema_version": "0.2",
+ "sources": [
+  {
+   "doc": "Jacobs S, Charvat J, Reitzel R, Wear M, Van Baalen M. Astronauts of the US National Aeronautics and Space Administration (NASA): cohort profile. BMJ Open 2026;16(6):e112490",
+   "url": "https://doi.org/10.1136/bmjopen-2025-112490",
+   "locator": "Table 1: 49 active (20 F, 29 M) at end of 2023; age at selection; military, test pilot, education"
+  },
+  {
+   "doc": "NASA/TM-2014-217384, Identification of Medical Training Methods for Exploration Missions",
+   "url": "https://ntrs.nasa.gov/api/citations/20130013532/downloads/20130013532_Final.pdf",
+   "locator": "ISS CMO training about 40 hours premission"
+  },
+  {
+   "doc": "IMM service-request crew profiles (e.g. S-20180531-405, S-20221028-451)",
+   "url": "https://www.nasa.gov/integrated-medical-model-documentation/",
+   "locator": "CAC, crowns, contacts and prior abdominal surgery in roughly a quarter of crew"
+  }
+ ],
+ "method": "20 fictional crewmembers shaped to the active corps: about 40% women; ages from selection age plus years since selection (classes 2009 to 2025); about half military, mostly test pilots; 3 physicians; 7 non-physicians with the standard CMO course. Each IMM trait is set in 5 of 20, matching the IMM crew profiles. Medical, surgical, medication and allergy histories are invented, kept to conditions compatible with selection, and must be reviewed by the physiologist. Names are invented; any resemblance to real people is unintended.",
+ "crew": [
+  {
+   "crew_id": "C01",
+   "name": "Daniel Reyes-Whitfield",
+   "sex": "M",
+   "age": 58,
+   "height_cm": 180,
+   "weight_kg": 84,
+   "background": "military_test_pilot",
+   "occupation": "Air Force test pilot (retired colonel)",
+   "education": "master",
+   "selection_year": 2009,
+   "flights": 3,
+   "days_in_space": 412,
+   "eva_qualified": true,
+   "medical_role": "backup_cmo",
+   "medical_training": {
+    "level": "cmo",
+    "hours": 40,
+    "description": "Standard non-physician CMO course: about 40 hours of premission training (published figures range from 40 to 70 hours), centred on the onboard medical kit and working with ground flight surgeons. Skills fade faster than knowledge without refreshers."
+   },
+   "familiarity": {
+    "medicine": 3,
+    "equipment": 3,
+    "assistant": 2
+   },
+   "communication_style": "Brief and procedural; reports facts in order and understates symptoms.",
+   "imm": {
+    "cac": true,
+    "crowns": false,
+    "contacts": false,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [
+     "hyperlipidaemia, diet and exercise controlled",
+     "left ankle fracture 2001, healed without surgery"
+    ],
+    "past_surgical": [
+     "wisdom teeth extraction",
+     "PRK both eyes 2008"
+    ],
+    "medications": [
+     {
+      "name": "cholecalciferol (vitamin D3)",
+      "form": "tablet",
+      "dose": "1000 IU",
+      "frequency": "once daily",
+      "indication": "supplement"
+     }
+    ],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [
+     "father: myocardial infarction at 64"
+    ],
+    "social_history": "Never smoker; 1-2 drinks a week; married, two children.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2022"
+    ]
+   },
+   "baseline": {
+    "hr": 56,
+    "sbp": 122,
+    "dbp": 78,
+    "rr": 14,
+    "spo2": 98,
+    "temp_c": 36.6,
+    "hgb_g_dl": 15.2,
+    "wbc_10e9_l": 5.8,
+    "glucose_mmol_l": 5.2
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C02",
+   "name": "Priya Venkataraman",
+   "sex": "F",
+   "age": 46,
+   "height_cm": 163,
+   "weight_kg": 58,
+   "background": "scientist",
+   "occupation": "Planetary geologist",
+   "education": "doctorate",
+   "selection_year": 2013,
+   "flights": 1,
+   "days_in_space": 186,
+   "eva_qualified": true,
+   "medical_role": "crew",
+   "medical_training": {
+    "level": "basic",
+    "hours": null,
+    "description": "Crew basic medical training: first aid, CPR and helping the CMO; no CMO course."
+   },
+   "familiarity": {
+    "medicine": 2,
+    "equipment": 2,
+    "assistant": 3
+   },
+   "communication_style": "Precise and curious; asks questions back; describes symptoms in detail.",
+   "imm": {
+    "cac": false,
+    "crowns": true,
+    "contacts": false,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [
+     "seasonal allergic rhinitis"
+    ],
+    "past_surgical": [],
+    "medications": [
+     {
+      "name": "loratadine",
+      "form": "tablet",
+      "dose": "10 mg",
+      "frequency": "once daily as needed",
+      "indication": "seasonal allergies"
+     }
+    ],
+    "allergies": [
+     {
+      "agent": "grass pollen",
+      "kind": "environmental",
+      "reaction": "sneezing, itchy eyes"
+     }
+    ],
+    "nkda": true,
+    "family_history": [],
+    "social_history": "Never smoker; rarely drinks; runs marathons.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2021"
+    ]
+   },
+   "baseline": {
+    "hr": 54,
+    "sbp": 110,
+    "dbp": 68,
+    "rr": 13,
+    "spo2": 99,
+    "temp_c": 36.5,
+    "hgb_g_dl": 13.1,
+    "wbc_10e9_l": 6.2,
+    "glucose_mmol_l": 4.8
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C03",
+   "name": "Elena Marchetti",
+   "sex": "F",
+   "age": 46,
+   "height_cm": 168,
+   "weight_kg": 62,
+   "background": "physician",
+   "occupation": "Emergency physician",
+   "education": "md",
+   "selection_year": 2017,
+   "flights": 1,
+   "days_in_space": 197,
+   "eva_qualified": true,
+   "medical_role": "cmo",
+   "medical_training": {
+    "level": "physician",
+    "hours": null,
+    "description": "Emergency medicine physician, board certified; practised 8 years before selection."
+   },
+   "familiarity": {
+    "medicine": 5,
+    "equipment": 4,
+    "assistant": 3
+   },
+   "communication_style": "Clinical and structured; uses medical terms; tends to diagnose herself.",
+   "imm": {
+    "cac": false,
+    "crowns": false,
+    "contacts": true,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [
+     "myopia (contact lenses)"
+    ],
+    "past_surgical": [
+     "tonsillectomy in childhood"
+    ],
+    "medications": [
+     {
+      "name": "levonorgestrel/ethinyl estradiol",
+      "form": "tablet",
+      "dose": "0.15 mg/0.03 mg",
+      "frequency": "once daily, continuous",
+      "indication": "menstrual suppression"
+     }
+    ],
+    "allergies": [
+     {
+      "agent": "sulfonamide antibiotics",
+      "kind": "drug",
+      "reaction": "hives"
+     }
+    ],
+    "nkda": false,
+    "family_history": [],
+    "social_history": "Never smoker; social drinker; rock climber.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2023"
+    ]
+   },
+   "baseline": {
+    "hr": 58,
+    "sbp": 108,
+    "dbp": 70,
+    "rr": 14,
+    "spo2": 99,
+    "temp_c": 36.7,
+    "hgb_g_dl": 13.4,
+    "wbc_10e9_l": 5.5,
+    "glucose_mmol_l": 4.9
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C04",
+   "name": "Thomas Kowalczyk",
+   "sex": "M",
+   "age": 56,
+   "height_cm": 185,
+   "weight_kg": 90,
+   "background": "military_aviator",
+   "occupation": "Navy helicopter pilot (retired captain)",
+   "education": "master",
+   "selection_year": 2009,
+   "flights": 2,
+   "days_in_space": 351,
+   "eva_qualified": true,
+   "medical_role": "crew",
+   "medical_training": {
+    "level": "basic",
+    "hours": null,
+    "description": "Crew basic medical training: first aid, CPR and helping the CMO; no CMO course."
+   },
+   "familiarity": {
+    "medicine": 2,
+    "equipment": 2,
+    "assistant": 2
+   },
+   "communication_style": "Laconic; jokes under stress; reluctant to admit pain.",
+   "imm": {
+    "cac": true,
+    "crowns": true,
+    "contacts": false,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [
+     "borderline LDL cholesterol",
+     "concussion 1998, no lasting effects",
+     "episodic low back pain"
+    ],
+    "past_surgical": [
+     "right knee arthroscopy 2005"
+    ],
+    "medications": [],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [
+     "mother: type 2 diabetes"
+    ],
+    "social_history": "Never smoker; drinks socially; married.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2020"
+    ]
+   },
+   "baseline": {
+    "hr": 62,
+    "sbp": 126,
+    "dbp": 80,
+    "rr": 14,
+    "spo2": 97,
+    "temp_c": 36.7,
+    "hgb_g_dl": 15.6,
+    "wbc_10e9_l": 6.8,
+    "glucose_mmol_l": 5.4
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C05",
+   "name": "Aisha Bello",
+   "sex": "F",
+   "age": 43,
+   "height_cm": 170,
+   "weight_kg": 66,
+   "background": "engineer",
+   "occupation": "Aerospace engineer (propulsion)",
+   "education": "master",
+   "selection_year": 2017,
+   "flights": 1,
+   "days_in_space": 163,
+   "eva_qualified": true,
+   "medical_role": "backup_cmo",
+   "medical_training": {
+    "level": "cmo",
+    "hours": 40,
+    "description": "Standard non-physician CMO course: about 40 hours of premission training (published figures range from 40 to 70 hours), centred on the onboard medical kit and working with ground flight surgeons. Skills fade faster than knowledge without refreshers."
+   },
+   "familiarity": {
+    "medicine": 3,
+    "equipment": 3,
+    "assistant": 4
+   },
+   "communication_style": "Methodical; reads numbers out carefully; worries about crewmates more than herself.",
+   "imm": {
+    "cac": false,
+    "crowns": false,
+    "contacts": false,
+    "prior_abd_surgery": true
+   },
+   "chart": {
+    "past_medical": [
+     "iron-deficiency anaemia 2014, resolved"
+    ],
+    "past_surgical": [
+     "caesarean delivery 2015"
+    ],
+    "medications": [],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [
+     "father: hypertension"
+    ],
+    "social_history": "Never smoker; does not drink; two children.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2022"
+    ]
+   },
+   "baseline": {
+    "hr": 60,
+    "sbp": 112,
+    "dbp": 72,
+    "rr": 14,
+    "spo2": 99,
+    "temp_c": 36.6,
+    "hgb_g_dl": 12.8,
+    "wbc_10e9_l": 5.9,
+    "glucose_mmol_l": 4.7
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C06",
+   "name": "Graham Lindqvist",
+   "sex": "M",
+   "age": 53,
+   "height_cm": 178,
+   "weight_kg": 79,
+   "background": "scientist",
+   "occupation": "Physicist (detector instrumentation)",
+   "education": "doctorate",
+   "selection_year": 2009,
+   "flights": 2,
+   "days_in_space": 374,
+   "eva_qualified": false,
+   "medical_role": "crew",
+   "medical_training": {
+    "level": "basic",
+    "hours": null,
+    "description": "Crew basic medical training: first aid, CPR and helping the CMO; no CMO course."
+   },
+   "familiarity": {
+    "medicine": 2,
+    "equipment": 2,
+    "assistant": 3
+   },
+   "communication_style": "Talkative; hedges ('probably fine'); good at saying exactly where it hurts.",
+   "imm": {
+    "cac": true,
+    "crowns": false,
+    "contacts": false,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [
+     "migraine without aura, infrequent (last 2019)"
+    ],
+    "past_surgical": [
+     "wisdom teeth extraction"
+    ],
+    "medications": [
+     {
+      "name": "sumatriptan",
+      "form": "tablet",
+      "dose": "50 mg",
+      "frequency": "as needed",
+      "indication": "migraine"
+     }
+    ],
+    "allergies": [
+     {
+      "agent": "codeine",
+      "kind": "drug",
+      "reaction": "nausea and vomiting (intolerance)"
+     }
+    ],
+    "nkda": false,
+    "family_history": [],
+    "social_history": "Never smoker; drinks socially; cyclist.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2021"
+    ]
+   },
+   "baseline": {
+    "hr": 64,
+    "sbp": 118,
+    "dbp": 76,
+    "rr": 15,
+    "spo2": 98,
+    "temp_c": 36.8,
+    "hgb_g_dl": 14.9,
+    "wbc_10e9_l": 6.1,
+    "glucose_mmol_l": 5.1
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C07",
+   "name": "Hannah Okonjo",
+   "sex": "F",
+   "age": 40,
+   "height_cm": 175,
+   "weight_kg": 68,
+   "background": "military_test_pilot",
+   "occupation": "Marine Corps test pilot",
+   "education": "master",
+   "selection_year": 2021,
+   "flights": 1,
+   "days_in_space": 152,
+   "eva_qualified": true,
+   "medical_role": "crew",
+   "medical_training": {
+    "level": "basic",
+    "hours": null,
+    "description": "Crew basic medical training: first aid, CPR and helping the CMO; no CMO course."
+   },
+   "familiarity": {
+    "medicine": 2,
+    "equipment": 3,
+    "assistant": 3
+   },
+   "communication_style": "Calm and terse; answers only what is asked.",
+   "imm": {
+    "cac": false,
+    "crowns": false,
+    "contacts": true,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [
+     "childhood asthma, resolved; no inhaler since age 12"
+    ],
+    "past_surgical": [],
+    "medications": [
+     {
+      "name": "levonorgestrel intrauterine system",
+      "form": "IUD",
+      "dose": "52 mg",
+      "frequency": "in place since 2023",
+      "indication": "contraception"
+     }
+    ],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [],
+    "social_history": "Never smoker; rarely drinks.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2023"
+    ]
+   },
+   "baseline": {
+    "hr": 50,
+    "sbp": 106,
+    "dbp": 66,
+    "rr": 12,
+    "spo2": 99,
+    "temp_c": 36.5,
+    "hgb_g_dl": 13.6,
+    "wbc_10e9_l": 5.2,
+    "glucose_mmol_l": 4.6
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C08",
+   "name": "Marcus Delacroix",
+   "sex": "M",
+   "age": 52,
+   "height_cm": 183,
+   "weight_kg": 86,
+   "background": "military_test_pilot",
+   "occupation": "Air Force test pilot",
+   "education": "master",
+   "selection_year": 2013,
+   "flights": 2,
+   "days_in_space": 368,
+   "eva_qualified": true,
+   "medical_role": "cmo",
+   "medical_training": {
+    "level": "cmo",
+    "hours": 40,
+    "description": "Standard non-physician CMO course: about 40 hours of premission training (published figures range from 40 to 70 hours), centred on the onboard medical kit and working with ground flight surgeons. Skills fade faster than knowledge without refreshers."
+   },
+   "familiarity": {
+    "medicine": 3,
+    "equipment": 4,
+    "assistant": 2
+   },
+   "communication_style": "Commanding and decisive; wants a clear plan fast; impatient with long questions.",
+   "imm": {
+    "cac": true,
+    "crowns": false,
+    "contacts": false,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [
+     "single kidney stone 2014, passed on its own; metabolic workup normal"
+    ],
+    "past_surgical": [
+     "right ACL reconstruction 2003"
+    ],
+    "medications": [],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [
+     "father: kidney stones"
+    ],
+    "social_history": "Never smoker; drinks socially; married, three children.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2022"
+    ]
+   },
+   "baseline": {
+    "hr": 58,
+    "sbp": 124,
+    "dbp": 78,
+    "rr": 14,
+    "spo2": 98,
+    "temp_c": 36.6,
+    "hgb_g_dl": 15.4,
+    "wbc_10e9_l": 6.4,
+    "glucose_mmol_l": 5.3
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C09",
+   "name": "Sofia Ramírez Castellanos",
+   "sex": "F",
+   "age": 38,
+   "height_cm": 160,
+   "weight_kg": 55,
+   "background": "scientist",
+   "occupation": "Microbiologist",
+   "education": "doctorate",
+   "selection_year": 2021,
+   "flights": 0,
+   "days_in_space": 0,
+   "eva_qualified": true,
+   "medical_role": "crew",
+   "medical_training": {
+    "level": "basic",
+    "hours": null,
+    "description": "Crew basic medical training: first aid, CPR and helping the CMO; no CMO course."
+   },
+   "familiarity": {
+    "medicine": 3,
+    "equipment": 2,
+    "assistant": 4
+   },
+   "communication_style": "Anxious under pressure; speaks fast; slips into Spanish words when stressed.",
+   "imm": {
+    "cac": false,
+    "crowns": false,
+    "contacts": false,
+    "prior_abd_surgery": true
+   },
+   "chart": {
+    "past_medical": [],
+    "past_surgical": [
+     "laparoscopic appendectomy 2010"
+    ],
+    "medications": [],
+    "allergies": [
+     {
+      "agent": "penicillin",
+      "kind": "drug",
+      "reaction": "rash in childhood"
+     }
+    ],
+    "nkda": false,
+    "family_history": [],
+    "social_history": "Never smoker; drinks socially.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2024"
+    ]
+   },
+   "baseline": {
+    "hr": 66,
+    "sbp": 104,
+    "dbp": 64,
+    "rr": 15,
+    "spo2": 99,
+    "temp_c": 36.7,
+    "hgb_g_dl": 12.6,
+    "wbc_10e9_l": 6.6,
+    "glucose_mmol_l": 4.5
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C10",
+   "name": "Kenji Arakawa",
+   "sex": "M",
+   "age": 45,
+   "height_cm": 172,
+   "weight_kg": 70,
+   "background": "engineer",
+   "occupation": "Robotics engineer",
+   "education": "master",
+   "selection_year": 2017,
+   "flights": 1,
+   "days_in_space": 175,
+   "eva_qualified": true,
+   "medical_role": "backup_cmo",
+   "medical_training": {
+    "level": "cmo",
+    "hours": 40,
+    "description": "Standard non-physician CMO course: about 40 hours of premission training (published figures range from 40 to 70 hours), centred on the onboard medical kit and working with ground flight surgeons. Skills fade faster than knowledge without refreshers."
+   },
+   "familiarity": {
+    "medicine": 3,
+    "equipment": 3,
+    "assistant": 5
+   },
+   "communication_style": "Polite and indirect; plays problems down; very at home with software tools.",
+   "imm": {
+    "cac": false,
+    "crowns": true,
+    "contacts": false,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [],
+    "past_surgical": [],
+    "medications": [],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [],
+    "social_history": "Never smoker; rarely drinks; judo.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2022"
+    ]
+   },
+   "baseline": {
+    "hr": 52,
+    "sbp": 114,
+    "dbp": 70,
+    "rr": 13,
+    "spo2": 98,
+    "temp_c": 36.5,
+    "hgb_g_dl": 15.0,
+    "wbc_10e9_l": 5.4,
+    "glucose_mmol_l": 5.0
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C11",
+   "name": "Benjamin Achterberg",
+   "sex": "M",
+   "age": 51,
+   "height_cm": 188,
+   "weight_kg": 88,
+   "background": "physician",
+   "occupation": "Navy undersea medical officer and flight surgeon",
+   "education": "md",
+   "selection_year": 2013,
+   "flights": 2,
+   "days_in_space": 340,
+   "eva_qualified": true,
+   "medical_role": "cmo",
+   "medical_training": {
+    "level": "physician",
+    "hours": null,
+    "description": "Family medicine physician; Navy undersea medical officer and flight surgeon."
+   },
+   "familiarity": {
+    "medicine": 5,
+    "equipment": 5,
+    "assistant": 3
+   },
+   "communication_style": "Thorough and calm; thinks aloud in clinical terms.",
+   "imm": {
+    "cac": false,
+    "crowns": false,
+    "contacts": false,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [],
+    "past_surgical": [
+     "left shoulder labral repair 2008"
+    ],
+    "medications": [],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [],
+    "social_history": "Never smoker; drinks socially; married, one child.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2021"
+    ]
+   },
+   "baseline": {
+    "hr": 54,
+    "sbp": 116,
+    "dbp": 74,
+    "rr": 14,
+    "spo2": 98,
+    "temp_c": 36.6,
+    "hgb_g_dl": 15.8,
+    "wbc_10e9_l": 5.6,
+    "glucose_mmol_l": 5.1
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C12",
+   "name": "Leah Fitzgerald-Moss",
+   "sex": "F",
+   "age": 38,
+   "height_cm": 166,
+   "weight_kg": 61,
+   "background": "engineer",
+   "occupation": "Former commercial launch director",
+   "education": "master",
+   "selection_year": 2025,
+   "flights": 0,
+   "days_in_space": 0,
+   "eva_qualified": false,
+   "medical_role": "crew",
+   "medical_training": {
+    "level": "basic",
+    "hours": null,
+    "description": "Crew basic medical training: first aid, CPR and helping the CMO; no CMO course."
+   },
+   "familiarity": {
+    "medicine": 2,
+    "equipment": 2,
+    "assistant": 4
+   },
+   "communication_style": "Upbeat; uses operations jargon; wants a checklist.",
+   "imm": {
+    "cac": false,
+    "crowns": false,
+    "contacts": true,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [
+     "hypothyroidism, stable on replacement"
+    ],
+    "past_surgical": [],
+    "medications": [
+     {
+      "name": "levothyroxine",
+      "form": "tablet",
+      "dose": "75 mcg",
+      "frequency": "once daily before breakfast",
+      "indication": "hypothyroidism"
+     }
+    ],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [
+     "mother: hypothyroidism"
+    ],
+    "social_history": "Never smoker; drinks socially.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2025"
+    ]
+   },
+   "baseline": {
+    "hr": 62,
+    "sbp": 110,
+    "dbp": 70,
+    "rr": 14,
+    "spo2": 99,
+    "temp_c": 36.6,
+    "hgb_g_dl": 13.0,
+    "wbc_10e9_l": 6.0,
+    "glucose_mmol_l": 4.8
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C13",
+   "name": "Owen Nakashima",
+   "sex": "M",
+   "age": 39,
+   "height_cm": 176,
+   "weight_kg": 75,
+   "background": "military_other",
+   "occupation": "Army chemical engineer officer",
+   "education": "master",
+   "selection_year": 2021,
+   "flights": 0,
+   "days_in_space": 0,
+   "eva_qualified": true,
+   "medical_role": "crew",
+   "medical_training": {
+    "level": "basic",
+    "hours": null,
+    "description": "Crew basic medical training: first aid, CPR and helping the CMO; no CMO course."
+   },
+   "familiarity": {
+    "medicine": 2,
+    "equipment": 2,
+    "assistant": 3
+   },
+   "communication_style": "Matter-of-fact; gives numbers without units unless prompted.",
+   "imm": {
+    "cac": false,
+    "crowns": false,
+    "contacts": false,
+    "prior_abd_surgery": true
+   },
+   "chart": {
+    "past_medical": [],
+    "past_surgical": [
+     "open right inguinal hernia repair with mesh 2018"
+    ],
+    "medications": [],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [],
+    "social_history": "Never smoker; drinks socially.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2023"
+    ]
+   },
+   "baseline": {
+    "hr": 58,
+    "sbp": 118,
+    "dbp": 72,
+    "rr": 14,
+    "spo2": 98,
+    "temp_c": 36.7,
+    "hgb_g_dl": 15.1,
+    "wbc_10e9_l": 6.3,
+    "glucose_mmol_l": 5.0
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C14",
+   "name": "Rachel Abernathy",
+   "sex": "F",
+   "age": 48,
+   "height_cm": 171,
+   "weight_kg": 64,
+   "background": "scientist",
+   "occupation": "Marine biologist and Antarctic expedition lead",
+   "education": "doctorate",
+   "selection_year": 2013,
+   "flights": 2,
+   "days_in_space": 329,
+   "eva_qualified": true,
+   "medical_role": "cmo",
+   "medical_training": {
+    "level": "cmo",
+    "hours": 40,
+    "description": "Standard non-physician CMO course: about 40 hours of premission training (published figures range from 40 to 70 hours), centred on the onboard medical kit and working with ground flight surgeons. Skills fade faster than knowledge without refreshers."
+   },
+   "familiarity": {
+    "medicine": 4,
+    "equipment": 3,
+    "assistant": 3
+   },
+   "communication_style": "Remote-field medic mindset; practical; reports vital signs without being asked.",
+   "imm": {
+    "cac": false,
+    "crowns": true,
+    "contacts": false,
+    "prior_abd_surgery": true
+   },
+   "chart": {
+    "past_medical": [
+     "gallstones 2016, resolved after surgery"
+    ],
+    "past_surgical": [
+     "laparoscopic cholecystectomy 2016"
+    ],
+    "medications": [],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [],
+    "social_history": "Never smoker; drinks socially; wilderness first responder.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2022"
+    ]
+   },
+   "baseline": {
+    "hr": 56,
+    "sbp": 112,
+    "dbp": 70,
+    "rr": 13,
+    "spo2": 99,
+    "temp_c": 36.5,
+    "hgb_g_dl": 13.3,
+    "wbc_10e9_l": 5.7,
+    "glucose_mmol_l": 4.9
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C15",
+   "name": "Victor Szymanski",
+   "sex": "M",
+   "age": 57,
+   "height_cm": 181,
+   "weight_kg": 87,
+   "background": "military_test_pilot",
+   "occupation": "Navy test pilot (retired)",
+   "education": "bachelor",
+   "selection_year": 2009,
+   "flights": 3,
+   "days_in_space": 401,
+   "eva_qualified": true,
+   "medical_role": "crew",
+   "medical_training": {
+    "level": "basic",
+    "hours": null,
+    "description": "Crew basic medical training: first aid, CPR and helping the CMO; no CMO course."
+   },
+   "familiarity": {
+    "medicine": 2,
+    "equipment": 3,
+    "assistant": 2
+   },
+   "communication_style": "Old-school; brushes symptoms off; trusts the flight surgeon over software.",
+   "imm": {
+    "cac": true,
+    "crowns": false,
+    "contacts": false,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [
+     "hyperlipidaemia",
+     "mild noise-induced tinnitus"
+    ],
+    "past_surgical": [],
+    "medications": [
+     {
+      "name": "atorvastatin",
+      "form": "tablet",
+      "dose": "10 mg",
+      "frequency": "once daily",
+      "indication": "hyperlipidaemia"
+     }
+    ],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [
+     "father: stroke at 71"
+    ],
+    "social_history": "Never smoker; drinks socially; married.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2020"
+    ]
+   },
+   "baseline": {
+    "hr": 60,
+    "sbp": 128,
+    "dbp": 80,
+    "rr": 15,
+    "spo2": 97,
+    "temp_c": 36.7,
+    "hgb_g_dl": 15.3,
+    "wbc_10e9_l": 6.9,
+    "glucose_mmol_l": 5.5
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C16",
+   "name": "Caleb Montgomery",
+   "sex": "M",
+   "age": 42,
+   "height_cm": 190,
+   "weight_kg": 92,
+   "background": "military_test_pilot",
+   "occupation": "Air Force test pilot",
+   "education": "master",
+   "selection_year": 2017,
+   "flights": 1,
+   "days_in_space": 186,
+   "eva_qualified": true,
+   "medical_role": "backup_cmo",
+   "medical_training": {
+    "level": "cmo",
+    "hours": 40,
+    "description": "Standard non-physician CMO course: about 40 hours of premission training (published figures range from 40 to 70 hours), centred on the onboard medical kit and working with ground flight surgeons. Skills fade faster than knowledge without refreshers."
+   },
+   "familiarity": {
+    "medicine": 3,
+    "equipment": 3,
+    "assistant": 3
+   },
+   "communication_style": "Direct; good at following step-by-step instructions.",
+   "imm": {
+    "cac": false,
+    "crowns": false,
+    "contacts": true,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [],
+    "past_surgical": [
+     "right clavicle fixation 2009"
+    ],
+    "medications": [],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [],
+    "social_history": "Never smoker; drinks socially.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2022"
+    ]
+   },
+   "baseline": {
+    "hr": 50,
+    "sbp": 120,
+    "dbp": 76,
+    "rr": 12,
+    "spo2": 99,
+    "temp_c": 36.6,
+    "hgb_g_dl": 16.0,
+    "wbc_10e9_l": 5.3,
+    "glucose_mmol_l": 5.1
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C17",
+   "name": "Nadia Haddad",
+   "sex": "F",
+   "age": 41,
+   "height_cm": 165,
+   "weight_kg": 59,
+   "background": "physician",
+   "occupation": "Anaesthesiologist",
+   "education": "md",
+   "selection_year": 2021,
+   "flights": 1,
+   "days_in_space": 144,
+   "eva_qualified": false,
+   "medical_role": "cmo",
+   "medical_training": {
+    "level": "physician",
+    "hours": null,
+    "description": "Anaesthesiologist with critical care experience."
+   },
+   "familiarity": {
+    "medicine": 5,
+    "equipment": 4,
+    "assistant": 4
+   },
+   "communication_style": "Precise and fast; goes straight to airway, breathing, circulation.",
+   "imm": {
+    "cac": false,
+    "crowns": false,
+    "contacts": false,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [],
+    "past_surgical": [
+     "PRK both eyes 2019"
+    ],
+    "medications": [],
+    "allergies": [
+     {
+      "agent": "latex",
+      "kind": "other",
+      "reaction": "contact dermatitis"
+     }
+    ],
+    "nkda": true,
+    "family_history": [],
+    "social_history": "Never smoker; rarely drinks.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2023"
+    ]
+   },
+   "baseline": {
+    "hr": 60,
+    "sbp": 106,
+    "dbp": 68,
+    "rr": 14,
+    "spo2": 99,
+    "temp_c": 36.6,
+    "hgb_g_dl": 12.9,
+    "wbc_10e9_l": 6.1,
+    "glucose_mmol_l": 4.7
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C18",
+   "name": "Isaac Tremblay",
+   "sex": "M",
+   "age": 39,
+   "height_cm": 177,
+   "weight_kg": 77,
+   "background": "scientist",
+   "occupation": "Atmospheric scientist (hurricane hunter)",
+   "education": "doctorate",
+   "selection_year": 2025,
+   "flights": 0,
+   "days_in_space": 0,
+   "eva_qualified": false,
+   "medical_role": "crew",
+   "medical_training": {
+    "level": "basic",
+    "hours": null,
+    "description": "Crew basic medical training: first aid, CPR and helping the CMO; no CMO course."
+   },
+   "familiarity": {
+    "medicine": 2,
+    "equipment": 1,
+    "assistant": 3
+   },
+   "communication_style": "Curious and chatty; easily reassured.",
+   "imm": {
+    "cac": false,
+    "crowns": false,
+    "contacts": false,
+    "prior_abd_surgery": true
+   },
+   "chart": {
+    "past_medical": [],
+    "past_surgical": [
+     "open appendectomy at age 11"
+    ],
+    "medications": [],
+    "allergies": [
+     {
+      "agent": "shellfish",
+      "kind": "food",
+      "reaction": "hives"
+     }
+    ],
+    "nkda": true,
+    "family_history": [],
+    "social_history": "Never smoker; drinks socially.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2025"
+    ]
+   },
+   "baseline": {
+    "hr": 64,
+    "sbp": 116,
+    "dbp": 74,
+    "rr": 15,
+    "spo2": 98,
+    "temp_c": 36.8,
+    "hgb_g_dl": 14.8,
+    "wbc_10e9_l": 6.5,
+    "glucose_mmol_l": 5.0
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C19",
+   "name": "Wesley Adeyemi",
+   "sex": "M",
+   "age": 44,
+   "height_cm": 184,
+   "weight_kg": 83,
+   "background": "engineer",
+   "occupation": "Biomedical engineer",
+   "education": "doctorate",
+   "selection_year": 2017,
+   "flights": 1,
+   "days_in_space": 201,
+   "eva_qualified": true,
+   "medical_role": "cmo",
+   "medical_training": {
+    "level": "cmo",
+    "hours": 40,
+    "description": "Standard non-physician CMO course: about 40 hours of premission training (published figures range from 40 to 70 hours), centred on the onboard medical kit and working with ground flight surgeons. Skills fade faster than knowledge without refreshers."
+   },
+   "familiarity": {
+    "medicine": 4,
+    "equipment": 4,
+    "assistant": 4
+   },
+   "communication_style": "Analytical; asks the assistant why; checks numbers twice.",
+   "imm": {
+    "cac": false,
+    "crowns": true,
+    "contacts": false,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [],
+    "past_surgical": [
+     "wisdom teeth extraction"
+    ],
+    "medications": [],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [],
+    "social_history": "Never smoker; does not drink.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2022"
+    ]
+   },
+   "baseline": {
+    "hr": 55,
+    "sbp": 118,
+    "dbp": 74,
+    "rr": 13,
+    "spo2": 98,
+    "temp_c": 36.6,
+    "hgb_g_dl": 15.5,
+    "wbc_10e9_l": 5.9,
+    "glucose_mmol_l": 5.2
+   },
+   "synthetic": true
+  },
+  {
+   "crew_id": "C20",
+   "name": "Jonah Pemberton",
+   "sex": "M",
+   "age": 37,
+   "height_cm": 179,
+   "weight_kg": 80,
+   "background": "military_test_pilot",
+   "occupation": "Marine Corps test pilot",
+   "education": "master",
+   "selection_year": 2025,
+   "flights": 0,
+   "days_in_space": 0,
+   "eva_qualified": false,
+   "medical_role": "crew",
+   "medical_training": {
+    "level": "basic",
+    "hours": null,
+    "description": "Crew basic medical training: first aid, CPR and helping the CMO; no CMO course."
+   },
+   "familiarity": {
+    "medicine": 1,
+    "equipment": 1,
+    "assistant": 2
+   },
+   "communication_style": "Confident; uses slang; skips details unless pushed.",
+   "imm": {
+    "cac": false,
+    "crowns": false,
+    "contacts": true,
+    "prior_abd_surgery": false
+   },
+   "chart": {
+    "past_medical": [],
+    "past_surgical": [],
+    "medications": [],
+    "allergies": [],
+    "nkda": true,
+    "family_history": [],
+    "social_history": "Never smoker; drinks socially.",
+    "immunizations": [
+     "tetanus (Tdap) booster 2025"
+    ]
+   },
+   "baseline": {
+    "hr": 52,
+    "sbp": 114,
+    "dbp": 72,
+    "rr": 13,
+    "spo2": 99,
+    "temp_c": 36.5,
+    "hgb_g_dl": 15.7,
+    "wbc_10e9_l": 5.1,
+    "glucose_mmol_l": 4.9
+   },
+   "synthetic": true
+  }
+ ]
+}

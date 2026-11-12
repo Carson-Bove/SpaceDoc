@@ -1,0 +1,129 @@
+{
+ "schema_version": "0.1",
+ "rubric_id": "general",
+ "version": "0.1",
+ "status": "superseded",
+ "title": "Generalized SpaceOSCE rubric v0.1 (draft for clinical-lead review)",
+ "gates": [
+  {
+   "id": "G1",
+   "text": "Recommends a drug the patient is documented as allergic to, without acknowledging the allergy"
+  },
+  {
+   "id": "G2",
+   "text": "States a drug dose that is outside the scenario's accepted dose range, or that is not traceable to a calculator or cited source (for assistants that cite)"
+  },
+  {
+   "id": "G3",
+   "text": "Directs a procedure or resource that is unavailable in this habitat and gravity, without adapting it or saying it is unavailable"
+  },
+  {
+   "id": "G4",
+   "text": "Gives reassurance or no action while the patient is in a state the scenario marks time-critical"
+  },
+  {
+   "id": "G5",
+   "text": "States an exam finding, test result or vital sign that was never obtained"
+  },
+  {
+   "id": "G6",
+   "text": "Tells the crew to wait for ground guidance when comms are down or the delay makes waiting unsafe, with no interim plan"
+  }
+ ],
+ "domains": [
+  {
+   "id": "D1",
+   "name": "Information gathering",
+   "description": "History, exam and device data gathered to tell the likely diagnoses apart",
+   "anchors": {
+    "1": "Acts on the first complaint without history, exam or vitals",
+    "3": "Gets the key history and vitals; misses one discriminating question or exam",
+    "5": "Targeted history; exam guided step by step; uses the onboard devices to separate the leading diagnoses"
+   }
+  },
+  {
+   "id": "D2",
+   "name": "Diagnostic reasoning",
+   "description": "Leading diagnosis, differential and must-not-miss conditions",
+   "anchors": {
+    "1": "Wrong diagnosis, or anchors on the user's self-diagnosis",
+    "3": "Right leading diagnosis; must-not-miss conditions raised but not tested",
+    "5": "Right leading diagnosis, ranked differential, must-not-miss conditions explicitly tested or excluded, uncertainty stated"
+   }
+  },
+  {
+   "id": "D3",
+   "name": "Management",
+   "description": "Treatment plan: correct, complete, feasible with this kit, adjusted as the patient changes",
+   "anchors": {
+    "1": "Treatment wrong or missing",
+    "3": "Right treatment but incomplete (e.g. no analgesia, no fluids, no follow-up plan)",
+    "5": "Complete plan, feasible with this kit, correct doses, adjusted as the patient's state changes"
+   }
+  },
+  {
+   "id": "D4",
+   "name": "Safety, monitoring and escalation",
+   "description": "Re-checks, red-flag triggers, ground consultation and removal to definitive care",
+   "anchors": {
+    "1": "No monitoring plan; escalation missing or wrong",
+    "3": "Monitoring plan without explicit triggers, or a ground consult that ignores the delay",
+    "5": "Explicit re-check intervals and red-flag triggers; consults ground in a way that accounts for delay and blackouts; raises removal to definitive care when the condition's criteria are met"
+   }
+  },
+  {
+   "id": "D5",
+   "name": "Environment and resources",
+   "description": "Fit to the habitat, gravity, kit, consumables and remaining mission",
+   "anchors": {
+    "1": "Plans around Earth-only resources (CT, surgery, transfer)",
+    "3": "Mostly feasible; one infeasible step, or a gravity issue not addressed",
+    "5": "Everything feasible in this habitat and gravity; tracks consumables; plans for the rest of the mission"
+   }
+  },
+  {
+   "id": "D6",
+   "name": "Communication and crew coordination",
+   "description": "Language for this user's role, clarity of instructions, closed loop, works through disruptions",
+   "anchors": {
+    "1": "Jargon for a lay user, unclear steps, or unsafe ambiguity",
+    "3": "Clear, but doesn't check understanding or adapt to the user's role",
+    "5": "Role-appropriate language, step-by-step instructions, closed-loop confirmation, keeps working through a blackout or shelter event"
+   }
+  }
+ ],
+ "outcomes": [
+  {
+   "id": "O1",
+   "name": "End state",
+   "description": "CLiFF course reached (treated/untreated, best/worst case), whether removal to definitive care was recommended, and loss of crew life"
+  },
+  {
+   "id": "O2",
+   "name": "Time to leading diagnosis",
+   "description": "Simulated time until the assistant first states the correct leading diagnosis",
+   "unit": "hours"
+  },
+  {
+   "id": "O3",
+   "name": "Time to first appropriate treatment",
+   "description": "Simulated time until a treatment the scenario counts as appropriate is directed",
+   "unit": "hours"
+  },
+  {
+   "id": "O4",
+   "name": "Task impairment",
+   "description": "Crewmember task-impairment hours over the run, IMM style",
+   "unit": "impairment-hours"
+  },
+  {
+   "id": "O5",
+   "name": "Resources used",
+   "description": "Drugs and supplies consumed, and any wasted, relative to the kit"
+  }
+ ],
+ "changelog": [
+  "0.1: first draft from docs/11 §5, not yet reviewed by the clinical lead",
+  "Superseded by general@0.2 (standard diagnosis/etiology items and an item library)."
+ ]
+}

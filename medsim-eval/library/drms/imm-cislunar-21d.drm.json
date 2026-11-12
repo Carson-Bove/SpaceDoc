@@ -1,0 +1,66 @@
+{
+ "schema_version": "0.1",
+ "drm_id": "imm-cislunar-21d",
+ "name": "Cislunar orbiter, 21 days, 4 crew",
+ "source": {
+  "doc": "IMM SR S-20170623-384 (Medical Risk for Five Cis-lunar Missions)",
+  "url": "https://www.nasa.gov/integrated-medical-model-documentation/",
+  "locator": "Table 1"
+ },
+ "duration_days": 21,
+ "crew": [
+  {
+   "crew_id": "C1",
+   "sex": "M",
+   "cac": false,
+   "crowns": true,
+   "contacts": false,
+   "prior_abd_surgery": false,
+   "eva": false
+  },
+  {
+   "crew_id": "C2",
+   "sex": "M",
+   "cac": false,
+   "crowns": false,
+   "contacts": true,
+   "prior_abd_surgery": false,
+   "eva": false
+  },
+  {
+   "crew_id": "C3",
+   "sex": "M",
+   "cac": false,
+   "crowns": false,
+   "contacts": false,
+   "prior_abd_surgery": false,
+   "eva": false
+  },
+  {
+   "crew_id": "C4",
+   "sex": "M",
+   "cac": true,
+   "crowns": false,
+   "contacts": false,
+   "prior_abd_surgery": true,
+   "eva": false
+  }
+ ],
+ "phases": [
+  {
+   "id": "orbit",
+   "name": "Cislunar orbit",
+   "env": "T2",
+   "days": 21,
+   "habitats": [
+    "cislunar-orbiter"
+   ],
+   "assumption": false
+  }
+ ],
+ "resources": {
+  "state": "medcap",
+  "resupply": false,
+  "note": "ISS medical capability (sized for the ISS with 6-month resupply), no resupply during the mission"
+ }
+}

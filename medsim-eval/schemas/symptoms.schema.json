@@ -1,0 +1,94 @@
+{
+  "$defs": {
+    "Source": {
+      "additionalProperties": false,
+      "description": "Where a value came from. `doc` is a short citation; `url` is where to read it.",
+      "properties": {
+        "doc": {
+          "title": "Doc",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Table, page or section within the document",
+          "title": "Locator"
+        }
+      },
+      "required": [
+        "doc"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "Symptom": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "description": "ICD-10-CM code with its dot, e.g. R10.31",
+          "title": "Code",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "group": {
+          "description": "The three-character category, e.g. R10 Abdominal and pelvic pain",
+          "title": "Group",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "name",
+        "group"
+      ],
+      "title": "Symptom",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "0.2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "symptoms": {
+      "items": {
+        "$ref": "#/$defs/Symptom"
+      },
+      "title": "Symptoms",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source",
+    "symptoms"
+  ],
+  "title": "SymptomList",
+  "type": "object"
+}

@@ -1,0 +1,91 @@
+{
+ "schema_version": "0.1",
+ "drm_id": "imm-drm4-iss-180d",
+ "name": "ISS increment, 180 days, 6 crew (IMM DRM 4)",
+ "source": {
+  "doc": "IMM SR S-20180531-405 (Medical Risk Based on Mission Duration); also Antonsen et al. 2022, npj Microgravity 8:8",
+  "url": "https://www.nasa.gov/integrated-medical-model-documentation/",
+  "locator": "Table 3"
+ },
+ "duration_days": 180,
+ "crew": [
+  {
+   "crew_id": "C1",
+   "sex": "M",
+   "cac": false,
+   "crowns": false,
+   "contacts": true,
+   "prior_abd_surgery": false,
+   "eva": false
+  },
+  {
+   "crew_id": "C2",
+   "sex": "M",
+   "cac": true,
+   "crowns": false,
+   "contacts": false,
+   "prior_abd_surgery": false,
+   "eva": true
+  },
+  {
+   "crew_id": "C3",
+   "sex": "F",
+   "cac": false,
+   "crowns": false,
+   "contacts": true,
+   "prior_abd_surgery": false,
+   "eva": true
+  },
+  {
+   "crew_id": "C4",
+   "sex": "F",
+   "cac": false,
+   "crowns": true,
+   "contacts": false,
+   "prior_abd_surgery": true,
+   "eva": false
+  },
+  {
+   "crew_id": "C5",
+   "sex": "M",
+   "cac": false,
+   "crowns": false,
+   "contacts": true,
+   "prior_abd_surgery": false,
+   "eva": false
+  },
+  {
+   "crew_id": "C6",
+   "sex": "M",
+   "cac": false,
+   "crowns": true,
+   "contacts": false,
+   "prior_abd_surgery": false,
+   "eva": false
+  }
+ ],
+ "phases": [
+  {
+   "id": "station",
+   "name": "ISS",
+   "env": "T1",
+   "days": 180,
+   "habitats": [
+    "iss"
+   ],
+   "assumption": false,
+   "eva": {
+    "crew": [
+     "C2",
+     "C3"
+    ],
+    "count": 3
+   }
+  }
+ ],
+ "resources": {
+  "state": "fully_treated",
+  "resupply": true,
+  "note": "ISS is resupplied; the IMM also reports MedCap results for this DRM"
+ }
+}

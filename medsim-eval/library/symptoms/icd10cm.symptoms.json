@@ -1,0 +1,3400 @@
+{
+"schema_version": "0.2",
+"source": {
+"doc": "ICD-10-CM 2026 Tabular List (CDC/NCHS), codes R00–R69 plus joint, limb, back, eye and ear symptom codes, via simple-icd-10-cm on PyPI",
+"url": "https://www.cdc.gov/nchs/icd/icd-10-cm/",
+"locator": "retrieved 2026-10-28"
+},
+"symptoms": [
+{
+"code": "R00",
+"name": "Abnormalities of heart beat",
+"group": "R00 Abnormalities of heart beat"
+},
+{
+"code": "R00.0",
+"name": "Tachycardia, unspecified",
+"group": "R00 Abnormalities of heart beat"
+},
+{
+"code": "R00.1",
+"name": "Bradycardia, unspecified",
+"group": "R00 Abnormalities of heart beat"
+},
+{
+"code": "R00.2",
+"name": "Palpitations",
+"group": "R00 Abnormalities of heart beat"
+},
+{
+"code": "R00.8",
+"name": "Other abnormalities of heart beat",
+"group": "R00 Abnormalities of heart beat"
+},
+{
+"code": "R00.9",
+"name": "Unspecified abnormalities of heart beat",
+"group": "R00 Abnormalities of heart beat"
+},
+{
+"code": "R01",
+"name": "Cardiac murmurs and other cardiac sounds",
+"group": "R01 Cardiac murmurs and other cardiac sounds"
+},
+{
+"code": "R01.0",
+"name": "Benign and innocent cardiac murmurs",
+"group": "R01 Cardiac murmurs and other cardiac sounds"
+},
+{
+"code": "R01.1",
+"name": "Cardiac murmur, unspecified",
+"group": "R01 Cardiac murmurs and other cardiac sounds"
+},
+{
+"code": "R01.2",
+"name": "Other cardiac sounds",
+"group": "R01 Cardiac murmurs and other cardiac sounds"
+},
+{
+"code": "R03",
+"name": "Abnormal blood-pressure reading, without diagnosis",
+"group": "R03 Abnormal blood-pressure reading, without diagnosis"
+},
+{
+"code": "R03.0",
+"name": "Elevated blood-pressure reading, without diagnosis of hypertension",
+"group": "R03 Abnormal blood-pressure reading, without diagnosis"
+},
+{
+"code": "R03.1",
+"name": "Nonspecific low blood-pressure reading",
+"group": "R03 Abnormal blood-pressure reading, without diagnosis"
+},
+{
+"code": "R04",
+"name": "Hemorrhage from respiratory passages",
+"group": "R04 Hemorrhage from respiratory passages"
+},
+{
+"code": "R04.0",
+"name": "Epistaxis",
+"group": "R04 Hemorrhage from respiratory passages"
+},
+{
+"code": "R04.1",
+"name": "Hemorrhage from throat",
+"group": "R04 Hemorrhage from respiratory passages"
+},
+{
+"code": "R04.2",
+"name": "Hemoptysis",
+"group": "R04 Hemorrhage from respiratory passages"
+},
+{
+"code": "R04.8",
+"name": "Hemorrhage from other sites in respiratory passages",
+"group": "R04 Hemorrhage from respiratory passages"
+},
+{
+"code": "R04.81",
+"name": "Acute idiopathic pulmonary hemorrhage in infants",
+"group": "R04 Hemorrhage from respiratory passages"
+},
+{
+"code": "R04.89",
+"name": "Hemorrhage from other sites in respiratory passages",
+"group": "R04 Hemorrhage from respiratory passages"
+},
+{
+"code": "R04.9",
+"name": "Hemorrhage from respiratory passages, unspecified",
+"group": "R04 Hemorrhage from respiratory passages"
+},
+{
+"code": "R05",
+"name": "Cough",
+"group": "R05 Cough"
+},
+{
+"code": "R05.1",
+"name": "Acute cough",
+"group": "R05 Cough"
+},
+{
+"code": "R05.2",
+"name": "Subacute cough",
+"group": "R05 Cough"
+},
+{
+"code": "R05.3",
+"name": "Chronic cough",
+"group": "R05 Cough"
+},
+{
+"code": "R05.4",
+"name": "Cough syncope",
+"group": "R05 Cough"
+},
+{
+"code": "R05.8",
+"name": "Other specified cough",
+"group": "R05 Cough"
+},
+{
+"code": "R05.9",
+"name": "Cough, unspecified",
+"group": "R05 Cough"
+},
+{
+"code": "R06",
+"name": "Abnormalities of breathing",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.0",
+"name": "Dyspnea",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.00",
+"name": "Dyspnea, unspecified",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.01",
+"name": "Orthopnea",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.02",
+"name": "Shortness of breath",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.03",
+"name": "Acute respiratory distress",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.09",
+"name": "Other forms of dyspnea",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.1",
+"name": "Stridor",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.2",
+"name": "Wheezing",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.3",
+"name": "Periodic breathing",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.4",
+"name": "Hyperventilation",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.5",
+"name": "Mouth breathing",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.6",
+"name": "Hiccough",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.7",
+"name": "Sneezing",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.8",
+"name": "Other abnormalities of breathing",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.81",
+"name": "Apnea, not elsewhere classified",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.82",
+"name": "Tachypnea, not elsewhere classified",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.83",
+"name": "Snoring",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.89",
+"name": "Other abnormalities of breathing",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R06.9",
+"name": "Unspecified abnormalities of breathing",
+"group": "R06 Abnormalities of breathing"
+},
+{
+"code": "R07",
+"name": "Pain in throat and chest",
+"group": "R07 Pain in throat and chest"
+},
+{
+"code": "R07.0",
+"name": "Pain in throat",
+"group": "R07 Pain in throat and chest"
+},
+{
+"code": "R07.1",
+"name": "Chest pain on breathing",
+"group": "R07 Pain in throat and chest"
+},
+{
+"code": "R07.2",
+"name": "Precordial pain",
+"group": "R07 Pain in throat and chest"
+},
+{
+"code": "R07.8",
+"name": "Other chest pain",
+"group": "R07 Pain in throat and chest"
+},
+{
+"code": "R07.81",
+"name": "Pleurodynia",
+"group": "R07 Pain in throat and chest"
+},
+{
+"code": "R07.82",
+"name": "Intercostal pain",
+"group": "R07 Pain in throat and chest"
+},
+{
+"code": "R07.89",
+"name": "Other chest pain",
+"group": "R07 Pain in throat and chest"
+},
+{
+"code": "R07.9",
+"name": "Chest pain, unspecified",
+"group": "R07 Pain in throat and chest"
+},
+{
+"code": "R09",
+"name": "Other symptoms and signs involving the circulatory and respiratory system",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.0",
+"name": "Asphyxia and hypoxemia",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.01",
+"name": "Asphyxia",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.02",
+"name": "Hypoxemia",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.1",
+"name": "Pleurisy",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.2",
+"name": "Respiratory arrest",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.3",
+"name": "Abnormal sputum",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.8",
+"name": "Other specified symptoms and signs involving the circulatory and respiratory systems",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.81",
+"name": "Nasal congestion",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.82",
+"name": "Postnasal drip",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.89",
+"name": "Other specified symptoms and signs involving the circulatory and respiratory systems",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.A",
+"name": "Foreign body sensation of the circulatory and respiratory system",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.A0",
+"name": "Foreign body sensation, unspecified",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.A1",
+"name": "Foreign body sensation, nose",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.A2",
+"name": "Foreign body sensation, throat",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R09.A9",
+"name": "Foreign body sensation, other site",
+"group": "R09 Other symptoms and signs involving the circulatory and respiratory system"
+},
+{
+"code": "R10",
+"name": "Abdominal and pelvic pain",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.0",
+"name": "Acute abdomen",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.1",
+"name": "Pain localized to upper abdomen",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.10",
+"name": "Upper abdominal pain, unspecified",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.11",
+"name": "Right upper quadrant pain",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.12",
+"name": "Left upper quadrant pain",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.13",
+"name": "Epigastric pain",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.2",
+"name": "Pelvic and perineal pain",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.20",
+"name": "Pelvic and perineal pain unspecified side",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.21",
+"name": "Pelvic and perineal pain right side",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.22",
+"name": "Pelvic and perineal pain left side",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.23",
+"name": "Pelvic and perineal pain bilateral",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.24",
+"name": "Suprapubic pain",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.3",
+"name": "Pain localized to other parts of lower abdomen",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.30",
+"name": "Lower abdominal pain, unspecified",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.31",
+"name": "Right lower quadrant pain",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.32",
+"name": "Left lower quadrant pain",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.33",
+"name": "Periumbilical pain",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.8",
+"name": "Other abdominal pain",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.81",
+"name": "Abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.811",
+"name": "Right upper quadrant abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.812",
+"name": "Left upper quadrant abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.813",
+"name": "Right lower quadrant abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.814",
+"name": "Left lower quadrant abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.815",
+"name": "Periumbilic abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.816",
+"name": "Epigastric abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.817",
+"name": "Generalized abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.819",
+"name": "Abdominal tenderness, unspecified site",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.82",
+"name": "Rebound abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.821",
+"name": "Right upper quadrant rebound abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.822",
+"name": "Left upper quadrant rebound abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.823",
+"name": "Right lower quadrant rebound abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.824",
+"name": "Left lower quadrant rebound abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.825",
+"name": "Periumbilic rebound abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.826",
+"name": "Epigastric rebound abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.827",
+"name": "Generalized rebound abdominal tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.829",
+"name": "Rebound abdominal tenderness, unspecified site",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.83",
+"name": "Colic",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.84",
+"name": "Generalized abdominal pain",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.85",
+"name": "Abdominal pain of multiple sites",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.8A",
+"name": "Flank tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.8A1",
+"name": "Right flank tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.8A2",
+"name": "Left flank tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.8A3",
+"name": "Suprapubic tenderness",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.8A9",
+"name": "Flank tenderness, unspecified",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.9",
+"name": "Unspecified abdominal pain",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.A",
+"name": "Pain localized to flank",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.A0",
+"name": "Flank pain, unspecified side",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.A1",
+"name": "Flank pain, right side",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.A2",
+"name": "Flank pain, left side",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R10.A3",
+"name": "Flank pain, bilateral",
+"group": "R10 Abdominal and pelvic pain"
+},
+{
+"code": "R11",
+"name": "Nausea and vomiting",
+"group": "R11 Nausea and vomiting"
+},
+{
+"code": "R11.0",
+"name": "Nausea",
+"group": "R11 Nausea and vomiting"
+},
+{
+"code": "R11.1",
+"name": "Vomiting",
+"group": "R11 Nausea and vomiting"
+},
+{
+"code": "R11.10",
+"name": "Vomiting, unspecified",
+"group": "R11 Nausea and vomiting"
+},
+{
+"code": "R11.11",
+"name": "Vomiting without nausea",
+"group": "R11 Nausea and vomiting"
+},
+{
+"code": "R11.12",
+"name": "Projectile vomiting",
+"group": "R11 Nausea and vomiting"
+},
+{
+"code": "R11.13",
+"name": "Vomiting of fecal matter",
+"group": "R11 Nausea and vomiting"
+},
+{
+"code": "R11.14",
+"name": "Bilious vomiting",
+"group": "R11 Nausea and vomiting"
+},
+{
+"code": "R11.15",
+"name": "Cyclical vomiting syndrome unrelated to migraine",
+"group": "R11 Nausea and vomiting"
+},
+{
+"code": "R11.16",
+"name": "Cannabis hyperemesis syndrome",
+"group": "R11 Nausea and vomiting"
+},
+{
+"code": "R11.2",
+"name": "Nausea with vomiting, unspecified",
+"group": "R11 Nausea and vomiting"
+},
+{
+"code": "R12",
+"name": "Heartburn",
+"group": "R12 Heartburn"
+},
+{
+"code": "R13",
+"name": "Aphagia and dysphagia",
+"group": "R13 Aphagia and dysphagia"
+},
+{
+"code": "R13.0",
+"name": "Aphagia",
+"group": "R13 Aphagia and dysphagia"
+},
+{
+"code": "R13.1",
+"name": "Dysphagia",
+"group": "R13 Aphagia and dysphagia"
+},
+{
+"code": "R13.10",
+"name": "Dysphagia, unspecified",
+"group": "R13 Aphagia and dysphagia"
+},
+{
+"code": "R13.11",
+"name": "Dysphagia, oral phase",
+"group": "R13 Aphagia and dysphagia"
+},
+{
+"code": "R13.12",
+"name": "Dysphagia, oropharyngeal phase",
+"group": "R13 Aphagia and dysphagia"
+},
+{
+"code": "R13.13",
+"name": "Dysphagia, pharyngeal phase",
+"group": "R13 Aphagia and dysphagia"
+},
+{
+"code": "R13.14",
+"name": "Dysphagia, pharyngoesophageal phase",
+"group": "R13 Aphagia and dysphagia"
+},
+{
+"code": "R13.19",
+"name": "Other dysphagia",
+"group": "R13 Aphagia and dysphagia"
+},
+{
+"code": "R14",
+"name": "Flatulence and related conditions",
+"group": "R14 Flatulence and related conditions"
+},
+{
+"code": "R14.0",
+"name": "Abdominal distension (gaseous)",
+"group": "R14 Flatulence and related conditions"
+},
+{
+"code": "R14.1",
+"name": "Gas pain",
+"group": "R14 Flatulence and related conditions"
+},
+{
+"code": "R14.2",
+"name": "Eructation",
+"group": "R14 Flatulence and related conditions"
+},
+{
+"code": "R14.3",
+"name": "Flatulence",
+"group": "R14 Flatulence and related conditions"
+},
+{
+"code": "R15",
+"name": "Fecal incontinence",
+"group": "R15 Fecal incontinence"
+},
+{
+"code": "R15.0",
+"name": "Incomplete defecation",
+"group": "R15 Fecal incontinence"
+},
+{
+"code": "R15.1",
+"name": "Fecal smearing",
+"group": "R15 Fecal incontinence"
+},
+{
+"code": "R15.2",
+"name": "Fecal urgency",
+"group": "R15 Fecal incontinence"
+},
+{
+"code": "R15.9",
+"name": "Full incontinence of feces",
+"group": "R15 Fecal incontinence"
+},
+{
+"code": "R16",
+"name": "Hepatomegaly and splenomegaly, not elsewhere classified",
+"group": "R16 Hepatomegaly and splenomegaly, not elsewhere classified"
+},
+{
+"code": "R16.0",
+"name": "Hepatomegaly, not elsewhere classified",
+"group": "R16 Hepatomegaly and splenomegaly, not elsewhere classified"
+},
+{
+"code": "R16.1",
+"name": "Splenomegaly, not elsewhere classified",
+"group": "R16 Hepatomegaly and splenomegaly, not elsewhere classified"
+},
+{
+"code": "R16.2",
+"name": "Hepatomegaly with splenomegaly, not elsewhere classified",
+"group": "R16 Hepatomegaly and splenomegaly, not elsewhere classified"
+},
+{
+"code": "R17",
+"name": "Unspecified jaundice",
+"group": "R17 Unspecified jaundice"
+},
+{
+"code": "R18",
+"name": "Ascites",
+"group": "R18 Ascites"
+},
+{
+"code": "R18.0",
+"name": "Malignant ascites",
+"group": "R18 Ascites"
+},
+{
+"code": "R18.8",
+"name": "Other ascites",
+"group": "R18 Ascites"
+},
+{
+"code": "R19",
+"name": "Other symptoms and signs involving the digestive system and abdomen",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.0",
+"name": "Intra-abdominal and pelvic swelling, mass and lump",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.00",
+"name": "Intra-abdominal and pelvic swelling, mass and lump, unspecified site",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.01",
+"name": "Right upper quadrant abdominal swelling, mass and lump",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.02",
+"name": "Left upper quadrant abdominal swelling, mass and lump",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.03",
+"name": "Right lower quadrant abdominal swelling, mass and lump",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.04",
+"name": "Left lower quadrant abdominal swelling, mass and lump",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.05",
+"name": "Periumbilic swelling, mass or lump",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.06",
+"name": "Epigastric swelling, mass or lump",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.07",
+"name": "Generalized intra-abdominal and pelvic swelling, mass and lump",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.09",
+"name": "Other intra-abdominal and pelvic swelling, mass and lump",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.1",
+"name": "Abnormal bowel sounds",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.11",
+"name": "Absent bowel sounds",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.12",
+"name": "Hyperactive bowel sounds",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.15",
+"name": "Other abnormal bowel sounds",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.2",
+"name": "Visible peristalsis",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.3",
+"name": "Abdominal rigidity",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.30",
+"name": "Abdominal rigidity, unspecified site",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.31",
+"name": "Right upper quadrant abdominal rigidity",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.32",
+"name": "Left upper quadrant abdominal rigidity",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.33",
+"name": "Right lower quadrant abdominal rigidity",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.34",
+"name": "Left lower quadrant abdominal rigidity",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.35",
+"name": "Periumbilic abdominal rigidity",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.36",
+"name": "Epigastric abdominal rigidity",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.37",
+"name": "Generalized abdominal rigidity",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.4",
+"name": "Change in bowel habit",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.5",
+"name": "Other fecal abnormalities",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.6",
+"name": "Halitosis",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.7",
+"name": "Diarrhea, unspecified",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R19.8",
+"name": "Other specified symptoms and signs involving the digestive system and abdomen",
+"group": "R19 Other symptoms and signs involving the digestive system and abdomen"
+},
+{
+"code": "R20",
+"name": "Disturbances of skin sensation",
+"group": "R20 Disturbances of skin sensation"
+},
+{
+"code": "R20.0",
+"name": "Anesthesia of skin",
+"group": "R20 Disturbances of skin sensation"
+},
+{
+"code": "R20.1",
+"name": "Hypoesthesia of skin",
+"group": "R20 Disturbances of skin sensation"
+},
+{
+"code": "R20.2",
+"name": "Paresthesia of skin",
+"group": "R20 Disturbances of skin sensation"
+},
+{
+"code": "R20.3",
+"name": "Hyperesthesia",
+"group": "R20 Disturbances of skin sensation"
+},
+{
+"code": "R20.8",
+"name": "Other disturbances of skin sensation",
+"group": "R20 Disturbances of skin sensation"
+},
+{
+"code": "R20.9",
+"name": "Unspecified disturbances of skin sensation",
+"group": "R20 Disturbances of skin sensation"
+},
+{
+"code": "R21",
+"name": "Rash and other nonspecific skin eruption",
+"group": "R21 Rash and other nonspecific skin eruption"
+},
+{
+"code": "R22",
+"name": "Localized swelling, mass and lump of skin and subcutaneous tissue",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.0",
+"name": "Localized swelling, mass and lump, head",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.1",
+"name": "Localized swelling, mass and lump, neck",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.2",
+"name": "Localized swelling, mass and lump, trunk",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.3",
+"name": "Localized swelling, mass and lump, upper limb",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.30",
+"name": "Localized swelling, mass and lump, unspecified upper limb",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.31",
+"name": "Localized swelling, mass and lump, right upper limb",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.32",
+"name": "Localized swelling, mass and lump, left upper limb",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.33",
+"name": "Localized swelling, mass and lump, upper limb, bilateral",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.4",
+"name": "Localized swelling, mass and lump, lower limb",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.40",
+"name": "Localized swelling, mass and lump, unspecified lower limb",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.41",
+"name": "Localized swelling, mass and lump, right lower limb",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.42",
+"name": "Localized swelling, mass and lump, left lower limb",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.43",
+"name": "Localized swelling, mass and lump, lower limb, bilateral",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R22.9",
+"name": "Localized swelling, mass and lump, unspecified",
+"group": "R22 Localized swelling, mass and lump of skin and subcutaneous tissue"
+},
+{
+"code": "R23",
+"name": "Other skin changes",
+"group": "R23 Other skin changes"
+},
+{
+"code": "R23.0",
+"name": "Cyanosis",
+"group": "R23 Other skin changes"
+},
+{
+"code": "R23.1",
+"name": "Pallor",
+"group": "R23 Other skin changes"
+},
+{
+"code": "R23.2",
+"name": "Flushing",
+"group": "R23 Other skin changes"
+},
+{
+"code": "R23.3",
+"name": "Spontaneous ecchymoses",
+"group": "R23 Other skin changes"
+},
+{
+"code": "R23.4",
+"name": "Changes in skin texture",
+"group": "R23 Other skin changes"
+},
+{
+"code": "R23.8",
+"name": "Other skin changes",
+"group": "R23 Other skin changes"
+},
+{
+"code": "R23.9",
+"name": "Unspecified skin changes",
+"group": "R23 Other skin changes"
+},
+{
+"code": "R25",
+"name": "Abnormal involuntary movements",
+"group": "R25 Abnormal involuntary movements"
+},
+{
+"code": "R25.0",
+"name": "Abnormal head movements",
+"group": "R25 Abnormal involuntary movements"
+},
+{
+"code": "R25.1",
+"name": "Tremor, unspecified",
+"group": "R25 Abnormal involuntary movements"
+},
+{
+"code": "R25.2",
+"name": "Cramp and spasm",
+"group": "R25 Abnormal involuntary movements"
+},
+{
+"code": "R25.3",
+"name": "Fasciculation",
+"group": "R25 Abnormal involuntary movements"
+},
+{
+"code": "R25.8",
+"name": "Other abnormal involuntary movements",
+"group": "R25 Abnormal involuntary movements"
+},
+{
+"code": "R25.9",
+"name": "Unspecified abnormal involuntary movements",
+"group": "R25 Abnormal involuntary movements"
+},
+{
+"code": "R26",
+"name": "Abnormalities of gait and mobility",
+"group": "R26 Abnormalities of gait and mobility"
+},
+{
+"code": "R26.0",
+"name": "Ataxic gait",
+"group": "R26 Abnormalities of gait and mobility"
+},
+{
+"code": "R26.1",
+"name": "Paralytic gait",
+"group": "R26 Abnormalities of gait and mobility"
+},
+{
+"code": "R26.2",
+"name": "Difficulty in walking, not elsewhere classified",
+"group": "R26 Abnormalities of gait and mobility"
+},
+{
+"code": "R26.8",
+"name": "Other abnormalities of gait and mobility",
+"group": "R26 Abnormalities of gait and mobility"
+},
+{
+"code": "R26.81",
+"name": "Unsteadiness on feet",
+"group": "R26 Abnormalities of gait and mobility"
+},
+{
+"code": "R26.89",
+"name": "Other abnormalities of gait and mobility",
+"group": "R26 Abnormalities of gait and mobility"
+},
+{
+"code": "R26.9",
+"name": "Unspecified abnormalities of gait and mobility",
+"group": "R26 Abnormalities of gait and mobility"
+},
+{
+"code": "R27",
+"name": "Other lack of coordination",
+"group": "R27 Other lack of coordination"
+},
+{
+"code": "R27.0",
+"name": "Ataxia, unspecified",
+"group": "R27 Other lack of coordination"
+},
+{
+"code": "R27.8",
+"name": "Other lack of coordination",
+"group": "R27 Other lack of coordination"
+},
+{
+"code": "R27.9",
+"name": "Unspecified lack of coordination",
+"group": "R27 Other lack of coordination"
+},
+{
+"code": "R29",
+"name": "Other symptoms and signs involving the nervous and musculoskeletal systems",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.0",
+"name": "Tetany",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.1",
+"name": "Meningismus",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.2",
+"name": "Abnormal reflex",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.3",
+"name": "Abnormal posture",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.4",
+"name": "Clicking hip",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.5",
+"name": "Transient paralysis",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.6",
+"name": "Repeated falls",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.7",
+"name": "National Institutes of Health Stroke Scale (NIHSS) score",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.70",
+"name": "NIHSS score 0-9",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.700",
+"name": "NIHSS score 0",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.701",
+"name": "NIHSS score 1",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.702",
+"name": "NIHSS score 2",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.703",
+"name": "NIHSS score 3",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.704",
+"name": "NIHSS score 4",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.705",
+"name": "NIHSS score 5",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.706",
+"name": "NIHSS score 6",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.707",
+"name": "NIHSS score 7",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.708",
+"name": "NIHSS score 8",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.709",
+"name": "NIHSS score 9",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.71",
+"name": "NIHSS score 10-19",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.710",
+"name": "NIHSS score 10",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.711",
+"name": "NIHSS score 11",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.712",
+"name": "NIHSS score 12",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.713",
+"name": "NIHSS score 13",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.714",
+"name": "NIHSS score 14",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.715",
+"name": "NIHSS score 15",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.716",
+"name": "NIHSS score 16",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.717",
+"name": "NIHSS score 17",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.718",
+"name": "NIHSS score 18",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.719",
+"name": "NIHSS score 19",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.72",
+"name": "NIHSS score 20-29",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.720",
+"name": "NIHSS score 20",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.721",
+"name": "NIHSS score 21",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.722",
+"name": "NIHSS score 22",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.723",
+"name": "NIHSS score 23",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.724",
+"name": "NIHSS score 24",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.725",
+"name": "NIHSS score 25",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.726",
+"name": "NIHSS score 26",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.727",
+"name": "NIHSS score 27",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.728",
+"name": "NIHSS score 28",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.729",
+"name": "NIHSS score 29",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.73",
+"name": "NIHSS score 30-39",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.730",
+"name": "NIHSS score 30",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.731",
+"name": "NIHSS score 31",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.732",
+"name": "NIHSS score 32",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.733",
+"name": "NIHSS score 33",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.734",
+"name": "NIHSS score 34",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.735",
+"name": "NIHSS score 35",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.736",
+"name": "NIHSS score 36",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.737",
+"name": "NIHSS score 37",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.738",
+"name": "NIHSS score 38",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.739",
+"name": "NIHSS score 39",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.74",
+"name": "NIHSS score 40-42",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.740",
+"name": "NIHSS score 40",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.741",
+"name": "NIHSS score 41",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.742",
+"name": "NIHSS score 42",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.8",
+"name": "Other symptoms and signs involving the nervous and musculoskeletal systems",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.81",
+"name": "Other symptoms and signs involving the nervous system",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.810",
+"name": "Facial weakness",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.818",
+"name": "Other symptoms and signs involving the nervous system",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.89",
+"name": "Other symptoms and signs involving the musculoskeletal system",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.890",
+"name": "Loss of height",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.891",
+"name": "Ocular torticollis",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.898",
+"name": "Other symptoms and signs involving the musculoskeletal system",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.9",
+"name": "Unspecified symptoms and signs involving the nervous and musculoskeletal systems",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.90",
+"name": "Unspecified symptoms and signs involving the nervous system",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R29.91",
+"name": "Unspecified symptoms and signs involving the musculoskeletal system",
+"group": "R29 Other symptoms and signs involving the nervous and musculoskeletal systems"
+},
+{
+"code": "R30",
+"name": "Pain associated with micturition",
+"group": "R30 Pain associated with micturition"
+},
+{
+"code": "R30.0",
+"name": "Dysuria",
+"group": "R30 Pain associated with micturition"
+},
+{
+"code": "R30.1",
+"name": "Vesical tenesmus",
+"group": "R30 Pain associated with micturition"
+},
+{
+"code": "R30.9",
+"name": "Painful micturition, unspecified",
+"group": "R30 Pain associated with micturition"
+},
+{
+"code": "R31",
+"name": "Hematuria",
+"group": "R31 Hematuria"
+},
+{
+"code": "R31.0",
+"name": "Gross hematuria",
+"group": "R31 Hematuria"
+},
+{
+"code": "R31.1",
+"name": "Benign essential microscopic hematuria",
+"group": "R31 Hematuria"
+},
+{
+"code": "R31.2",
+"name": "Other microscopic hematuria",
+"group": "R31 Hematuria"
+},
+{
+"code": "R31.21",
+"name": "Asymptomatic microscopic hematuria",
+"group": "R31 Hematuria"
+},
+{
+"code": "R31.29",
+"name": "Other microscopic hematuria",
+"group": "R31 Hematuria"
+},
+{
+"code": "R31.9",
+"name": "Hematuria, unspecified",
+"group": "R31 Hematuria"
+},
+{
+"code": "R32",
+"name": "Unspecified urinary incontinence",
+"group": "R32 Unspecified urinary incontinence"
+},
+{
+"code": "R33",
+"name": "Retention of urine",
+"group": "R33 Retention of urine"
+},
+{
+"code": "R33.0",
+"name": "Drug induced retention of urine",
+"group": "R33 Retention of urine"
+},
+{
+"code": "R33.8",
+"name": "Other retention of urine",
+"group": "R33 Retention of urine"
+},
+{
+"code": "R33.9",
+"name": "Retention of urine, unspecified",
+"group": "R33 Retention of urine"
+},
+{
+"code": "R34",
+"name": "Anuria and oliguria",
+"group": "R34 Anuria and oliguria"
+},
+{
+"code": "R35",
+"name": "Polyuria",
+"group": "R35 Polyuria"
+},
+{
+"code": "R35.0",
+"name": "Frequency of micturition",
+"group": "R35 Polyuria"
+},
+{
+"code": "R35.1",
+"name": "Nocturia",
+"group": "R35 Polyuria"
+},
+{
+"code": "R35.8",
+"name": "Other polyuria",
+"group": "R35 Polyuria"
+},
+{
+"code": "R35.81",
+"name": "Nocturnal polyuria",
+"group": "R35 Polyuria"
+},
+{
+"code": "R35.89",
+"name": "Other polyuria",
+"group": "R35 Polyuria"
+},
+{
+"code": "R36",
+"name": "Urethral discharge",
+"group": "R36 Urethral discharge"
+},
+{
+"code": "R36.0",
+"name": "Urethral discharge without blood",
+"group": "R36 Urethral discharge"
+},
+{
+"code": "R36.1",
+"name": "Hematospermia",
+"group": "R36 Urethral discharge"
+},
+{
+"code": "R36.9",
+"name": "Urethral discharge, unspecified",
+"group": "R36 Urethral discharge"
+},
+{
+"code": "R37",
+"name": "Sexual dysfunction, unspecified",
+"group": "R37 Sexual dysfunction, unspecified"
+},
+{
+"code": "R39",
+"name": "Other and unspecified symptoms and signs involving the genitourinary system",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.0",
+"name": "Extravasation of urine",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.1",
+"name": "Other difficulties with micturition",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.11",
+"name": "Hesitancy of micturition",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.12",
+"name": "Poor urinary stream",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.13",
+"name": "Splitting of urinary stream",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.14",
+"name": "Feeling of incomplete bladder emptying",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.15",
+"name": "Urgency of urination",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.16",
+"name": "Straining to void",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.19",
+"name": "Other difficulties with micturition",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.191",
+"name": "Need to immediately re-void",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.192",
+"name": "Position dependent micturition",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.198",
+"name": "Other difficulties with micturition",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.2",
+"name": "Extrarenal uremia",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.8",
+"name": "Other symptoms and signs involving the genitourinary system",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.81",
+"name": "Functional urinary incontinence",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.82",
+"name": "Chronic bladder pain",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.83",
+"name": "Unilateral non-palpable testicle",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.84",
+"name": "Bilateral non-palpable testicles",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.85",
+"name": "Costovertebral (angle) tenderness",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.851",
+"name": "Costovertebral (angle) tenderness, right side",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.852",
+"name": "Costovertebral (angle) tenderness, left side",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.853",
+"name": "Costovertebral (angle) tenderness, bilateral",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.859",
+"name": "Costovertebral (angle) tenderness, unspecified side",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.89",
+"name": "Other symptoms and signs involving the genitourinary system",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R39.9",
+"name": "Unspecified symptoms and signs involving the genitourinary system",
+"group": "R39 Other and unspecified symptoms and signs involving the genitourinary system"
+},
+{
+"code": "R40",
+"name": "Somnolence, stupor and coma",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.0",
+"name": "Somnolence",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.1",
+"name": "Stupor",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.2",
+"name": "Coma",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.20",
+"name": "Unspecified coma",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.21",
+"name": "Coma scale, eyes open",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.211",
+"name": "Coma scale, eyes open, never",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.212",
+"name": "Coma scale, eyes open, to pain",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.213",
+"name": "Coma scale, eyes open, to sound",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.214",
+"name": "Coma scale, eyes open, spontaneous",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.22",
+"name": "Coma scale, best verbal response",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.221",
+"name": "Coma scale, best verbal response, none",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.222",
+"name": "Coma scale, best verbal response, incomprehensible words",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.223",
+"name": "Coma scale, best verbal response, inappropriate words",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.224",
+"name": "Coma scale, best verbal response, confused conversation",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.225",
+"name": "Coma scale, best verbal response, oriented",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.23",
+"name": "Coma scale, best motor response",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.231",
+"name": "Coma scale, best motor response, none",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.232",
+"name": "Coma scale, best motor response, extension",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.233",
+"name": "Coma scale, best motor response, abnormal flexion",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.234",
+"name": "Coma scale, best motor response, flexion withdrawal",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.235",
+"name": "Coma scale, best motor response, localizes pain",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.236",
+"name": "Coma scale, best motor response, obeys commands",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.24",
+"name": "Glasgow coma scale, total score",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.241",
+"name": "Glasgow coma scale score 13-15",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.242",
+"name": "Glasgow coma scale score 9-12",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.243",
+"name": "Glasgow coma scale score 3-8",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.244",
+"name": "Other coma, without documented Glasgow coma scale score, or with partial score reported",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.2A",
+"name": "Nontraumatic coma due to underlying condition",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.3",
+"name": "Persistent vegetative state",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R40.4",
+"name": "Transient alteration of awareness",
+"group": "R40 Somnolence, stupor and coma"
+},
+{
+"code": "R41",
+"name": "Other symptoms and signs involving cognitive functions and awareness",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.0",
+"name": "Disorientation, unspecified",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.1",
+"name": "Anterograde amnesia",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.2",
+"name": "Retrograde amnesia",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.3",
+"name": "Other amnesia",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.4",
+"name": "Neurologic neglect syndrome",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.8",
+"name": "Other symptoms and signs involving cognitive functions and awareness",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.81",
+"name": "Age-related cognitive decline",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.82",
+"name": "Altered mental status, unspecified",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.83",
+"name": "Borderline intellectual functioning",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.84",
+"name": "Other specified cognitive deficit",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.840",
+"name": "Attention and concentration deficit",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.841",
+"name": "Cognitive communication deficit",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.842",
+"name": "Visuospatial deficit",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.843",
+"name": "Psychomotor deficit",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.844",
+"name": "Frontal lobe and executive function deficit",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.85",
+"name": "Anosognosia",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.89",
+"name": "Other symptoms and signs involving cognitive functions and awareness",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R41.9",
+"name": "Unspecified symptoms and signs involving cognitive functions and awareness",
+"group": "R41 Other symptoms and signs involving cognitive functions and awareness"
+},
+{
+"code": "R42",
+"name": "Dizziness and giddiness",
+"group": "R42 Dizziness and giddiness"
+},
+{
+"code": "R43",
+"name": "Disturbances of smell and taste",
+"group": "R43 Disturbances of smell and taste"
+},
+{
+"code": "R43.0",
+"name": "Anosmia",
+"group": "R43 Disturbances of smell and taste"
+},
+{
+"code": "R43.1",
+"name": "Parosmia",
+"group": "R43 Disturbances of smell and taste"
+},
+{
+"code": "R43.2",
+"name": "Parageusia",
+"group": "R43 Disturbances of smell and taste"
+},
+{
+"code": "R43.8",
+"name": "Other disturbances of smell and taste",
+"group": "R43 Disturbances of smell and taste"
+},
+{
+"code": "R43.9",
+"name": "Unspecified disturbances of smell and taste",
+"group": "R43 Disturbances of smell and taste"
+},
+{
+"code": "R44",
+"name": "Other symptoms and signs involving general sensations and perceptions",
+"group": "R44 Other symptoms and signs involving general sensations and perceptions"
+},
+{
+"code": "R44.0",
+"name": "Auditory hallucinations",
+"group": "R44 Other symptoms and signs involving general sensations and perceptions"
+},
+{
+"code": "R44.1",
+"name": "Visual hallucinations",
+"group": "R44 Other symptoms and signs involving general sensations and perceptions"
+},
+{
+"code": "R44.2",
+"name": "Other hallucinations",
+"group": "R44 Other symptoms and signs involving general sensations and perceptions"
+},
+{
+"code": "R44.3",
+"name": "Hallucinations, unspecified",
+"group": "R44 Other symptoms and signs involving general sensations and perceptions"
+},
+{
+"code": "R44.8",
+"name": "Other symptoms and signs involving general sensations and perceptions",
+"group": "R44 Other symptoms and signs involving general sensations and perceptions"
+},
+{
+"code": "R44.9",
+"name": "Unspecified symptoms and signs involving general sensations and perceptions",
+"group": "R44 Other symptoms and signs involving general sensations and perceptions"
+},
+{
+"code": "R45",
+"name": "Symptoms and signs involving emotional state",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.0",
+"name": "Nervousness",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.1",
+"name": "Restlessness and agitation",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.2",
+"name": "Unhappiness",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.3",
+"name": "Demoralization and apathy",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.4",
+"name": "Irritability and anger",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.5",
+"name": "Hostility",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.6",
+"name": "Violent behavior",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.7",
+"name": "State of emotional shock and stress, unspecified",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.8",
+"name": "Other symptoms and signs involving emotional state",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.81",
+"name": "Low self-esteem",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.82",
+"name": "Worries",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.83",
+"name": "Excessive crying of child, adolescent or adult",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.84",
+"name": "Anhedonia",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.85",
+"name": "Homicidal and suicidal ideations",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.850",
+"name": "Homicidal ideations",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.851",
+"name": "Suicidal ideations",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.86",
+"name": "Emotional lability",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.87",
+"name": "Impulsiveness",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.88",
+"name": "Nonsuicidal self-harm",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R45.89",
+"name": "Other symptoms and signs involving emotional state",
+"group": "R45 Symptoms and signs involving emotional state"
+},
+{
+"code": "R46",
+"name": "Symptoms and signs involving appearance and behavior",
+"group": "R46 Symptoms and signs involving appearance and behavior"
+},
+{
+"code": "R46.0",
+"name": "Very low level of personal hygiene",
+"group": "R46 Symptoms and signs involving appearance and behavior"
+},
+{
+"code": "R46.1",
+"name": "Bizarre personal appearance",
+"group": "R46 Symptoms and signs involving appearance and behavior"
+},
+{
+"code": "R46.2",
+"name": "Strange and inexplicable behavior",
+"group": "R46 Symptoms and signs involving appearance and behavior"
+},
+{
+"code": "R46.3",
+"name": "Overactivity",
+"group": "R46 Symptoms and signs involving appearance and behavior"
+},
+{
+"code": "R46.4",
+"name": "Slowness and poor responsiveness",
+"group": "R46 Symptoms and signs involving appearance and behavior"
+},
+{
+"code": "R46.5",
+"name": "Suspiciousness and marked evasiveness",
+"group": "R46 Symptoms and signs involving appearance and behavior"
+},
+{
+"code": "R46.6",
+"name": "Undue concern and preoccupation with stressful events",
+"group": "R46 Symptoms and signs involving appearance and behavior"
+},
+{
+"code": "R46.7",
+"name": "Verbosity and circumstantial detail obscuring reason for contact",
+"group": "R46 Symptoms and signs involving appearance and behavior"
+},
+{
+"code": "R46.8",
+"name": "Other symptoms and signs involving appearance and behavior",
+"group": "R46 Symptoms and signs involving appearance and behavior"
+},
+{
+"code": "R46.81",
+"name": "Obsessive-compulsive behavior",
+"group": "R46 Symptoms and signs involving appearance and behavior"
+},
+{
+"code": "R46.89",
+"name": "Other symptoms and signs involving appearance and behavior",
+"group": "R46 Symptoms and signs involving appearance and behavior"
+},
+{
+"code": "R47",
+"name": "Speech disturbances, not elsewhere classified",
+"group": "R47 Speech disturbances, not elsewhere classified"
+},
+{
+"code": "R47.0",
+"name": "Dysphasia and aphasia",
+"group": "R47 Speech disturbances, not elsewhere classified"
+},
+{
+"code": "R47.01",
+"name": "Aphasia",
+"group": "R47 Speech disturbances, not elsewhere classified"
+},
+{
+"code": "R47.02",
+"name": "Dysphasia",
+"group": "R47 Speech disturbances, not elsewhere classified"
+},
+{
+"code": "R47.1",
+"name": "Dysarthria and anarthria",
+"group": "R47 Speech disturbances, not elsewhere classified"
+},
+{
+"code": "R47.8",
+"name": "Other speech disturbances",
+"group": "R47 Speech disturbances, not elsewhere classified"
+},
+{
+"code": "R47.81",
+"name": "Slurred speech",
+"group": "R47 Speech disturbances, not elsewhere classified"
+},
+{
+"code": "R47.82",
+"name": "Fluency disorder in conditions classified elsewhere",
+"group": "R47 Speech disturbances, not elsewhere classified"
+},
+{
+"code": "R47.89",
+"name": "Other speech disturbances",
+"group": "R47 Speech disturbances, not elsewhere classified"
+},
+{
+"code": "R47.9",
+"name": "Unspecified speech disturbances",
+"group": "R47 Speech disturbances, not elsewhere classified"
+},
+{
+"code": "R48",
+"name": "Dyslexia and other symbolic dysfunctions, not elsewhere classified",
+"group": "R48 Dyslexia and other symbolic dysfunctions, not elsewhere classified"
+},
+{
+"code": "R48.0",
+"name": "Dyslexia and alexia",
+"group": "R48 Dyslexia and other symbolic dysfunctions, not elsewhere classified"
+},
+{
+"code": "R48.1",
+"name": "Agnosia",
+"group": "R48 Dyslexia and other symbolic dysfunctions, not elsewhere classified"
+},
+{
+"code": "R48.2",
+"name": "Apraxia",
+"group": "R48 Dyslexia and other symbolic dysfunctions, not elsewhere classified"
+},
+{
+"code": "R48.3",
+"name": "Visual agnosia",
+"group": "R48 Dyslexia and other symbolic dysfunctions, not elsewhere classified"
+},
+{
+"code": "R48.8",
+"name": "Other symbolic dysfunctions",
+"group": "R48 Dyslexia and other symbolic dysfunctions, not elsewhere classified"
+},
+{
+"code": "R48.9",
+"name": "Unspecified symbolic dysfunctions",
+"group": "R48 Dyslexia and other symbolic dysfunctions, not elsewhere classified"
+},
+{
+"code": "R49",
+"name": "Voice and resonance disorders",
+"group": "R49 Voice and resonance disorders"
+},
+{
+"code": "R49.0",
+"name": "Dysphonia",
+"group": "R49 Voice and resonance disorders"
+},
+{
+"code": "R49.1",
+"name": "Aphonia",
+"group": "R49 Voice and resonance disorders"
+},
+{
+"code": "R49.2",
+"name": "Hypernasality and hyponasality",
+"group": "R49 Voice and resonance disorders"
+},
+{
+"code": "R49.21",
+"name": "Hypernasality",
+"group": "R49 Voice and resonance disorders"
+},
+{
+"code": "R49.22",
+"name": "Hyponasality",
+"group": "R49 Voice and resonance disorders"
+},
+{
+"code": "R49.8",
+"name": "Other voice and resonance disorders",
+"group": "R49 Voice and resonance disorders"
+},
+{
+"code": "R49.9",
+"name": "Unspecified voice and resonance disorder",
+"group": "R49 Voice and resonance disorders"
+},
+{
+"code": "R50",
+"name": "Fever of other and unknown origin",
+"group": "R50 Fever of other and unknown origin"
+},
+{
+"code": "R50.2",
+"name": "Drug induced fever",
+"group": "R50 Fever of other and unknown origin"
+},
+{
+"code": "R50.8",
+"name": "Other specified fever",
+"group": "R50 Fever of other and unknown origin"
+},
+{
+"code": "R50.81",
+"name": "Fever presenting with conditions classified elsewhere",
+"group": "R50 Fever of other and unknown origin"
+},
+{
+"code": "R50.82",
+"name": "Postprocedural fever",
+"group": "R50 Fever of other and unknown origin"
+},
+{
+"code": "R50.83",
+"name": "Postvaccination fever",
+"group": "R50 Fever of other and unknown origin"
+},
+{
+"code": "R50.84",
+"name": "Febrile nonhemolytic transfusion reaction",
+"group": "R50 Fever of other and unknown origin"
+},
+{
+"code": "R50.9",
+"name": "Fever, unspecified",
+"group": "R50 Fever of other and unknown origin"
+},
+{
+"code": "R51",
+"name": "Headache",
+"group": "R51 Headache"
+},
+{
+"code": "R51.0",
+"name": "Headache with orthostatic component, not elsewhere classified",
+"group": "R51 Headache"
+},
+{
+"code": "R51.9",
+"name": "Headache, unspecified",
+"group": "R51 Headache"
+},
+{
+"code": "R52",
+"name": "Pain, unspecified",
+"group": "R52 Pain, unspecified"
+},
+{
+"code": "R53",
+"name": "Malaise and fatigue",
+"group": "R53 Malaise and fatigue"
+},
+{
+"code": "R53.0",
+"name": "Neoplastic (malignant) related fatigue",
+"group": "R53 Malaise and fatigue"
+},
+{
+"code": "R53.1",
+"name": "Weakness",
+"group": "R53 Malaise and fatigue"
+},
+{
+"code": "R53.2",
+"name": "Functional quadriplegia",
+"group": "R53 Malaise and fatigue"
+},
+{
+"code": "R53.8",
+"name": "Other malaise and fatigue",
+"group": "R53 Malaise and fatigue"
+},
+{
+"code": "R53.81",
+"name": "Other malaise",
+"group": "R53 Malaise and fatigue"
+},
+{
+"code": "R53.82",
+"name": "Chronic fatigue, unspecified",
+"group": "R53 Malaise and fatigue"
+},
+{
+"code": "R53.83",
+"name": "Other fatigue",
+"group": "R53 Malaise and fatigue"
+},
+{
+"code": "R54",
+"name": "Age-related physical debility",
+"group": "R54 Age-related physical debility"
+},
+{
+"code": "R55",
+"name": "Syncope and collapse",
+"group": "R55 Syncope and collapse"
+},
+{
+"code": "R56",
+"name": "Convulsions, not elsewhere classified",
+"group": "R56 Convulsions, not elsewhere classified"
+},
+{
+"code": "R56.0",
+"name": "Febrile convulsions",
+"group": "R56 Convulsions, not elsewhere classified"
+},
+{
+"code": "R56.00",
+"name": "Simple febrile convulsions",
+"group": "R56 Convulsions, not elsewhere classified"
+},
+{
+"code": "R56.01",
+"name": "Complex febrile convulsions",
+"group": "R56 Convulsions, not elsewhere classified"
+},
+{
+"code": "R56.1",
+"name": "Post traumatic seizures",
+"group": "R56 Convulsions, not elsewhere classified"
+},
+{
+"code": "R56.9",
+"name": "Unspecified convulsions",
+"group": "R56 Convulsions, not elsewhere classified"
+},
+{
+"code": "R57",
+"name": "Shock, not elsewhere classified",
+"group": "R57 Shock, not elsewhere classified"
+},
+{
+"code": "R57.0",
+"name": "Cardiogenic shock",
+"group": "R57 Shock, not elsewhere classified"
+},
+{
+"code": "R57.1",
+"name": "Hypovolemic shock",
+"group": "R57 Shock, not elsewhere classified"
+},
+{
+"code": "R57.8",
+"name": "Other shock",
+"group": "R57 Shock, not elsewhere classified"
+},
+{
+"code": "R57.9",
+"name": "Shock, unspecified",
+"group": "R57 Shock, not elsewhere classified"
+},
+{
+"code": "R58",
+"name": "Hemorrhage, not elsewhere classified",
+"group": "R58 Hemorrhage, not elsewhere classified"
+},
+{
+"code": "R59",
+"name": "Enlarged lymph nodes",
+"group": "R59 Enlarged lymph nodes"
+},
+{
+"code": "R59.0",
+"name": "Localized enlarged lymph nodes",
+"group": "R59 Enlarged lymph nodes"
+},
+{
+"code": "R59.1",
+"name": "Generalized enlarged lymph nodes",
+"group": "R59 Enlarged lymph nodes"
+},
+{
+"code": "R59.9",
+"name": "Enlarged lymph nodes, unspecified",
+"group": "R59 Enlarged lymph nodes"
+},
+{
+"code": "R60",
+"name": "Edema, not elsewhere classified",
+"group": "R60 Edema, not elsewhere classified"
+},
+{
+"code": "R60.0",
+"name": "Localized edema",
+"group": "R60 Edema, not elsewhere classified"
+},
+{
+"code": "R60.1",
+"name": "Generalized edema",
+"group": "R60 Edema, not elsewhere classified"
+},
+{
+"code": "R60.9",
+"name": "Edema, unspecified",
+"group": "R60 Edema, not elsewhere classified"
+},
+{
+"code": "R61",
+"name": "Generalized hyperhidrosis",
+"group": "R61 Generalized hyperhidrosis"
+},
+{
+"code": "R62",
+"name": "Lack of expected normal physiological development in childhood and adults",
+"group": "R62 Lack of expected normal physiological development in childhood and adults"
+},
+{
+"code": "R62.0",
+"name": "Delayed milestone in childhood",
+"group": "R62 Lack of expected normal physiological development in childhood and adults"
+},
+{
+"code": "R62.5",
+"name": "Other and unspecified lack of expected normal physiological development in childhood",
+"group": "R62 Lack of expected normal physiological development in childhood and adults"
+},
+{
+"code": "R62.50",
+"name": "Unspecified lack of expected normal physiological development in childhood",
+"group": "R62 Lack of expected normal physiological development in childhood and adults"
+},
+{
+"code": "R62.51",
+"name": "Failure to thrive (child)",
+"group": "R62 Lack of expected normal physiological development in childhood and adults"
+},
+{
+"code": "R62.52",
+"name": "Short stature (child)",
+"group": "R62 Lack of expected normal physiological development in childhood and adults"
+},
+{
+"code": "R62.59",
+"name": "Other lack of expected normal physiological development in childhood",
+"group": "R62 Lack of expected normal physiological development in childhood and adults"
+},
+{
+"code": "R62.7",
+"name": "Adult failure to thrive",
+"group": "R62 Lack of expected normal physiological development in childhood and adults"
+},
+{
+"code": "R63",
+"name": "Symptoms and signs concerning food and fluid intake",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R63.0",
+"name": "Anorexia",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R63.1",
+"name": "Polydipsia",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R63.2",
+"name": "Polyphagia",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R63.3",
+"name": "Feeding difficulties",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R63.30",
+"name": "Feeding difficulties, unspecified",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R63.31",
+"name": "Pediatric feeding disorder, acute",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R63.32",
+"name": "Pediatric feeding disorder, chronic",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R63.39",
+"name": "Other feeding difficulties",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R63.4",
+"name": "Abnormal weight loss",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R63.5",
+"name": "Abnormal weight gain",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R63.6",
+"name": "Underweight",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R63.8",
+"name": "Other symptoms and signs concerning food and fluid intake",
+"group": "R63 Symptoms and signs concerning food and fluid intake"
+},
+{
+"code": "R64",
+"name": "Cachexia",
+"group": "R64 Cachexia"
+},
+{
+"code": "R65",
+"name": "Symptoms and signs specifically associated with systemic inflammation and infection",
+"group": "R65 Symptoms and signs specifically associated with systemic inflammation and infection"
+},
+{
+"code": "R65.1",
+"name": "Systemic inflammatory response syndrome (SIRS) of non-infectious origin",
+"group": "R65 Symptoms and signs specifically associated with systemic inflammation and infection"
+},
+{
+"code": "R65.10",
+"name": "Systemic inflammatory response syndrome (SIRS) of non-infectious origin without acute organ dysfunction",
+"group": "R65 Symptoms and signs specifically associated with systemic inflammation and infection"
+},
+{
+"code": "R65.11",
+"name": "Systemic inflammatory response syndrome (SIRS) of non-infectious origin with acute organ dysfunction",
+"group": "R65 Symptoms and signs specifically associated with systemic inflammation and infection"
+},
+{
+"code": "R65.2",
+"name": "Severe sepsis",
+"group": "R65 Symptoms and signs specifically associated with systemic inflammation and infection"
+},
+{
+"code": "R65.20",
+"name": "Severe sepsis without septic shock",
+"group": "R65 Symptoms and signs specifically associated with systemic inflammation and infection"
+},
+{
+"code": "R65.21",
+"name": "Severe sepsis with septic shock",
+"group": "R65 Symptoms and signs specifically associated with systemic inflammation and infection"
+},
+{
+"code": "R68",
+"name": "Other general symptoms and signs",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.0",
+"name": "Hypothermia, not associated with low environmental temperature",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.1",
+"name": "Nonspecific symptoms peculiar to infancy",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.11",
+"name": "Excessive crying of infant (baby)",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.12",
+"name": "Fussy infant (baby)",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.13",
+"name": "Apparent life threatening event in infant (ALTE)",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.19",
+"name": "Other nonspecific symptoms peculiar to infancy",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.2",
+"name": "Dry mouth, unspecified",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.3",
+"name": "Clubbing of fingers",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.8",
+"name": "Other general symptoms and signs",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.81",
+"name": "Early satiety",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.82",
+"name": "Decreased libido",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.83",
+"name": "Chills (without fever)",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.84",
+"name": "Jaw pain",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R68.89",
+"name": "Other general symptoms and signs",
+"group": "R68 Other general symptoms and signs"
+},
+{
+"code": "R69",
+"name": "Illness, unspecified",
+"group": "R69 Illness, unspecified"
+},
+{
+"code": "H53.10",
+"name": "Unspecified subjective visual disturbances",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.11",
+"name": "Day blindness",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.12",
+"name": "Transient visual loss",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.121",
+"name": "Transient visual loss, right eye",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.122",
+"name": "Transient visual loss, left eye",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.123",
+"name": "Transient visual loss, bilateral",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.129",
+"name": "Transient visual loss, unspecified eye",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.13",
+"name": "Sudden visual loss",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.131",
+"name": "Sudden visual loss, right eye",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.132",
+"name": "Sudden visual loss, left eye",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.133",
+"name": "Sudden visual loss, bilateral",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.139",
+"name": "Sudden visual loss, unspecified eye",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.14",
+"name": "Visual discomfort",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.141",
+"name": "Visual discomfort, right eye",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.142",
+"name": "Visual discomfort, left eye",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.143",
+"name": "Visual discomfort, bilateral",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.149",
+"name": "Visual discomfort, unspecified",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.15",
+"name": "Visual distortions of shape and size",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.16",
+"name": "Psychophysical visual disturbances",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H53.19",
+"name": "Other subjective visual disturbances",
+"group": "H53 Visual disturbances"
+},
+{
+"code": "H57.10",
+"name": "Ocular pain, unspecified eye",
+"group": "H57 Other disorders of eye and adnexa"
+},
+{
+"code": "H57.11",
+"name": "Ocular pain, right eye",
+"group": "H57 Other disorders of eye and adnexa"
+},
+{
+"code": "H57.12",
+"name": "Ocular pain, left eye",
+"group": "H57 Other disorders of eye and adnexa"
+},
+{
+"code": "H57.13",
+"name": "Ocular pain, bilateral",
+"group": "H57 Other disorders of eye and adnexa"
+},
+{
+"code": "H92.01",
+"name": "Otalgia, right ear",
+"group": "H92 Otalgia and effusion of ear"
+},
+{
+"code": "H92.02",
+"name": "Otalgia, left ear",
+"group": "H92 Otalgia and effusion of ear"
+},
+{
+"code": "H92.03",
+"name": "Otalgia, bilateral",
+"group": "H92 Otalgia and effusion of ear"
+},
+{
+"code": "H92.09",
+"name": "Otalgia, unspecified ear",
+"group": "H92 Otalgia and effusion of ear"
+},
+{
+"code": "H93.11",
+"name": "Tinnitus, right ear",
+"group": "H93 Other disorders of ear, not elsewhere classified"
+},
+{
+"code": "H93.12",
+"name": "Tinnitus, left ear",
+"group": "H93 Other disorders of ear, not elsewhere classified"
+},
+{
+"code": "H93.13",
+"name": "Tinnitus, bilateral",
+"group": "H93 Other disorders of ear, not elsewhere classified"
+},
+{
+"code": "H93.19",
+"name": "Tinnitus, unspecified ear",
+"group": "H93 Other disorders of ear, not elsewhere classified"
+},
+{
+"code": "M25.50",
+"name": "Pain in unspecified joint",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.51",
+"name": "Pain in shoulder",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.511",
+"name": "Pain in right shoulder",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.512",
+"name": "Pain in left shoulder",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.519",
+"name": "Pain in unspecified shoulder",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.52",
+"name": "Pain in elbow",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.521",
+"name": "Pain in right elbow",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.522",
+"name": "Pain in left elbow",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.529",
+"name": "Pain in unspecified elbow",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.53",
+"name": "Pain in wrist",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.531",
+"name": "Pain in right wrist",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.532",
+"name": "Pain in left wrist",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.539",
+"name": "Pain in unspecified wrist",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.54",
+"name": "Pain in joints of hand",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.541",
+"name": "Pain in joints of right hand",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.542",
+"name": "Pain in joints of left hand",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.549",
+"name": "Pain in joints of unspecified hand",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.55",
+"name": "Pain in hip",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.551",
+"name": "Pain in right hip",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.552",
+"name": "Pain in left hip",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.559",
+"name": "Pain in unspecified hip",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.56",
+"name": "Pain in knee",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.561",
+"name": "Pain in right knee",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.562",
+"name": "Pain in left knee",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.569",
+"name": "Pain in unspecified knee",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.57",
+"name": "Pain in ankle and joints of foot",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.571",
+"name": "Pain in right ankle and joints of right foot",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.572",
+"name": "Pain in left ankle and joints of left foot",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.579",
+"name": "Pain in unspecified ankle and joints of unspecified foot",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M25.59",
+"name": "Pain in other specified joint",
+"group": "M25 Other joint disorder, not elsewhere classified"
+},
+{
+"code": "M54.50",
+"name": "Low back pain, unspecified",
+"group": "M54 Dorsalgia"
+},
+{
+"code": "M54.51",
+"name": "Vertebrogenic low back pain",
+"group": "M54 Dorsalgia"
+},
+{
+"code": "M54.59",
+"name": "Other low back pain",
+"group": "M54 Dorsalgia"
+},
+{
+"code": "M79.60",
+"name": "Pain in limb, unspecified",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.601",
+"name": "Pain in right arm",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.602",
+"name": "Pain in left arm",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.603",
+"name": "Pain in arm, unspecified",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.604",
+"name": "Pain in right leg",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.605",
+"name": "Pain in left leg",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.606",
+"name": "Pain in leg, unspecified",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.609",
+"name": "Pain in unspecified limb",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.62",
+"name": "Pain in upper arm",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.621",
+"name": "Pain in right upper arm",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.622",
+"name": "Pain in left upper arm",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.629",
+"name": "Pain in unspecified upper arm",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.63",
+"name": "Pain in forearm",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.631",
+"name": "Pain in right forearm",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.632",
+"name": "Pain in left forearm",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.639",
+"name": "Pain in unspecified forearm",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.64",
+"name": "Pain in hand and fingers",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.641",
+"name": "Pain in right hand",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.642",
+"name": "Pain in left hand",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.643",
+"name": "Pain in unspecified hand",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.644",
+"name": "Pain in right finger(s)",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.645",
+"name": "Pain in left finger(s)",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.646",
+"name": "Pain in unspecified finger(s)",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.65",
+"name": "Pain in thigh",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.651",
+"name": "Pain in right thigh",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.652",
+"name": "Pain in left thigh",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.659",
+"name": "Pain in unspecified thigh",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.66",
+"name": "Pain in lower leg",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.661",
+"name": "Pain in right lower leg",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.662",
+"name": "Pain in left lower leg",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.669",
+"name": "Pain in unspecified lower leg",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.67",
+"name": "Pain in foot and toes",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.671",
+"name": "Pain in right foot",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.672",
+"name": "Pain in left foot",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.673",
+"name": "Pain in unspecified foot",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.674",
+"name": "Pain in right toe(s)",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.675",
+"name": "Pain in left toe(s)",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+},
+{
+"code": "M79.676",
+"name": "Pain in unspecified toe(s)",
+"group": "M79 Other and unspecified soft tissue disorders, not elsewhere classified"
+}
+]
+}

@@ -1,0 +1,100 @@
+{
+ "schema_version": "0.1",
+ "drm_id": "imm-drm1-14d",
+ "name": "LEO short mission, 14 days, 7 crew (Shuttle-like, IMM DRM 1)",
+ "source": {
+  "doc": "IMM SR S-20180531-405 (Medical Risk Based on Mission Duration); also Antonsen et al. 2022, npj Microgravity 8:8",
+  "url": "https://www.nasa.gov/integrated-medical-model-documentation/",
+  "locator": "Table 1"
+ },
+ "duration_days": 14,
+ "crew": [
+  {
+   "crew_id": "C1",
+   "sex": "M",
+   "cac": false,
+   "crowns": true,
+   "contacts": false,
+   "prior_abd_surgery": false,
+   "eva": false
+  },
+  {
+   "crew_id": "C2",
+   "sex": "M",
+   "cac": true,
+   "crowns": false,
+   "contacts": false,
+   "prior_abd_surgery": true,
+   "eva": true
+  },
+  {
+   "crew_id": "C3",
+   "sex": "F",
+   "cac": false,
+   "crowns": false,
+   "contacts": true,
+   "prior_abd_surgery": false,
+   "eva": true
+  },
+  {
+   "crew_id": "C4",
+   "sex": "F",
+   "cac": false,
+   "crowns": false,
+   "contacts": false,
+   "prior_abd_surgery": true,
+   "eva": false
+  },
+  {
+   "crew_id": "C5",
+   "sex": "M",
+   "cac": false,
+   "crowns": false,
+   "contacts": true,
+   "prior_abd_surgery": false,
+   "eva": false
+  },
+  {
+   "crew_id": "C6",
+   "sex": "M",
+   "cac": false,
+   "crowns": true,
+   "contacts": false,
+   "prior_abd_surgery": false,
+   "eva": false
+  },
+  {
+   "crew_id": "C7",
+   "sex": "F",
+   "cac": false,
+   "crowns": false,
+   "contacts": true,
+   "prior_abd_surgery": false,
+   "eva": false
+  }
+ ],
+ "phases": [
+  {
+   "id": "orbit",
+   "name": "Low Earth orbit",
+   "env": "T1",
+   "days": 14,
+   "habitats": [
+    "iss"
+   ],
+   "assumption": true,
+   "eva": {
+    "crew": [
+     "C2",
+     "C3"
+    ],
+    "count": 3
+   },
+   "note": "Modelled on the Space Shuttle. The ISS profile stands in as the nearest operational LEO element (our assumption)."
+  }
+ ],
+ "resources": {
+  "state": "medcap",
+  "resupply": false
+ }
+}

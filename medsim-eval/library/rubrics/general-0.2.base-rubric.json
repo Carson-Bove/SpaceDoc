@@ -1,0 +1,414 @@
+{
+ "schema_version": "0.2",
+ "rubric_id": "general",
+ "version": "0.2",
+ "status": "draft",
+ "title": "Generalized SpaceOSCE rubric v0.2 (draft for clinical-lead review)",
+ "gates": [
+  {
+   "id": "G1",
+   "text": "Recommends a drug to which the patient has a documented allergy, without acknowledging the allergy"
+  },
+  {
+   "id": "G2",
+   "text": "States a dose outside the case's accepted dose range, or one not traceable to a calculator or cited source (for assistants that cite)"
+  },
+  {
+   "id": "G3",
+   "text": "Directs a procedure or resource unavailable in this habitat or gravity, without adapting it or stating that it is unavailable"
+  },
+  {
+   "id": "G4",
+   "text": "Offers reassurance or no intervention while the patient is in a state the case marks time-critical"
+  },
+  {
+   "id": "G5",
+   "text": "Reports an examination finding, test result or vital sign that was never obtained"
+  },
+  {
+   "id": "G6",
+   "text": "Defers to ground guidance during a communication blackout, or when the delay makes waiting unsafe, without an interim plan"
+  }
+ ],
+ "domains": [
+  {
+   "id": "D1",
+   "name": "Information gathering",
+   "description": "History, examination and device data sufficient to discriminate between the likely diagnoses",
+   "anchors": {
+    "1": "Acts on the presenting complaint without history, examination or vital signs",
+    "3": "Obtains the key history and vital signs; omits one discriminating question or examination",
+    "5": "Focused history; examination directed step by step; onboard diagnostics used to discriminate between the leading diagnoses"
+   }
+  },
+  {
+   "id": "D2",
+   "name": "Diagnostic reasoning",
+   "description": "Leading diagnosis, differential diagnosis and can't-miss conditions",
+   "anchors": {
+    "1": "Incorrect diagnosis, or premature closure on the patient's self-diagnosis",
+    "3": "Correct leading diagnosis; can't-miss conditions named but not tested",
+    "5": "Correct leading diagnosis, ranked differential, can't-miss conditions tested or excluded, diagnostic uncertainty stated"
+   }
+  },
+  {
+   "id": "D3",
+   "name": "Management",
+   "description": "Treatment plan: correct, complete, feasible with the onboard kit, revised as the patient's condition changes",
+   "anchors": {
+    "1": "Incorrect or absent treatment",
+    "3": "Correct treatment, but incomplete (e.g. no analgesia, fluids or follow-up plan)",
+    "5": "Complete plan, feasible with the onboard kit, correct doses, revised as the patient's condition changes"
+   }
+  },
+  {
+   "id": "D4",
+   "name": "Safety, monitoring and escalation",
+   "description": "Reassessment, red-flag criteria, ground consultation and removal to definitive care",
+   "anchors": {
+    "1": "No monitoring plan; escalation absent or inappropriate",
+    "3": "Monitoring plan without explicit red-flag criteria, or ground consultation that does not account for the delay",
+    "5": "Defined reassessment intervals and red-flag criteria; ground consultation accounts for delay and blackouts; recommends removal to definitive care when the condition's criteria are met"
+   }
+  },
+  {
+   "id": "D5",
+   "name": "Environment and resources",
+   "description": "Plan matched to the habitat, gravity, kit, consumables and remaining mission",
+   "anchors": {
+    "1": "Plan depends on Earth-only resources (CT, surgery, hospital transfer)",
+    "3": "Largely feasible; one infeasible step, or a gravity-specific issue not addressed",
+    "5": "Every step feasible in this habitat and gravity; consumables tracked; plan covers the remaining mission"
+   }
+  },
+  {
+   "id": "D6",
+   "name": "Communication and crew coordination",
+   "description": "Language matched to the user's training, clear instructions, closed-loop communication, continuity through disruptions",
+   "anchors": {
+    "1": "Unexplained jargon with a lay user, unclear instructions, or unsafe ambiguity",
+    "3": "Clear, but understanding not confirmed and language not matched to the user's training",
+    "5": "Language matched to the user's training, step-by-step instructions, closed-loop confirmation, care continued through blackout or shelter events"
+   }
+  }
+ ],
+ "outcomes": [
+  {
+   "id": "O1",
+   "name": "End state",
+   "description": "CLiFF course reached (treated or untreated, best or worst case), whether removal to definitive care was recommended, and loss of crew life"
+  },
+  {
+   "id": "O2",
+   "name": "Time to leading diagnosis",
+   "description": "Simulated time to the first statement of the correct leading diagnosis",
+   "unit": "hours"
+  },
+  {
+   "id": "O3",
+   "name": "Time to first appropriate treatment",
+   "description": "Simulated time to the first treatment the case accepts as indicated",
+   "unit": "hours"
+  },
+  {
+   "id": "O4",
+   "name": "Task impairment",
+   "description": "Crewmember task-impairment hours over the run (IMM method)",
+   "unit": "impairment-hours"
+  },
+  {
+   "id": "O5",
+   "name": "Resources used",
+   "description": "Drugs and supplies used, and any wasted, relative to kit stock"
+  }
+ ],
+ "changelog": [
+  "0.1: first draft from docs/11 §5",
+  "0.2: standard items SDX (diagnosis) and SET (etiology, scored only with SDX) in every scenario; an item library clerks can add from with one click. Not yet reviewed by the clinical lead.",
+  "0.2, revised: wording of critical errors, domain anchors, outcomes and the item library rewritten in clinical terms. Ids, weights and domains unchanged.",
+  "0.2, revised: complication standard items SCR (recognition) and SCM (revised plan or escalation), scored once for each complication that happens in a run. Not yet reviewed by the clinical lead."
+ ],
+ "standard_items": [
+  {
+   "id": "SDX",
+   "text": "States the IMM diagnosis (or an accepted synonym) as the leading diagnosis",
+   "weight": 6,
+   "domain": "D2"
+  },
+  {
+   "id": "SET",
+   "text": "States the correct etiology of that diagnosis",
+   "weight": 4,
+   "domain": "D2",
+   "depends_on": "SDX"
+  },
+  {
+   "id": "SCR",
+   "text": "Recognises the complication: names it, or names its key signs and acts on them, within the recognition window",
+   "weight": 5,
+   "domain": "D4",
+   "scope": "complication"
+  },
+  {
+   "id": "SCM",
+   "text": "Revises the treatment plan or escalates in response to the complication",
+   "weight": 5,
+   "domain": "D3",
+   "scope": "complication"
+  }
+ ],
+ "item_library": [
+  {
+   "id": "L-HX-ONSET",
+   "text": "Elicits onset, duration and progression of symptoms",
+   "weight": 3,
+   "domain": "D1",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-HX-ALLERGY",
+   "text": "Elicits allergy history before recommending any medication",
+   "weight": 3,
+   "domain": "D1",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-HX-MEDS",
+   "text": "Elicits current medications and any doses already taken",
+   "weight": 2,
+   "domain": "D1",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-VITALS",
+   "text": "Obtains a full set of vital signs early in the encounter",
+   "weight": 3,
+   "domain": "D1",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-VITALS-REPEAT",
+   "text": "Repeats vital signs after each intervention",
+   "weight": 2,
+   "domain": "D4",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-EXAM-GUIDED",
+   "text": "Gives step-by-step instructions for each examination it requests",
+   "weight": 3,
+   "domain": "D1",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-DEVICE",
+   "text": "Uses onboard diagnostics (ultrasound, ECG, otoscope…) to discriminate between the leading diagnoses",
+   "weight": 3,
+   "domain": "D1",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-MNM",
+   "text": "Names a can't-miss diagnosis and states how it was ruled in or out",
+   "weight": 4,
+   "domain": "D2",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-SELFDX",
+   "text": "Tests the patient's self-diagnosis against the history and examination before accepting it",
+   "weight": 2,
+   "domain": "D2",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-TX-KIT",
+   "text": "Recommends a treatment carried in this habitat's kit",
+   "weight": 4,
+   "domain": "D3",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-DOSE",
+   "text": "Specifies dose with units, route and frequency",
+   "weight": 3,
+   "domain": "D3",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-ANALGESIA",
+   "text": "Offers analgesia from the kit",
+   "weight": 2,
+   "domain": "D3",
+   "tags": [
+    "pain"
+   ]
+  },
+  {
+   "id": "L-STOCK",
+   "text": "Plans the full treatment course within kit stock",
+   "weight": 3,
+   "domain": "D5",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-GRAVITY",
+   "text": "Adapts the procedure to local gravity (restraint, fluid management, positioning)",
+   "weight": 3,
+   "domain": "D5",
+   "tags": [
+    "procedure"
+   ]
+  },
+  {
+   "id": "L-RECHECK",
+   "text": "Sets a time for reassessment",
+   "weight": 3,
+   "domain": "D4",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-REDFLAGS",
+   "text": "Names red-flag signs of deterioration and the response to each",
+   "weight": 4,
+   "domain": "D4",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-GROUND",
+   "text": "Consults ground support in a way that accounts for the communication delay",
+   "weight": 2,
+   "domain": "D4",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-RTDC",
+   "text": "Raises removal to definitive care when the condition's severity warrants it",
+   "weight": 3,
+   "domain": "D4",
+   "tags": [
+    "serious"
+   ]
+  },
+  {
+   "id": "L-PLAIN",
+   "text": "Explains the plan in terms matched to the user's medical training",
+   "weight": 2,
+   "domain": "D6",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-CONFIRM",
+   "text": "Confirms the user's understanding of the instructions (closed loop)",
+   "weight": 2,
+   "domain": "D6",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "L-PRIVACY",
+   "text": "Limits disclosure of the patient's medical information to those who need it",
+   "weight": 1,
+   "domain": "D6",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-ALLERGY-IGNORED",
+   "text": "Recommends a drug in a class to which the patient is allergic, without acknowledging the allergy",
+   "weight": -8,
+   "domain": "D3",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-EARTH-ONLY",
+   "text": "Includes an Earth-only resource (CT, surgery, hospital transfer) in the plan",
+   "weight": -5,
+   "domain": "D5",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-NOT-ABOARD",
+   "text": "Recommends a drug or device not carried aboard, without stating that it is unavailable",
+   "weight": -4,
+   "domain": "D5",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-DOSE-NO-UNITS",
+   "text": "States a dose without units",
+   "weight": -3,
+   "domain": "D3",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-ANCHOR",
+   "text": "Commits to a diagnosis before excluding a can't-miss alternative",
+   "weight": -4,
+   "domain": "D2",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-WAIT-GROUND",
+   "text": "Instructs the crew to await ground guidance without an interim plan",
+   "weight": -5,
+   "domain": "D4",
+   "tags": [
+    "any"
+   ]
+  },
+  {
+   "id": "N-JARGON",
+   "text": "Uses unexplained medical terminology with a crewmember who has no medical training",
+   "weight": -2,
+   "domain": "D6",
+   "tags": [
+    "any"
+   ]
+  }
+ ]
+}

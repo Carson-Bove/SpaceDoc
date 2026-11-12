@@ -1,0 +1,260 @@
+{
+  "$defs": {
+    "Anchors": {
+      "additionalProperties": false,
+      "description": "Written descriptions of what a 1, a 3 and a 5 look like. 2 and 4 sit between them.",
+      "properties": {
+        "1": {
+          "title": "1",
+          "type": "string"
+        },
+        "3": {
+          "title": "3",
+          "type": "string"
+        },
+        "5": {
+          "title": "5",
+          "type": "string"
+        }
+      },
+      "required": [
+        "1",
+        "3",
+        "5"
+      ],
+      "title": "Anchors",
+      "type": "object"
+    },
+    "ChecklistItem": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "description": "Observable behaviour",
+          "title": "Text",
+          "type": "string"
+        },
+        "type": {
+          "default": "binary",
+          "description": "binary: met / not met. rating: 1–5 against anchors you write",
+          "enum": [
+            "binary",
+            "rating"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "weight": {
+          "description": "+ for things to do, − for things not to do; not 0",
+          "maximum": 10,
+          "minimum": -10,
+          "title": "Weight",
+          "type": "integer"
+        },
+        "by": {
+          "anyOf": [
+            {
+              "description": "Simulated time from scenario start, e.g. T+0, T+30m, T+1d6h",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Deadline in simulated time, e.g. T+2h; from onset if `complication` is set",
+          "title": "By"
+        },
+        "domain": {
+          "description": "Which base-rubric domain this informs, e.g. D3",
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Domain",
+          "type": "string"
+        },
+        "anchors": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Anchors"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Required for rated items"
+        },
+        "requires": {
+          "default": [],
+          "description": "Kit item ids; if none of them is aboard in a run, the item is not applicable",
+          "items": {
+            "type": "string"
+          },
+          "title": "Requires",
+          "type": "array"
+        },
+        "patient": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For several-patient cases: which crewmember",
+          "title": "Patient"
+        },
+        "complication": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Only scored in runs where this complication happens",
+          "title": "Complication"
+        },
+        "from_library": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Library item this was added from",
+          "title": "From Library"
+        },
+        "rationale": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rationale"
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "weight",
+        "domain"
+      ],
+      "title": "ChecklistItem",
+      "type": "object"
+    },
+    "Gate": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "description": "Critical error (never event): any occurrence fails the run",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "text"
+      ],
+      "title": "Gate",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "0.2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "rubric_id": {
+      "maxLength": 80,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Rubric Id",
+      "type": "string"
+    },
+    "scenario_id": {
+      "maxLength": 80,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "base": {
+      "description": "Base rubric, e.g. general@0.2",
+      "pattern": "^[A-Za-z0-9._-]+@\\d+\\.\\d+$",
+      "title": "Base",
+      "type": "string"
+    },
+    "gates": {
+      "default": [],
+      "description": "Scenario-specific never events, added to the base gates",
+      "items": {
+        "$ref": "#/$defs/Gate"
+      },
+      "title": "Gates",
+      "type": "array"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/ChecklistItem"
+      },
+      "minItems": 1,
+      "title": "Items",
+      "type": "array"
+    },
+    "must_not_miss_tested": {
+      "default": true,
+      "description": "Score each ground-truth must-not-miss diagnosis as considered or excluded",
+      "title": "Must Not Miss Tested",
+      "type": "boolean"
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "rubric_id",
+    "scenario_id",
+    "base",
+    "items"
+  ],
+  "title": "ScenarioRubric",
+  "type": "object"
+}

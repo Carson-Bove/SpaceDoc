@@ -1,0 +1,1044 @@
+{
+  "$defs": {
+    "ActionRef": {
+      "additionalProperties": false,
+      "description": "Something the assistant can direct. `refs` names kit items when it matters (any of them).",
+      "properties": {
+        "kind": {
+          "enum": [
+            "exam",
+            "test",
+            "imaging",
+            "treatment",
+            "procedure",
+            "monitoring",
+            "ground_consult",
+            "rtdc",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "refs": {
+          "default": [],
+          "description": "Kit item ids; any one of them counts",
+          "items": {
+            "type": "string"
+          },
+          "title": "Refs",
+          "type": "array"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Description of the intervention, for reviewers",
+          "title": "Text"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ActionRef",
+      "type": "object"
+    },
+    "Allergy": {
+      "additionalProperties": false,
+      "properties": {
+        "agent": {
+          "description": "e.g. penicillin, tree pollen",
+          "title": "Agent",
+          "type": "string"
+        },
+        "kind": {
+          "default": "drug",
+          "enum": [
+            "drug",
+            "food",
+            "environmental",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "reaction": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. rash, hives, anaphylaxis",
+          "title": "Reaction"
+        }
+      },
+      "required": [
+        "agent"
+      ],
+      "title": "Allergy",
+      "type": "object"
+    },
+    "Author": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Full name",
+          "title": "Name",
+          "type": "string"
+        },
+        "contact": {
+          "description": "Email or phone",
+          "title": "Contact",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "contact"
+      ],
+      "title": "Author",
+      "type": "object"
+    },
+    "Chart": {
+      "additionalProperties": false,
+      "properties": {
+        "past_medical": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Past Medical",
+          "type": "array"
+        },
+        "past_surgical": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Past Surgical",
+          "type": "array"
+        },
+        "medications": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Medication"
+          },
+          "title": "Medications",
+          "type": "array"
+        },
+        "allergies": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Allergy"
+          },
+          "title": "Allergies",
+          "type": "array"
+        },
+        "nkda": {
+          "default": false,
+          "description": "No known drug allergies",
+          "title": "Nkda",
+          "type": "boolean"
+        },
+        "family_history": {
+          "default": [],
+          "description": "Optional",
+          "items": {
+            "type": "string"
+          },
+          "title": "Family History",
+          "type": "array"
+        },
+        "social_history": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Social History"
+        },
+        "immunizations": {
+          "default": [],
+          "description": "e.g. tetanus booster 2023",
+          "items": {
+            "type": "string"
+          },
+          "title": "Immunizations",
+          "type": "array"
+        }
+      },
+      "title": "Chart",
+      "type": "object"
+    },
+    "Complication": {
+      "additionalProperties": false,
+      "description": "A clinical complication the run can introduce (docs/11 §4.3).\n\nIt happens when its trigger fires, and then only in `chance` of runs (and only in worst-course\nruns if `worst_course_only`). Every complication that happens is scored by the base rubric's\ncomplication standard items, plus any checklist items tied to it.",
+      "properties": {
+        "id": {
+          "description": "e.g. X1; checklist items refer to it",
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "e.g. Perforation with peritonitis",
+          "title": "Name",
+          "type": "string"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "IMM condition whose CLiFF course the twin follows, if one fits",
+          "title": "Condition"
+        },
+        "trigger": {
+          "description": "untreated: at `by`, unless `action` was done by then; action: `after` the assistant directs `action`; chance: at `at`, in a share of runs",
+          "enum": [
+            "untreated",
+            "action",
+            "chance"
+          ],
+          "title": "Trigger",
+          "type": "string"
+        },
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ActionRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "untreated and action triggers"
+        },
+        "by": {
+          "anyOf": [
+            {
+              "description": "Simulated time from scenario start, e.g. T+0, T+30m, T+1d6h",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "untreated trigger: the deadline",
+          "title": "By"
+        },
+        "after": {
+          "anyOf": [
+            {
+              "description": "Simulated duration, e.g. 30m, 10h, 2d",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "action trigger: time from action to onset (default: at once)",
+          "title": "After"
+        },
+        "at": {
+          "anyOf": [
+            {
+              "description": "Simulated time from scenario start, e.g. T+0, T+30m, T+1d6h",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "chance trigger: onset time",
+          "title": "At"
+        },
+        "chance": {
+          "default": 1.0,
+          "description": "Share of runs in which it happens once triggered, e.g. 0.25",
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "title": "Chance",
+          "type": "number"
+        },
+        "worst_course_only": {
+          "default": false,
+          "description": "Only in runs on the worst-case course",
+          "title": "Worst Course Only",
+          "type": "boolean"
+        },
+        "findings": {
+          "default": [],
+          "description": "Symptoms, exam findings and vital signs, timed from onset",
+          "items": {
+            "$ref": "#/$defs/ComplicationEntry"
+          },
+          "title": "Findings",
+          "type": "array"
+        },
+        "recognise_within": {
+          "anyOf": [
+            {
+              "description": "Simulated duration, e.g. 30m, 10h, 2d",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Time from onset within which recognition earns the standard item; empty: any time before the run ends",
+          "title": "Recognise Within"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "trigger"
+      ],
+      "title": "Complication",
+      "type": "object"
+    },
+    "ComplicationEntry": {
+      "additionalProperties": false,
+      "description": "A finding or vital-sign change, timed from the complication's onset.",
+      "properties": {
+        "t": {
+          "description": "Time from the complication's onset, e.g. T+0, T+30m",
+          "title": "T",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "symptom",
+            "finding",
+            "keyframe",
+            "note"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "state": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "default": {},
+          "description": "Twin state at this time (keyframes): e.g. {temp_c: 38.1, hr: 104}",
+          "title": "State",
+          "type": "object"
+        }
+      },
+      "required": [
+        "t",
+        "kind"
+      ],
+      "title": "ComplicationEntry",
+      "type": "object"
+    },
+    "Familiarity": {
+      "additionalProperties": false,
+      "description": "1 = none, 5 = expert.",
+      "properties": {
+        "medicine": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Medicine"
+        },
+        "equipment": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Equipment"
+        },
+        "assistant": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assistant"
+        }
+      },
+      "title": "Familiarity",
+      "type": "object"
+    },
+    "GroundTruth": {
+      "additionalProperties": false,
+      "properties": {
+        "diagnosis": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Defaults to the IMM condition's name; set to word it differently",
+          "title": "Diagnosis"
+        },
+        "etiology": {
+          "description": "The cause, e.g. obstructing appendicolith",
+          "title": "Etiology",
+          "type": "string"
+        },
+        "differential": {
+          "default": [],
+          "description": "Ranked, most likely first",
+          "items": {
+            "type": "string"
+          },
+          "title": "Differential",
+          "type": "array"
+        },
+        "must_not_miss": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Must Not Miss",
+          "type": "array"
+        },
+        "synonyms": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "default": {},
+          "description": "diagnosis or etiology -> other names that count as a match",
+          "title": "Synonyms",
+          "type": "object"
+        }
+      },
+      "required": [
+        "etiology"
+      ],
+      "title": "GroundTruth",
+      "type": "object"
+    },
+    "HistoryIfAsked": {
+      "additionalProperties": false,
+      "properties": {
+        "if_asked": {
+          "description": "Topic, e.g. migration of pain",
+          "title": "If Asked",
+          "type": "string"
+        },
+        "says": {
+          "description": "Response, e.g. started around the belly button, now it's lower right",
+          "title": "Says",
+          "type": "string"
+        }
+      },
+      "required": [
+        "if_asked",
+        "says"
+      ],
+      "title": "HistoryIfAsked",
+      "type": "object"
+    },
+    "Inject": {
+      "additionalProperties": false,
+      "description": "A mission event dropped into the run, as in a launch-readiness sim. A later feature: kept\nin the format, not yet offered in the form's main sections.",
+      "properties": {
+        "t": {
+          "description": "Simulated time from scenario start, e.g. T+0, T+30m, T+1d6h",
+          "title": "T",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "solar_particle_event",
+            "dust_storm",
+            "comm_blackout",
+            "comm_degraded",
+            "equipment_failure",
+            "consumable_loss",
+            "power_reduction",
+            "crew_unavailable",
+            "eva_in_progress",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "description": "Simulated duration, e.g. 30m, 10h, 2d",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Equipment, drug or crew id affected, if any",
+          "title": "Target"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        }
+      },
+      "required": [
+        "t",
+        "kind"
+      ],
+      "title": "Inject",
+      "type": "object"
+    },
+    "Medication": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Generic name, e.g. loratadine",
+          "title": "Name",
+          "type": "string"
+        },
+        "form": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Form or route: tablet, capsule, IV, inhaler…",
+          "title": "Form"
+        },
+        "dose": {
+          "description": "e.g. 10 mg",
+          "title": "Dose",
+          "type": "string"
+        },
+        "frequency": {
+          "description": "e.g. once daily, as needed",
+          "title": "Frequency",
+          "type": "string"
+        },
+        "indication": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Indication"
+        }
+      },
+      "required": [
+        "name",
+        "dose",
+        "frequency"
+      ],
+      "title": "Medication",
+      "type": "object"
+    },
+    "PatientCase": {
+      "additionalProperties": false,
+      "properties": {
+        "crew_id": {
+          "description": "Crewmember from the roster",
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Crew Id",
+          "type": "string"
+        },
+        "condition": {
+          "description": "IMM condition id from the CLiFF index",
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Condition",
+          "type": "string"
+        },
+        "chart": {
+          "$ref": "#/$defs/Chart",
+          "description": "The chart as it stands for this case"
+        },
+        "timeline": {
+          "default": [],
+          "description": "Medical timeline / course of illness",
+          "items": {
+            "$ref": "#/$defs/TimelineEntry"
+          },
+          "title": "Timeline",
+          "type": "array"
+        },
+        "time_critical": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TimeCritical"
+          },
+          "title": "Time Critical",
+          "type": "array"
+        },
+        "complications": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Complication"
+          },
+          "title": "Complications",
+          "type": "array"
+        },
+        "ground_truth": {
+          "$ref": "#/$defs/GroundTruth"
+        }
+      },
+      "required": [
+        "crew_id",
+        "condition",
+        "chart",
+        "ground_truth"
+      ],
+      "title": "PatientCase",
+      "type": "object"
+    },
+    "Review": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "default": "draft",
+          "enum": [
+            "draft",
+            "in_review",
+            "physiology_review",
+            "approved",
+            "retired"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "reviewers": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reviewers",
+          "type": "array"
+        },
+        "physiology_review": {
+          "default": "not_needed",
+          "enum": [
+            "not_needed",
+            "requested",
+            "done"
+          ],
+          "title": "Physiology Review",
+          "type": "string"
+        },
+        "notes_for_physiologist": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes For Physiologist"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        }
+      },
+      "title": "Review",
+      "type": "object"
+    },
+    "Speaker": {
+      "additionalProperties": false,
+      "description": "The crewmember the assistant talks to, played by an AI from their roster entry.",
+      "properties": {
+        "crew_id": {
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Crew Id",
+          "type": "string"
+        },
+        "role": {
+          "description": "patient: self-report; cmo: the crew medical officer; crew: a bystander crewmember",
+          "enum": [
+            "patient",
+            "cmo",
+            "crew"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "opening": {
+          "description": "Chief complaint in the patient's words, or the opening statement",
+          "title": "Opening",
+          "type": "string"
+        },
+        "emergent": {
+          "default": false,
+          "description": "Emergent presentation; affects behaviour only",
+          "title": "Emergent",
+          "type": "boolean"
+        },
+        "input_quality": {
+          "default": 1,
+          "description": "Historian reliability: 1 reliable … 5 unreliable",
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Input Quality",
+          "type": "integer"
+        },
+        "input_problems": {
+          "default": [],
+          "description": "How the history is unreliable; see INPUT_PROBLEMS",
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Problems",
+          "type": "array"
+        },
+        "familiarity": {
+          "$ref": "#/$defs/Familiarity",
+          "description": "Overrides the roster"
+        },
+        "behaviour": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Behaviour"
+        },
+        "additional_history": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/HistoryIfAsked"
+          },
+          "title": "Additional History",
+          "type": "array"
+        }
+      },
+      "required": [
+        "crew_id",
+        "role",
+        "opening"
+      ],
+      "title": "Speaker",
+      "type": "object"
+    },
+    "TimeCritical": {
+      "additionalProperties": false,
+      "description": "The standard course rule: on time pushes toward the best case, late toward the worst.",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/ActionRef"
+        },
+        "by": {
+          "description": "Simulated time from scenario start, e.g. T+0, T+30m, T+1d6h",
+          "title": "By",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "by"
+      ],
+      "title": "TimeCritical",
+      "type": "object"
+    },
+    "TimelineEntry": {
+      "additionalProperties": false,
+      "description": "One point in the course of illness.",
+      "properties": {
+        "t": {
+          "description": "Simulated time from scenario start, e.g. T+0, T+30m, T+1d6h",
+          "title": "T",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "symptom",
+            "finding",
+            "keyframe",
+            "note"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "state": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "default": {},
+          "description": "Twin state at this time (keyframes): e.g. {temp_c: 38.1, hr: 104}",
+          "title": "State",
+          "type": "object"
+        },
+        "when": {
+          "default": "always",
+          "description": "Only applies if the patient has / has not been treated by then",
+          "enum": [
+            "always",
+            "treated",
+            "untreated"
+          ],
+          "title": "When",
+          "type": "string"
+        }
+      },
+      "required": [
+        "t",
+        "kind"
+      ],
+      "title": "TimelineEntry",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "0.2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scenario_id": {
+      "maxLength": 80,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "title": {
+      "description": "Chief complaint, in brief clinical terms",
+      "title": "Title",
+      "type": "string"
+    },
+    "authors": {
+      "items": {
+        "$ref": "#/$defs/Author"
+      },
+      "minItems": 1,
+      "title": "Authors",
+      "type": "array"
+    },
+    "symptoms": {
+      "default": [],
+      "description": "ICD-10-CM symptom codes, e.g. R10.31",
+      "items": {
+        "type": "string"
+      },
+      "title": "Symptoms",
+      "type": "array"
+    },
+    "environments": {
+      "description": "Where this can happen",
+      "items": {
+        "enum": [
+          "T1",
+          "T2",
+          "T3",
+          "T4",
+          "T5"
+        ],
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Environments",
+      "type": "array"
+    },
+    "patients": {
+      "description": "One today; several for triage later",
+      "items": {
+        "$ref": "#/$defs/PatientCase"
+      },
+      "minItems": 1,
+      "title": "Patients",
+      "type": "array"
+    },
+    "speaker": {
+      "$ref": "#/$defs/Speaker"
+    },
+    "injects": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Inject"
+      },
+      "title": "Injects",
+      "type": "array"
+    },
+    "complicators": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Complicating factors: confounders and constraints",
+      "title": "Complicators"
+    },
+    "rubric": {
+      "description": "Rubric file name, relative to this file",
+      "title": "Rubric",
+      "type": "string"
+    },
+    "duration": {
+      "default": "3d",
+      "description": "How long to simulate before the run ends",
+      "title": "Duration",
+      "type": "string"
+    },
+    "review": {
+      "$ref": "#/$defs/Review"
+    },
+    "tags": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Tags",
+      "type": "array"
+    }
+  },
+  "required": [
+    "scenario_id",
+    "title",
+    "authors",
+    "patients",
+    "speaker",
+    "rubric"
+  ],
+  "title": "Scenario",
+  "type": "object"
+}

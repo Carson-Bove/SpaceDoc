@@ -1,0 +1,232 @@
+{
+  "$defs": {
+    "Adaptation": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Source"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "assumption": {
+          "default": false,
+          "title": "Assumption",
+          "type": "boolean"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "envs": {
+          "items": {
+            "enum": [
+              "T1",
+              "T2",
+              "T3",
+              "T4",
+              "T5"
+            ],
+            "type": "string"
+          },
+          "title": "Envs",
+          "type": "array"
+        },
+        "var": {
+          "description": "State variable or physiological quantity",
+          "title": "Var",
+          "type": "string"
+        },
+        "change": {
+          "description": "As reported, e.g. '-10 mmHg (24-h mean)', 'no consistent change'",
+          "title": "Change",
+          "type": "string"
+        },
+        "after_days": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Time in that environment before it applies",
+          "title": "After Days"
+        }
+      },
+      "required": [
+        "envs",
+        "var",
+        "change"
+      ],
+      "title": "Adaptation",
+      "type": "object"
+    },
+    "Range": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Source"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "assumption": {
+          "default": false,
+          "title": "Assumption",
+          "type": "boolean"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "var": {
+          "description": "State variable, e.g. hr",
+          "title": "Var",
+          "type": "string"
+        },
+        "low": {
+          "title": "Low",
+          "type": "number"
+        },
+        "high": {
+          "title": "High",
+          "type": "number"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "sex": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "M or F when the range differs by sex",
+          "title": "Sex"
+        }
+      },
+      "required": [
+        "var",
+        "low",
+        "high",
+        "unit"
+      ],
+      "title": "Range",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "description": "Where a value came from. `doc` is a short citation; `url` is where to read it.",
+      "properties": {
+        "doc": {
+          "title": "Doc",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Table, page or section within the document",
+          "title": "Locator"
+        }
+      },
+      "required": [
+        "doc"
+      ],
+      "title": "Source",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "0.2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "ranges": {
+      "items": {
+        "$ref": "#/$defs/Range"
+      },
+      "title": "Ranges",
+      "type": "array"
+    },
+    "adaptations": {
+      "items": {
+        "$ref": "#/$defs/Adaptation"
+      },
+      "title": "Adaptations",
+      "type": "array"
+    },
+    "reviewed_by": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reviewed By"
+    }
+  },
+  "required": [
+    "ranges",
+    "adaptations"
+  ],
+  "title": "Physiology",
+  "type": "object"
+}

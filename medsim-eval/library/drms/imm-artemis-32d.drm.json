@@ -1,0 +1,75 @@
+{
+ "schema_version": "0.1",
+ "drm_id": "imm-artemis-32d",
+ "name": "Artemis lunar mission, 32 days, 4 crew",
+ "source": {
+  "doc": "IMM SR S-20221028-451 (Artemis IV, 32-day DRM)",
+  "url": "https://www.nasa.gov/integrated-medical-model-documentation/",
+  "locator": "Table 1"
+ },
+ "duration_days": 32,
+ "crew": [
+  {
+   "crew_id": "C1",
+   "sex": "M",
+   "crowns": true,
+   "eva": true,
+   "cac": false,
+   "contacts": false,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C2",
+   "sex": "M",
+   "crowns": false,
+   "eva": false,
+   "cac": true,
+   "contacts": false,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C3",
+   "sex": "F",
+   "crowns": false,
+   "eva": true,
+   "cac": false,
+   "contacts": true,
+   "prior_abd_surgery": false
+  },
+  {
+   "crew_id": "C4",
+   "sex": "F",
+   "crowns": false,
+   "eva": false,
+   "cac": false,
+   "contacts": false,
+   "prior_abd_surgery": true
+  }
+ ],
+ "phases": [
+  {
+   "id": "mission",
+   "name": "Whole mission (orbit/surface split not published)",
+   "env": "T2",
+   "days": 32,
+   "habitats": [
+    "orion"
+   ],
+   "assumption": true,
+   "eva": {
+    "crew": [
+     "C1",
+     "C3"
+    ],
+    "count": 4
+   },
+   "note": "Split this phase into orbit and surface segments before writing surface scenarios."
+  }
+ ],
+ "resources": {
+  "state": "medcap",
+  "resupply": false,
+  "kit_mass_kg": 12.56,
+  "note": "27.7 lb: 7.7 lb on the lander plus 20 lb on Orion; contents not published"
+ }
+}

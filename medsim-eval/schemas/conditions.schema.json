@@ -1,0 +1,524 @@
+{
+  "$defs": {
+    "Applicability": {
+      "additionalProperties": false,
+      "description": "Where and when the condition can happen, from the CLiFF's incidence model (Table 1).",
+      "properties": {
+        "incidence_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "As written: General, EVA, SAS…",
+          "title": "Incidence Type"
+        },
+        "segment": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "As written: All, EVA Surface, Space Adaptation…",
+          "title": "Segment"
+        },
+        "envs": {
+          "items": {
+            "enum": [
+              "T1",
+              "T2",
+              "T3",
+              "T4",
+              "T5"
+            ],
+            "type": "string"
+          },
+          "title": "Envs",
+          "type": "array"
+        },
+        "timing": {
+          "default": "any",
+          "enum": [
+            "any",
+            "early_flight",
+            "surface_arrival"
+          ],
+          "title": "Timing",
+          "type": "string"
+        },
+        "eva": {
+          "default": false,
+          "description": "Happens during or because of an EVA",
+          "title": "Eva",
+          "type": "boolean"
+        },
+        "sex": {
+          "default": "any",
+          "enum": [
+            "any",
+            "F",
+            "M"
+          ],
+          "title": "Sex",
+          "type": "string"
+        },
+        "onset_hours": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When it starts, for space adaptation",
+          "title": "Onset Hours"
+        },
+        "mapped": {
+          "const": "automatic",
+          "default": "automatic",
+          "description": "envs/timing were mapped from the segment by script, not by NASA",
+          "title": "Mapped",
+          "type": "string"
+        }
+      },
+      "required": [
+        "envs"
+      ],
+      "title": "Applicability",
+      "type": "object"
+    },
+    "CaseCourse": {
+      "additionalProperties": false,
+      "description": "One row of a CLiFF's Table 4. TI = task impairment %; durations in hours.",
+      "properties": {
+        "probability_pct": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Share of cases that take this course",
+          "title": "Probability Pct"
+        },
+        "cp1_ti_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Clinical phase 1 (diagnosis): task impairment %",
+          "title": "Cp1 Ti Pct"
+        },
+        "cp1_hours": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cp1 Hours"
+        },
+        "cp2_ti_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Clinical phase 2 (treatment): task impairment %",
+          "title": "Cp2 Ti Pct"
+        },
+        "cp2_hours": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cp2 Hours"
+        },
+        "cp3_ti_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Clinical phase 3 (end state): lasting task impairment %",
+          "title": "Cp3 Ti Pct"
+        },
+        "rtdc_pct": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Removal to definitive care, %",
+          "title": "Rtdc Pct"
+        },
+        "locl_pct": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Loss of crew life, %",
+          "title": "Locl Pct"
+        }
+      },
+      "title": "CaseCourse",
+      "type": "object"
+    },
+    "CliffDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "description": "Link text on NASA's page (sometimes wrong; the url is authoritative)",
+          "title": "Label",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "list": {
+          "enum": [
+            "cliff119_2023",
+            "cliff100"
+          ],
+          "title": "List",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "url",
+        "list"
+      ],
+      "title": "CliffDoc",
+      "type": "object"
+    },
+    "Condition": {
+      "additionalProperties": false,
+      "properties": {
+        "cliff_id": {
+          "description": "Stable id from the condition name, e.g. appendicitis",
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Cliff Id",
+          "type": "string"
+        },
+        "icl": {
+          "description": "NASA's condition code, e.g. ICL8",
+          "title": "Icl",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "category": {
+          "title": "Category",
+          "type": "string"
+        },
+        "cliff": {
+          "$ref": "#/$defs/CliffDoc"
+        },
+        "legacy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CliffDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Matching 100-condition CLiFF, if any"
+        },
+        "peer_review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CliffDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The CLiFF's opening description",
+          "title": "Summary"
+        },
+        "applicability": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Applicability"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "course": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Course"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "cliff_id",
+        "icl",
+        "name",
+        "category",
+        "cliff"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "Course": {
+      "additionalProperties": false,
+      "properties": {
+        "incidence_mean": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Units depend on the condition: see the CLiFF",
+          "title": "Incidence Mean"
+        },
+        "incidence_sd": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Incidence Sd"
+        },
+        "incidence_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The incidence as written, e.g. when it differs by sex",
+          "title": "Incidence Text"
+        },
+        "treated_best": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CaseCourse"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "treated_worst": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CaseCourse"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "untreated_best": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CaseCourse"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "untreated_worst": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CaseCourse"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "extraction": {
+          "const": "automatic",
+          "default": "automatic",
+          "title": "Extraction",
+          "type": "string"
+        },
+        "reviewed_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Set when the physiologist has checked these numbers",
+          "title": "Reviewed By"
+        }
+      },
+      "title": "Course",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "0.2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_url": {
+      "title": "Source Url",
+      "type": "string"
+    },
+    "retrieved": {
+      "description": "ISO date the page was read",
+      "title": "Retrieved",
+      "type": "string"
+    },
+    "conditions": {
+      "items": {
+        "$ref": "#/$defs/Condition"
+      },
+      "title": "Conditions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source_url",
+    "retrieved",
+    "conditions"
+  ],
+  "title": "ConditionIndex",
+  "type": "object"
+}

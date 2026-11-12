@@ -1,0 +1,868 @@
+{
+ "schema_version": "0.1",
+ "profile_id": "lunar-lander",
+ "name": "Lunar lander, ~1-week surface stay (IMM 7.5-day kit)",
+ "kind": "lander",
+ "envs": [
+  "T3"
+ ],
+ "gravity_g": 0.166,
+ "status": "in_development",
+ "crew_capacity": 2,
+ "sources": [
+  {
+   "doc": "Ruttley T, et al. Back to Stay: NASA's Campaign to Sustainably Return Humans to the Moon. IAC-21,B3,1,6,x62781, 2021 (NTRS 20210022242)",
+   "url": "https://ntrs.nasa.gov/citations/20210022242"
+  }
+ ],
+ "kit": {
+  "mass_kg": 2.37,
+  "volume_cm3": 6430,
+  "source": {
+   "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+   "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+  }
+ },
+ "equipment": [
+  {
+   "id": "absorbable-suture-3-0",
+   "name": "ABSORBABLE SUTURE 3.0",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ace-bandage-3-inches",
+   "name": "ACE BANDAGE 3 INCHES",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "blood-oximeter",
+   "name": "BLOOD OXIMETER",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental-mirror-h",
+   "name": "DENTAL MIRROR (H)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ear-wick",
+   "name": "EAR WICK",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "eye-wash-goggles-tubing",
+   "name": "EYE WASH GOGGLES & TUBING",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "eyewash-waste-water-bag",
+   "name": "EYEWASH WASTE WATER BAG",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "finger-splint",
+   "name": "FINGER SPLINT",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "foam-electrodes",
+   "name": "FOAM ELECTRODES",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "heimlich-maneuver",
+   "name": "HEIMLICH MANEUVER",
+   "category": "intervention",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "iv-catheter-20g",
+   "name": "IV CATHETER (20G)",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "nylon-suture-2-0",
+   "name": "NYLON SUTURE 2.0",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "otoscope-handle",
+   "name": "OTOSCOPE HANDLE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "otoscope-head",
+   "name": "OTOSCOPE HEAD",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "otoscope-usb-cable",
+   "name": "OTOSCOPE USB CABLE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "panoptic-ophthalmoscope",
+   "name": "PANOPTIC OPHTHALMOSCOPE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "penlight",
+   "name": "PENLIGHT",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "psychotherapy",
+   "name": "PSYCHOTHERAPY",
+   "category": "intervention",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "smooth-forceps",
+   "name": "SMOOTH FORCEPS",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "stethoscope",
+   "name": "STETHOSCOPE",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "tourniquet",
+   "name": "TOURNIQUET",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ultrasound-gel",
+   "name": "ULTRASOUND GEL",
+   "category": "equipment",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "urine-chemstrips",
+   "name": "URINE CHEMSTRIPS",
+   "category": "equipment",
+   "qty": 5,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  }
+ ],
+ "formulary": [
+  {
+   "id": "afrin-oxymetazoline-0-05-15ml-bottle",
+   "name": "AFRIN (OXYMETAZOLINE) 0.05% 15ML BOTTLE",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   },
+   "note": "Optimizer value 1.2, rounded up by NASA"
+  },
+  {
+   "id": "ambien-10mg-tablet",
+   "name": "AMBIEN 10MG TABLET",
+   "category": "drug",
+   "qty": 4,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "amoxicillin-500-mg-capsule",
+   "name": "AMOXICILLIN 500 MG CAPSULE",
+   "category": "drug",
+   "qty": 14,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "aspirin-325mg-tab",
+   "name": "ASPIRIN 325MG TAB.",
+   "category": "drug",
+   "qty": 3,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ativan-lorazepam-1-mg-tablet",
+   "name": "ATIVAN (LORAZEPAM) 1 MG TABLET",
+   "category": "drug",
+   "qty": 6,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "bacitracin-500-units-gm-28-gm-tube",
+   "name": "BACITRACIN 500 UNITS/GM. 28 GM TUBE",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   },
+   "note": "Optimizer value 0.8, rounded up by NASA"
+  },
+  {
+   "id": "bactrim-ds-sulfamethoxazole-trimethoprim-800-mg-160-mg-tablet",
+   "name": "BACTRIM DS (SULFAMETHOXAZOLE/TRIMETHOPRIM) 800 MG/160 MG TABLET",
+   "category": "drug",
+   "qty": 26,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "benadryl-25-mg-capsule",
+   "name": "BENADRYL 25 MG CAPSULE",
+   "category": "drug",
+   "qty": 12,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ciprofloxacin-and-dexamethasone-ciprodex-3-7-7-5-ml-bottle",
+   "name": "CIPROFLOXACIN AND DEXAMETHASONE (CIPRODEX) 3%,7%, 7.5 ML BOTTLE",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   },
+   "note": "Optimizer value 0.26, rounded up by NASA"
+  },
+  {
+   "id": "cleocin-clindamycin-300mg",
+   "name": "CLEOCIN (CLINDAMYCIN) 300MG",
+   "category": "drug",
+   "qty": 14,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "cyclopentolate-2-15ml-bottle",
+   "name": "CYCLOPENTOLATE 2% 15ML BOTTLE.",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   },
+   "note": "Optimizer value 0.1, rounded up by NASA"
+  },
+  {
+   "id": "dental-eugenol-anesthetic-1ml-oral-syringe",
+   "name": "DENTAL EUGENOL ANESTHETIC 1ML ORAL SYRINGE",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "diflucan-fluconazole-150-mg",
+   "name": "DIFLUCAN (FLUCONAZOLE) 150 MG",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dulcolax-bisacodyl-tablet-5mg",
+   "name": "DULCOLAX (BISACODYL) TABLET 5MG",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "estrogen-1-25-mg-tablets",
+   "name": "ESTROGEN 1.25 MG TABLETS",
+   "category": "drug",
+   "qty": 7,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "flagyl-metronidazole-500mg",
+   "name": "FLAGYL (METRONIDAZOLE) 500MG",
+   "category": "drug",
+   "qty": 21,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "fluocinonide-0-05-30gm-tube",
+   "name": "FLUOCINONIDE 0.05%, 30GM TUBE",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   },
+   "note": "Optimizer value 0.2, rounded up by NASA"
+  },
+  {
+   "id": "fluorescein-1mg-strips",
+   "name": "FLUORESCEIN 1MG STRIPS",
+   "category": "drug",
+   "qty": 3,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "imodium-loperamide-hcl-2-mg-tablet",
+   "name": "IMODIUM (LOPERAMIDE HCL) 2 MG TABLET",
+   "category": "drug",
+   "qty": 8,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "lidocaine-jelly-2-30ml-tube",
+   "name": "LIDOCAINE JELLY 2% 30ML TUBE",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   },
+   "note": "Optimizer value 0.3, rounded up by NASA"
+  },
+  {
+   "id": "lotrimin-af-cream-clotrimazole-1-30gm-tube",
+   "name": "LOTRIMIN AF CREAM (CLOTRIMAZOLE) 1%, 30GM TUBE",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   },
+   "note": "Optimizer value 0.1, rounded up by NASA"
+  },
+  {
+   "id": "motrin-ibuprofen-400mg",
+   "name": "MOTRIN (IBUPROFEN) 400MG",
+   "category": "drug",
+   "qty": 15,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "moxifloxacin-avelox-0-5-3ml-bottle",
+   "name": "MOXIFLOXACIN (AVELOX) 0.5%, 3ML BOTTLE",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   },
+   "note": "Optimizer value 0.1, rounded up by NASA"
+  },
+  {
+   "id": "mupirocin-bactroban-2-22-gm-tube",
+   "name": "MUPIROCIN (BACTROBAN) 2%, 22 GM TUBE",
+   "category": "drug",
+   "qty": 0.1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "nitroglycerin-tablet-0-4mg",
+   "name": "NITROGLYCERIN TABLET 0.4MG",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "pepto-bismol-262mg-chewable-tabs",
+   "name": "PEPTO-BISMOL 262MG CHEWABLE TABS",
+   "category": "drug",
+   "qty": 4,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "refresh-artificial-tears-carboxymethylcellulose-0-5-0-4ml-bottle",
+   "name": "REFRESH ARTIFICIAL TEARS (CARBOXYMETHYLCELLULOSE) 0.5%, 0.4ML BOTTLE",
+   "category": "drug",
+   "qty": 3,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "sudafed-12-hour-pseudoephedrine-120-mg",
+   "name": "SUDAFED 12 HOUR (PSEUDOEPHEDRINE) 120 MG",
+   "category": "drug",
+   "qty": 7,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "toradol-ketorolac-30mg-ml-2ml-single-dose-vial",
+   "name": "TORADOL (KETOROLAC) 30MG/ML, 2ML SINGLE DOSE VIAL",
+   "category": "drug",
+   "qty": 1,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "tylenol-acetaminophen-325-mg",
+   "name": "TYLENOL (ACETAMINOPHEN) 325 MG",
+   "category": "drug",
+   "qty": 4,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "valacyclovir-1-gm-tablet",
+   "name": "VALACYCLOVIR 1 GM TABLET",
+   "category": "drug",
+   "qty": 21,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "vicodin-hp-hydrocodone-acetaminophen-hp-10-mg-660-mg",
+   "name": "VICODIN HP (HYDROCODONE/ ACETAMINOPHEN HP) 10 MG/660 MG",
+   "category": "drug",
+   "qty": 6,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "zantac-ranitidine-150-mg",
+   "name": "ZANTAC (RANITIDINE) 150 MG",
+   "category": "drug",
+   "qty": 4,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "zithromax-azithromycin-250-mg",
+   "name": "ZITHROMAX (AZITHROMYCIN) 250 MG",
+   "category": "drug",
+   "qty": 6,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "zofran-ondansetron-8-mg-tablet",
+   "name": "ZOFRAN (ONDANSETRON) 8 MG TABLET",
+   "category": "drug",
+   "qty": 2,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  }
+ ],
+ "capabilities": [
+  {
+   "id": "ultrasound",
+   "name": "Point-of-care ultrasound",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "defibrillation",
+   "name": "Defibrillation (AED)",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ecg_bp_monitoring",
+   "name": "ECG and blood pressure monitor",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "pulse_oximetry",
+   "name": "Pulse oximetry",
+   "status": "available",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "bag_valve_mask",
+   "name": "Bag-valve-mask ventilation",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "advanced_airway",
+   "name": "Advanced airway (intubating LMA)",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "mechanical_ventilation",
+   "name": "Mechanical ventilation",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "oxygen",
+   "name": "Supplemental oxygen",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "iv_fluids",
+   "name": "IV fluid resuscitation",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "io_access",
+   "name": "Intraosseous access",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "suction",
+   "name": "Suction",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "wound_closure",
+   "name": "Wound closure (sutures, staples, glue)",
+   "status": "available",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "urinary_catheter",
+   "name": "Urinary catheterization",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "urine_dipstick",
+   "name": "Urine dipstick",
+   "status": "available",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "dental_extraction",
+   "name": "Dental extraction",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "eye_irrigation",
+   "name": "Eye irrigation",
+   "status": "available",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "eye_exam",
+   "name": "Ophthalmoscopy",
+   "status": "available",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "otoscopy",
+   "name": "Otoscopy",
+   "status": "available",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "patient_restraint",
+   "name": "Crew Medical Restraint System",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "procedural_sedation",
+   "name": "Procedural sedation (ketamine)",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "pregnancy_test",
+   "name": "Urine pregnancy test",
+   "status": "unavailable",
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "cpr_manual",
+   "name": "Manual CPR",
+   "status": "adapted",
+   "note": "In lunar and Mars gravity compressions often fall short of guideline depth, more so for lighter rescuers; rotate rescuers in under 1 minute",
+   "source": {
+    "doc": "Overbeek R, et al. Effectiveness of CPR in Hypogravity Conditions: A Systematic Review. Life (Basel) 2022;12(12):1958",
+    "url": "https://doi.org/10.3390/life12121958"
+   }
+  },
+  {
+   "id": "gravity_iv_drip",
+   "name": "Gravity-fed IV drip",
+   "status": "adapted",
+   "note": "Some gravity to drive flow, but slower than on Earth; a pressure infuser may still be needed",
+   "assumption": true
+  },
+  {
+   "id": "major_surgery",
+   "name": "Major surgery (e.g. appendectomy)",
+   "status": "unavailable",
+   "note": "Outside the exploration treatment scope in the IMM CLiFFs",
+   "source": {
+    "doc": "IMM CLiFF ICL8 Appendicitis (2023), Capability Resource Table overview",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "ct_xray",
+   "name": "CT or X-ray imaging",
+   "status": "unavailable",
+   "note": "CT 'will likely not be available' per the IMM CLiFFs",
+   "source": {
+    "doc": "IMM CLiFF ICL8 Appendicitis (2023), Capability Resource Table overview",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "blood_labs",
+   "name": "Blood tests (CBC with differential, metabolic panel)",
+   "status": "unknown",
+   "note": "Not in the IMM kit lists; the 2023 CLiFFs assume these will be possible on exploration missions",
+   "source": {
+    "doc": "IMM CLiFF ICL8 Appendicitis (2023), Capability Resource Table overview",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  },
+  {
+   "id": "blood_transfusion",
+   "name": "Blood transfusion",
+   "status": "unavailable",
+   "note": "No blood products in any IMM kit list",
+   "assumption": false,
+   "source": {
+    "doc": "IMM SR S-20190528-412 (2024 Lunar), Table 3, 7.5-day lunar optimized kit",
+    "url": "https://www.nasa.gov/integrated-medical-model-documentation/"
+   }
+  }
+ ],
+ "notes": "Early Artemis: two crew descend for about a week on the surface (Ruttley 2021). Assigning the IMM 7.5-day kit to the lander is our assumption; the IMM paired it with the Orion kit."
+}
